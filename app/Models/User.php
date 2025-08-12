@@ -59,4 +59,13 @@ class User extends Authenticatable
     public function hasPermission(string $permission) {
         return in_array($permission, $this->permissions());
     }
+
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function counters() {
+        return $this->hasMany(Counter::class);
+    }
 }

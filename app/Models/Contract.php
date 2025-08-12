@@ -6,5 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contract extends Model
 {
-    //
+    protected $fillable = [
+        'user_id', 
+        'start_date', 
+        'expected_end_date', 
+        'actual_end_date',
+        'base_price', 
+        'late_fee_rate', 
+        'tax_rate', 
+        'status'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function counters()
+    {
+        return $this->belongsToMany(Counter::class, 'contract_counter')
+                    ->withTimestamps();
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
 }
