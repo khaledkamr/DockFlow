@@ -65,7 +65,7 @@ class User extends Authenticatable
         return $this->hasMany(Contract::class);
     }
 
-    public function counters() {
-        return $this->hasMany(Counter::class);
+    public function containers() {
+        return $this->hasMany(Container::class);
     }
 }

@@ -22,9 +22,9 @@ class Contract extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function counters()
+    public function containers()
     {
-        return $this->belongsToMany(Counter::class, 'contract_counter')
+        return $this->belongsToMany(Container::class, 'contract_container')
                     ->withTimestamps();
     }
 

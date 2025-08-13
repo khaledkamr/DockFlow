@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('counter_types', function (Blueprint $table) {
+        Schema::create('container_types', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->decimal('daily_price', 10, 2);
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('counter_types');
+        Schema::dropIfExists('container_types');
     }
 };

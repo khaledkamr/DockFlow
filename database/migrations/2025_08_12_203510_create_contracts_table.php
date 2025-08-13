@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->decimal('late_fee', 10, 2)->default(0);
             $table->decimal('tax', 10, 2);
-            $table->enum('status', ['active', 'completed', 'canceled'])->default('active');
+            $table->enum('status', ['جاري', 'تم', 'ملغي'])->default('جاري');
             $table->timestamps();
         });
     }

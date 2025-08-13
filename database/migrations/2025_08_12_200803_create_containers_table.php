@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contract_counter', function (Blueprint $table) {
+        Schema::create('containers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('counter_id')->constrained()->cascadeOnDelete();
+            $table->enum('status', ['موجود', 'غير متوفر'])->default('موجود');
+            $table->string('location');
+            $table->foreignId('container_type_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contract_counter');
+        Schema::dropIfExists('containers');
     }
 };
