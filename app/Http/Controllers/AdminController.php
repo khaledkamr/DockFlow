@@ -10,6 +10,14 @@ class AdminController extends Controller
         return view('admin.users');
     }
 
+    public function usersCreate() {
+        return view('admin.usersCreate');
+    }
+
+    public function admins() {
+        return view('admin.admins');
+    }
+
     public function yard() {
         $yardData = [
             [
@@ -37,8 +45,16 @@ class AdminController extends Controller
         return view('admin.yard', compact('yardData'));
     }
 
+    public function yardAdd() {
+        return view('admin.yardAdd');
+    }
+
     public function contracts() {
         return view('admin.contracts');
+    }
+
+    public function contractsCreate() {
+        return view('admin.contractsCreate');
     }
 
     public function invoices() {
