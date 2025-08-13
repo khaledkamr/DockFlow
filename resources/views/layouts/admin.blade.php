@@ -14,6 +14,19 @@
             color: #ffffff;
             background: #10d5bf;
         }
+        :root {
+            --primary-color: #10d5bf;
+            --secondary-color: #0ec5a9;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
         body {
             font-family: "Cairo", sans-serif;
             font-optical-sizing: auto;
@@ -109,7 +122,7 @@
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link fw-bold {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}">
-                    <i class="fa-solid fa-house ms-2 me-2"></i> الرئــيــســيــــــــة
+                    <i class="fa-solid fa-house ms-2 me-2"></i> الصفحة الرئيسيـــة
                 </a>
             </li>
 
@@ -121,14 +134,11 @@
                    aria-expanded="{{ request()->routeIs(['admin.users*']) ? 'true' : 'false' }}" 
                    aria-controls="users-management"
                    onclick="toggleSubmenu(this, event)">
-                    <i class="fa-solid fa-users ms-2 me-2"></i> إدارة المستخدمــون
+                    <i class="fa-solid fa-users ms-2 me-2"></i> إدارة المستخدمون
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.users*']) ? 'show' : '' }}" id="users-management">
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.users') ? 'active' : '' }}" href="{{ route('admin.users') }}">
-                        <i class="fa-solid fa-user ms-4 me-2"></i> المستخدمـــــون
-                    </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.users.create') ? 'active' : '' }}" href="{{ route('admin.users.create') }}">
-                        <i class="fa-solid fa-user-plus ms-3 me-2"></i> إضافة مستخدم
+                        <i class="fa-solid fa-user ms-4 me-2"></i> العمــــلاء
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.users.admins') ? 'active' : '' }}" href="{{ route('admin.users.admins') }}">
                         <i class="fa-solid fa-user-tie ms-4 me-2"></i>  المشرفين
@@ -144,14 +154,14 @@
                    aria-expanded="{{ request()->routeIs(['admin.yard*']) ? 'true' : 'false' }}" 
                    aria-controls="yard-management"
                    onclick="toggleSubmenu(this, event)">
-                    <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحـــــــــة
+                    <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحــــــــــــة
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.yard*']) ? 'show' : '' }}" id="yard-management">
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.yard') ? 'active' : '' }}" href="{{ route('admin.yard') }}">
-                        <i class="fa-solid fa-box ms-4 me-2"></i> الكوتينارات
+                        <i class="fa-solid fa-box ms-4 me-2"></i> الكونتينـــــرات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.add') ? 'active' : '' }}" href="{{ route('admin.yard.add') }}">
-                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة كوتينر
+                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة كونتينر
                     </a>
                 </div>
             </li>
@@ -164,11 +174,11 @@
                    aria-expanded="{{ request()->routeIs(['admin.contracts*']) ? 'true' : 'false' }}" 
                    aria-controls="contract-management"
                    onclick="toggleSubmenu(this, event)">
-                    <i class="fa-solid fa-file ms-2 me-2"></i> إدارة العقـــــــود
+                    <i class="fa-solid fa-file ms-2 me-2"></i> إدارة العقــــــــــــود
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.contracts*']) ? 'show' : '' }}" id="contract-management">
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.contracts') ? 'active' : '' }}" href="{{ route('admin.contracts') }}">
-                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> العقــــود
+                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> العقــــــود
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.contracts.create') ? 'active' : '' }}" href="{{ route('admin.contracts.create') }}">
                         <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة عقد
@@ -178,13 +188,13 @@
 
             <li class="nav-item">
                 <a class="nav-link fw-bold {{ request()->routeIs('admin.invoices') ? 'active' : '' }}" href="{{ route('admin.invoices') }}">
-                    <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــــــواتيـــــــر
+                    <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــــــواتيــــــــــر
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link fw-bold {{ request()->routeIs('admin.payments') ? 'active' : '' }}" href="{{ route('admin.payments') }}">
-                    <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> المدفـــوعــــــات
+                    <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> المدفـــوعـــــــــات
                 </a>
             </li>
         </ul>
@@ -199,7 +209,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="ms-auto">
-                    <span class="me-3">مرحباً، أحمد</span>
+                    <span class="me-3">مرحباً، خالد</span>
                     <button class="btn btn-outline-danger btn-sm">تسجيل خروج</button>
                 </div>
             </div>
