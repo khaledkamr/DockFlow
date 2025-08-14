@@ -159,10 +159,13 @@
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.yard*']) ? 'show' : '' }}" id="yard-management">
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.yard') ? 'active' : '' }}" href="{{ route('admin.yard') }}">
-                        <i class="fa-solid fa-box ms-4 me-2"></i> الكونتينـــــرات
+                        <i class="fa-solid fa-box ms-4 me-2"></i> الحــــــاويـــات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.add') ? 'active' : '' }}" href="{{ route('admin.yard.add') }}">
-                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة كونتينر
+                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة حــاوية
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.containers.types') ? 'active' : '' }}" href="{{ route('admin.yard.containers.types') }}">
+                        <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
                     </a>
                 </div>
             </li>
