@@ -18,14 +18,15 @@
             --primary-color: #10d5bf;
             --secondary-color: #0ec5a9;
         }
-        .btn-primary {
+        .btn-1 {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: #ffffff;
         }
-        .btn-primary:hover {
+        .btn-1:hover {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
+            color: #ffffff;
         }
         body {
             font-family: "Cairo", sans-serif;

@@ -2,22 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     public function users() {
-        $users = User::all();
+        $users = User::orderBy('id', 'desc')->get();
         return view('admin.users', compact('users'));
-    }
-
-    public function usersCreate() {
-        return view('admin.usersCreate');
     }
 
     public function admins() {
         return view('admin.admins');
+    }
+
+    public function createUser(UserRequest $request) {
+        $validated = $request->validated();
+        User::create($validated);
+        return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
+    }
+
+    public function updateUser(UserRequest $request, $id) {
+        $user = User::findOrFail($id);
+        $validated = $request->validated();
+        $user->update($validated);
+        return redirect()->back()->with('success', 'تم تحديث بيانات العميل بنجاح');
+    }
+
+    public function deleteUser($id) {
+        $user = User::findOrFail($id);
+        $name = $user->name;
+        $user->delete();
+        return redirect()->back()->with('success', 'تم حذف العميل ' . $name . ' بنجاح');
     }
 
     public function yard() {
