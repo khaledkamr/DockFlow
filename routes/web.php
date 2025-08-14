@@ -14,7 +14,12 @@ Route::delete('admin/users/delete/{id}', [AdminController::class, 'deleteUser'])
 Route::get('/admin/users/admins', [AdminController::class, 'admins'])->name('admin.users.admins');
 Route::get('/admin/yard', [AdminController::class, 'yard'])->name('admin.yard');
 Route::get('/admin/yard/add', [AdminController::class, 'yardAdd'])->name('admin.yard.add');
+Route::post('/admin/yard/containers/create', [AdminController::class, 'containerCreate'])->name('admin.yard.containers.create');
+Route::get('/admin/yard/containers/types', [AdminController::class, 'containersTypes'])->name('admin.yard.containers.types');
+Route::post('/admin/yard/containers/types/create', [AdminController::class, 'containerTypeCreate'])->name('admin.yard.containers.types.create');
+Route::put('/admin/yard/containers/types/update/{id}', [AdminController::class, 'updateContainerType'])->name('admin.yard.containers.types.update');
+Route::delete('/admin/yard/containers/types/delete/{id}', [AdminController::class, 'deleteContainerType'])->name('admin.yard.containers.types.delete');
 Route::get('/admin/contracts', [AdminController::class, 'contracts'])->name('admin.contracts');
-Route::get('/admin/contracts/create', [AdminController::class, 'contractsCreate'])->name('admin.contracts.create');
+Route::get('/admin/contracts/create', [AdminController::class, 'createContract'])->name('admin.contracts.create');
 Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');
 Route::get('/admin/payments', [AdminController::class, 'payments'])->name('admin.payments');
