@@ -61,46 +61,45 @@
     }
 </style>
 
-<h1 class="mb-4">ساحة التخزين</h1>
-<p>هذا هو المحتوى الرئيسي لساحة التخزين.</p>
+<h1 class="mb-5">ساحة التخزين</h1>
 
 <div class="table-container">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">ID</th>
-                <th class="text-center bg-dark text-white">اسم الكاونتر</th>
-                <th class="text-center bg-dark text-white">الموقع</th>
-                <th class="text-center bg-dark text-white">السعة</th>
-                <th class="text-center bg-dark text-white">الحالة</th>
-                <th class="text-center bg-dark text-white">الإجراءات</th>
+                <th class="text-center bg-dark text-white">صاحــب الحاويــة</th>
+                <th class="text-center bg-dark text-white">الموقــع</th>
+                <th class="text-center bg-dark text-white">الفئـــة</th>
+                <th class="text-center bg-dark text-white">الحالـــة</th>
+                <th class="text-center bg-dark text-white">الإجـــراءات</th>
             </tr>
         </thead>
         <tbody>
-            @if ($yardData == [])
+            @if ($containers->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-danger fs-6">No Containers found!</div>
+                        <div class="status-danger fs-6">لا يوجد اي حاويات في الساحــة!</div>
                     </td>
                 </tr>
             @else
-                @foreach ($yardData as $container)
+                @foreach ($containers as $container)
                     <tr>
-                        <td class="text-center">{{ $container['id'] }}</td>
+                        <td class="text-center">{{ $container->id }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">
-                                {{ $container['name'] }}
+                                {{ $container->user->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $container['location'] }}</td>
-                        <td class="text-center">{{ $container['capacity'] }}</td>
-                        <td class="text-center">{{ $container['status'] }}</td>
+                        <td class="text-center">{{ $container->location }}</td>
+                        <td class="text-center">{{ $container->containerType->name }}</td>
+                        <td class="text-center">{{ $container->status }}</td>
                         <td class="action-icons text-center">
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $container['id'] }}">
+                            <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit container"></i>
                             </button>
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container['id'] }}">
+                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container->id }}">
                                 <i class="fa-solid fa-trash-can text-danger" title="delete container"></i>
                             </button>
                         </td>
