@@ -14,7 +14,8 @@ class AdminController extends Controller
     }
 
     public function admins() {
-        return view('admin.admins');
+        $users = User::orderBy('id', 'desc')->get();
+        return view('admin.admins', compact('users'));
     }
 
     public function createUser(UserRequest $request) {
