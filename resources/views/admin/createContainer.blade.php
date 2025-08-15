@@ -6,8 +6,9 @@
 <h2 class="mb-5">إضافة حاوية جديدة</h2>
 
 @if (session('success'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 @if ($errors->any())
@@ -62,6 +63,13 @@
 
     <div class="row mb-3">
         <div class="col">
+            <label for="code" class="form-label">كــود الحاويــة</label>
+            <input type="text" class="form-control" id="code" name="code" value="{{ old('code') }}" required>
+            @error('code')
+                <div class="text-danger">{{ $message }}</div>
+            @endif
+        </div>
+        <div class="col">
             <label for="container_type_id" class="form-label">فئة الحاويــة</label>
             <select class="form-select" id="container_type_id" name="container_type_id" required>
                 @foreach ($containerTypes as $type)
@@ -74,20 +82,13 @@
                 <div class="text-danger">{{ $message }}</div>
             @endif
         </div>
-        <div class="col">
-            <label for="container_count" class="form-label">عدد الحاويـات</label>
-            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ old('container_count') }}" required>
-            @error('container_count')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
     </div>
 
     <div class="row mb-3">
         <div class="col">
             <label for="status" class="form-label">الحالــة</label>
             <select class="form-select" id="status" name="status" required>
-                <option value="في الانتظار" {{ old('status') == 'في الانتظار' ? 'selected' : '' }}>في الانتظار</option>
+                <option value="في الإنتظار" {{ old('status') == 'في الإنتظار' ? 'selected' : '' }}>في الإنتظار</option>
                 <option value="موجود" {{ old('status') == 'موحود' ? 'selected' : '' }}>موجود</option>
                 <option value="غير متوفر" {{ old('status') == 'غير متوفر' ? 'selected' : '' }}>غير متوفر</option>
             </select>

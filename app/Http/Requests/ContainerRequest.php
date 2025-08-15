@@ -15,6 +15,7 @@ class ContainerRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
             'container_type_id' => 'required|exists:container_types,id',
             'location' => 'required|string|max:255',

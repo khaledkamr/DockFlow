@@ -35,7 +35,7 @@
     .table tbody tr:hover {
         background-color: #f1f3f5;
     }
-    .table .status-average {
+    .table .status-waiting {
         background-color: #fff3cd;
         color: #856404;
         padding: 5px 10px;
@@ -43,7 +43,7 @@
         font-size: 12px;
         display: inline-block;
     }
-    .table .status-high {
+    .table .status-available {
         background-color: #d4edda;
         color: #155724;
         padding: 5px 10px;
@@ -68,6 +68,7 @@
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">ID</th>
+                <th class="text-center bg-dark text-white">كــود الحاويــة</th>
                 <th class="text-center bg-dark text-white">صاحــب الحاويــة</th>
                 <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الفئـــة</th>
@@ -86,6 +87,7 @@
                 @foreach ($containers as $container)
                     <tr>
                         <td class="text-center">{{ $container->id }}</td>
+                        <td class="text-center">{{ $container->code }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">
@@ -94,7 +96,11 @@
                         </td>
                         <td class="text-center">{{ $container->location }}</td>
                         <td class="text-center">{{ $container->containerType->name }}</td>
-                        <td class="text-center">{{ $container->status }}</td>
+                        <td class="text-center">
+                            <div class="{{ $container->status == 'في الإنتظار' ? 'status-waiting' : ($container->status == 'موجود' ? 'status-available' : 'status-danger') }}">
+                                {{ $container->status }}
+                            </div>
+                        </td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit container"></i>

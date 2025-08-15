@@ -21,5 +21,7 @@ Route::put('/admin/yard/containers/types/update/{id}', [AdminController::class, 
 Route::delete('/admin/yard/containers/types/delete/{id}', [AdminController::class, 'deleteContainerType'])->name('admin.yard.containers.types.delete');
 Route::get('/admin/contracts', [AdminController::class, 'contracts'])->name('admin.contracts');
 Route::get('/admin/contracts/create', [AdminController::class, 'createContract'])->name('admin.contracts.create');
+Route::post('/admin/contracts/store', [AdminController::class, 'storeContract'])->name('admin.contracts.store');
+Route::get('/admin/contracts/details/{id}', [AdminController::class, 'contractDetails'])->name('admin.contracts.details');
 Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');
 Route::get('/admin/payments', [AdminController::class, 'payments'])->name('admin.payments');

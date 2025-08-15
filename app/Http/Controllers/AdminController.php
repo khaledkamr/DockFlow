@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ContainerRequest;
 use App\Http\Requests\ContainerTypesRequest;
+use App\Http\Requests\ContractRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Contract;
+use App\Models\Contract_container;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -118,6 +121,24 @@ class AdminController extends Controller
             'NID' => '',
             'phone' => '',
         ];
+        $containers = [
+            [
+                'type' => 'فئة صغيرة',
+                'price' => Container_type::where('name', 'فئة صغيرة')->value('daily_price'),
+                'count' => 0
+            ],
+            [
+                'type' => 'فئة متوسطة',
+                'price' => Container_type::where('name', 'فئة متوسطة')->value('daily_price'),
+                'count' => 0
+            ],
+            [
+                'type' => 'فئة كبيرة',
+                'price' => Container_type::where('name', 'فئة كبيرة')->value('daily_price'),
+                'count' => 0
+            ],
+        ];
+        $price = 0;
         if($clientId) {
             $user = User::find($clientId);
             $client = [
@@ -126,8 +147,51 @@ class AdminController extends Controller
                 'NID' => $user->NID,
                 'phone' => $user->phone,
             ];
+            $containers[0]['count'] = Container::where('user_id', $clientId)
+                                                ->where('status', 'في الإنتظار')
+                                                ->whereHas('containerType', function($query) {
+                                                    $query->where('name', 'فئة صغيرة');
+                                                })->count();
+            $containers[1]['count'] = Container::where('user_id', $clientId)
+                                                ->where('status', 'في الإنتظار')
+                                                ->whereHas('containerType', function($query) {
+                                                    $query->where('name', 'فئة متوسطة');
+                                                })->count();
+            $containers[2]['count'] = Container::where('user_id', $clientId)
+                                                ->where('status', 'في الإنتظار')
+                                                ->whereHas('containerType', function($query) {
+                                                    $query->where('name', 'فئة كبيرة');
+                                                })->count();
+            foreach ($containers as $container) {
+                $price += $container['count'] * $container['price'];
+            }
         }
-        return view('admin.createContract', compact('users', 'client'));
+
+        return view('admin.createContract', compact('users', 'client', 'containers', 'price'));
+    }
+
+    public function storeContract(ContractRequest $request) {
+        $validated = $request->validated();
+        $days = Carbon::parse($validated['start_date'])->diffInDays(Carbon::parse($validated['expected_end_date']));
+        $validated['price'] = $validated['price'] * $days;
+
+        $containers = Container::where('user_id', $validated['user_id'])
+        ->where('status', 'في الإنتظار')->get();
+        
+        foreach($containers as $container) {
+            $container->status = 'موجود';
+            $container->save();
+        }
+
+        $contract = Contract::create($validated);
+        $contract->containers()->attach($containers);
+        return redirect()->back()->with('success', 'تم إنشاء عقد جديد بنجاح');
+    }
+
+    public function contractDetails($id) {
+        $contract = Contract::with('containers.containerType')->findOrFail($id);
+        // return $contract;
+        return view('admin.contractDetails', compact('contract'));
     }
 
     public function invoices() {
