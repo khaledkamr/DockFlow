@@ -11,9 +11,9 @@ class Contract extends Model
         'start_date', 
         'expected_end_date', 
         'actual_end_date',
-        'base_price', 
-        'late_fee_rate', 
-        'tax_rate', 
+        'price', 
+        'late_fee', 
+        'tax', 
         'status'
     ];
 
@@ -24,8 +24,7 @@ class Contract extends Model
 
     public function containers()
     {
-        return $this->belongsToMany(Container::class, 'contract_container')
-                    ->withTimestamps();
+        return $this->belongsToMany(Container::class, 'contract_container');
     }
 
     public function invoice()

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Container extends Model
 {
-    protected $fillable = ['status', 'container_type_id', 'user_id', 'location'];
+    protected $fillable = ['code', 'status', 'container_type_id', 'user_id', 'location'];
 
     public function containerType()
     {
@@ -16,5 +16,9 @@ class Container extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function contracts() {
+        return $this->belongsToMany(Contract::class, 'contract_container');
     }
 }
