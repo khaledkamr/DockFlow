@@ -6,17 +6,19 @@
 <h2 class="mb-4">إضافة عقد جديد</h2>
 
 @if (session('success'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 @if ($errors->any())
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 
@@ -34,13 +36,13 @@
     </div>
 </form>
 
-<form action="" method="POST">
+<form action="{{ route('admin.contracts.store') }}" method="POST">
     @csrf
     <div class="row mb-3">
         <div class="col">
-            <label for="customer_name" class="form-label">رقــم العميــل</label>
-            <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ $client['id'] }}" required>
-            @error('customer_name')
+            <label for="user_id" class="form-label">رقــم العميــل</label>
+            <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $client['id'] }}" required>
+            @error('user_id')
                 <div class="text-danger">{{ $message }}</div>
             @endif
         </div>
@@ -87,7 +89,7 @@
         </div>
         <div class="col">
             <label for="container_count" class="form-label">عدد الحاويـات</label>
-            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ old('container_count') }}" required>
+            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ $containers[2]['count'] }}" required>
             @error('container_count')
             <div class="text-danger">{{ $message }}</div>
             @endif
@@ -102,7 +104,7 @@
         </div>
         <div class="col">
             <label for="container_count" class="form-label">عدد الحاويـات</label>
-            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ old('container_count') }}" required>
+            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ $containers[1]['count'] }}" required>
             @error('container_count')
             <div class="text-danger">{{ $message }}</div>
             @endif
@@ -117,7 +119,7 @@
         </div>
         <div class="col">
             <label for="container_count" class="form-label">عدد الحاويـات</label>
-            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ old('container_count') }}" required>
+            <input type="number" class="form-control" id="container_count" name="container_count" value="{{ $containers[0]['count'] }}" required>
             @error('container_count')
             <div class="text-danger">{{ $message }}</div>
             @endif
@@ -126,8 +128,8 @@
 
     <div class="row mb-3">
         <div class="col">
-            <label for="price" class="form-label">السعر</label>
-            <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ old('price') }}" required>
+            <label for="price" class="form-label">السعر (بالـيوم)</label>
+            <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ $price }}" required>
             @error('price')
                 <div class="text-danger">{{ $message }}</div>
             @endif
@@ -137,6 +139,16 @@
             <input type="number" step="0.01" class="form-control" id="late_fee" name="late_fee" value="{{ old('late_fee') }}" required>
             @error('late_fee')
             <div class="text-danger">{{ $message }}</div>
+            @endif
+        </div>
+        <div class="col">
+            <label for="tax" class="form-label">الضريبة</label>
+            <select class="form-select" id="tax" name="tax" required>
+                <option value="غير معفي" {{ old('tax') == 'غير معفي' ? 'selected' : '' }}>غير معفي</option>
+                <option value="معفي" {{ old('tax') == 'معفي' ? 'selected' : '' }}>معفي</option>
+            </select>
+            @error('tax')
+                <div class="text-danger">{{ $message }}</div>
             @endif
         </div>
     </div>

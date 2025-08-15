@@ -35,7 +35,7 @@
     .table tbody tr:hover {
         background-color: #f1f3f5;
     }
-    .table .status-average {
+    .table .status-completed {
         background-color: #fff3cd;
         color: #856404;
         padding: 5px 10px;
@@ -43,7 +43,7 @@
         font-size: 12px;
         display: inline-block;
     }
-    .table .status-high {
+    .table .status-running {
         background-color: #d4edda;
         color: #155724;
         padding: 5px 10px;
@@ -51,7 +51,7 @@
         font-size: 12px;
         display: inline-block;
     }
-    .table .status-danger {
+    .table .status-canceled {
         background-color: #f8d7da;
         color: #721c24;
         padding: 5px 10px;
@@ -99,7 +99,7 @@
     </div>
     <div class="col-md-2 d-flex align-items-end">
         <a href="{{ route('admin.contracts.create') }}" class="btn btn-1 w-100 fw-bold">
-            <i class="fa-solid fa-user-plus pe-1"></i>
+            <i class="fa-solid fa-file-circle-plus pe-1"></i>
             أضف غقد
         </a>
     </div>
@@ -124,7 +124,7 @@
             @if ($contracts->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-danger fs-6">لم يتم العثور على اي عقود!</div>
+                        <div class="status-canceled fs-6">لم يتم العثور على اي عقود!</div>
                     </td>
                 </tr>
             @else
@@ -139,72 +139,18 @@
                         </td>
                         <td class="text-center">{{ $contract->start_date }}</td>
                         <td class="text-center">{{ $contract->expected_end_date }}</td>
-                        <td class="text-center">{{ $contract->actual_end_date }}</td>
-                        <td class="text-center">{{ $contract->status }}</td>
-                        <td class="text-center">{{ $contract->containers }}</td>
-                        <td class="text-center">{{ $contract->price }}</td>
+                        <td class="text-center">{{ $contract->actual_end_date ?? 'لم ينتهي بعد' }}</td>
+                        <td class="text-center">
+                            <div class="{{ $contract->status == 'جاري' ? 'status-running' : ($contract->status == 'منتهي' ? 'status-completed' : 'status-canceled') }}">
+                                {{ $contract->status }}
+                            </div>
+                        </td>
+                        <td class="text-center">{{ $contract->containers->count() }}</td>
+                        <td class="text-center">{{ $contract->price }} ريال</td>
                         <td class="action-icons text-center">
-                            <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">
-                                <i class="fa-solid fa-pen text-primary" title="Edit user"></i>
-                            </button>
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $user->id }}">
-                                <i class="fa-solid fa-user-xmark text-danger" title="delete user"></i>
-                            </button>
+                            <a href="{{ route('admin.contracts.details', $contract->id) }}" class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">عرض</a>
                         </td>
                     </tr>
-
-                    <!-- Edit Modal -->
-                    <div class="modal fade" id="editUserModal{{ $contract->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $contract->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $contract->id }}">تعديل بيانات العقد</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="modal-body text-dark">
-                                        <div class="mb-3">
-                                            <label for="name{{ $contract->id }}" class="form-label">إسم العميل</label>
-                                            <input type="text" class="form-control" id="name{{ $contract->id }}" name="name" value="{{ old('name', $contract->user->name) }}" required>
-                                            @error('name')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                        <button type="submit" class="btn btn-1">حفظ التغييرات</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Delete Confirmation Modal -->
-                    <div class="modal fade" id="deleteUserModal{{ $contract->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $contract->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $contract->id }}">تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body text-dark">
-                                    هل انت متأكد من حذف عقد العميل <strong>{{ $contract->user->name }}</strong>؟
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">حذف</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 @endforeach
             @endif
         </tbody>
