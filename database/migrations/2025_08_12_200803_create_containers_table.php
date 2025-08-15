@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('containers', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['موجود', 'غير متوفر'])->default('موجود');
+            $table->string('code');
+            $table->enum('status', ['في الإنتظار','موجود', 'غير متوفر'])->default('في الإنتظار');
             $table->string('location');
             $table->foreignId('container_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
