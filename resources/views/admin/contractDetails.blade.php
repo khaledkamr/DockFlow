@@ -33,11 +33,11 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="text-muted small">رقم العقد</label>
                         <div class="fw-bold">#{{ $contract->id }}</div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="text-muted small">حالة العقد</label>
                         <div class="fw-bold">{{ $contract->status }}</div>
                     </div>
@@ -62,8 +62,8 @@
                         <div class="fw-bold">ساحة تخزين</div>
                     </div>
                     <div class="col mb-3">
-                        <label class="text-muted small">رقم الهوية الوطنية</label>
-                        <div class="fw-bold">{{ $contract->user->NID }}</div>
+                        <label class="text-muted small">إســم الفــرع</label>
+                        <div class="fw-bold">الفرع الرئيسي</div>
                     </div>
                     <div class="col mb-3">
                         <label class="text-muted small">رقم الهاتف</label>
@@ -109,10 +109,9 @@
         </div>
     </div>
 
-    <!-- Financial Info -->
     <div class="col-lg-4 mb-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white rounded-top-3">
                 <h5 class="mb-0">
                     <i class="fas fa-money-bill-wave me-2"></i>
                     المعلومات المالية
@@ -132,7 +131,7 @@
                     @endif
                 </div>
                 <div class="mb-4">
-                    <label class="text-muted small">رسوم الضريبة</label>
+                    <label class="text-muted small">الضريبة المضافة</label>
                     @if($contract->tax == 'غير معفي')
                         <div class="h4 fw-bold">15%</div>
                     @elseif($contract->tax == 'معفي')
@@ -201,10 +200,104 @@
     @csrf
     <input type="hidden" name="contract_id" value="{{ $contract->id }}">
     <input type="hidden" name="remaining_days" value="{{ $remainingDays }}">
-    <button type="submit" class="btn btn-1 fw-bold">
-        استخراج فاتورة <i class="fas fa-scroll ps-1"></i>
-    </button>
+    
 </form>
+
+<button type="button" class="btn btn-1 fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
+    إستخراج فاتورة <i class="fas fa-scroll ps-1"></i>
+</button>
+
+<div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إنهــاء العقـد و إنشــاء فــاتورة</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="" method="POST">
+                @csrf
+                <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+                <input type="hidden" name="invoice_date" value="{{ Carbon::now() }}">
+                <input type="hidden" name="base_price" value="{{ $contract->price }}">
+                <input type="hidden" name="late_fee_total" value="{{ $remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0 }}">
+                <input type="hidden" name="tax_total" value="{{ ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0) }}">
+                <input type="hidden" name="grand_total" value="{{ $contract->price
+                                                                    + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
+                                                                    + ($remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0) }}">
+                <div class="modal-body text-dark">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label class="text muted small">عقد رقم</label>
+                            <div class="fw-bold">#{{ $contract->id }}</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">من</label>
+                            <div class="fw-bold">{{ $contract->start_date }}</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الى</label>
+                            <div class="fw-bold">{{ Carbon::now()->format('Y-m-d') }}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label class="text muted small">العميل</label>
+                            <div class="fw-bold">{{ $contract->user->name }}</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الموظف</label>
+                            <div class="fw-bold">علي رمضان</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الساعة</label>
+                            <div class="fw-bold">{{ Carbon::now()->format('H:i') }}</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                        <div class="col-2 fw-bold">#</div>
+                        <div class="col fw-bold">كود</div>
+                        <div class="col fw-bold">فئة</div>
+                        <div class="col fw-bold">السعر</div>
+                    </div>
+                    @foreach($contract->containers as $index => $container)
+                        <div class="row mb-2">
+                            <div class="col-2">{{ $index + 1 }}</div>
+                            <div class="col">{{ $container->code }}</div>
+                            <div class="col">{{ $container->containerType->name }}</div>
+                            <div class="col">{{ $container->containerType->daily_price }} ريال</div>
+                        </div>
+                    @endforeach
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-bold">مجموع</div>
+                        <div>{{ $contract->price }} ريال</div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-bold">ضريبة تأخير</div>
+                        <div>{{ number_format(($remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0), 2) }} ريال</div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-bold">الضريبة المضافة</div>
+                        <div>{{ number_format(($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0), 2) }} ريال</div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-bold">المجموع الكلي</div>
+                        <div>{{ number_format($contract->price
+                                + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
+                                + ($remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0), 2) }} ريال
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إالغاء</button>
+                    <button type="submit" class="btn btn-1">إنشاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <script>
 function downloadContract() {
