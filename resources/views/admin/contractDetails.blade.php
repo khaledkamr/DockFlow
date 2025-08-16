@@ -118,7 +118,7 @@
                                 <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>
                             </div>
                         </div>
-                    @elseif($contract->status == 'تم')
+                    @elseif($contract->status == 'منتهي')
                         <a class="btn btn-1 fw-bold">
                             عــرض الـفاتــورة <i class="fas fa-scroll ps-1"></i>
                         </a>
@@ -218,7 +218,7 @@
     <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#createInvoice">
         إستخراج فاتورة <i class="fas fa-scroll ps-1"></i>
     </button>
-@elseif($contract->status == 'تم')
+@elseif($contract->status == 'منتهي')
     <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#exitPermission">
         طباعة إذن خروج <i class="fas fa-scroll ps-1"></i>
     </button>

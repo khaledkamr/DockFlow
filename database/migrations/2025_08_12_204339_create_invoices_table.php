@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
-            $table->date('invoice_date');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->date('date');
             $table->decimal('base_price', 10, 2);
             $table->decimal('late_fee_total', 10, 2)->default(0);
             $table->decimal('tax_total', 10, 2);
             $table->decimal('grand_total', 10, 2);
+            $table->enum('payment_method', ['كاش', 'كريدت', 'تحويل بنكي']);
             $table->timestamps();
         });
     }

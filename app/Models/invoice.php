@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class invoice extends Model
 {
     protected $fillable = [
-        'contract_id', 
-        'invoice_date',
+        'contract_id',
+        'user_id', 
+        'date',
         'base_price', 
         'late_fee_total', 
         'tax_total', 
-        'grand_total'
+        'grand_total',
+        'payment_method'
     ];
 
     public function contract()
@@ -23,5 +25,9 @@ class invoice extends Model
     public function payments()
     {
         return $this->belongsTo(Payment::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }

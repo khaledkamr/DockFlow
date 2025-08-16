@@ -68,4 +68,8 @@ class User extends Authenticatable
     public function containers() {
         return $this->hasMany(Container::class);
     }
+
+    public function invoices() {
+        return $this->hasMany(Invoice::class);
+    }
 }

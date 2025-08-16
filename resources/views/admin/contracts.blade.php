@@ -141,7 +141,7 @@
                         <td class="text-center">{{ $contract->expected_end_date }}</td>
                         <td class="text-center">{{ $contract->actual_end_date ?? 'لم ينتهي بعد' }}</td>
                         <td class="text-center">
-                            <div class="{{ $contract->status == 'جاري' ? 'status-running' : ($contract->status == 'تم' ? 'status-completed' : 'status-canceled') }}">
+                            <div class="{{ $contract->status == 'جاري' ? 'status-running' : ($contract->status == 'منتهي' ? 'status-completed' : 'status-canceled') }}">
                                 {{ $contract->status }}
                             </div>
                         </td>

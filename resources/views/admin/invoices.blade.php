@@ -105,6 +105,7 @@
             <tr>
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
                 <th class="text-center bg-dark text-white">رقــم العقــد</th>
+                <th class="text-center bg-dark text-white">العميــل</th>
                 <th class="text-center bg-dark text-white">سعــر الإيجــار</th>
                 <th class="text-center bg-dark text-white">غرامــة التأخيــر</th>
                 <th class="text-center bg-dark text-white">الضريبـــة المضافــة</th>
@@ -117,7 +118,7 @@
             @if ($invoices->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-danger fs-6">لا يوجد اي فاوتيـــر!</div>
+                        <div class="status-danger fs-6">لا يوجد اي فواتيـــر!</div>
                     </td>
                 </tr>
             @else
@@ -125,12 +126,13 @@
                     <tr>
                         <td class="text-center">{{ $invoice->id }}</td>
                         <td class="text-center">{{ $invoice->contract_id }}</td>
+                        <td class="text-center">{{ $invoice->user->name }}</td>
                         <td class="text-center">{{ $invoice->base_price }}</td>
                         <td class="text-center">{{ $invoice->late_fee_total }}</td>
                         <td class="text-center">{{ $invoice->tax_total }}</td>
                         <td class="text-center">{{ $invoice->grand_total }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
-                        <td class="text-center">{{ $invoice->invoice_date }}</td>
+                        <td class="text-center">{{ $invoice->date }}</td>
                     </tr>
                 @endforeach
             @endif
