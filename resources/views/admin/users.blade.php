@@ -185,7 +185,7 @@
                     <tr>
                         <td class="text-center">{{ $user->id }}</td>
                         <td class="text-center">
-                            <a href=""
+                            <a href="{{ route('admin.user.profile', $user->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $user->name }}
                             </a>

@@ -303,7 +303,8 @@
             <form action="{{ route('admin.invoice.create') }}" method="POST">
                 @csrf
                 <input type="hidden" name="contract_id" value="{{ $contract->id }}">
-                <input type="hidden" name="invoice_date" value="{{ \Carbon\Carbon::now() }}">
+                <input type="hidden" name="user_id" value="{{ $contract->user->id }}">
+                <input type="hidden" name="date" value="{{ \Carbon\Carbon::now() }}">
                 <input type="hidden" name="base_price" value="{{ $contract->price }}">
                 <input type="hidden" name="late_fee_total" value="{{ $remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0 }}">
                 <input type="hidden" name="tax_total" value="{{ ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0) }}">
@@ -361,7 +362,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold">ضريبة تأخير</div>
-                        <div>{{ number_format(($remainingDays < 0 ? abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال</div>
+                        <div>{{ number_format(($remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال</div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold">الضريبة المضافة(15%)</div>
@@ -372,7 +373,7 @@
                         <div class="fw-bold fs-5">إجمالي المبلغ</div>
                         <div class="fs-5">{{ number_format($contract->price
                                 + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
-                                + ($remainingDays < 0 ? abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال
+                                + ($remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال
                         </div>
                     </div>
                     <hr>
@@ -388,6 +389,19 @@
                         <div class="col">
                             <label class="text muted small">الساعة</label>
                             <div class="fw-bold">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3 mt-2">
+                        <div class="col-md-3">
+                            <label for="payment_method" class="form-label">طريقة الدفع</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select class="form-select" name="payment_method" id="payment_method" required>
+                                <option value="" selected disabled>اختر طريقة الدفع</option>
+                                <option value="كاش">كاش</option>
+                                <option value="كريدت">كريدت</option>
+                                <option value="تحويل بنكي">تحويل بنكي</option>
+                            </select>
                         </div>
                     </div>
                 </div>

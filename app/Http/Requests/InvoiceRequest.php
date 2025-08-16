@@ -23,7 +23,8 @@ class InvoiceRequest extends FormRequest
     {
         return [
             'contract_id' => 'required|numeric',
-            'invoice_date' => 'required|date',
+            'user_id' => 'required|numeric',
+            'date' => 'required|date',
             'base_price' => 'required|numeric',
             'late_fee_total' => 'required|numeric',
             'tax_total' => 'required|numeric',

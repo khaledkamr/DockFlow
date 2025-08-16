@@ -23,6 +23,12 @@ class AdminController extends Controller
         return view('admin.users', compact('users'));
     }
 
+    public function userProfile($id) {
+        $user = User::findOrFail($id);
+        // return $user->contracts;
+        return view('admin.userProfile', compact('user'));
+    }
+
     public function admins() {
         $users = User::orderBy('id', 'desc')->get();
         return view('admin.admins', compact('users'));
@@ -204,8 +210,8 @@ class AdminController extends Controller
     public function createInvoice(InvoiceRequest $request) {
         $validated = $request->validated();
         $contract = Contract::findOrFail($validated['contract_id']);
-        $contract->status = 'تم';
-        $contract->actual_end_date = $validated['invoice_date'];
+        $contract->status = 'منتهي';
+        $contract->actual_end_date = $validated['date'];
         $contract->save();
         invoice::create($validated);
         return redirect()->back()->with('success', 'تم إنشاء الفاتوره بنجاح');
