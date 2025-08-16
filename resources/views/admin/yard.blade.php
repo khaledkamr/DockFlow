@@ -63,6 +63,48 @@
 
 <h1 class="mb-5">ساحة التخزين</h1>
 
+<div class="row mb-4">
+    <div class="col-md-5">
+        <form method="GET" action="" class="d-flex flex-column">
+            <label for="search" class="form-label text-dark fw-bold">بحث عن حاوية:</label>
+            <div class="d-flex">
+                <input type="text" name="search" class="form-control" placeholder=" ابحث عن حاوية بإسم العميل او بالموقع ... "
+                    value="{{ request()->query('search') }}">
+                <button type="submit" class="btn btn-1 fw-bold ms-2">
+                    بحث
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <form method="GET" action="" class="d-flex flex-column">
+            <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
+            <div class="d-flex">
+                <select id="statusFilter" name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="all"
+                        {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
+                        جميع الحاويات</option>
+                    <option value="موجود" {{ request()->query('status') === 'موجود' ? 'selected' : '' }}>
+                        موجود</option>
+                    <option value="في الإنتظار" {{ request()->query('status') === 'في الإنتظار' ? 'selected' : '' }}>
+                        في الإنتظار</option>
+                    <option value="غير متوفر" {{ request()->query('status') === 'غير متوفر' ? 'selected' : '' }}>
+                        غير متوفر</option>
+                </select>
+                @if (request()->query('search'))
+                    <input type="hidden" name="search" value="{{ request()->query('search') }}">
+                @endif
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <a href="{{ route('admin.yard.add') }}" class="btn btn-1 w-100 fw-bold">
+            <i class="fa-solid fa-file-circle-plus pe-1"></i>
+            أضف حاوية
+        </a>
+    </div>
+</div>
+
 <div class="table-container">
     <table class="table table-striped">
         <thead>
