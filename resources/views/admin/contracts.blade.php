@@ -35,7 +35,7 @@
     .table tbody tr:hover {
         background-color: #f1f3f5;
     }
-    .table .status-completed {
+    .table .status-running {
         background-color: #fff3cd;
         color: #856404;
         padding: 5px 10px;
@@ -43,7 +43,7 @@
         font-size: 12px;
         display: inline-block;
     }
-    .table .status-running {
+    .table .status-completed {
         background-color: #d4edda;
         color: #155724;
         padding: 5px 10px;
@@ -100,7 +100,7 @@
     <div class="col-md-2 d-flex align-items-end">
         <a href="{{ route('admin.contracts.create') }}" class="btn btn-1 w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            أضف غقد
+            أضف عقد
         </a>
     </div>
 </div>
@@ -141,7 +141,7 @@
                         <td class="text-center">{{ $contract->expected_end_date }}</td>
                         <td class="text-center">{{ $contract->actual_end_date ?? 'لم ينتهي بعد' }}</td>
                         <td class="text-center">
-                            <div class="{{ $contract->status == 'جاري' ? 'status-running' : ($contract->status == 'منتهي' ? 'status-completed' : 'status-canceled') }}">
+                            <div class="{{ $contract->status == 'جاري' ? 'status-running' : ($contract->status == 'تم' ? 'status-completed' : 'status-canceled') }}">
                                 {{ $contract->status }}
                             </div>
                         </td>

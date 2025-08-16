@@ -68,7 +68,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder=" ابحث عن عقد بإسم العميل او بتاريخ العقد... "
+                <input type="text" name="search" class="form-control" placeholder=" ابحث عن فاتورة بإسم العميل او بتاريخ الفاتورة... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-1 fw-bold ms-2">
                     بحث
@@ -96,12 +96,6 @@
                 @endif
             </div>
         </form>
-    </div>
-    <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('admin.contracts.create') }}" class="btn btn-1 w-100 fw-bold">
-            <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            أضف غقد
-        </a>
     </div>
 </div>
 
