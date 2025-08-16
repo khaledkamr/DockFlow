@@ -100,21 +100,29 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
                     @if($remainingDays > 0 && $contract->status == 'جاري')
-                        <div class="col">
-                            <p class="text-danger">باقي {{ (int) $remainingDays }} ايام على انتهاء مدة العقد</p>
+                        <div class="row">
+                            <div class="col">
+                                <p class="text-danger">باقي {{ (int) $remainingDays }} ايام على انتهاء مدة العقد</p>
+                            </div>
                         </div>
                     @elseif($remainingDays < 0 && $contract->status == 'جاري')
-                        <div class="col">
-                            <p class="text-danger">انتهت مدة العقد منذ {{ abs((int) $remainingDays) }} ايام</p>
+                        <div class="row">
+                            <div class="col">
+                                <p class="text-danger">انتهت مدة العقد منذ {{ abs((int) $remainingDays) }} ايام</p>
+                            </div>
                         </div>
                     @elseif($remainingDays == 0 && $contract->status == 'جاري')
-                        <div class="col">
-                            <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>
+                        <div class="row">
+                            <div class="col">
+                                <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>
+                            </div>
                         </div>
+                    @elseif($contract->status == 'تم')
+                        <a class="btn btn-1 fw-bold">
+                            عــرض الـفاتــورة <i class="fas fa-scroll ps-1"></i>
+                        </a>
                     @endif
-                </div>
             </div>
         </div>
     </div>
@@ -212,9 +220,78 @@
     </button>
 @elseif($contract->status == 'تم')
     <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#exitPermission">
-        طباعة إذن خروج<i class="fas fa-scroll ps-1"></i>
+        طباعة إذن خروج <i class="fas fa-scroll ps-1"></i>
     </button>
 @endif
+
+<div class="modal fade" id="exitPermission" tabrindex="-1" aria-labelby="exitPermissionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إذن خـــروج</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.exitPermission.create') }}" method="POST">
+                @csrf
+                <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+                <div class="modal-body text-dark">
+                    <div class="row">
+                        <div class="col">
+                            <label class="text muted small">رقم العميل</label>
+                            <div class="fw-bold">#{{ $contract->user->id }}</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">إســم العميـــل</label>
+                            <div class="fw-bold">{{ $contract->user->name }}</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">رقم الهاتــف</label>
+                            <div class="fw-bold">{{ $contract->user->phone }}</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2 text-center">
+                        <div class="col-2 fw-bold">#</div>
+                        <div class="col fw-bold">كود</div>
+                        <div class="col fw-bold">فئة</div>
+                        <div class="col fw-bold">الموقع</div>
+                    </div>
+                    @foreach($contract->containers as $index => $container)
+                        <div class="row mb-2 text-center">
+                            <div class="col-2">{{ $index + 1 }}</div>
+                            <div class="col">{{ $container->code }}</div>
+                            <div class="col">{{ $container->containerType->name }}</div>
+                            <div class="col">{{ $container->location }}</div>
+                        </div>
+                    @endforeach
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <label class="text muted small">رقم الموظف</label>
+                            <div class="fw-bold">#23</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الموظف</label>
+                            <div class="fw-bold">علي رمضان</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الساعة</label>
+                            <div class="fw-bold">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">التاريخ</label>
+                            <div class="fw-bold">{{ \Carbon\Carbon::now()->format('Y-m-d') }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إالغاء</button>
+                    <button type="submit" class="btn btn-1">إنشاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -254,12 +331,12 @@
                             <div class="fw-bold">{{ $contract->user->id }}</div>
                         </div>
                         <div class="col">
-                            <label class="text muted small">الموظف</label>
-                            <div class="fw-bold">علي رمضان</div>
+                            <label class="text muted small">إســم العميـــل</label>
+                            <div class="fw-bold">{{ $contract->user->name }}</div>
                         </div>
                         <div class="col">
-                            <label class="text muted small">الساعة</label>
-                            <div class="fw-bold">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
+                            <label class="text muted small">الرقم الهاتــف</label>
+                            <div class="fw-bold">{{ $contract->user->phone }}</div>
                         </div>
                     </div>
                     <hr>
