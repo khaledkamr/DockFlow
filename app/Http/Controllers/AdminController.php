@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ContainerRequest;
 use App\Http\Requests\ContainerTypesRequest;
 use App\Http\Requests\ContractRequest;
+use App\Http\Requests\InvoiceRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Contract;
 use App\Models\Contract_container;
+use App\Models\invoice;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -190,12 +192,23 @@ class AdminController extends Controller
 
     public function contractDetails($id) {
         $contract = Contract::with('containers.containerType')->findOrFail($id);
-        // return $contract;
-        return view('admin.contractDetails', compact('contract'));
+        $remainingDays = Carbon::now()->diffInDays(Carbon::parse($contract->expected_end_date));
+        return view('admin.contractDetails', compact('contract', 'remainingDays'));
+    }
+
+    public function createInvoice(InvoiceRequest $request) {
+        $validated = $request->validated();
+        $contract = Contract::findOrFail($validated['contract_id']);
+        $contract->status = 'تم';
+        $contract->actual_end_date = $validated['invoice_date'];
+        $contract->save();
+        invoice::create($validated);
+        return redirect()->back()->with('success', 'تم إنشاء الفاتوره بنجاح');
     }
 
     public function invoices() {
-        return view('admin.invoices');
+        $invoices = invoice::orderBy('id', 'desc')->get();
+        return view('admin.invoices', compact('invoices'));
     }
 
     public function payments() {

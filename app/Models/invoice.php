@@ -8,6 +8,7 @@ class invoice extends Model
 {
     protected $fillable = [
         'contract_id', 
+        'invoice_date',
         'base_price', 
         'late_fee_total', 
         'tax_total', 

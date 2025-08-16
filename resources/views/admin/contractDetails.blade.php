@@ -22,6 +22,20 @@
     </div>
 </div>
 
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ session('success') }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if(session('errors'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>حدث خطأ في العملية!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="row">
     <div class="col-lg-8 mb-4">
         <div class="card shadow-sm border-0 rounded-3">
@@ -87,19 +101,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    @php
-                        use Carbon\Carbon;
-                        $remainingDays = Carbon::now()->diffInDays(Carbon::parse($contract->expected_end_date));
-                    @endphp
-                    @if($remainingDays > 0)
+                    @if($remainingDays > 0 && $contract->status == 'جاري')
                         <div class="col">
                             <p class="text-danger">باقي {{ (int) $remainingDays }} ايام على انتهاء مدة العقد</p>
                         </div>
-                    @elseif($remainingDays < 0)
+                    @elseif($remainingDays < 0 && $contract->status == 'جاري')
                         <div class="col">
                             <p class="text-danger">انتهت مدة العقد منذ {{ abs((int) $remainingDays) }} ايام</p>
                         </div>
-                    @else
+                    @elseif($remainingDays == 0 && $contract->status == 'جاري')
                         <div class="col">
                             <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>
                         </div>
@@ -125,7 +135,7 @@
                 <div class="mb-3">
                     <label class="text-muted small">رسوم التأخير</label>
                     @if($remainingDays < 0)
-                        <div class="h4 fw-bold">{{ number_format($contract->late_fee * abs($remainingDays), 2) }} ريال</div>
+                        <div class="h4 fw-bold">{{ number_format($contract->late_fee * (int) abs($remainingDays), 2) }} ريال</div>
                     @elseif($remainingDays > 0)
                         <div class="h4 fw-bold">0.00 ريال</div>
                     @endif
@@ -143,7 +153,7 @@
                     <label class="text-muted small">إجمالي المبلغ</label>
                     <div class="h4 fw-bold">
                         {{ number_format($contract->price
-                            + ($remainingDays < 0 ? $contract->late_fee * abs($remainingDays) : 0)
+                            + ($remainingDays < 0 ? $contract->late_fee * (int) abs($remainingDays) : 0)
                             + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0), 2) }} ريال
                     </div>
                 </div>
@@ -162,7 +172,7 @@
                 <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الحالـــة</th>
                 <th class="text-center bg-dark text-white">السعـر اليومـي</th>
-                <th class="text-center bg-dark text-white">تاريــخ الإنشــاء</th>
+                <th class="text-center bg-dark text-white">تاريــخ الدخــول</th>
             </tr>
         </thead>
         <tbody>
@@ -196,16 +206,15 @@
     </table>
 </div>
 
-<form action="" method="POST" class="mt-4">
-    @csrf
-    <input type="hidden" name="contract_id" value="{{ $contract->id }}">
-    <input type="hidden" name="remaining_days" value="{{ $remainingDays }}">
-    
-</form>
-
-<button type="button" class="btn btn-1 fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
-    إستخراج فاتورة <i class="fas fa-scroll ps-1"></i>
-</button>
+@if($contract->status == 'جاري')
+    <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#createInvoice">
+        إستخراج فاتورة <i class="fas fa-scroll ps-1"></i>
+    </button>
+@elseif($contract->status == 'تم')
+    <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#exitPermission">
+        طباعة إذن خروج<i class="fas fa-scroll ps-1"></i>
+    </button>
+@endif
 
 <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -214,16 +223,16 @@
                 <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إنهــاء العقـد و إنشــاء فــاتورة</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="" method="POST">
+            <form action="{{ route('admin.invoice.create') }}" method="POST">
                 @csrf
                 <input type="hidden" name="contract_id" value="{{ $contract->id }}">
-                <input type="hidden" name="invoice_date" value="{{ Carbon::now() }}">
+                <input type="hidden" name="invoice_date" value="{{ \Carbon\Carbon::now() }}">
                 <input type="hidden" name="base_price" value="{{ $contract->price }}">
-                <input type="hidden" name="late_fee_total" value="{{ $remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0 }}">
+                <input type="hidden" name="late_fee_total" value="{{ $remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0 }}">
                 <input type="hidden" name="tax_total" value="{{ ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0) }}">
                 <input type="hidden" name="grand_total" value="{{ $contract->price
                                                                     + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
-                                                                    + ($remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0) }}">
+                                                                    + ($remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0) }}">
                 <div class="modal-body text-dark">
                     <div class="row mb-2">
                         <div class="col">
@@ -236,13 +245,13 @@
                         </div>
                         <div class="col">
                             <label class="text muted small">الى</label>
-                            <div class="fw-bold">{{ Carbon::now()->format('Y-m-d') }}</div>
+                            <div class="fw-bold">{{ \Carbon\Carbon::now()->format('Y-m-d') }}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <label class="text muted small">العميل</label>
-                            <div class="fw-bold">{{ $contract->user->name }}</div>
+                            <label class="text muted small">رقم العميل</label>
+                            <div class="fw-bold">{{ $contract->user->id }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">الموظف</label>
@@ -250,7 +259,7 @@
                         </div>
                         <div class="col">
                             <label class="text muted small">الساعة</label>
-                            <div class="fw-bold">{{ Carbon::now()->format('H:i') }}</div>
+                            <div class="fw-bold">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
                         </div>
                     </div>
                     <hr>
@@ -270,23 +279,38 @@
                     @endforeach
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="fw-bold">مجموع</div>
+                        <div class="fw-bold">الإجمالي</div>
                         <div>{{ $contract->price }} ريال</div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold">ضريبة تأخير</div>
-                        <div>{{ number_format(($remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0), 2) }} ريال</div>
+                        <div>{{ number_format(($remainingDays < 0 ? abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال</div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="fw-bold">الضريبة المضافة</div>
+                        <div class="fw-bold">الضريبة المضافة(15%)</div>
                         <div>{{ number_format(($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0), 2) }} ريال</div>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="fw-bold">المجموع الكلي</div>
-                        <div>{{ number_format($contract->price
+                        <div class="fw-bold fs-5">إجمالي المبلغ</div>
+                        <div class="fs-5">{{ number_format($contract->price
                                 + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
-                                + ($remainingDays < 0 ? abs($remainingDay) * $contract->late_fee : 0), 2) }} ريال
+                                + ($remainingDays < 0 ? abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <label class="text muted small">رقم الموظف</label>
+                            <div class="fw-bold">#23</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الموظف</label>
+                            <div class="fw-bold">علي رمضان</div>
+                        </div>
+                        <div class="col">
+                            <label class="text muted small">الساعة</label>
+                            <div class="fw-bold">{{ \Carbon\Carbon::now()->format('H:i') }}</div>
                         </div>
                     </div>
                 </div>

@@ -23,5 +23,6 @@ Route::get('/admin/contracts', [AdminController::class, 'contracts'])->name('adm
 Route::get('/admin/contracts/create', [AdminController::class, 'createContract'])->name('admin.contracts.create');
 Route::post('/admin/contracts/store', [AdminController::class, 'storeContract'])->name('admin.contracts.store');
 Route::get('/admin/contracts/details/{id}', [AdminController::class, 'contractDetails'])->name('admin.contracts.details');
+Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
 Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');
 Route::get('/admin/payments', [AdminController::class, 'payments'])->name('admin.payments');
