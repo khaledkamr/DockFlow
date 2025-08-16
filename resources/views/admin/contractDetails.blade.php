@@ -100,19 +100,19 @@
                         </div>
                     </div>
                 </div>
-                    @if($remainingDays > 0 && $contract->status == 'جاري')
+                    @if((int) $remainingDays > 0 && $contract->status == 'جاري')
                         <div class="row">
                             <div class="col">
                                 <p class="text-danger">باقي {{ (int) $remainingDays }} ايام على انتهاء مدة العقد</p>
                             </div>
                         </div>
-                    @elseif($remainingDays < 0 && $contract->status == 'جاري')
+                    @elseif((int) $remainingDays < 0 && $contract->status == 'جاري')
                         <div class="row">
                             <div class="col">
                                 <p class="text-danger">انتهت مدة العقد منذ {{ abs((int) $remainingDays) }} ايام</p>
                             </div>
                         </div>
-                    @elseif($remainingDays == 0 && $contract->status == 'جاري')
+                    @elseif((int) $remainingDays == 0 && $contract->status == 'جاري')
                         <div class="row">
                             <div class="col">
                                 <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>

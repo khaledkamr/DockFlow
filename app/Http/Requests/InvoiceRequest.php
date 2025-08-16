@@ -29,6 +29,7 @@ class InvoiceRequest extends FormRequest
             'late_fee_total' => 'required|numeric',
             'tax_total' => 'required|numeric',
             'grand_total' => 'required|numeric',
+            'payment_method' => 'required'
         ];
     }
 }

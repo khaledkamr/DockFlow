@@ -25,7 +25,6 @@ class AdminController extends Controller
 
     public function userProfile($id) {
         $user = User::findOrFail($id);
-        // return $user->contracts;
         return view('admin.userProfile', compact('user'));
     }
 
