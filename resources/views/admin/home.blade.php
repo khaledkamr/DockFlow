@@ -3,21 +3,44 @@
 @section('title', 'dashboard')
 
 @section('content')
-    <h2>مرحباً بك في نظام إدارة المستودع</h2>
+    <h2 class="mb-4">مرحباً بك في نظام إدارة الساحــة</h2>
     <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">إجمالي المستخدمين</h5>
-                    <h2 class="text-primary">25</h2>
+        <div class="col">
+            <div class="card border-0 shadow-sm ps-3 pe-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">إجمالي العمـــلاء</h5>
+                        <h2 class="text-primary">{{ $users }}</h2>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-users fa-2xl"></i>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">إجمالي العقود</h5>
-                    <h2 class="text-success">12</h2>
+        <div class="col">
+            <div class="card border-0 shadow-sm ps-3 pe-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">إجمالي العقود</h5>
+                        <h2 class="text-primary">{{ $contracts }}</h2>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-file-circle-check fa-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-0 shadow-sm ps-3 pe-3">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">إجمالي الفواتير</h5>
+                        <h2 class="text-primary">{{ $contracts }}</h2>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-scroll fa-2xl"></i>
+                    </div>
                 </div>
             </div>
         </div>

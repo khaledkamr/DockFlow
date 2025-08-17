@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Models\Contract;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('admin.home');
+    $users = User::all()->count();
+    $contracts = Contract::all()->count();
+    return view('admin.home', compact('users', 'contracts'));
 })->name('admin.home');
 
 Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
@@ -27,4 +31,5 @@ Route::get('/admin/contracts/details/{id}', [AdminController::class, 'contractDe
 Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
 Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');
 Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');
-Route::get('/admin/payments', [AdminController::class, 'payments'])->name('admin.payments');
+Route::get('/admin/tree', [AdminController::class, 'tree'])->name('admin.tree');
+Route::post('/admin/tree/create/root', [AdminController::class, 'createRoot'])->name('admin.create.root');

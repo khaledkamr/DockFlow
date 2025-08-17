@@ -6,7 +6,9 @@ use App\Http\Requests\ContainerRequest;
 use App\Http\Requests\ContainerTypesRequest;
 use App\Http\Requests\ContractRequest;
 use App\Http\Requests\InvoiceRequest;
+use App\Http\Requests\RootRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\Account;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Contract;
@@ -225,7 +227,15 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء إذن خروج للحاويات');
     }
 
-    public function payments() {
-        return view('admin.payments');
+    public function tree() {
+        $accounts = Account::where('parent_id', null)->get();
+        return view('admin.tree', compact('accounts'));
+    }
+
+    public function createRoot(RootRequest $request) {
+        $validated = $request->validated();
+        $name = $validated['name'];
+        Account::create($validated);
+        return redirect()->back()->with('success', "تم إنشاء الفرع $name بنجاح");
     }
 }

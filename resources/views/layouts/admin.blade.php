@@ -14,6 +14,22 @@
             color: #ffffff;
             background: #10d5bf;
         }
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 0; /* Prevent horizontal scrollbar */
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212 !important;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10d5bf !important;
+            /* color: #00246171; */
+            cursor: grab;
+            transition: 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0eb39f;
+        }
         :root {
             --primary-color: #10d5bf;
             --secondary-color: #0ec5a9;
@@ -197,8 +213,8 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link fw-bold {{ request()->routeIs('admin.payments') ? 'active' : '' }}" href="{{ route('admin.payments') }}">
-                    <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> المدفـــوعـــــــــات
+                <a class="nav-link fw-bold {{ request()->routeIs('admin.tree') ? 'active' : '' }}" href="{{ route('admin.tree') }}">
+                    <i class="fa-solid fa-folder-tree ms-2 me-2"></i> شجــرة الحسابـــات
                 </a>
             </li>
         </ul>
