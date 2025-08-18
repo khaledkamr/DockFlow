@@ -57,7 +57,7 @@
                             <input type="hidden" name="level" value={{ $child->level + 1 }}>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إالغاء</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                             <button type="submit" class="btn btn-1">إنشاء</button>
                         </div>
                     </form>

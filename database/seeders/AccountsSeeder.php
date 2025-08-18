@@ -10,7 +10,7 @@ class AccountsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Level 1 Roots (من account_types مباشرة)
+        // Level 1 Roots
         $roots = [
             ['name' => 'الأصول',   'code' => '1', 'type_id' => 1],
             ['name' => 'الخصوم',   'code' => '2', 'type_id' => 2],
@@ -19,7 +19,7 @@ class AccountsSeeder extends Seeder
         ];
 
         foreach ($roots as $root) {
-            $rootAccount = Account::create([
+            Account::create([
                 'name'      => $root['name'],
                 'code'      => $root['code'],
                 'type_id'   => $root['type_id'],
@@ -27,46 +27,79 @@ class AccountsSeeder extends Seeder
                 'level'     => 1,
                 'is_active' => true,
             ]);
-
-            // // Level 2
-            // $sub1 = Account::create([
-            //     'name'      => $root['name'].' متداولة',
-            //     'code'      => $root['code'].'1',
-            //     'type_id'   => $root['type_id'],
-            //     'parent_id' => $rootAccount->id,
-            //     'level'     => 2,
-            //     'is_active' => true,
-            // ]);
-
-            // // Level 3
-            // $sub2 = Account::create([
-            //     'name'      => $root['name'].' فرعي',
-            //     'code'      => $root['code'].'11',
-            //     'type_id'   => $root['type_id'],
-            //     'parent_id' => $sub1->id,
-            //     'level'     => 3,
-            //     'is_active' => true,
-            // ]);
-
-            // // Level 4
-            // $sub3 = Account::create([
-            //     'name'      => $root['name'].' تفصيلي',
-            //     'code'      => $root['code'].'111',
-            //     'type_id'   => $root['type_id'],
-            //     'parent_id' => $sub2->id,
-            //     'level'     => 4,
-            //     'is_active' => true,
-            // ]);
-
-            // // Level 5
-            // Account::create([
-            //     'name'      => $root['name'].' جزئي',
-            //     'code'      => $root['code'].'1111',
-            //     'type_id'   => $root['type_id'],
-            //     'parent_id' => $sub3->id,
-            //     'level'     => 5,
-            //     'is_active' => true,
-            // ]);
         }
+
+        // level 2
+        $roots = [
+            ['name' => 'اصول متداولة', 'code' => '101', 'type_id' => 1, 'parent_id' => 1],
+            ['name' => 'اصول متداولة', 'code' => '102', 'type_id' => 1, 'parent_id' => 1],
+            ['name' => 'اصول متداولة', 'code' => '103', 'type_id' => 1, 'parent_id' => 1],
+            ['name' => 'خصوم قصيرة الأجل', 'code' => '201', 'type_id' => 2, 'parent_id' => 2],
+            ['name' => 'خصوم طويلة الأجل', 'code' => '202', 'type_id' => 2, 'parent_id' => 2],
+            ['name' => 'أرصدة دائنة اخرى', 'code' => '203', 'type_id' => 2, 'parent_id' => 2],
+            ['name' => 'حقوق الملكية', 'code' => '204', 'type_id' => 2, 'parent_id' => 2],
+            ['name' => 'المصروفات', 'code' => '301', 'type_id' => 3, 'parent_id' => 3],
+        ];
+
+        foreach($roots as $root) {
+            Account::create([
+                'name'      => $root['name'],
+                'code'      => $root['code'],
+                'type_id'   => $root['type_id'],
+                'parent_id' => $root['parent_id'],
+                'level'     => 2,
+                'is_active' => true
+            ]);
+        };
+
+        // level 3
+        $roots = [
+            ['name' => 'المصروفات', 'code' => '30101', 'type_id' => 3, 'parent_id' => 12],
+        ];
+
+        foreach($roots as $root) {
+            Account::create([
+                'name'      => $root['name'],
+                'code'      => $root['code'],
+                'type_id'   => $root['type_id'],
+                'parent_id' => $root['parent_id'],
+                'level'     => 3,
+                'is_active' => true
+            ]);
+        };
+
+        // level 4
+        $roots = [
+            ['name' => 'مصاريف التشغيل', 'code' => '3010101', 'type_id' => 3, 'parent_id' => 13],
+            ['name' => 'المصاريف العمومية', 'code' => '3010102', 'type_id' => 3, 'parent_id' => 13],
+        ];
+
+        foreach($roots as $root) {
+            Account::create([
+                'name'      => $root['name'],
+                'code'      => $root['code'],
+                'type_id'   => $root['type_id'],
+                'parent_id' => $root['parent_id'],
+                'level'     => 4,
+                'is_active' => true
+            ]);
+        };
+
+        // level 5 
+        $roots = [
+            ['name' => 'محروقات', 'code' => '30101010001', 'type_id' => 3, 'parent_id' => 14],
+            ['name' => 'رواتب و اجور', 'code' => '30101020001', 'type_id' => 3, 'parent_id' => 15],
+        ];
+
+        foreach($roots as $root) {
+            Account::create([
+                'name'      => $root['name'],
+                'code'      => $root['code'],
+                'type_id'   => $root['type_id'],
+                'parent_id' => $root['parent_id'],
+                'level'     => 5,
+                'is_active' => true
+            ]);
+        };
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\ContractRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Http\Requests\RootRequest;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\VoucherRequest;
 use App\Models\Account;
 use App\Models\Container;
 use App\Models\Container_type;
@@ -15,6 +16,7 @@ use App\Models\Contract;
 use App\Models\Contract_container;
 use App\Models\invoice;
 use App\Models\User;
+use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -237,5 +239,56 @@ class AdminController extends Controller
         $name = $validated['name'];
         Account::create($validated);
         return redirect()->back()->with('success', "تم إنشاء الفرع $name بنجاح");
+    }
+
+    public function entries() {
+        $accounts = Account::where('level', 5)->get();
+        $vouchers = Voucher::all();
+        if(request()->query('view', 'قيود يومية') == 'قيود يومية') {
+
+        }
+        elseif(request()->query('view') == 'سند قبض نقدي') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'payment_cash';
+            });
+        }
+        elseif(request()->query('view') == 'سند قبض بشيك') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'payment_cheque';
+            });
+        }
+        elseif(request()->query('view') == 'سند صرف نقدي') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'receipt_cash';
+            });
+        }
+        elseif(request()->query('view') == 'سند صرف بشيك') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'receipt_cheque';
+            });
+        }
+        elseif(request()->query('view') == 'الصندوق') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'receipt_cash' || $voucher->type == 'payment_cash';
+            });
+        }
+        
+        $sum = 0;
+        return view('admin.entries', compact('accounts', 'vouchers', 'sum'));
+    }
+
+    public function createVoucher(VoucherRequest $request) {
+        $code = $request->account_code;
+        $validated = $request->validated();
+        $account = Account::where('code', $code)->first();
+        $validated['account_id'] = $account->id;
+        Voucher::create($validated);
+        return redirect()->back()->with('success', 'تم إنشاء سند بنجاح');
+    }
+
+    public function deleteVoucher($id) {
+        $voucher = Voucher::findOrFail($id);
+        $voucher->delete();
+        return redirect()->back()->with('success', 'تم حذف السند بنجاح');
     }
 }

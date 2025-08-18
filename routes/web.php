@@ -31,5 +31,8 @@ Route::get('/admin/contracts/details/{id}', [AdminController::class, 'contractDe
 Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
 Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');
 Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');
-Route::get('/admin/tree', [AdminController::class, 'tree'])->name('admin.tree');
-Route::post('/admin/tree/create/root', [AdminController::class, 'createRoot'])->name('admin.create.root');
+Route::get('/admin/money/tree', [AdminController::class, 'tree'])->name('admin.money.tree');
+Route::post('/admin/money/tree/create/root', [AdminController::class, 'createRoot'])->name('admin.create.root');
+Route::get('admin/money/entries', [AdminController::class, 'entries'])->name('admin.money.entries');
+Route::post('admin/money/entries/create/voucher', [AdminController::class, 'createVoucher'])->name('admin.create.voucher');
+Route::delete('admin/money/entries/delete/{id}', [AdminController::class, 'deleteVoucher'])->name('admin.delete.voucher');

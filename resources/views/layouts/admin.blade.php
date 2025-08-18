@@ -207,16 +207,36 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.money*']) ? 'expanded' : '' }}" 
+                   data-bs-toggle="collapse" 
+                   href="#money-management" 
+                   role="button" 
+                   aria-expanded="{{ request()->routeIs(['admin.money*']) ? 'true' : 'false' }}" 
+                   aria-controls="money-management"
+                   onclick="toggleSubmenu(this, event)">
+                    <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> الإدارة المـــاليــــة 
+                </a>
+                <div class="collapse sub-menu {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
+                    <a class="nav-link fw-bold {{ request()->routeIs('admin.money.entries') ? 'active' : '' }}" href="{{ route('admin.money.entries') }}">
+                        <i class="fa-solid fa-money-bill-transfer ms-3 me-2"></i> القيــــــود
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('admin.money.tree') ? 'active' : '' }}" href="{{ route('admin.money.tree') }}">
+                        <i class="fa-solid fa-folder-tree ms-3 me-2"></i> شجــــرة الحسابـــات
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link fw-bold {{ request()->routeIs('admin.invoices') ? 'active' : '' }}" href="{{ route('admin.invoices') }}">
                     <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــــــواتيــــــــــر
                 </a>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link fw-bold {{ request()->routeIs('admin.tree') ? 'active' : '' }}" href="{{ route('admin.tree') }}">
                     <i class="fa-solid fa-folder-tree ms-2 me-2"></i> شجــرة الحسابـــات
                 </a>
-            </li>
+            </li> --}}
         </ul>
     </div>
     
