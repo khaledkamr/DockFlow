@@ -20,7 +20,17 @@
                     </td>
                 </tr>
             @else
+                @php
+                    $balance = 0;
+                @endphp
                 @foreach ($vouchers as $voucher)
+                    @php
+                        if ($voucher->type === 'payment_cash') {
+                            $balance += $voucher->amount;
+                        } else { 
+                            $balance -= $voucher->amount;
+                        }
+                    @endphp
                     <tr>
                         <td class="text-center">{{ $voucher->code }}</td>
                         <td class="text-center">{{ $voucher->type }}</td>
@@ -29,7 +39,7 @@
                         <td class="text-center">{{ $voucher->date }}</td>
                         <td class="text-center text-success fw-bold">{{ $voucher->type == 'receipt_cash' ?  (int) $voucher->amount : '0.00' }}</td>
                         <td class="text-center text-success fw-bold">{{ $voucher->type == 'payment_cash' ?  (int) $voucher->amount : '0.00' }}</td>
-                        <td class="text-center text-success fw-bold">{{ $voucher->type == 'receipt_cash' ? $sum - $voucher->amount : $sum + $voucher->amount }}</td>
+                        <td class="text-center text-success fw-bold">{{ $balance }}</td>
                     </tr>
 
                     <div class="modal fade" id="post{{ $voucher->id }}" tabindex="-1" aria-labelledby="postLabel{{ $voucher->id }}" aria-hidden="true">
