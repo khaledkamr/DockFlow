@@ -20,17 +20,7 @@
                     </td>
                 </tr>
             @else
-                @php
-                    $balance = 0;
-                @endphp
                 @foreach ($vouchers as $voucher)
-                    @php
-                        if ($voucher->type === 'payment_cash') {
-                            $balance += $voucher->amount;
-                        } else { 
-                            $balance -= $voucher->amount;
-                        }
-                    @endphp
                     <tr>
                         <td class="text-center">{{ $voucher->code }}</td>
                         <td class="text-center">{{ $voucher->type }}</td>

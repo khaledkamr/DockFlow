@@ -244,10 +244,20 @@ class AdminController extends Controller
     public function entries() {
         $accounts = Account::where('level', 5)->get();
         $vouchers = Voucher::all();
-        if(request()->query('view', 'قيود يومية') == 'قيود يومية') {
 
+        $balance = 0;
+        $vouchersBox = $vouchers->filter(function($voucher) {
+            return $voucher->type == 'receipt_cash' || $voucher->type == 'payment_cash';
+        });
+        foreach($vouchersBox as $voucher) {
+            if($voucher->type == 'payment_cash') {
+                $balance += $voucher->amount;
+            } else {
+                $balance -= $voucher->amount;
+            }
         }
-        elseif(request()->query('view') == 'سند قبض نقدي') {
+        
+        if(request()->query('view') == 'سند قبض نقدي') {
             $vouchers = $vouchers->filter(function($voucher) {
                 return $voucher->type == 'payment_cash';
             });
@@ -273,8 +283,8 @@ class AdminController extends Controller
             });
         }
         
-        $sum = 0;
-        return view('admin.entries', compact('accounts', 'vouchers', 'sum'));
+        
+        return view('admin.entries', compact('accounts', 'vouchers', 'balance'));
     }
 
     public function createVoucher(VoucherRequest $request) {

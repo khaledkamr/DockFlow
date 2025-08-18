@@ -234,7 +234,7 @@
         <a class="nav-link {{ request()->query('view') === 'سند صرف بشيك' ? 'active' : '' }}" href="?view=سند صرف بشيك">سند صرف بشيك</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'الصندوق' ? 'active' : '' }}" href="?view=الصندوق">الصندوق</a>
+        <a class="nav-link {{ request()->query('view') === 'الصندوق' ? 'active' : '' }}" href="?view=الصندوق">الصندوق ({{ $balance }})</a>
     </li>
 </ul>
 
