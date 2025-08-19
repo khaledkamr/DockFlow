@@ -32,8 +32,8 @@ class AccountsSeeder extends Seeder
         // level 2
         $roots = [
             ['name' => 'اصول متداولة', 'code' => '101', 'type_id' => 1, 'parent_id' => 1],
-            ['name' => 'اصول متداولة', 'code' => '102', 'type_id' => 1, 'parent_id' => 1],
-            ['name' => 'اصول متداولة', 'code' => '103', 'type_id' => 1, 'parent_id' => 1],
+            ['name' => 'اصول ثابتة', 'code' => '102', 'type_id' => 1, 'parent_id' => 1],
+            ['name' => 'ارصدة مدينة اخرى', 'code' => '103', 'type_id' => 1, 'parent_id' => 1],
             ['name' => 'خصوم قصيرة الأجل', 'code' => '201', 'type_id' => 2, 'parent_id' => 2],
             ['name' => 'خصوم طويلة الأجل', 'code' => '202', 'type_id' => 2, 'parent_id' => 2],
             ['name' => 'أرصدة دائنة اخرى', 'code' => '203', 'type_id' => 2, 'parent_id' => 2],
