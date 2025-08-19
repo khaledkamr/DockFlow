@@ -6,6 +6,7 @@ use App\Http\Requests\ContainerRequest;
 use App\Http\Requests\ContainerTypesRequest;
 use App\Http\Requests\ContractRequest;
 use App\Http\Requests\InvoiceRequest;
+use App\Http\Requests\JournalRequest;
 use App\Http\Requests\RootRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\VoucherRequest;
@@ -290,8 +291,46 @@ class AdminController extends Controller
         return view('admin.entries', compact('accounts', 'vouchers', 'balance', 'journals'));
     }
 
-    public function createJournal(Request $request) {
-        return $request;
+    public function createJournal(JournalRequest $request) {
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        foreach ($request->account_id as $index => $accountId) {
+            if (!$accountId || !$request->account_code[$index]) {
+                return redirect()->back()->with('error', 'جميع الحسابات مطلوبة');
+            }
+
+            $debit = floatval($request->debit[$index] ?? 0);
+            $credit = floatval($request->credit[$index] ?? 0);
+
+            $totalDebit += $debit;
+            $totalCredit += $credit;
+
+            if ($debit > 0 && $credit > 0) {
+                return redirect()->back()->with('error', 'لا يمكن إدخال مدين ودائن في نفس السطر');
+            }
+        }
+
+        if ($totalDebit != $totalCredit) {
+            return redirect()->back()->with('error', 'القيد غير متزن يجب أن يتساوى مجموع المدين مع مجموع الدائن');
+        }
+        
+        $journalEntry = JournalEntry::create([
+            'code' => $request->code,
+            'date' => $request->date,
+        ]);
+
+        foreach ($request->account_id as $index => $accountId) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journalEntry->id,
+                'account_id'       => $accountId,
+                'debit'            => $request->debit[$index],
+                'credit'           => $request->credit[$index],
+                'description'      => $request->description[$index],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
     }
 
     public function createVoucher(VoucherRequest $request) {
