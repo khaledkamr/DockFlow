@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('journal_entries', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->date('date');
-            $table->string('description');
             $table->foreignId('voucher_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

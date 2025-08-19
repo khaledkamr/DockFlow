@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->enum('type', ['receipt_cash', 'receipt_check', 'payment_cash', 'payment_check']);
+            $table->enum('type', ['سند قبض نقدي', 'سند قبض بشيك', 'سند صرف نقدي', 'سند صرف بشيك']);
             $table->date('date');
             $table->decimal('amount', 15, 2);
             $table->string('hatching')->nullable();

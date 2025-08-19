@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class JournalEntry extends Model
 {
     protected $fillable = [
+        'code',
         'voucher_id', 
         'date',
-        'description'
     ];
 
     public function lines() {
