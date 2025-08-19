@@ -250,45 +250,47 @@ class AdminController extends Controller
         $journals = JournalEntry::all();
 
         $balance = 0;
+        $balanceArray = [];
         $vouchersBox = $vouchers->filter(function($voucher) {
-            return $voucher->type == 'receipt_cash' || $voucher->type == 'payment_cash';
+            return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
         });
         foreach($vouchersBox as $voucher) {
             if($voucher->type == 'payment_cash') {
                 $balance += $voucher->amount;
+                $balanceArray[] = $balance;
             } else {
                 $balance -= $voucher->amount;
+                $balanceArray[] = $balance;
             }
         }
         
         if(request()->query('view') == 'سند قبض نقدي') {
             $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'payment_cash';
+                return $voucher->type == 'سند قبض نقدي';
             });
         }
         elseif(request()->query('view') == 'سند قبض بشيك') {
             $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'payment_cheque';
+                return $voucher->type == 'سند قبض بشيك';
             });
         }
         elseif(request()->query('view') == 'سند صرف نقدي') {
             $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'receipt_cash';
+                return $voucher->type == 'سند صرف نقدي';
             });
         }
         elseif(request()->query('view') == 'سند صرف بشيك') {
             $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'receipt_cheque';
+                return $voucher->type == 'سند صرف بشيك';
             });
         }
         elseif(request()->query('view') == 'الصندوق') {
             $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'receipt_cash' || $voucher->type == 'payment_cash';
+                return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
             });
         }
         
-        
-        return view('admin.entries', compact('accounts', 'vouchers', 'balance', 'journals'));
+        return view('admin.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray'));
     }
 
     public function createJournal(JournalRequest $request) {

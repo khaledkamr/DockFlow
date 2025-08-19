@@ -4,15 +4,15 @@
         <div class="col">
             <label for="type" class="form-label">نوع السنــد</label>
             <select id="type" name="type" class="form-select" style="width:100%;">
-                <option value="receipt_cash">سند صرف نقدي</option>
-                <option value="receipt_cheque">سند صرف بشيك</option>
-                <option value="payment_cash">سند قبض نقدي</option>
-                <option value="payment_cheque">سند قبض بشيك</option>
+                <option value="سند صرف نقدي">سند صرف نقدي</option>
+                <option value="سند صرف بشيك">سند صرف بشيك</option>
+                <option value="سند قبض نقدي">سند قبض نقدي</option>
+                <option value="سند قبض بشيك">سند قبض بشيك</option>
             </select>
         </div>
         <div class="col">
             <label for="date" class="form-label">التاريــخ</label>
-            <input type="date" class="form-control" id="date" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" disabled>
+            <input type="date" class="form-control" id="date" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
             @error('date')
                 <div class="text-danger">{{ $message }}</div>
             @endif

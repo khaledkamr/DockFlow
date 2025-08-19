@@ -20,16 +20,16 @@
                     </td>
                 </tr>
             @else
-                @foreach ($vouchers as $voucher)
+                @foreach ($vouchers as $i => $voucher)
                     <tr>
                         <td class="text-center">{{ $voucher->code }}</td>
                         <td class="text-center">{{ $voucher->type }}</td>
                         <td class="text-center">{{ $voucher->account->name }}</td>
                         <td class="text-center">{{ $voucher->account->code }}</td>
                         <td class="text-center">{{ $voucher->date }}</td>
-                        <td class="text-center text-success fw-bold">{{ $voucher->type == 'receipt_cash' ?  (int) $voucher->amount : '0.00' }}</td>
-                        <td class="text-center text-success fw-bold">{{ $voucher->type == 'payment_cash' ?  (int) $voucher->amount : '0.00' }}</td>
-                        <td class="text-center text-success fw-bold">{{ $balance }}</td>
+                        <td class="text-center text-success fw-bold">{{ $voucher->type == 'سند صرف نقدي' ?  (int) $voucher->amount : '0.00' }}</td>
+                        <td class="text-center text-success fw-bold">{{ $voucher->type == 'سند قبض نقدي' ?  (int) $voucher->amount : '0.00' }}</td>
+                        <td class="text-center text-success fw-bold">{{ $balanceArray[$i] }}</td>
                     </tr>
 
                     <div class="modal fade" id="post{{ $voucher->id }}" tabindex="-1" aria-labelledby="postLabel{{ $voucher->id }}" aria-hidden="true">
