@@ -15,6 +15,8 @@ use App\Models\Container_type;
 use App\Models\Contract;
 use App\Models\Contract_container;
 use App\Models\invoice;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryLine;
 use App\Models\User;
 use App\Models\Voucher;
 use Carbon\Carbon;
@@ -244,6 +246,7 @@ class AdminController extends Controller
     public function entries() {
         $accounts = Account::where('level', 5)->get();
         $vouchers = Voucher::all();
+        $journals = JournalEntry::all();
 
         $balance = 0;
         $vouchersBox = $vouchers->filter(function($voucher) {
@@ -284,7 +287,11 @@ class AdminController extends Controller
         }
         
         
-        return view('admin.entries', compact('accounts', 'vouchers', 'balance'));
+        return view('admin.entries', compact('accounts', 'vouchers', 'balance', 'journals'));
+    }
+
+    public function createJournal(Request $request) {
+        return $request;
     }
 
     public function createVoucher(VoucherRequest $request) {

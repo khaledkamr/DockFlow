@@ -36,3 +36,4 @@ Route::post('/admin/money/tree/create/root', [AdminController::class, 'createRoo
 Route::get('admin/money/entries', [AdminController::class, 'entries'])->name('admin.money.entries');
 Route::post('admin/money/entries/create/voucher', [AdminController::class, 'createVoucher'])->name('admin.create.voucher');
 Route::delete('admin/money/entries/delete/{id}', [AdminController::class, 'deleteVoucher'])->name('admin.delete.voucher');
+Route::post('admin/money/entries/create/journal', [AdminController::class, 'createJournal'])->name('admin.create.journal');

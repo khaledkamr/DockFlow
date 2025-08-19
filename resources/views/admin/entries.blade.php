@@ -75,145 +75,9 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
-<form action="{{ route('admin.create.voucher') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
-    @csrf
-    <div class="row mb-3">
-        <div class="col">
-            <label for="date" class="form-label">الشركة</label>
-            <input type="date" class="form-control" id="date" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-            @error('date')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col">
-            <label for="date" class="form-label">رقم القيد</label>
-            <input type="date" class="form-control" id="date" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-            @error('date')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col">
-            <label for="code" class="form-label">تاريخ القيد</label>
-            <input type="text" class="form-control" id="code" name="code" value="">
-            @error('code')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3">
-            <label for="amount" class="form-label">رقم الحساب</label>
-            <input type="text" class="form-control" id="amount" name="amount" value="">
-            @error('amount')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col">
-            <label for="hatching" class="form-label">إسم الحساب</label>
-            <input type="text" class="form-control" id="hatching" name="hatching" value="">
-            @error('hatching')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col-1">
-            <label for="hatching" class="form-label">مدين</label>
-            <input type="text" class="form-control" id="hatching" name="hatching" value="">
-            @error('hatching')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col-1">
-            <label for="hatching" class="form-label">دائن</label>
-            <input type="text" class="form-control" id="hatching" name="hatching" value="">
-            @error('hatching')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col">
-            <label for="hatching" class="form-label">البيان</label>
-            <input type="text" class="form-control" id="hatching" name="hatching" value="">
-            @error('hatching')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-    </div>
-    
-    <button type="submit" class="btn btn-primary fw-bold mt-2">إضافة قيد</button>
-</form>
+    @include('admin.vouchers.journal_form')
 @else
-<form action="{{ route('admin.create.voucher') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
-    @csrf
-    <div class="row mb-3">
-        <div class="col">
-            <label for="type" class="form-label">نوع السنــد</label>
-            <select id="type" name="type" class="form-select" style="width:100%;">
-                <option value="receipt_cash">سند صرف نقدي</option>
-                <option value="receipt_cheque">سند صرف بشيك</option>
-                <option value="payment_cash">سند قبض نقدي</option>
-                <option value="payment_cheque">سند قبض بشيك</option>
-            </select>
-        </div>
-        <div class="col">
-            <label for="date" class="form-label">التاريــخ</label>
-            <input type="date" class="form-control" id="date" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-            @error('date')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col">
-            <label for="code" class="form-label">رقم السنــد </label>
-            <input type="text" class="form-control" id="code" name="code" value="">
-            @error('code')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col">
-            <label for="account_name">اسم الحساب</label>
-            <select id="account_name" class="form-select" style="width:100%;">
-                <option value="">-- اختر الحساب --</option>
-                @foreach($accounts as $account)
-                    <option value="{{ $account->id }}" data-code="{{ $account->code }}">
-                        {{ $account->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col">
-            <label for="account_code" class="form-label">رقم الحســاب</label>
-            <input type="text" class="form-control" id="account_code" name="account_code" value="">
-            @error('account_code')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-3">
-            <label for="amount" class="form-label">المبلــغ</label>
-            <input type="text" class="form-control" id="amount" name="amount" value="">
-            @error('amount')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        <div class="col-9">
-            <label for="hatching" class="form-label">التفقيـــط</label>
-            <input type="text" class="form-control" id="hatching" name="hatching" value="">
-            @error('hatching')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col">
-            <label for="description" class="form-label">البيـــان</label>
-            <input type="text" class="form-control" id="description" name="description" value="">
-            @error('description')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
-        
-    </div>
-    <button type="submit" class="btn btn-primary fw-bold mt-2">إضافة سند</button>
-</form>
+    @include('admin.vouchers.voucher_form')
 @endif
 
 
@@ -363,20 +227,16 @@
 
 <style>
     .select2-container .select2-selection {
-        height: 38px;       /* زي input العادي */
-        border-radius: 8px; /* زوايا دائرية */
+        height: 38px;       
+        border-radius: 8px; 
         border: 1px solid #d7dde4;
         padding: 5px;
-        margin-top: 7px;
     }
     .select2-container .select2-selection__rendered {
-        line-height: 30px; /* يظبط النص في النص */
+        line-height: 30px; 
     }
     /* .select2-container .select2-selection__arrow {
         height: 100%; /* يخلي السهم في النص */
     } */
-
-    
 </style>
-
 @endsection
