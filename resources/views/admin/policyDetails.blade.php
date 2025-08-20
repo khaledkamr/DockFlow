@@ -7,7 +7,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">تفاصيل العقد #{{ $contract->id }}</h2>
+            <h2 class="mb-0">تفاصيل العقد #{{ $policy->id }}</h2>
             <div>
                 <button class="btn btn-1 me-2 fw-bold" onclick="downloadContract()">
                     <i class="fas fa-download me-1"></i>
@@ -49,31 +49,31 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label class="text-muted small">رقم العقد</label>
-                        <div class="fw-bold">#{{ $contract->id }}</div>
+                        <div class="fw-bold">#{{ $policy->id }}</div>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="text-muted small">حالة العقد</label>
-                        <div class="fw-bold">{{ $contract->status }}</div>
+                        <div class="fw-bold">{{ $policy->status }}</div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col mb-3">
                         <label class="text-muted small">العميل</label>
-                        <div class="fw-bold">{{ $contract->user->name }}</div>
+                        <div class="fw-bold">{{ $policy->customer->name }}</div>
                     </div>
                     <div class="col mb-3">
-                        <label class="text-muted small">رقم الهوية الوطنية</label>
-                        <div class="fw-bold">{{ $contract->user->NID }}</div>
+                        <label class="text-muted small">رقم السجل الوطني الضريبي</label>
+                        <div class="fw-bold">{{ $policy->customer->CR }}</div>
                     </div>
                     <div class="col mb-3">
                         <label class="text-muted small">رقم الهاتف</label>
-                        <div class="fw-bold">{{ $contract->user->phone }}</div>
+                        <div class="fw-bold">{{ $policy->customer->phone }}</div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col mb-3">
                         <label class="text-muted small">الشركة</label>
-                        <div class="fw-bold">ساحة تخزين</div>
+                        <div class="fw-bold">شركة تاج الأعمال للخدمات اللوجستية</div>
                     </div>
                     <div class="col mb-3">
                         <label class="text-muted small">إســم الفــرع</label>
@@ -87,42 +87,42 @@
                 <div class="row">
                     <div class="col mb-3">
                         <label class="text-muted small">تاريخ البدء</label>
-                        <div class="fw-bold">{{ \Carbon\Carbon::parse($contract->start_date)->format('Y-m-d') }}</div>
+                        <div class="fw-bold">{{ \Carbon\Carbon::parse($policy->start_date)->format('Y-m-d') }}</div>
                     </div>
                     <div class="col mb-3">
                         <label class="text-muted small">التاريخ المتوقع للانتهاء</label>
-                        <div class="fw-bold">{{ \Carbon\Carbon::parse($contract->expected_end_date)->format('Y-m-d') }}</div>
+                        <div class="fw-bold">{{ \Carbon\Carbon::parse($policy->expected_end_date)->format('Y-m-d') }}</div>
                     </div>
                     <div class="col mb-3">
                         <label class="text-muted small">التاريخ الفعلي للانتهاء</label>
                         <div class="fw-bold">
-                            {{ $contract->actual_end_date ? \Carbon\Carbon::parse($contract->actual_end_date)->format('Y-m-d') : 'لم ينته بعد' }}
+                            {{ $policy->actual_end_date ? \Carbon\Carbon::parse($policy->actual_end_date)->format('Y-m-d') : 'لم ينته بعد' }}
                         </div>
                     </div>
                 </div>
-                    @if((int) $remainingDays > 0 && $contract->status == 'جاري')
-                        <div class="row">
-                            <div class="col">
-                                <p class="text-danger">باقي {{ (int) $remainingDays }} ايام على انتهاء مدة العقد</p>
-                            </div>
+                @if((int) $remainingDays > 0 && $policy->status == 'جاري')
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-danger">باقي {{ (int) $remainingDays }} ايام على انتهاء مدة العقد</p>
                         </div>
-                    @elseif((int) $remainingDays < 0 && $contract->status == 'جاري')
-                        <div class="row">
-                            <div class="col">
-                                <p class="text-danger">انتهت مدة العقد منذ {{ abs((int) $remainingDays) }} ايام</p>
-                            </div>
+                    </div>
+                @elseif((int) $remainingDays < 0 && $policy->status == 'جاري')
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-danger">انتهت مدة العقد منذ {{ abs((int) $remainingDays) }} ايام</p>
                         </div>
-                    @elseif((int) $remainingDays == 0 && $contract->status == 'جاري')
-                        <div class="row">
-                            <div class="col">
-                                <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>
-                            </div>
+                    </div>
+                @elseif((int) $remainingDays == 0 && $policy->status == 'جاري')
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-danger">اليوم هو آخر يوم في مدة العقد</p>
                         </div>
-                    @elseif($contract->status == 'منتهي')
-                        <a class="btn btn-1 fw-bold">
-                            عــرض الـفاتــورة <i class="fas fa-scroll ps-1"></i>
-                        </a>
-                    @endif
+                    </div>
+                @elseif($policy->status == 'منتهي')
+                    <a class="btn btn-1 fw-bold">
+                        عــرض الـفاتــورة <i class="fas fa-scroll ps-1"></i>
+                    </a>
+                @endif
             </div>
         </div>
     </div>
@@ -138,21 +138,21 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label class="text-muted small">السعر الإجمالي</label>
-                    <div class="h4 fw-bold">{{ number_format($contract->price, 2) }} ريال</div>
+                    <div class="h4 fw-bold">{{ number_format($policy->price, 2) }} ريال</div>
                 </div>
                 <div class="mb-3">
                     <label class="text-muted small">رسوم التأخير</label>
                     @if($remainingDays < 0)
-                        <div class="h4 fw-bold">{{ number_format($contract->late_fee * (int) abs($remainingDays), 2) }} ريال</div>
+                        <div class="h4 fw-bold">{{ number_format($policy->late_fee * (int) abs($remainingDays), 2) }} ريال</div>
                     @elseif($remainingDays > 0)
                         <div class="h4 fw-bold">0.00 ريال</div>
                     @endif
                 </div>
                 <div class="mb-4">
                     <label class="text-muted small">الضريبة المضافة</label>
-                    @if($contract->tax == 'غير معفي')
+                    @if($policy->tax == 'غير معفي')
                         <div class="h4 fw-bold">15%</div>
-                    @elseif($contract->tax == 'معفي')
+                    @elseif($policy->tax == 'معفي')
                         <div class="h4 fw-bold">0%</div>
                     @endif
                 </div>
@@ -161,8 +161,8 @@
                     <label class="text-muted small">إجمالي المبلغ</label>
                     <div class="h4 fw-bold">
                         {{ number_format($contract->price
-                            + ($remainingDays < 0 ? $contract->late_fee * (int) abs($remainingDays) : 0)
-                            + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0), 2) }} ريال
+                            + ($remainingDays < 0 ? $policy->late_fee * (int) abs($remainingDays) : 0)
+                            + ($policy->tax == 'غير معفي' ? $policy->price * 15/100 : 0), 2) }} ريال
                     </div>
                 </div>
             </div>
@@ -184,14 +184,14 @@
             </tr>
         </thead>
         <tbody>
-            @if ($contract->containers->isEmpty())
+            @if ($policy->containers->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
                         <div class="status-danger fs-6">لا يوجد اي حاويات في العقد!</div>
                     </td>
                 </tr>
             @else
-                @foreach ($contract->containers as $index => $container)
+                @foreach ($policy->containers as $index => $container)
                     <tr>
                         <td class="text-center">{{ $index + 1 }}</td>
                         <td class="text-center">{{ $container->code }}</td>
@@ -214,11 +214,11 @@
     </table>
 </div>
 
-@if($contract->status == 'جاري')
+@if($policy->status == 'جاري')
     <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#createInvoice">
         إستخراج فاتورة <i class="fas fa-scroll ps-1"></i>
     </button>
-@elseif($contract->status == 'منتهي')
+@elseif($policy->status == 'منتهي')
     <button type="button" class="btn btn-1 fw-bold mt-4" data-bs-toggle="modal" data-bs-target="#exitPermission">
         طباعة إذن خروج <i class="fas fa-scroll ps-1"></i>
     </button>
@@ -233,20 +233,20 @@
             </div>
             <form action="{{ route('admin.exitPermission.create') }}" method="POST">
                 @csrf
-                <input type="hidden" name="contract_id" value="{{ $contract->id }}">
+                <input type="hidden" name="contract_id" value="{{ $policy->id }}">
                 <div class="modal-body text-dark">
                     <div class="row">
                         <div class="col">
                             <label class="text muted small">رقم العميل</label>
-                            <div class="fw-bold">#{{ $contract->user->id }}</div>
+                            <div class="fw-bold">#{{ $policy->customer->id }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">إســم العميـــل</label>
-                            <div class="fw-bold">{{ $contract->user->name }}</div>
+                            <div class="fw-bold">{{ $policy->customer->name }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">رقم الهاتــف</label>
-                            <div class="fw-bold">{{ $contract->user->phone }}</div>
+                            <div class="fw-bold">{{ $policy->customer->phone }}</div>
                         </div>
                     </div>
                     <hr>
@@ -256,7 +256,7 @@
                         <div class="col fw-bold">فئة</div>
                         <div class="col fw-bold">الموقع</div>
                     </div>
-                    @foreach($contract->containers as $index => $container)
+                    @foreach($policy->containers as $index => $container)
                         <div class="row mb-2 text-center">
                             <div class="col-2">{{ $index + 1 }}</div>
                             <div class="col">{{ $container->code }}</div>
@@ -286,7 +286,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إالغاء</button>
-                    <button type="submit" class="btn btn-1">إنشاء</button>
+                    <button type="submit" class="btn btn-primary">إنشاء</button>
                 </div>
             </form>
         </div>
@@ -302,24 +302,24 @@
             </div>
             <form action="{{ route('admin.invoice.create') }}" method="POST">
                 @csrf
-                <input type="hidden" name="contract_id" value="{{ $contract->id }}">
-                <input type="hidden" name="user_id" value="{{ $contract->user->id }}">
+                <input type="hidden" name="policy_id" value="{{ $policy->id }}">
+                <input type="hidden" name="user_id" value="{{ $policy->customer->id }}">
                 <input type="hidden" name="date" value="{{ \Carbon\Carbon::now() }}">
-                <input type="hidden" name="base_price" value="{{ $contract->price }}">
-                <input type="hidden" name="late_fee_total" value="{{ $remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0 }}">
-                <input type="hidden" name="tax_total" value="{{ ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0) }}">
-                <input type="hidden" name="grand_total" value="{{ $contract->price
-                                                                    + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
-                                                                    + ($remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0) }}">
+                <input type="hidden" name="base_price" value="{{ $policy->price }}">
+                <input type="hidden" name="late_fee_total" value="{{ $remainingDays < 0 ? (int) abs($remainingDays) * $policy->late_fee : 0 }}">
+                <input type="hidden" name="tax_total" value="{{ ($policy->tax == 'غير معفي' ? $policy->price * 15/100 : 0) }}">
+                <input type="hidden" name="grand_total" value="{{ $policy->price
+                                                                    + ($policy->tax == 'غير معفي' ? $policy->price * 15/100 : 0)
+                                                                    + ($remainingDays < 0 ? (int) abs($remainingDays) * $policy->late_fee : 0) }}">
                 <div class="modal-body text-dark">
                     <div class="row mb-2">
                         <div class="col">
                             <label class="text muted small">عقد رقم</label>
-                            <div class="fw-bold">#{{ $contract->id }}</div>
+                            <div class="fw-bold">#{{ $policy->id }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">من</label>
-                            <div class="fw-bold">{{ $contract->start_date }}</div>
+                            <div class="fw-bold">{{ $policy->start_date }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">الى</label>
@@ -329,15 +329,15 @@
                     <div class="row">
                         <div class="col">
                             <label class="text muted small">رقم العميل</label>
-                            <div class="fw-bold">{{ $contract->user->id }}</div>
+                            <div class="fw-bold">{{ $policy->user->id }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">إســم العميـــل</label>
-                            <div class="fw-bold">{{ $contract->user->name }}</div>
+                            <div class="fw-bold">{{ $policy->user->name }}</div>
                         </div>
                         <div class="col">
                             <label class="text muted small">الرقم الهاتــف</label>
-                            <div class="fw-bold">{{ $contract->user->phone }}</div>
+                            <div class="fw-bold">{{ $policy->user->phone }}</div>
                         </div>
                     </div>
                     <hr>
@@ -347,7 +347,7 @@
                         <div class="col fw-bold">فئة</div>
                         <div class="col fw-bold">السعر</div>
                     </div>
-                    @foreach($contract->containers as $index => $container)
+                    @foreach($policy->containers as $index => $container)
                         <div class="row mb-2">
                             <div class="col-2">{{ $index + 1 }}</div>
                             <div class="col">{{ $container->code }}</div>
@@ -358,22 +358,22 @@
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold">الإجمالي</div>
-                        <div>{{ $contract->price }} ريال</div>
+                        <div>{{ $policy->price }} ريال</div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold">ضريبة تأخير</div>
-                        <div>{{ number_format(($remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال</div>
+                        <div>{{ number_format(($remainingDays < 0 ? (int) abs($remainingDays) * $policy->late_fee : 0), 2) }} ريال</div>
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold">الضريبة المضافة(15%)</div>
-                        <div>{{ number_format(($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0), 2) }} ريال</div>
+                        <div>{{ number_format(($policy->tax == 'غير معفي' ? $policy->price * 15/100 : 0), 2) }} ريال</div>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="fw-bold fs-5">إجمالي المبلغ</div>
-                        <div class="fs-5">{{ number_format($contract->price
-                                + ($contract->tax == 'غير معفي' ? $contract->price * 15/100 : 0)
-                                + ($remainingDays < 0 ? (int) abs($remainingDays) * $contract->late_fee : 0), 2) }} ريال
+                        <div class="fs-5">{{ number_format($policy->price
+                                + ($policy->tax == 'غير معفي' ? $policy->price * 15/100 : 0)
+                                + ($remainingDays < 0 ? (int) abs($remainingDays) * $policy->late_fee : 0), 2) }} ريال
                         </div>
                     </div>
                     <hr>

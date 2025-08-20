@@ -166,14 +166,14 @@
                                     <div class="modal-body text-dark">
                                         <div class="mb-3">
                                             <label for="name{{ $containerType->id }}" class="form-label">إسم الفئــة</label>
-                                            <input type="text" class="form-control" id="name{{ $containerType->id }}" name="name" value="{{ old('name', $containerType->name) }}" required>
+                                            <input type="text" class="form-control border-primary" id="name{{ $containerType->id }}" name="name" value="{{ old('name', $containerType->name) }}" required>
                                             @error('name')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="mb-3">
                                             <label for="daily_price{{ $containerType->id }}" class="form-label">السعــر اليومــي</label>
-                                            <input type="text" class="form-control" id="daily_price{{ $containerType->id }}" name="daily_price" value="{{ old('daily_price', $containerType->daily_price) }}" required>
+                                            <input type="text" class="form-control border-primary" id="daily_price{{ $containerType->id }}" name="daily_price" value="{{ old('daily_price', $containerType->daily_price) }}" required>
                                             @error('daily_price')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror

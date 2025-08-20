@@ -68,7 +68,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder=" ابحث عن فاتورة بإسم العميل او بتاريخ الفاتورة... "
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن فاتورة بإسم العميل او بتاريخ الفاتورة... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span>بحث</span>
@@ -81,7 +81,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="paymentMethodFilter" class="form-label text-dark fw-bold">تصفية حسب طريقــة الدفــع:</label>
             <div class="d-flex">
-                <select id="paymentMethodFilter" name="paymentMethod" class="form-select" onchange="this.form.submit()">
+                <select id="paymentMethodFilter" name="paymentMethod" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('paymentMethod') === 'all' || !request()->query('paymentMethod') ? 'selected' : '' }}>
                         جميع الطرق</option>

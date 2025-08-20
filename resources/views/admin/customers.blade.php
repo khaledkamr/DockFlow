@@ -68,7 +68,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحث عن عميل:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder=" ابحث عن عميل بالإيميل او بالإسم... "
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن عميل بالإيميل او بالإسم... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span>بحث</span>
@@ -81,7 +81,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
             <div class="d-flex">
-                <select id="statusFilter" name="role" class="form-select" onchange="this.form.submit()">
+                <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
                         جميع العملاء</option>
@@ -121,14 +121,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <label for="name" class="form-label">إسم العميل</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                            <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}" required>
                             @error('name')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">
                             <label for="CR" class="form-label">السجل التجاري</label>
-                            <input type="text" class="form-control" id="CR" name="CR" value="{{ old('CR') }}" required>
+                            <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ old('CR') }}" required>
                             @error('CR')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -137,14 +137,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <label for="TIN" class="form-label">الرقم الضريبي</label>
-                            <input type="text" class="form-control" id="TIN" name="TIN" value="{{ old('TIN') }}" required>
+                            <input type="text" class="form-control border-primary" id="TIN" name="TIN" value="{{ old('TIN') }}" required>
                             @error('TIN')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">
                             <label for="national_address" class="form-label">العنوان الوطني</label>
-                            <input type="text" class="form-control" id="national_address" name="national_address" value="{{ old('national_address') }}" required>
+                            <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ old('national_address') }}" required>
                             @error('national_address')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -153,14 +153,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <label for="phone" class="form-label">رقم الهاتف</label>
-                            <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
+                            <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ old('phone') }}" required>
                             @error('phone')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">
                             <label for="email" class="form-label">الإيميل</label>
-                            <input type="text" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+                            <input type="text" class="form-control border-primary" id="email" name="email" value="{{ old('email') }}" required>
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -247,14 +247,14 @@
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <label for="name" class="form-label">إسم العميل</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ $customer->name }}" required>
+                                                <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $customer->name }}" required>
                                                 @error('name')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col">
                                                 <label for="CR" class="form-label">السجل التجاري</label>
-                                                <input type="text" class="form-control" id="CR" name="CR" value="{{ $customer->CR }}" required>
+                                                <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ $customer->CR }}" required>
                                                 @error('CR')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -263,14 +263,14 @@
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <label for="TIN" class="form-label">الرقم الضريبي</label>
-                                                <input type="text" class="form-control" id="TIN" name="TIN" value="{{ $customer->TIN }}" required>
+                                                <input type="text" class="form-control border-primary" id="TIN" name="TIN" value="{{ $customer->TIN }}" required>
                                                 @error('TIN')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col">
                                                 <label for="national_address" class="form-label">العنوان الوطني</label>
-                                                <input type="text" class="form-control" id="national_address" name="national_address" value="{{ $customer->national_address }}" required>
+                                                <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ $customer->national_address }}" required>
                                                 @error('national_address')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -279,14 +279,14 @@
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <label for="phone" class="form-label">رقم الهاتف</label>
-                                                <input type="text" class="form-control" id="phone" name="phone" value="{{ $customer->phone }}" required>
+                                                <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ $customer->phone }}" required>
                                                 @error('phone')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col">
                                                 <label for="email" class="form-label">الإيميل</label>
-                                                <input type="text" class="form-control" id="email" name="email" value="{{ $customer->email }}" required>
+                                                <input type="text" class="form-control border-primary" id="email" name="email" value="{{ $customer->email }}" required>
                                                 @error('email')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror

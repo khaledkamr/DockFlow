@@ -188,21 +188,21 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.contracts*']) ? 'expanded' : '' }}" 
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.policies*']) ? 'expanded' : '' }}" 
                    data-bs-toggle="collapse" 
                    href="#contract-management" 
                    role="button" 
-                   aria-expanded="{{ request()->routeIs(['admin.contracts*']) ? 'true' : 'false' }}" 
+                   aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}" 
                    aria-controls="contract-management"
                    onclick="toggleSubmenu(this, event)">
-                    <i class="fa-solid fa-file ms-2 me-2"></i> إدارة العقــــــــــــود
+                    <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['admin.contracts*']) ? 'show' : '' }}" id="contract-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.contracts') ? 'active' : '' }}" href="{{ route('admin.contracts') }}">
-                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> العقــــــود
+                <div class="collapse sub-menu {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="contract-management">
+                    <a class="nav-link fw-bold {{ request()->routeIs('policies') ? 'active' : '' }}" href="{{ route('policies') }}">
+                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> الإتفاقيـــــات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.contracts.create') ? 'active' : '' }}" href="{{ route('admin.contracts.create') }}">
-                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة عقد
+                    <a class="nav-link fw-bold {{ request()->routeIs('policies.create') ? 'active' : '' }}" href="{{ route('policies.create') }}">
+                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية
                     </a>
                 </div>
             </li>

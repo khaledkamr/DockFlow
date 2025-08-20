@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'العقود')
+@section('title', 'إتفاقيات التخزين')
 
 @section('content')
 <style>
@@ -61,14 +61,14 @@
     }
 </style>
 
-<h1 class="mb-4">العقـــود</h1>
+<h1 class="mb-4">إتفاقيات التخزين</h1>
 
 <div class="row mb-4">
-    <div class="col-md-5">
+    <div class="col-md-6">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="search" class="form-label text-dark fw-bold">بحث عن عقد:</label>
+            <label for="search" class="form-label text-dark fw-bold">بحث عن إتفاقية:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder=" ابحث عن عقد بإسم العميل او بتاريخ العقد... "
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن إتفاقية بإسم العميل او بتاريخ الإتفاقية... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span>بحث</span>
@@ -77,14 +77,14 @@
             </div>
         </form>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
             <div class="d-flex">
-                <select id="statusFilter" name="status" class="form-select" onchange="this.form.submit()">
+                <select id="statusFilter" name="status" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
-                        جميع العقود</option>
+                        جميع الإتفاقيات</option>
                     <option value="جاري" {{ request()->query('status') === 'جاري' ? 'selected' : '' }}>
                         جاري</option>
                     <option value="منتهي" {{ request()->query('status') === 'منتهي' ? 'selected' : '' }}>
@@ -99,9 +99,9 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('admin.contracts.create') }}" class="btn btn-primary w-100 fw-bold">
+        <a href="{{ route('policies.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            أضف عقد
+            أضف إتفاقية
         </a>
     </div>
 </div>
@@ -110,46 +110,49 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">ID</th>
-                <th class="text-center bg-dark text-white">أسم العميل</th>
-                <th class="text-center bg-dark text-white">تاريخ العقد</th>
+                <th class="text-center bg-dark text-white">رقم الإتفاقية</th>
+                <th class="text-center bg-dark text-white">إسم العميل</th>
+                <th class="text-center bg-dark text-white">تاريخ الإتفاقية</th>
                 <th class="text-center bg-dark text-white">تاريخ الانتهاء المتوقع</th>
                 <th class="text-center bg-dark text-white">تاريخ الانتهاء الفعلي</th>
-                <th class="text-center bg-dark text-white">حالة العقد</th>
+                <th class="text-center bg-dark text-white">حالة الإتفاقية</th>
                 <th class="text-center bg-dark text-white">عدد الحاويات</th>
                 <th class="text-center bg-dark text-white">السعر</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
         <tbody>
-            @if ($contracts->isEmpty())
+            @if ($policies->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-canceled fs-6">لم يتم العثور على اي عقود!</div>
+                        <div class="status-canceled fs-6">لم يتم العثور على اي إتفاقيات!</div>
                     </td>
                 </tr>
             @else
-                @foreach ($contracts as $contract)
+                @foreach ($policies as $policy)
                     <tr>
-                        <td class="text-center">{{ $contract->id }}</td>
+                        <td class="text-center">{{ $policy->id }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">
-                                {{ $contract->user->name }}
+                                {{ $policy->customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $contract->start_date }}</td>
-                        <td class="text-center">{{ $contract->expected_end_date }}</td>
-                        <td class="text-center">{{ $contract->actual_end_date ?? 'لم ينتهي بعد' }}</td>
+                        <td class="text-center">{{ $policy->start_date }}</td>
+                        <td class="text-center">{{ $policy->expected_end_date }}</td>
+                        <td class="text-center">{{ $policy->actual_end_date ?? 'لم ينتهي بعد' }}</td>
                         <td class="text-center">
-                            <div class="{{ $contract->status == 'جاري' ? 'status-running' : ($contract->status == 'منتهي' ? 'status-completed' : 'status-canceled') }}">
-                                {{ $contract->status }}
+                            <div class="{{ $policy->status == 'جاري' ? 'status-running' : ($policy->status == 'منتهي' ? 'status-completed' : 'status-canceled') }}">
+                                {{ $policy->status }}
                             </div>
                         </td>
-                        <td class="text-center">{{ $contract->containers->count() }}</td>
-                        <td class="text-center">{{ $contract->price }} ريال</td>
+                        <td class="text-center">{{ $policy->containers->count() }}</td>
+                        <td class="text-center">{{ $policy->price }} ريال</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('admin.contracts.details', $contract->id) }}" class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">عرض</a>
+                            <a href="{{ route('admin.contracts.details', $policy->id) }}" 
+                                class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
+                                عرض
+                            </a>
                         </td>
                     </tr>
                 @endforeach

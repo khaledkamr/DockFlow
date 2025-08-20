@@ -3,7 +3,9 @@
 use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PolicyController;
 use App\Models\Contract;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
@@ -28,10 +30,10 @@ Route::post('/yard/containers/types/store', [ContainerController::class, 'contai
 Route::put('/yard/containers/types/update/{id}', [ContainerController::class, 'updateContainerType'])->name('yard.containers.types.update');
 Route::delete('/yard/containers/types/delete/{id}', [ContainerController::class, 'deleteContainerType'])->name('yard.containers.types.delete');
 
-Route::get('/admin/contracts', [AdminController::class, 'contracts'])->name('admin.contracts');
-Route::get('/admin/contracts/create', [AdminController::class, 'createContract'])->name('admin.contracts.create');
-Route::post('/admin/contracts/store', [AdminController::class, 'storeContract'])->name('admin.contracts.store');
-Route::get('/admin/contracts/details/{id}', [AdminController::class, 'contractDetails'])->name('admin.contracts.details');
+Route::get('/policies', [PolicyController::class, 'policies'])->name('policies');
+Route::get('/policies/create', [PolicyController::class, 'createPolicy'])->name('policies.create');
+Route::post('/policies/store', [PolicyController::class, 'storePolicy'])->name('policies.store');
+Route::get('/policies/details/{id}', [PolicyController::class, 'policyDetails'])->name('policies.details');
 
 Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
 Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');

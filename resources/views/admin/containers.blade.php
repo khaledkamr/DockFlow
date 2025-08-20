@@ -68,7 +68,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحث عن حاوية:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder=" ابحث عن حاوية بإسم العميل او بالموقع ... "
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن حاوية بإسم العميل او بالموقع ... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span>بحث</span>
@@ -81,7 +81,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
             <div class="d-flex">
-                <select id="statusFilter" name="status" class="form-select" onchange="this.form.submit()">
+                <select id="statusFilter" name="status" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
                         جميع الحاويات</option>
