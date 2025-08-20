@@ -64,19 +64,20 @@
 <h1 class="mb-4">الفواتير</h1>
 
 <div class="row mb-4">
-    <div class="col-md-5">
+    <div class="col-md-6">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
             <div class="d-flex">
                 <input type="text" name="search" class="form-control" placeholder=" ابحث عن فاتورة بإسم العميل او بتاريخ الفاتورة... "
                     value="{{ request()->query('search') }}">
-                <button type="submit" class="btn btn-1 fw-bold ms-2">
-                    بحث
+                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
+                    <span>بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-2"></i>
                 </button>
             </div>
         </form>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-6">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="paymentMethodFilter" class="form-label text-dark fw-bold">تصفية حسب طريقــة الدفــع:</label>
             <div class="d-flex">

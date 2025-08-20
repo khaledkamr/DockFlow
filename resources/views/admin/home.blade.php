@@ -10,7 +10,7 @@
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="card-title">إجمالي العمـــلاء</h5>
-                        <h2 class="text-primary">{{ $users }}</h2>
+                        <h2 class="text-primary">{{ $customers }}</h2>
                     </div>
                     <div>
                         <i class="fa-solid fa-users fa-2xl"></i>

@@ -70,8 +70,9 @@
             <div class="d-flex">
                 <input type="text" name="search" class="form-control" placeholder=" ابحث عن عقد بإسم العميل او بتاريخ العقد... "
                     value="{{ request()->query('search') }}">
-                <button type="submit" class="btn btn-1 fw-bold ms-2">
-                    بحث
+                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
+                    <span>بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-2"></i>
                 </button>
             </div>
         </form>
@@ -98,7 +99,7 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('admin.contracts.create') }}" class="btn btn-1 w-100 fw-bold">
+        <a href="{{ route('admin.contracts.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
             أضف عقد
         </a>

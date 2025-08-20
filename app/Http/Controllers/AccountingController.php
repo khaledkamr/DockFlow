@@ -1,0 +1,133 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Voucher;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryLine;
+use App\Models\Account;
+use App\Http\Requests\RootRequest;
+use App\Http\Requests\JournalRequest;
+use App\Http\Requests\VoucherRequest;
+
+class AccountingController extends Controller
+{
+    public function tree() {
+        $accounts = Account::where('parent_id', null)->get();
+        return view('admin.tree', compact('accounts'));
+    }
+
+    public function createRoot(RootRequest $request) {
+        $validated = $request->validated();
+        $name = $validated['name'];
+        Account::create($validated);
+        return redirect()->back()->with('success', "تم إنشاء الفرع $name بنجاح");
+    }
+
+    public function entries() {
+        $accounts = Account::where('level', 5)->get();
+        $vouchers = Voucher::all();
+        $journals = JournalEntry::all();
+
+        $balance = 0;
+        $balanceArray = [];
+        $vouchersBox = $vouchers->filter(function($voucher) {
+            return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
+        });
+        foreach($vouchersBox as $voucher) {
+            if($voucher->type == 'سند قبض نقدي') {
+                $balance += $voucher->amount;
+                $balanceArray[] = $balance;
+            } else {
+                $balance -= $voucher->amount;
+                $balanceArray[] = $balance;
+            }
+        }
+        
+        if(request()->query('view') == 'سند قبض نقدي') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'سند قبض نقدي';
+            });
+        }
+        elseif(request()->query('view') == 'سند قبض بشيك') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'سند قبض بشيك';
+            });
+        }
+        elseif(request()->query('view') == 'سند صرف نقدي') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'سند صرف نقدي';
+            });
+        }
+        elseif(request()->query('view') == 'سند صرف بشيك') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'سند صرف بشيك';
+            });
+        }
+        elseif(request()->query('view') == 'الصندوق') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
+            });
+        }
+        
+        return view('admin.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray'));
+    }
+
+    public function createJournal(JournalRequest $request) {
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        foreach ($request->account_id as $index => $accountId) {
+            if (!$accountId || !$request->account_code[$index]) {
+                return redirect()->back()->with('error', 'جميع الحسابات مطلوبة');
+            }
+
+            $debit = floatval($request->debit[$index] ?? 0);
+            $credit = floatval($request->credit[$index] ?? 0);
+
+            $totalDebit += $debit;
+            $totalCredit += $credit;
+
+            if ($debit > 0 && $credit > 0) {
+                return redirect()->back()->with('error', 'لا يمكن إدخال مدين ودائن في نفس السطر');
+            }
+        }
+
+        if ($totalDebit != $totalCredit) {
+            return redirect()->back()->with('error', 'القيد غير متزن يجب أن يتساوى مجموع المدين مع مجموع الدائن');
+        }
+        
+        $journalEntry = JournalEntry::create([
+            'code' => $request->code,
+            'date' => $request->date,
+        ]);
+
+        foreach ($request->account_id as $index => $accountId) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journalEntry->id,
+                'account_id'       => $accountId,
+                'debit'            => $request->debit[$index],
+                'credit'           => $request->credit[$index],
+                'description'      => $request->description[$index],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
+    }
+
+    public function createVoucher(VoucherRequest $request) {
+        $code = $request->account_code;
+        $validated = $request->validated();
+        $account = Account::where('code', $code)->first();
+        $validated['account_id'] = $account->id;
+        Voucher::create($validated);
+        return redirect()->back()->with('success', 'تم إنشاء سند بنجاح');
+    }
+
+    public function deleteVoucher($id) {
+        $voucher = Voucher::findOrFail($id);
+        $voucher->delete();
+        return redirect()->back()->with('success', 'تم حذف السند بنجاح');
+    }
+}

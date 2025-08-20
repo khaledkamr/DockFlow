@@ -10,25 +10,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     <style>
-        ::selection {
+        /* ::selection {
             color: #ffffff;
             background: #10d5bf;
-        }
+        } */
         ::-webkit-scrollbar {
             width: 10px;
-            height: 0; /* Prevent horizontal scrollbar */
+            height: 0; 
         }
         ::-webkit-scrollbar-track {
             background: #121212 !important;
         }
         ::-webkit-scrollbar-thumb {
-            background: #10d5bf !important;
+            background: #0d6efd !important;
             /* color: #00246171; */
             cursor: grab;
             transition: 0.3s;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #0eb39f;
+            background: #0a57ca;
         }
         :root {
             --primary-color: #10d5bf;
@@ -55,14 +55,15 @@
         }
         .sidebar {
             height: 100vh;
-            background-color: #f8f9fa;
-            border-left: 1px solid #ddd;
+            background-color: white;
+            /* border-left: 1px solid #ddd; */
             padding-top: 1rem;
             position: fixed;
             right: 0;
             top: 0;
             width: 250px;
             overflow-y: auto;
+            z-index: 100;
         }
         .sidebar .nav-link {
             display: block;
@@ -75,15 +76,15 @@
             transition: all 0.3s ease;
         }
         .sidebar .nav-link:hover {
-            color: #10d5bf;
-            background-color: rgba(16, 213, 191, 0.1);
+            color: #0d6efd;
+            background-color: rgba(16, 46, 213, 0.1);
         }
         .sidebar .nav-link.active {
-            background-color: #10d5bf;
+            background-color: #0d6efd;
             color: white;
         }
         .sidebar .nav-link.active:hover {
-            background-color: #0ec5a9;
+            background-color: #0d5dd6;
             color: white;
         }
         .sidebar .parent-link {
@@ -116,13 +117,14 @@
         }
         .navbar {
             background-color: white !important;
-            border-bottom: 1px solid #ddd;
+            /* border-bottom: 1px solid #ddd; */
+            height: 70px;
         }
         .content-area {
             padding: 2rem;
         }
         .logo-section {
-            border-bottom: 1px solid #ddd;
+            /* border-bottom: 1px solid #ddd; */
             padding-bottom: 1rem;
             margin-bottom: 1rem;
         }
@@ -130,10 +132,9 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar p-2">
-        <div class="logo-section d-flex align-items-center mb-3">
-            <img class="ms-2" src="https://erp.wazen.sa/images/wazen-logo-2024.png" width="50px" alt="">
-            <span class="ms-2 fs-5 fw-bold">ســـاحـــة تخزيـــــن</span>
+    <div class="sidebar shadow-sm p-2">
+        <div class="logo-section d-flex justify-content-center align-items-center mb-3">
+            <img class="p-2" src="{{ asset('img/logo-2.jpg') }}" width="150px" alt="logo">
         </div>
 
         <ul class="nav flex-column">
@@ -154,11 +155,11 @@
                     <i class="fa-solid fa-users ms-2 me-2"></i> إدارة المستخدمون
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.users*']) ? 'show' : '' }}" id="users-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.users') ? 'active' : '' }}" href="{{ route('admin.users') }}">
+                    <a class="nav-link fw-bold {{ request()->routeIs('admin.users.customers') ? 'active' : '' }}" href="{{ route('admin.users.customers') }}">
                         <i class="fa-solid fa-user ms-4 me-2"></i> العمــــلاء
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.users.admins') ? 'active' : '' }}" href="{{ route('admin.users.admins') }}">
-                        <i class="fa-solid fa-user-tie ms-4 me-2"></i>  المشرفين
+                    <a class="nav-link fw-bold " href="">
+                        <i class="fa-solid fa-user-tie ms-4 me-2"></i>  الموظفين
                     </a>
                 </div>
             </li>
@@ -174,11 +175,11 @@
                     <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحــــــــــــة
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.yard*']) ? 'show' : '' }}" id="yard-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.yard') ? 'active' : '' }}" href="{{ route('admin.yard') }}">
-                        <i class="fa-solid fa-box ms-4 me-2"></i> الحــــــاويـــات
+                    <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.containers') ? 'active' : '' }}" href="{{ route('admin.yard.containers') }}">
+                        <i class="fa-solid fa-boxes-stacked ms-4 me-2"></i> الحــــــاويـــات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.add') ? 'active' : '' }}" href="{{ route('admin.yard.add') }}">
-                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة حــاوية
+                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة حــاويات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.containers.types') ? 'active' : '' }}" href="{{ route('admin.yard.containers.types') }}">
                         <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
@@ -242,14 +243,25 @@
     
     <div class="main-content">
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container-fluid">
-                <a class="navbar-brand text-dark fw-bold" href="#">Warehouse System</a>
+                <a class="navbar-brand text-dark fw-bold" href="#">شركة تاج الأعمال للخدمات اللوجستية</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <form class="d-flex mx-auto" style="width: 40%;">
+                    <div class="input-group">
+                        <input class="form-control border-primary" type="search" placeholder="بحث..." aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
                 <div class="ms-auto">
-                    <span class="me-3">مرحباً، خالد</span>
+                    <span class="me-3 text-dark">
+                        <i class="fa-solid fa-user-circle fa-2xl text-secondary me-2"></i>
+                        خالد قمر
+                    </span>
                     <button class="btn btn-outline-danger btn-sm">تسجيل خروج</button>
                 </div>
             </div>

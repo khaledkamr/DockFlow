@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Users')
+@section('title', 'العملاء')
 
 @section('content')
 <style>
@@ -61,22 +61,23 @@
     }
 </style>
 
-<h1 class="mb-4">المستخدمون</h1>
+<h1 class="mb-4">العمـــلاء</h1>
 
 <div class="row mb-4">
-    <div class="col-md-5">
+    <div class="col-md-6">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحث عن عميل:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder=" ابحث عن عميل بالرقم القومي او بالإسم... "
+                <input type="text" name="search" class="form-control" placeholder=" ابحث عن عميل بالإيميل او بالإسم... "
                     value="{{ request()->query('search') }}">
-                <button type="submit" class="btn btn-1 fw-bold ms-2">
-                    بحث
+                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
+                    <span>بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-2"></i>
                 </button>
             </div>
         </form>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
             <div class="d-flex">
@@ -100,7 +101,7 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <button class="btn btn-1 w-100 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#createUserModal">
+        <button class="btn btn-primary w-100 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#createUserModal">
             <i class="fa-solid fa-user-plus pe-1"></i>
             أضف عميل
         </button>
@@ -114,7 +115,7 @@
                 <h5 class="modal-title text-dark fw-bold" id="createUserModalLabel">إنشاء عميل جديد</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.users.create') }}" method="POST">
+            <form action="" method="POST">
                 @csrf
                 <div class="modal-body text-dark">
                     <div class="mb-3">
@@ -166,71 +167,66 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">ID</th>
-                <th class="text-center bg-dark text-white">أسم العميل</th>
-                <th class="text-center bg-dark text-white">الرقم القومي</th>
+                <th class="text-center bg-dark text-white">رقم العميل</th>
+                <th class="text-center bg-dark text-white">إسم العميل</th>
+                <th class="text-center bg-dark text-white">رقم السجل التجاري</th>
                 <th class="text-center bg-dark text-white">رقم الهاتف</th>
+                <th class="text-center bg-dark text-white">الإيميل</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
         <tbody>
-            @if ($users->isEmpty())
+            @if ($customers->isEmpty())
                 <tr>
                     <td colspan="6" class="text-center">
                         <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
                     </td>
                 </tr>
             @else
-                @foreach ($users as $user)
+                @foreach ($customers as $customer)
                     <tr>
-                        <td class="text-center">{{ $user->id }}</td>
+                        <td class="text-center">{{ $customer->id }}</td>
                         <td class="text-center">
-                            <a href="{{ route('admin.user.profile', $user->id) }}"
+                            <a href=""
                                 class="text-dark text-decoration-none">
-                                {{ $user->name }}
+                                {{ $customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $user->NID }}</td>
-                        <td class="text-center">{{ $user->phone }}</td>
+                        <td class="text-center">{{ $customer->CR }}</td>
+                        <td class="text-center">{{ $customer->phone }}</td>
+                        <td class="text-center">{{ $customer->email }}</td>
                         <td class="action-icons text-center">
-                            <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">
+                            <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit user"></i>
                             </button>
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $user->id }}">
+                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $customer->id }}">
                                 <i class="fa-solid fa-user-xmark text-danger" title="delete user"></i>
                             </button>
                         </td>
                     </tr>
 
                     <!-- Edit Modal -->
-                    <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
+                    <div class="modal fade" id="editUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $user->id }}">تعديل بيانات العميل</h5>
+                                    <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+                                <form action="" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-body text-dark">
                                         <div class="mb-3">
-                                            <label for="name{{ $user->id }}" class="form-label">إسم العميل</label>
-                                            <input type="text" class="form-control" id="name{{ $user->id }}" name="name" value="{{ old('name', $user->name) }}" required>
+                                            <label for="name{{ $customer->id }}" class="form-label">إسم العميل</label>
+                                            <input type="text" class="form-control" id="name{{ $customer->id }}" name="name" value="{{ old('name', $customer->name) }}" required>
                                             @error('name')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="mb-3">
-                                            <label for="NID{{ $user->id }}" class="form-label">الرقم القومي</label>
-                                            <input type="text" class="form-control" id="NID{{ $user->id }}" name="NID" value="{{ old('NID', $user->NID) }}" required>
-                                            @error('NID')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="phone{{ $user->id }}" class="form-label">رقم الهاتف</label>
-                                            <input type="text" class="form-control" id="phone{{ $user->id }}" name="phone" value="{{ old('phone', $user->phone) }}" required>
+                                            <label for="phone{{ $customer->id }}" class="form-label">رقم الهاتف</label>
+                                            <input type="text" class="form-control" id="phone{{ $customer->id }}" name="phone" value="{{ old('phone', $customer->phone) }}" required>
                                             @error('phone')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -246,19 +242,19 @@
                     </div>
 
                     <!-- Delete Confirmation Modal -->
-                    <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $user->id }}" aria-hidden="true">
+                    <div class="modal fade" id="deleteUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $user->id }}">تأكيد الحذف</h5>
+                                    <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-dark">
-                                    هل انت متأكد من حذف العميل <strong>{{ $user->name }}</strong>؟
+                                    هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('admin.users.delete', $user->id) }}" method="POST">
+                                    <form action="" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">حذف</button>

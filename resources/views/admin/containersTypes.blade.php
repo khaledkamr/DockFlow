@@ -65,7 +65,7 @@
 
 <div class="row mb-4">
     <div class="col-md-2 d-flex align-items-end">
-        <button class="btn btn-1 w-100 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#createContainerTypeModal">
+        <button class="btn btn-primary w-100 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#createContainerTypeModal">
             <i class="fa-solid fa-plus pe-1"></i>
             أضف فئة جديدة
         </button>
@@ -124,7 +124,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">ID</th>
+                <th class="text-center bg-dark text-white">رقم الفئة</th>
                 <th class="text-center bg-dark text-white">إســـم الفئـــة</th>
                 <th class="text-center bg-dark text-white">السعــر اليــومــي</th>
                 <th class="text-center bg-dark text-white">الإجـــراءات</th>

@@ -64,19 +64,20 @@
 <h1 class="mb-5">ساحة التخزين</h1>
 
 <div class="row mb-4">
-    <div class="col-md-5">
+    <div class="col-md-6">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحث عن حاوية:</label>
             <div class="d-flex">
                 <input type="text" name="search" class="form-control" placeholder=" ابحث عن حاوية بإسم العميل او بالموقع ... "
                     value="{{ request()->query('search') }}">
-                <button type="submit" class="btn btn-1 fw-bold ms-2">
-                    بحث
+                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
+                    <span>بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-2"></i>
                 </button>
             </div>
         </form>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-4">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
             <div class="d-flex">
@@ -98,22 +99,22 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('admin.yard.add') }}" class="btn btn-1 w-100 fw-bold">
-            <i class="fa-solid fa-file-circle-plus pe-1"></i>
+        <a href="{{ route('admin.yard.add') }}" class="btn btn-primary w-100 fw-bold">
+            <i class="fa-solid fa-box pe-1"></i>
             أضف حاوية
         </a>
     </div>
 </div>
 
 <div class="table-container">
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">ID</th>
-                <th class="text-center bg-dark text-white">كــود الحاويــة</th>
+                <th class="text-center bg-dark text-white">رقم الحاوية</th>
                 <th class="text-center bg-dark text-white">صاحــب الحاويــة</th>
-                <th class="text-center bg-dark text-white">الموقــع</th>
+                <th class="text-center bg-dark text-white">كــود الحاويــة</th>
                 <th class="text-center bg-dark text-white">الفئـــة</th>
+                <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الحالـــة</th>
                 <th class="text-center bg-dark text-white">الإجـــراءات</th>
             </tr>
@@ -129,17 +130,17 @@
                 @foreach ($containers as $container)
                     <tr>
                         <td class="text-center">{{ $container->id }}</td>
-                        <td class="text-center">{{ $container->code }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">
-                                {{ $container->user->name }}
+                                {{ $container->customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $container->location }}</td>
+                        <td class="text-center">{{ $container->code }}</td>
                         <td class="text-center">{{ $container->containerType->name }}</td>
+                        <td class="text-center">{{ $container->location }}</td>
                         <td class="text-center">
-                            <div class="{{ $container->status == 'في الإنتظار' ? 'status-waiting' : ($container->status == 'موجود' ? 'status-available' : 'status-danger') }}">
+                            <div class="{{ $container->status == 'موجود' ? 'status-available' : 'status-danger' }}">
                                 {{ $container->status }}
                             </div>
                         </td>

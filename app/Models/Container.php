@@ -10,7 +10,7 @@ class Container extends Model
         'code', 
         'status', 
         'container_type_id', 
-        'user_id', 
+        'customer_id', 
         'location'
     ];
 

@@ -23,25 +23,25 @@
     }
     
     .bg-level-1 {
-        background-color: #0a7569;
+        background-color: #0b56a9;
         color: white;
         font-weight: 600;
     }
 
     .bg-level-2 {
-        background-color: #0d8f80;
+        background-color: #217cab;
         color: white;
         font-weight: 600;
     }
 
     .bg-level-3 {
-        background-color: #11b3a0;
+        background-color: #2b87ac;
         color: white;
         font-weight: 600;
     }
 
     .bg-level-4 {
-        background-color: #15dbc4;
+        background-color: #42b3af;
         color: white;
         font-weight: 600;
     }
@@ -138,7 +138,7 @@
     <h1 class="mb-4">شجرة الحسابات</h1>
     
     <div class="d-flex gap-3 mb-3">
-        <button class="btn btn-1" onclick="expandAll()">توسيع الكل</button>
+        <button class="btn btn-primary" onclick="expandAll()">توسيع الكل</button>
         <button class="btn btn-danger" onclick="collapseAll()">طي الكل</button>
     </div>
 
