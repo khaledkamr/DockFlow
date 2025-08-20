@@ -6,24 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('container_types', function (Blueprint $table) {
+        Schema::create('policy_container', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->decimal('daily_price', 10, 2);
+            $table->foreignId('policy_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('container_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('container_types');
+        Schema::dropIfExists('policy_container');
     }
 };

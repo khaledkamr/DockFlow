@@ -255,7 +255,7 @@ class AdminController extends Controller
             return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
         });
         foreach($vouchersBox as $voucher) {
-            if($voucher->type == 'payment_cash') {
+            if($voucher->type == 'سند قبض نقدي') {
                 $balance += $voucher->amount;
                 $balanceArray[] = $balance;
             } else {

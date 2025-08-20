@@ -6,23 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('journal_entries', function (Blueprint $table) {
             $table->id();
             $table->string('code');
             $table->date('date');
+            $table->float('amount');
+            $table->string('made_by');
+            $table->string('modified_by')->nullable();
             $table->foreignId('voucher_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('journal_entries');

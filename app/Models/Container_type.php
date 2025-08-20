@@ -8,8 +8,7 @@ class Container_type extends Model
 {
     protected $fillable = ['name', 'daily_price'];
 
-    public function containers()
-    {
+    public function containers() {
         return $this->hasMany(Container::class);
     }
 }

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class invoice extends Model
 {
     protected $fillable = [
-        'contract_id',
-        'user_id', 
+        'policy_id',
+        'customer_id', 
         'date',
         'base_price', 
         'late_fee_total', 
@@ -17,17 +17,11 @@ class invoice extends Model
         'payment_method'
     ];
 
-    public function contract()
-    {
-        return $this->belongsTo(Contract::class);
+    public function policy() {
+        return $this->belongsTo(Policy::class);
     }
 
-    public function payments()
-    {
-        return $this->belongsTo(Payment::class);
-    }
-
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function customer() {
+        return $this->belongsTo(Customer::class);
     }
 }

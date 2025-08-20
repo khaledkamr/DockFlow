@@ -6,19 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Container extends Model
 {
-    protected $fillable = ['code', 'status', 'container_type_id', 'user_id', 'location'];
+    protected $fillable = [
+        'code', 
+        'status', 
+        'container_type_id', 
+        'user_id', 
+        'location'
+    ];
 
-    public function containerType()
-    {
+    public function containerType() {
         return $this->belongsTo(Container_type::class);
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+    public function customer() {
+        return $this->belongsTo(Customer::class);
     }
 
-    public function contracts() {
-        return $this->belongsToMany(Contract::class, 'contract_container');
+    public function policies() {
+        return $this->belongsToMany(Contract::class, 'policy_container');
     }
 }

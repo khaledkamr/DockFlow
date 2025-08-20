@@ -7,28 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class Contract extends Model
 {
     protected $fillable = [
-        'user_id', 
-        'start_date', 
-        'expected_end_date', 
-        'actual_end_date',
-        'price', 
-        'late_fee', 
-        'tax', 
-        'status'
+        'customer_id',
+        'start_date',
+        'end_date',
+        'price',
+        'late_fee',
+        'tax'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+    public function customer() {
+        return $this->belongsTo(Customer::class);
     }
 
-    public function containers()
-    {
-        return $this->belongsToMany(Container::class, 'contract_container');
+    public function policies() {
+        return $this->hasMany(Policy::class);
     }
 
-    public function invoice()
-    {
-        return $this->hasOne(Invoice::class);
+    public function items() {
+        return $this->hasMany(ContractItems::class);
     }
 }
