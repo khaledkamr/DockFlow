@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CustomerController;
 use App\Models\Contract;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
@@ -12,11 +13,11 @@ Route::get('/', function () {
     return view('admin.home', compact('customers', 'contracts'));
 })->name('admin.home');
 
-Route::get('/admin/users/customers', [AdminController::class, 'customers'])->name('admin.users.customers');
-Route::get('admin/users/{id}', [AdminController::class, 'userProfile'])->name('admin.user.profile');
-Route::post('admin/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
-Route::put('admin/users/update/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
-Route::delete('admin/users/delete/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
+Route::get('/users/customers', [CustomerController::class, 'customers'])->name('users.customers');
+Route::get('/users/{id}', [CustomerController::class, 'userProfile'])->name('user.profile');
+Route::post('/users/customer/create', [CustomerController::class, 'storeCustomer'])->name('users.customer.store');
+Route::put('/users/customer/update/{id}', [CustomerController::class, 'updateCustomer'])->name('users.customer.update');
+Route::delete('/users/customer/delete/{id}', [CustomerController::class, 'deleteCustomer'])->name('users.customer.delete');
 
 Route::get('/admin/yard/containers', [AdminController::class, 'containers'])->name('admin.yard.containers');
 Route::get('/admin/yard/add', [AdminController::class, 'yardAdd'])->name('admin.yard.add');

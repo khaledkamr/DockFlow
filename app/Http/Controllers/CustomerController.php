@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CustomerRequest;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\User;
@@ -19,23 +20,23 @@ class CustomerController extends Controller
         return view('admin.userProfile', compact('user'));
     }
 
-    public function storeCustomer(UserRequest $request) {
+    public function storeCustomer(CustomerRequest $request) {
         $validated = $request->validated();
-        User::create($validated);
+        Customer::create($validated);
         return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
     }
 
-    public function updateCustomer(UserRequest $request, $id) {
-        $user = User::findOrFail($id);
+    public function updateCustomer(CustomerRequest $request, $id) {
+        $customer = Customer::findOrFail($id);
         $validated = $request->validated();
-        $user->update($validated);
+        $customer->update($validated);
         return redirect()->back()->with('success', 'تم تحديث بيانات العميل بنجاح');
     }
 
     public function deleteCustomer($id) {
-        $user = User::findOrFail($id);
-        $name = $user->name;
-        $user->delete();
+        $customer = Customer::findOrFail($id);
+        $name = $customer->name;
+        $customer->delete();
         return redirect()->back()->with('success', 'تم حذف العميل ' . $name . ' بنجاح');
     }
 }

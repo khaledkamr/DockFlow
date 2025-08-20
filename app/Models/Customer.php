@@ -11,7 +11,7 @@ class Customer extends Model
         'name',
         'CR',
         'TIN',
-        'national address',
+        'national_address',
         'phone',
         'email'
     ];

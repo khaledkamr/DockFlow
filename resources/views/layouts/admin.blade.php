@@ -145,17 +145,17 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.users*']) ? 'expanded' : '' }}" 
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['users*']) ? 'expanded' : '' }}" 
                    data-bs-toggle="collapse" 
                    href="#users-management" 
                    role="button" 
-                   aria-expanded="{{ request()->routeIs(['admin.users*']) ? 'true' : 'false' }}" 
+                   aria-expanded="{{ request()->routeIs(['users*']) ? 'true' : 'false' }}" 
                    aria-controls="users-management"
                    onclick="toggleSubmenu(this, event)">
                     <i class="fa-solid fa-users ms-2 me-2"></i> إدارة المستخدمون
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['admin.users*']) ? 'show' : '' }}" id="users-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.users.customers') ? 'active' : '' }}" href="{{ route('admin.users.customers') }}">
+                <div class="collapse sub-menu {{ request()->routeIs(['users*']) ? 'show' : '' }}" id="users-management">
+                    <a class="nav-link fw-bold {{ request()->routeIs('users.customers') ? 'active' : '' }}" href="{{ route('users.customers') }}">
                         <i class="fa-solid fa-user ms-4 me-2"></i> العمــــلاء
                     </a>
                     <a class="nav-link fw-bold " href="">

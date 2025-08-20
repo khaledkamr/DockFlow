@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name');            
             $table->string('CR');                // السجل التجاري
             $table->string('TIN');               // الرقم الضريبي
-            $table->string('national address');  // العنوان الوطني
+            $table->string('national_address');  // العنوان الوطني
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->timestamps();
