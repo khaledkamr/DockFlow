@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\CustomerController;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -15,17 +16,17 @@ Route::get('/', function () {
 
 Route::get('/users/customers', [CustomerController::class, 'customers'])->name('users.customers');
 Route::get('/users/{id}', [CustomerController::class, 'userProfile'])->name('user.profile');
-Route::post('/users/customer/create', [CustomerController::class, 'storeCustomer'])->name('users.customer.store');
+Route::post('/users/customer/store', [CustomerController::class, 'storeCustomer'])->name('users.customer.store');
 Route::put('/users/customer/update/{id}', [CustomerController::class, 'updateCustomer'])->name('users.customer.update');
 Route::delete('/users/customer/delete/{id}', [CustomerController::class, 'deleteCustomer'])->name('users.customer.delete');
 
-Route::get('/admin/yard/containers', [AdminController::class, 'containers'])->name('admin.yard.containers');
-Route::get('/admin/yard/add', [AdminController::class, 'yardAdd'])->name('admin.yard.add');
-Route::post('/admin/yard/containers/create', [AdminController::class, 'containerCreate'])->name('admin.yard.containers.create');
-Route::get('/admin/yard/containers/types', [AdminController::class, 'containersTypes'])->name('admin.yard.containers.types');
-Route::post('/admin/yard/containers/types/create', [AdminController::class, 'containerTypeCreate'])->name('admin.yard.containers.types.create');
-Route::put('/admin/yard/containers/types/update/{id}', [AdminController::class, 'updateContainerType'])->name('admin.yard.containers.types.update');
-Route::delete('/admin/yard/containers/types/delete/{id}', [AdminController::class, 'deleteContainerType'])->name('admin.yard.containers.types.delete');
+Route::get('/yard/containers', [ContainerController::class, 'containers'])->name('yard.containers');
+Route::get('/yard/containers/create', [ContainerController::class, 'createContainer'])->name('yard.containers.create');
+Route::post('/yard/containers/store', [ContainerController::class, 'containerStore'])->name('yard.containers.store');
+Route::get('/yard/containers/types', [ContainerController::class, 'containersTypes'])->name('yard.containers.types');
+Route::post('/yard/containers/types/store', [ContainerController::class, 'containerTypeStore'])->name('yard.containers.types.store');
+Route::put('/yard/containers/types/update/{id}', [ContainerController::class, 'updateContainerType'])->name('yard.containers.types.update');
+Route::delete('/yard/containers/types/delete/{id}', [ContainerController::class, 'deleteContainerType'])->name('yard.containers.types.delete');
 
 Route::get('/admin/contracts', [AdminController::class, 'contracts'])->name('admin.contracts');
 Route::get('/admin/contracts/create', [AdminController::class, 'createContract'])->name('admin.contracts.create');

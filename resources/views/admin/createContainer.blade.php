@@ -25,29 +25,27 @@
     <form action="" method="GET" class="row mb-3">
         <div class="col-4">
             <h5 class="mb-3">بيانات العميــل</h5>
-            <select class="form-select" id="user_id" name="user_id" onchange="this.form.submit()">
+            <select class="form-select" id="user_id" name="customer_id" onchange="this.form.submit()">
                 <option value="">اختر اسم العميل...</option>
-                @foreach ($users as $user)
-                    <option value="{{ $user->id }}" {{ request()->query('user_id') == $user->id ? 'selected' : '' }}>
-                        {{ $user->name }}
+                @foreach ($customers as $customer)
+                    <option value="{{ $customer->id }}" {{ request()->query('customer_id') == $customer->id ? 'selected' : '' }}>
+                        {{ $customer->name }}
                     </option>
                 @endforeach
             </select>
         </div>
     </form>
 
-    <form action="{{ route('admin.yard.containers.create') }}" method="POST" id="containerForm">
+    <form action="{{ route('yard.containers.store') }}" method="POST" id="containerForm">
         @csrf
-        
-        <!-- Client Information Section -->
         <div class="row mb-4 bg-light p-3 rounded">
             <div class="col">
-                <label for="user_id" class="form-label">رقــم العميــل</label>
-                <input type="text" class="form-control" id="user_id" name="user_id" value="{{ $client['id'] }}" readonly>
+                <label for="customer_id" class="form-label">رقــم العميــل</label>
+                <input type="text" class="form-control" id="customer_id" name="customer_id" value="{{ $client['id'] }}" readonly>
             </div>
             <div class="col">
-                <label for="NID" class="form-label">رقم السجل الضريبي</label>
-                <input type="text" class="form-control" id="NID" name="NID" value="{{ $client['NID'] }}" readonly>
+                <label for="CR" class="form-label">رقم السجل الضريبي</label>
+                <input type="text" class="form-control" id="CR" name="CR" value="{{ $client['CR'] }}" readonly>
             </div>
             <div class="col">
                 <label for="phone" class="form-label">رقم الهاتــف</label>
@@ -55,7 +53,6 @@
             </div>
         </div>
 
-        <!-- Containers Section -->
         <div class="mb-3">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">بيانات الحاويات</h5>
@@ -65,7 +62,6 @@
             </div>
             
             <div id="containersSection">
-                <!-- First container row (template) -->
                 <div class="container-row border rounded p-3 mb-3" data-row="0">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h6 class="mb-0 text-primary">الحاوية #<span class="container-number">1</span></h6>
@@ -93,15 +89,15 @@
                         <div class="col-md-3">
                             <label class="form-label">الحالــة</label>
                             <select class="form-select" name="containers[0][status]" required>
-                                <option value="في الإنتظار">في الإنتظار</option>
-                                <option value="موجود">موجود</option>
                                 <option value="غير متوفر">غير متوفر</option>
+                                <option value="متوفر">متوفر</option>
+                                <option value="في الإنتظار">في الإنتظار</option>
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">الموقــع</label>
-                            <input type="text" class="form-control" name="containers[0][location]" required>
+                            <input type="text" class="form-control" name="containers[0][location]">
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
@@ -111,7 +107,7 @@
 
         <div class="d-flex justify-content-between align-items-center mt-4">
             <button type="submit" class="btn btn-primary fw-bold">
-                <i class="fas fa-save me-1"></i> حفظ جميع الحاويات
+                حفظ جميع الحاويات
             </button>
             <span class="text-muted">إجمالي الحاويات: <span id="totalContainers">1</span></span>
         </div>

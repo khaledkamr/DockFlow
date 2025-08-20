@@ -165,23 +165,23 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.yard*']) ? 'expanded' : '' }}" 
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['yard*']) ? 'expanded' : '' }}" 
                    data-bs-toggle="collapse" 
                    href="#yard-management" 
                    role="button" 
-                   aria-expanded="{{ request()->routeIs(['admin.yard*']) ? 'true' : 'false' }}" 
+                   aria-expanded="{{ request()->routeIs(['yard*']) ? 'true' : 'false' }}" 
                    aria-controls="yard-management"
                    onclick="toggleSubmenu(this, event)">
                     <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحــــــــــــة
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['admin.yard*']) ? 'show' : '' }}" id="yard-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.containers') ? 'active' : '' }}" href="{{ route('admin.yard.containers') }}">
+                <div class="collapse sub-menu {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
+                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers') ? 'active' : '' }}" href="{{ route('yard.containers') }}">
                         <i class="fa-solid fa-boxes-stacked ms-4 me-2"></i> الحــــــاويـــات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.add') ? 'active' : '' }}" href="{{ route('admin.yard.add') }}">
-                        <i class="fa-solid fa-plus ms-4 me-2"></i> إضافة حــاويات
+                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.create') ? 'active' : '' }}" href="{{ route('yard.containers.create') }}">
+                        <i class="fa-regular fa-square-plus ms-4 me-2"></i> إضافة حــاويات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.yard.containers.types') ? 'active' : '' }}" href="{{ route('admin.yard.containers.types') }}">
+                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.types') ? 'active' : '' }}" href="{{ route('yard.containers.types') }}">
                         <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
                     </a>
                 </div>

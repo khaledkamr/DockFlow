@@ -79,7 +79,7 @@
                 <h5 class="modal-title text-dark fw-bold" id="createContainerTypeModalLabel">إنشاء فئة جديدة</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.yard.containers.types.create') }}" method="POST">
+            <form action="{{ route('yard.containers.types.store') }}" method="POST">
                 @csrf
                 <div class="modal-body text-dark">
                     <div class="mb-3">
@@ -98,8 +98,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إالغاء</button>
-                    <button type="submit" class="btn btn-1">إنشاء</button>
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                    <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
                 </div>
             </form>
         </div>
@@ -121,7 +121,7 @@
 @endif
 
 <div class="table-container">
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم الفئة</th>
@@ -142,7 +142,7 @@
                     <tr>
                         <td class="text-center">{{ $containerType->id }}</td>
                         <td class="text-center">{{ $containerType->name }}</td>
-                        <td class="text-center">{{ $containerType->daily_price }} ريال</td>
+                        <td class="text-center text-success fw-bold">{{ $containerType->daily_price }} ريال</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $containerType->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit user"></i>
@@ -153,7 +153,6 @@
                         </td>
                     </tr>
 
-                    <!-- Edit Modal -->
                     <div class="modal fade" id="editUserModal{{ $containerType->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $containerType->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -161,7 +160,7 @@
                                     <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $containerType->id }}">تعديل بيانات الفئــة</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('admin.yard.containers.types.update', $containerType->id) }}" method="POST">
+                                <form action="{{ route('yard.containers.types.update', $containerType->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-body text-dark">
@@ -182,15 +181,14 @@
                                         
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                        <button type="submit" class="btn btn-1">حفظ التغييرات</button>
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Delete Confirmation Modal -->
                     <div class="modal fade" id="deleteUserModal{{ $containerType->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $containerType->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -202,11 +200,11 @@
                                     هل انت متأكد من حذف  <strong>{{ $containerType->name }}</strong>؟
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('admin.yard.containers.types.delete', $containerType->id) }}" method="POST">
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                    <form action="{{ route('yard.containers.types.delete', $containerType->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">حذف</button>
+                                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
                                     </form>
                                 </div>
                             </div>
