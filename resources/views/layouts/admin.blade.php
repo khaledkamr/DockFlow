@@ -165,6 +165,26 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['contracts*']) ? 'expanded' : '' }}" 
+                   data-bs-toggle="collapse" 
+                   href="#contract-management" 
+                   role="button" 
+                   aria-expanded="{{ request()->routeIs(['contracts*']) ? 'true' : 'false' }}" 
+                   aria-controls="contract-management"
+                   onclick="toggleSubmenu(this, event)">
+                    <i class="fa-solid fa-file ms-2 me-2"></i> إدارة العقــــــــــــود
+                </a>
+                <div class="collapse sub-menu {{ request()->routeIs(['contracts*']) ? 'show' : '' }}" id="contract-management">
+                    <a class="nav-link fw-bold {{ request()->routeIs('contracts') ? 'active' : '' }}" href="{{ route('contracts') }}">
+                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> العقــــــود
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('contracts.create') ? 'active' : '' }}" href="{{ route('contracts.create') }}">
+                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة عقــــد
+                    </a>
+                </div>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link parent-link fw-bold {{ request()->routeIs(['yard*']) ? 'expanded' : '' }}" 
                    data-bs-toggle="collapse" 
                    href="#yard-management" 
@@ -188,16 +208,16 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.policies*']) ? 'expanded' : '' }}" 
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['policies*']) ? 'expanded' : '' }}" 
                    data-bs-toggle="collapse" 
-                   href="#contract-management" 
+                   href="#policy-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}" 
-                   aria-controls="contract-management"
+                   aria-controls="policy-management"
                    onclick="toggleSubmenu(this, event)">
                     <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="contract-management">
+                <div class="collapse sub-menu {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
                     <a class="nav-link fw-bold {{ request()->routeIs('policies') ? 'active' : '' }}" href="{{ route('policies') }}">
                         <i class="fa-solid fa-file-contract ms-4 me-2"></i> الإتفاقيـــــات
                     </a>

@@ -154,7 +154,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary fw-bold">إضافة العقد</button>
+        <button type="submit" class="btn btn-primary fw-bold">حفظ الإتفاقية</button>
     </form>
 </div>
 

@@ -35,6 +35,10 @@ Route::get('/policies/create', [PolicyController::class, 'createPolicy'])->name(
 Route::post('/policies/store', [PolicyController::class, 'storePolicy'])->name('policies.store');
 Route::get('/policies/details/{id}', [PolicyController::class, 'policyDetails'])->name('policies.details');
 
+Route::get('/contracts', [ContractController::class, 'contracts'])->name('contracts');
+Route::get('/contracts/create', [ContractController::class, 'createContract'])->name('contracts.create');
+Route::post('/contracts/store', [ContractController::class, 'storeContract'])->name('contracts.store');
+
 Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
 Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');
 Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');

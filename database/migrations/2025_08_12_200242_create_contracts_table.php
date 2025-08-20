@@ -13,9 +13,14 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->date('start_date');
             $table->date('end_date');
-            $table->float('price');
+            $table->string('Representative');
+            $table->string('Representative_NID');
+            $table->string('Representative_nationality');
+            $table->float('container_storage_price');
+            $table->unsignedInteger('container_storage_period');
+            $table->float('move_container_price');
             $table->float('late_fee');
-            $table->string('tax');
+            $table->float('exchange_container_price');
             $table->timestamps();
         });
     }

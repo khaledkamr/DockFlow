@@ -22,8 +22,4 @@ class Contract extends Model
     public function policies() {
         return $this->hasMany(Policy::class);
     }
-
-    public function items() {
-        return $this->hasMany(ContractItems::class);
-    }
 }
