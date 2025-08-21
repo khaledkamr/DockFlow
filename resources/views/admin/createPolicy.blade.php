@@ -23,23 +23,20 @@
 @endif
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
-    <form action="" method="GET" class="row mb-3">
-        <div class="col-4">
-            <label for="user_id" class="form-label">إســم العميــل</label>
-            <select class="form-select border-primary" id="user_id" name="user_id" onchange="this.form.submit()">
-                <option value="">اختر اسم العميل...</option>
-                @foreach ($customers as $customer)
-                    <option value="{{ $customer->id }}" {{ request()->query('customer_id') == $customer->id ? 'selected' : '' }}>
-                        {{ $customer->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-    </form>
-
     <form action="{{ route('policies.store') }}" method="POST">
         @csrf
         <div class="row mb-3">
+            <div class="col">
+                <label for="user_id" class="form-label">إســم العميــل</label>
+                <select class="form-select border-primary" id="user_id" name="user_id" onchange="this.form.submit()">
+                    <option value="">اختر اسم العميل...</option>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer->id }}" {{ request()->query('customer_id') == $customer->id ? 'selected' : '' }}>
+                            {{ $customer->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col">
                 <label for="customer_id" class="form-label">رقــم العميــل</label>
                 <input type="text" class="form-control border-primary" id="customer_id" name="customer_id" value="{{ $client['id'] }}" required>

@@ -63,17 +63,60 @@
 
 <h2 class="mb-4">العقـــود</h2>
 
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="GET" action="" class="d-flex flex-column">
+            <label for="search" class="form-label text-dark fw-bold">بحث عن عقد:</label>
+            <div class="d-flex">
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن عقد بإسم العميل او بتاريخ العقد... "
+                    value="{{ request()->query('search') }}">
+                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
+                    <span>بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-2"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <form method="GET" action="" class="d-flex flex-column">
+            <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
+            <div class="d-flex">
+                <select id="statusFilter" name="status" class="form-select border-primary" onchange="this.form.submit()">
+                    <option value="all"
+                        {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
+                        جميع العقود</option>
+                    <option value="جاري" {{ request()->query('status') === 'جاري' ? 'selected' : '' }}>
+                        جاري</option>
+                    <option value="منتهي" {{ request()->query('status') === 'منتهي' ? 'selected' : '' }}>
+                        منتهي</option>
+                    <option value="ملغي" {{ request()->query('status') === 'ملغي' ? 'selected' : '' }}>
+                        ملغي</option>
+                </select>
+                @if (request()->query('search'))
+                    <input type="hidden" name="search" value="{{ request()->query('search') }}">
+                @endif
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <a href="{{ route('policies.create') }}" class="btn btn-primary w-100 fw-bold">
+            <i class="fa-solid fa-file-circle-plus pe-1"></i>
+            أضف عقد
+        </a>
+    </div>
+</div>
+
 <div class="table-container">
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم العقد</th>
-                <th class="text-center bg-dark text-white">إسم العميل</th>
+                <th class="text-center bg-dark text-white">الطرف الأول</th>
+                <th class="text-center bg-dark text-white">ممثل الطرف الأول</th>
+                <th class="text-center bg-dark text-white">الطرف الثاني</th>
+                <th class="text-center bg-dark text-white">ممثل الطرف الثاني</th>
                 <th class="text-center bg-dark text-white">تاريخ العقد</th>
-                <th class="text-center bg-dark text-white">تاريخ الانتهاء</th>
-                <th class="text-center bg-dark text-white">عرض السعر</th>
-                <th class="text-center bg-dark text-white">ضريبة التاخير</th>
-                <th class="text-center bg-dark text-white">الضريبة المضافة</th>
+                <th class="text-center bg-dark text-white">تاريخ الإنتهاء</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
@@ -88,19 +131,19 @@
                 @foreach ($contracts as $contract)
                     <tr>
                         <td class="text-center">{{ $contract->id }}</td>
+                        <td class="text-center">{{ $contract->company->name }}</td>
+                        <td class="text-center">{{ $contract->company_representative }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">
                                 {{ $contract->customer->name }}
                             </a>
                         </td>
+                        <td class="text-center">{{ $contract->customer_representative }}</td>
                         <td class="text-center">{{ $contract->start_date }}</td>
                         <td class="text-center">{{ $contract->end_date }}</td>
-                        <td class="text-center">{{ $contract->price }}</td>
-                        <td class="text-center">{{ $contract->late_fee }}</td>
-                        <td class="text-center">{{ $contract->tax }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('admin.contracts.details', $contract->id) }}" 
+                            <a href="{{ route('contracts.details', $contract->id) }}" 
                                 class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
                                 عرض
                             </a>

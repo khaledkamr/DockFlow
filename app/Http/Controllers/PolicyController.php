@@ -15,7 +15,7 @@ use Carbon\Carbon;
 class PolicyController extends Controller
 {
     public function policies() {
-        $policies = Contract::orderBy('id', 'desc')->get();
+        $policies = Policy::orderBy('id', 'desc')->get();
         $customers = Customer::all();
         return view('admin.policies', compact('policies', 'customers'));
     }
@@ -91,7 +91,7 @@ class PolicyController extends Controller
             $container->save();
         }
 
-        $contract = Contract::create($validated);
+        $contract = Policy::create($validated);
         $contract->containers()->attach($containers);
         return redirect()->back()->with('success', 'تم إنشاء عقد جديد بنجاح');
     }

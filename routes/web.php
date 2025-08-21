@@ -38,6 +38,8 @@ Route::get('/policies/details/{id}', [PolicyController::class, 'policyDetails'])
 Route::get('/contracts', [ContractController::class, 'contracts'])->name('contracts');
 Route::get('/contracts/create', [ContractController::class, 'createContract'])->name('contracts.create');
 Route::post('/contracts/store', [ContractController::class, 'storeContract'])->name('contracts.store');
+Route::get('/contracts/{id}', [ContractController::class, 'contractDetails'])->name('contracts.details');
+Route::post('/contracts/update/{id}', [ContractController::class, 'updateContract'])->name('contracts.update');
 
 Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
 Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');

@@ -146,10 +146,10 @@
                                 {{ $policy->status }}
                             </div>
                         </td>
-                        <td class="text-center">{{ $policy->containers->count() }}</td>
+                        <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
                         <td class="text-center">{{ $policy->price }} ريال</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('admin.contracts.details', $policy->id) }}" 
+                            <a href="" 
                                 class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
                                 عرض
                             </a>

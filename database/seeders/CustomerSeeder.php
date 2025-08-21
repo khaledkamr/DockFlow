@@ -13,6 +13,7 @@ class CustomerSeeder extends Seeder
         $customers = [
             [
                 'name' => 'مكتب الغانمي للتخليص الجمركي',
+                'type' => 'شركة',
                 'CR' => '82546872874',
                 'TIN' => '01006379503',
                 'national_address' => '01006379503',
@@ -21,6 +22,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'مؤسسة طيور الحباري التجارية',
+                'type' => 'مؤسسة',
                 'CR' => '82546872874',
                 'TIN' => '01006379503',
                 'national_address' => '01006379503',
@@ -29,6 +31,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'شركة اعمال البن النجارية',
+                'type' => 'شركة',
                 'CR' => '82546872874',
                 'TIN' => '55246576',
                 'national_address' => '01006379503',
@@ -37,6 +40,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'مؤسسة العكيلي للتخليص الجمركي',
+                'type' => 'مؤسسة',
                 'CR' => '82546872874',
                 'TIN' => '254656526',
                 'national_address' => '01006379503',
