@@ -11,11 +11,15 @@ return new class extends Migration
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
-            $table->date('start_date');
-            $table->date('expected_end_date');
-            $table->date('actual_end_date')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->enum('status', ['جاري', 'منتهي', 'ملغي'])->default('جاري'); 
+            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
+            $table->string('driver_name');
+            $table->string('driver_NID');
+            $table->string('driver_car');
+            $table->string('car_code');
+            $table->date('date');
+            $table->string('storage_price');
+            $table->string('late_fee');
+            $table->enum('tax', ['غير معفي', 'معفي'])->default('غير معفي');
             $table->timestamps();
         });
     }

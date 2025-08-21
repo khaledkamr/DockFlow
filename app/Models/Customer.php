@@ -17,8 +17,8 @@ class Customer extends Model
         'email'
     ];
 
-    public function contracts() {
-        return $this->hasMany(Contract::class);
+    public function contract() {
+        return $this->hasOne(Contract::class);
     }
 
     public function containers() {

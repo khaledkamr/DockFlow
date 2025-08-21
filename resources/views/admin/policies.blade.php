@@ -107,15 +107,12 @@
 </div>
 
 <div class="table-container">
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم الإتفاقية</th>
                 <th class="text-center bg-dark text-white">إسم العميل</th>
                 <th class="text-center bg-dark text-white">تاريخ الإتفاقية</th>
-                <th class="text-center bg-dark text-white">تاريخ الانتهاء المتوقع</th>
-                <th class="text-center bg-dark text-white">تاريخ الانتهاء الفعلي</th>
-                <th class="text-center bg-dark text-white">حالة الإتفاقية</th>
                 <th class="text-center bg-dark text-white">عدد الحاويات</th>
                 <th class="text-center bg-dark text-white">السعر</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
@@ -138,18 +135,11 @@
                                 {{ $policy->customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $policy->start_date }}</td>
-                        <td class="text-center">{{ $policy->expected_end_date }}</td>
-                        <td class="text-center">{{ $policy->actual_end_date ?? 'لم ينتهي بعد' }}</td>
-                        <td class="text-center">
-                            <div class="{{ $policy->status == 'جاري' ? 'status-running' : ($policy->status == 'منتهي' ? 'status-completed' : 'status-canceled') }}">
-                                {{ $policy->status }}
-                            </div>
-                        </td>
+                        <td class="text-center">{{ $policy->date }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
-                        <td class="text-center">{{ $policy->price }} ريال</td>
+                        <td class="text-center">{{ ($policy->storage_price == 'مجاناً' ? 0 : (int) $policy->storage_price) * ($policy->containers ? $policy->containers->count() : 0) }} ريال</td>
                         <td class="action-icons text-center">
-                            <a href="" 
+                            <a href="{{ route('policies.details', $policy->id) }}" 
                                 class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
                                 عرض
                             </a>
