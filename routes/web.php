@@ -8,12 +8,14 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PolicyController;
 use App\Models\Contract;
 use App\Models\Customer;
+use App\Models\invoice;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $customers = Customer::all()->count();
     $contracts = Contract::all()->count();
-    return view('admin.home', compact('customers', 'contracts'));
+    $invoices = invoice::all()->count();
+    return view('admin.home', compact('customers', 'contracts', 'invoices'));
 })->name('admin.home');
 
 Route::get('/users/customers', [CustomerController::class, 'customers'])->name('users.customers');

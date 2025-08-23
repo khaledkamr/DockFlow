@@ -36,7 +36,7 @@
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="card-title">إجمالي الفواتير</h5>
-                        <h2 class="text-primary">{{ $contracts }}</h2>
+                        <h2 class="text-primary">{{ $invoices }}</h2>
                     </div>
                     <div>
                         <i class="fa-solid fa-scroll fa-2xl"></i>
