@@ -27,6 +27,7 @@ Route::delete('/users/customer/delete/{id}', [CustomerController::class, 'delete
 Route::get('/yard/containers', [ContainerController::class, 'containers'])->name('yard.containers');
 Route::get('/yard/containers/create', [ContainerController::class, 'createContainer'])->name('yard.containers.create');
 Route::post('/yard/containers/store', [ContainerController::class, 'containerStore'])->name('yard.containers.store');
+Route::put('/yard/containers/update/{id}', [ContainerController::class, 'containerUpdate'])->name('yard.containers.update');
 Route::get('/yard/containers/types', [ContainerController::class, 'containersTypes'])->name('yard.containers.types');
 Route::post('/yard/containers/types/store', [ContainerController::class, 'containerTypeStore'])->name('yard.containers.types.store');
 Route::put('/yard/containers/types/update/{id}', [ContainerController::class, 'updateContainerType'])->name('yard.containers.types.update');

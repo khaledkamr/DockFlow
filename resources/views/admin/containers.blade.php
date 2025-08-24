@@ -36,7 +36,7 @@
         background-color: #f1f3f5;
     }
     .table .status-waiting {
-        background-color: #fff3cd;
+        background-color: #ffe590;
         color: #856404;
         padding: 5px 10px;
         border-radius: 12px;
@@ -106,6 +106,22 @@
     </div>
 </div>
 
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ session('success') }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="table-container">
     <table class="table table-hover">
         <thead>
@@ -140,12 +156,12 @@
                         <td class="text-center">{{ $container->containerType->name }}</td>
                         <td class="text-center">{{ $container->location }}</td>
                         <td class="text-center">
-                            <div class="{{ $container->status == 'موجود' ? 'status-available' : 'status-danger' }}">
+                            <div class="{{ $container->status == 'متوفر' ? 'status-available' : ($container->status == 'غير متوفر' ? 'status-danger' : 'status-waiting') }}">
                                 {{ $container->status }}
                             </div>
                         </td>
                         <td class="action-icons text-center">
-                            <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $container->id }}">
+                            <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit container"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container->id }}">
@@ -153,6 +169,63 @@
                             </button>
                         </td>
                     </tr>
+
+                    <div class="modal fade" id="editContainerModal{{ $container->id }}" tabindex="-1" aria-labelledby="editContainerModalLabel{{ $container->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark fw-bold" id="editContainerModalLabel{{ $container->id }}">تعديل بيانات العميل</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('yard.containers.update', $container->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-body text-dark">
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <label for="code" class="form-label">كـــود الحـــاوية</label>
+                                                <input type="text" class="form-control border-primary" name="code" value="{{ $container->code }}" readonly>
+                                                @error('code')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="col">
+                                                <label for="customer_name" class="form-label">صــاحب الحـــاوية</label>
+                                                <input type="text" class="form-control border-primary" name="customer_name" value="{{ $container->customer->name }}" readonly>
+                                                @error('customer_name')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <label for="location" class="form-label">المـــوقـــع</label>
+                                                <input type="text" class="form-control border-primary" name="location" value="{{ $container->location }}" required>
+                                                @error('location')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                            <div class="col">
+                                                <label for="status" class="form-label">الحـــالـــة</label>
+                                                <select class="form-select border-primary" name="status" required>
+                                                    <option value="غير متوفر" {{ $container->status == "غير متوفر" ? 'selected' : '' }}>غير متوفر</option>
+                                                    <option value="متوفر" {{ $container->status == "متوفر" ? 'selected' : '' }}>متوفر</option>
+                                                    <option value="في الإنتظار" {{ $container->status == "في الإنتظار" ? 'selected' : '' }}>في الإنتظار</option>
+                                                </select>
+                                                @error('status')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغيرات</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
             @endif
         </tbody>

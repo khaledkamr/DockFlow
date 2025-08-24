@@ -49,6 +49,15 @@ class ContainerController extends Controller
         return redirect()->back()->with('success', "تم إضافة $count حاويات جديدة بنجاح");
     }
 
+    public function containerUpdate(Request $request, $id) {
+        $container = Container::findOrFail($id);
+        $name = $container->code;
+        $container->location = $request->location;
+        $container->status = $request->status;
+        $container->save();
+        return redirect()->back()->with('success', "تم تعديل بيانات الحاوية '$name' بنجاح");
+    }
+
     public function containersTypes() {
         $containerTypes = Container_type::all();
         return view('admin.containersTypes', compact('containerTypes'));
