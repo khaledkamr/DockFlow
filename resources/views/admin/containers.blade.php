@@ -132,6 +132,7 @@
                 <th class="text-center bg-dark text-white">الفئـــة</th>
                 <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الحالـــة</th>
+                <th class="text-center bg-dark text-white">تاريخ الدخول</th>
                 <th class="text-center bg-dark text-white">الإجـــراءات</th>
             </tr>
         </thead>
@@ -160,6 +161,7 @@
                                 {{ $container->status }}
                             </div>
                         </td>
+                        <td class="text-center">{{ $container->date }}</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit container"></i>

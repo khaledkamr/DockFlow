@@ -17,9 +17,10 @@ return new class extends Migration
             $table->string('driver_car');
             $table->string('car_code');
             $table->date('date');
-            $table->string('storage_price');
-            $table->string('late_fee');
-            $table->enum('tax', ['غير معفي', 'معفي'])->default('غير معفي');
+            $table->enum('type', ['تخزين', 'إستلام'])->default('تخزين');
+            $table->string('storage_price')->nullable();
+            $table->string('late_fee')->nullable();
+            $table->enum('tax', ['غير معفي', 'معفي'])->default('غير معفي')->nullable();
             $table->timestamps();
         });
     }

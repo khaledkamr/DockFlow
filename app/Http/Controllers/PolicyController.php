@@ -38,11 +38,44 @@ class PolicyController extends Controller
 
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح');
+        return redirect()->back()->with('success', 'تم إنشاء إتفاقية تخزين جديدة بنجاح');
+    }
+    
+    public function createReceivePolicy() {
+        $company = Company::first();
+        $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
+        return view('admin.receivePolicy', compact('company', 'customers'));
+    }
+
+    public function storeReceivePolicy(PolicyRequest $request) {
+        $selected_containers = $request->selected_containers;
+        $containers = [];
+        foreach($selected_containers as $container) {
+            $containers[] = Container::findOrFail($container);
+        }
+        $validated = $request->validated();
+
+        $policy = Policy::create($validated);
+        $policy->containers()->attach($containers);
+        return redirect()->back()->with('success', 'تم إنشاء إتفاقية إستلام جديدة بنجاح');
     }
 
     public function policyDetails($id) {
         $policy = Policy::with('containers.containerType')->findOrFail($id);
-        return view('admin.policyDetails', compact('policy'));
+        if($policy->type == 'إستلام') {
+            $storage_price = 0;
+            foreach($policy->containers as $container) {
+                $days = Carbon::parse($container->created_at)->diffInDays(Carbon::parse($policy->contract->storage_date));
+                $storage_price += $policy->contract->container_storage_price * $days;
+            }
+            $late_fee = $days > $policy->contract->late_fee_period ? $policy->late_fee * ($days - $policy->contract->late_fee_period) : 0;
+            $tax = 'غير معفي';
+        } else {
+            $storage_price = $policy->storage_price;
+            $late_fee = $policy->late_fee;
+            $tax = $policy->tax;
+        }
+            
+        return view('admin.policyDetails', compact('policy', 'storage_price', 'late_fee', 'tax'));
     }
 }

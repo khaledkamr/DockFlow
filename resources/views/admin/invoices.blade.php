@@ -107,7 +107,7 @@
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
                 <th class="text-center bg-dark text-white">رقــم العقــد</th>
                 <th class="text-center bg-dark text-white">العميــل</th>
-                <th class="text-center bg-dark text-white">سعــر الإيجــار</th>
+                <th class="text-center bg-dark text-white">سعــر التخزيــن</th>
                 <th class="text-center bg-dark text-white">غرامــة التأخيــر</th>
                 <th class="text-center bg-dark text-white">الضريبـــة المضافــة</th>
                 <th class="text-center bg-dark text-white">إجمالــي المبلـــغ</th>

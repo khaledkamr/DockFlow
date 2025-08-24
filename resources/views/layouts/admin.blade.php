@@ -222,7 +222,10 @@
                         <i class="fa-solid fa-file-contract ms-4 me-2"></i> الإتفاقيـــــات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('policies.create') ? 'active' : '' }}" href="{{ route('policies.create') }}">
-                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية
+                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية تخزين
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('policies.receive.create') ? 'active' : '' }}" href="{{ route('policies.receive.create') }}">
+                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية إستلام
                     </a>
                 </div>
             </li>

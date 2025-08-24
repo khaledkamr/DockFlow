@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Container;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,44 +15,44 @@ class ContainersSeeder extends Seeder
             [
                 'code' => 'SFD-127',
                 'container_type_id' => 1,
-                'user_id' => 1,
+                'customer_id' => 1,
                 'status' => 'في الإنتظار',
-                'location' => 'B-35',
             ],
             [
                 'code' => 'SFD-128',
                 'container_type_id' => 1,
-                'user_id' => 1,
+                'customer_id' => 1,
                 'status' => 'في الإنتظار',
-                'location' => 'B-36',
             ],
             [
                 'code' => 'SFD-129',
                 'container_type_id' => 1,
-                'user_id' => 1,
+                'customer_id' => 1,
                 'status' => 'في الإنتظار',
-                'location' => 'B-37',
             ],
             [
                 'code' => 'SFD-130',
                 'container_type_id' => 2,
-                'user_id' => 1,
-                'status' => 'في الإنتظار',
+                'customer_id' => 1,
+                'status' => 'متوفر',
                 'location' => 'B-38',
+                'date' => Carbon::now()->format('Y-m-d')
             ],
             [
                 'code' => 'SFD-131',
                 'container_type_id' => 2,
-                'user_id' => 1,
-                'status' => 'في الإنتظار',
+                'customer_id' => 1,
+                'status' => 'متوفر',
                 'location' => 'B-39',
+                'date' => Carbon::now()->format('Y-m-d')
             ],
             [
                 'code' => 'SFD-132',
                 'container_type_id' => 3,
-                'user_id' => 1,
-                'status' => 'في الإنتظار',
+                'customer_id' => 1,
+                'status' => 'متوفر',
                 'location' => 'B-40',
+                'date' => Carbon::now()->format('Y-m-d')
             ],
         ];
 

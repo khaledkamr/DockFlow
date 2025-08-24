@@ -30,6 +30,7 @@
     <form action="{{ route('policies.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+        <input type="hidden" name="type" value="تخزين">
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم الشركة</label>

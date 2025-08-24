@@ -30,7 +30,7 @@ class CustomerSeeder extends Seeder
                 'email' => 'ex@gmail.com',
             ],
             [
-                'name' => 'شركة اعمال البن النجارية',
+                'name' => 'شركة اعمال البن التجارية',
                 'type' => 'شركة',
                 'CR' => '82546872874',
                 'TIN' => '55246576',

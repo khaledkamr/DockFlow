@@ -14,6 +14,7 @@ class Policy extends Model
         'driver_car',
         'car_code',
         'date',
+        'type',
         'storage_price',
         'late_fee',
         'tax'

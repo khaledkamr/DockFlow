@@ -64,7 +64,7 @@
 <h1 class="mb-4">إتفاقيات التخزين</h1>
 
 <div class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحث عن إتفاقية:</label>
             <div class="d-flex">
@@ -77,20 +77,18 @@
             </div>
         </form>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
+            <label for="typeFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
             <div class="d-flex">
-                <select id="statusFilter" name="status" class="form-select border-primary" onchange="this.form.submit()">
+                <select id="typeFilter" name="type" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
-                        {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
+                        {{ request()->query('type') === 'all' || !request()->query('type') ? 'selected' : '' }}>
                         جميع الإتفاقيات</option>
-                    <option value="جاري" {{ request()->query('status') === 'جاري' ? 'selected' : '' }}>
-                        جاري</option>
-                    <option value="منتهي" {{ request()->query('status') === 'منتهي' ? 'selected' : '' }}>
-                        منتهي</option>
-                    <option value="ملغي" {{ request()->query('status') === 'ملغي' ? 'selected' : '' }}>
-                        ملغي</option>
+                    <option value="تخزين" {{ request()->query('type') === 'تخزين' ? 'selected' : '' }}>
+                        تخزين</option>
+                    <option value="إستلام" {{ request()->query('type') === 'إستلام' ? 'selected' : '' }}>
+                        إستلام</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -101,7 +99,13 @@
     <div class="col-md-2 d-flex align-items-end">
         <a href="{{ route('policies.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            أضف إتفاقية
+            إتفاقية تخزين
+        </a>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <a href="{{ route('policies.receive.create') }}" class="btn btn-primary w-100 fw-bold">
+            <i class="fa-solid fa-file-circle-plus pe-1"></i>
+            إتفاقية إستلام
         </a>
     </div>
 </div>
@@ -112,9 +116,9 @@
             <tr>
                 <th class="text-center bg-dark text-white">رقم الإتفاقية</th>
                 <th class="text-center bg-dark text-white">إسم العميل</th>
+                <th class="text-center bg-dark text-white">نوع الإتفاقية</th>
                 <th class="text-center bg-dark text-white">تاريخ الإتفاقية</th>
                 <th class="text-center bg-dark text-white">عدد الحاويات</th>
-                <th class="text-center bg-dark text-white">السعر</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
@@ -135,9 +139,9 @@
                                 {{ $policy->customer->name }}
                             </a>
                         </td>
+                        <td class="text-center">{{ $policy->type }}</td>
                         <td class="text-center">{{ $policy->date }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
-                        <td class="text-center">{{ ($policy->storage_price == 'مجاناً' ? 0 : (int) $policy->storage_price) * ($policy->containers ? $policy->containers->count() : 0) }} ريال</td>
                         <td class="action-icons text-center">
                             <a href="{{ route('policies.details', $policy->id) }}" 
                                 class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">

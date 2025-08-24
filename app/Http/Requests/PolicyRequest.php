@@ -17,13 +17,14 @@ class PolicyRequest extends FormRequest
             'contract_id' => 'required',
             'customer_id' => 'required',
             'date' => 'required',
+            'type' => 'required',
             'driver_name' => 'required',
             'driver_NID' => 'required',
             'driver_car' => 'required',
             'car_code' => 'required',
-            'storage_price' => 'required',
-            'late_fee' => 'required', 
-            'tax' => 'required'  
+            'storage_price' => 'numeric|nullable',
+            'late_fee' => 'numeric|nullable', 
+            'tax' => 'numeric|nullable'  
         ];
     }
 }

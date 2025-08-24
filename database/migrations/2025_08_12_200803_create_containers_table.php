@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('code');
             $table->enum('status', ['في الإنتظار', 'متوفر', 'غير متوفر'])->default('في الإنتظار');
             $table->string('location')->nullable();
+            $table->date('date')->nullable();
             $table->foreignId('container_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();

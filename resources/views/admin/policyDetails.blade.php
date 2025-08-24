@@ -5,12 +5,11 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
             <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل البوليصة #{{ $policy->id }}
+                    تفاصيل إتفاقية {{ $policy->type == 'تخزين' ? 'التخزين' : 'الإستلام' }} #{{ $policy->id }}
                 </h2>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -20,7 +19,7 @@
                         <li class="breadcrumb-item">
                             <a href="#" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">البوليصة #{{ $policy->id }}</li>
+                        <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
                     </ol>
                 </nav>
             </div>
@@ -111,21 +110,21 @@
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-warehouse fa-2x text-success mb-2"></i>
                                             <small class="text-muted d-block">سعر التخزين</small>
-                                            <div class="fw-bold text-success fs-5">{{ $policy->storage_price }}</div>
+                                            <div class="fw-bold text-success fs-5">{{ $storage_price == 0 || $storage_price == 'مجاناً' ? 'مجاناً' : $storage_price . ' ريال' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
                                             <small class="text-muted d-block">غرامة التأخير</small>
-                                            <div class="fw-bold text-danger fs-5">{{ $policy->late_fee }} جنيه</div>
+                                            <div class="fw-bold text-danger fs-5">{{ $late_fee == 0 ? 'لا يوجد' : $late_fee . ' ريال' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-receipt fa-2x text-warning mb-2"></i>
                                             <small class="text-muted d-block">حالة الضريبة</small>
-                                            <div class="fw-bold text-warning fs-6">{{ $policy->tax }}</div>
+                                            <div class="fw-bold text-warning fs-6">{{ $tax }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -135,7 +134,7 @@
                                 <div class="border-top pt-3">
                                     <div class="row">
                                         <div class="col-6">
-                                            <small class="text-muted">تاريخ البوليصة</small>
+                                            <small class="text-muted">تاريخ الإتفاقية</small>
                                             <div class="fw-bold">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</div>
                                         </div>
                                         <div class="col-6">
@@ -157,7 +156,7 @@
                 <div class="d-flex justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-boxes me-2"></i>
-                        الحاويات المشمولة في البوليصة
+                        الحاويات المشمولة في الإتفاقية
                     </h5>
                     <span class="badge bg-light text-dark">{{ count($policy->containers) }} حاوية</span>
                 </div>
@@ -227,6 +226,17 @@
         </div>
     </div>
 </div>
+@if($policy->type == 'إستلام')
+    <div class="d-flex gap-3">
+        <button class="btn btn-primary fw-bold">إذن خروج</button>
+        <button class="btn btn-primary fw-bold">
+            إستخراج فاتورة
+            <i class="fa-solid fa-scroll"></i>
+        </button>
+    </div>
+@else
+    <button class="btn btn-primary fw-bold">إذن دخول</button>
+@endif
 
 <style>
 .bg-gradient {
@@ -239,11 +249,6 @@
 
 .card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
 @media (max-width: 768px) {

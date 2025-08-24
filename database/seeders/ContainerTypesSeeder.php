@@ -12,16 +12,16 @@ class ContainerTypesSeeder extends Seeder
     {
         $types = [
             [
-                'name' => 'فئة صغيرة',
-                'daily_price' => 100,
+                'name' => 'فئة 20',
+                'daily_price' => 50,
             ],
             [
-                'name' => 'فئة متوسطة',
-                'daily_price' => 150,
+                'name' => 'فئة 30',
+                'daily_price' => 50,
             ],
             [
-                'name' => 'فئة كبيرة',
-                'daily_price' => 200,
+                'name' => 'فئة 40',
+                'daily_price' => 50,
             ],
         ];
 
