@@ -99,7 +99,7 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('policies.create') }}" class="btn btn-primary w-100 fw-bold">
+        <a href="{{ route('contracts.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
             أضف عقد
         </a>

@@ -199,7 +199,7 @@
                         <i class="fa-solid fa-boxes-stacked ms-4 me-2"></i> الحــــــاويـــات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.create') ? 'active' : '' }}" href="{{ route('yard.containers.create') }}">
-                        <i class="fa-regular fa-square-plus ms-4 me-2"></i> إضافة حــاويات
+                        <i class="fa-solid fa-square-plus ms-4 me-2"></i> إضافة حــاويات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.types') ? 'active' : '' }}" href="{{ route('yard.containers.types') }}">
                         <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
@@ -221,7 +221,7 @@
                     <a class="nav-link fw-bold {{ request()->routeIs('policies') ? 'active' : '' }}" href="{{ route('policies') }}">
                         <i class="fa-solid fa-file-contract ms-4 me-2"></i> الإتفاقيـــــات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('policies.create') ? 'active' : '' }}" href="{{ route('policies.create') }}">
+                    <a class="nav-link fw-bold {{ request()->routeIs('policies.storage.create') ? 'active' : '' }}" href="{{ route('policies.storage.create') }}">
                         <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية تخزين
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('policies.receive.create') ? 'active' : '' }}" href="{{ route('policies.receive.create') }}">

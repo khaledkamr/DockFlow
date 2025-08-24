@@ -27,7 +27,7 @@
 @endif
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
-    <form action="{{ route('policies.store') }}" method="POST">
+    <form action="{{ route('policies.storage.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
         <input type="hidden" name="type" value="تخزين">

@@ -79,16 +79,16 @@
     </div>
     <div class="col-md-3">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="typeFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
+            <label for="typeFilter" class="form-label text-dark fw-bold">تصفية حسب النوع:</label>
             <div class="d-flex">
                 <select id="typeFilter" name="type" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('type') === 'all' || !request()->query('type') ? 'selected' : '' }}>
                         جميع الإتفاقيات</option>
                     <option value="تخزين" {{ request()->query('type') === 'تخزين' ? 'selected' : '' }}>
-                        تخزين</option>
+                        إتفاقية تخزين</option>
                     <option value="إستلام" {{ request()->query('type') === 'إستلام' ? 'selected' : '' }}>
-                        إستلام</option>
+                        إتفاقية إستلام</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -97,7 +97,7 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('policies.create') }}" class="btn btn-primary w-100 fw-bold">
+        <a href="{{ route('policies.storage.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
             إتفاقية تخزين
         </a>

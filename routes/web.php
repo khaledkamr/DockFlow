@@ -34,9 +34,9 @@ Route::put('/yard/containers/types/update/{id}', [ContainerController::class, 'u
 Route::delete('/yard/containers/types/delete/{id}', [ContainerController::class, 'deleteContainerType'])->name('yard.containers.types.delete');
 
 Route::get('/policies', [PolicyController::class, 'policies'])->name('policies');
-Route::get('/policies/create', [PolicyController::class, 'createPolicy'])->name('policies.create');
+Route::get('/policies/storage/create', [PolicyController::class, 'storagePolicy'])->name('policies.storage.create');
 Route::get('/policies/receive/create', [PolicyController::class, 'createReceivePolicy'])->name('policies.receive.create');
-Route::post('/policies/store', [PolicyController::class, 'storePolicy'])->name('policies.store');
+Route::post('/policies/storage/store', [PolicyController::class, 'storeStoragePolicy'])->name('policies.storage.store');
 Route::post('/policies/receive/store', [PolicyController::class, 'storeReceivePolicy'])->name('policies.receive.store');
 Route::get('/policies/details/{id}', [PolicyController::class, 'policyDetails'])->name('policies.details');
 
