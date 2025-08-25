@@ -1,6 +1,6 @@
 @extends('layouts.admin')
-@section('title', 'شجرة الحسابات')
 
+@section('title', 'شجرة الحسابات')
 
 @section('content')
 <style>
@@ -180,7 +180,7 @@
                     </div>
                     @if($account->children->count())
                         <div class="children-container">
-                            @include('admin.children', ['children' => $account->children])
+                            @include('admin.accounting.children', ['children' => $account->children])
                         </div>
                     @endif
                 </li>

@@ -75,9 +75,9 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
-    @include('admin.vouchers.journal_form')
+    @include('admin.accounting.vouchers.journal_form')
 @else
-    @include('admin.vouchers.voucher_form')
+    @include('admin.accounting.vouchers.voucher_form')
 @endif
 
 
@@ -103,17 +103,17 @@
 </ul>
 
 @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
-    @include('admin.vouchers.daily')
+    @include('admin.accounting.vouchers.daily')
 @elseif(request()->query('view') == 'سند قبض نقدي')
-    @include('admin.vouchers.cash_payment')
+    @include('admin.accounting.vouchers.cash_payment')
 @elseif(request()->query('view') == 'سند قبض بشيك')
-    @include('admin.vouchers.cheque_payment')
+    @include('admin.accounting.vouchers.cheque_payment')
 @elseif(request()->query('view') == 'سند صرف نقدي')
-    @include('admin.vouchers.cash_receipt')
+    @include('admin.accounting.vouchers.cash_receipt')
 @elseif(request()->query('view') == 'سند صرف بشيك')
-    @include('admin.vouchers.cheque_receipt')
+    @include('admin.accounting.vouchers.cheque_receipt')
 @elseif(request()->query('view') == 'الصندوق')
-    @include('admin.vouchers.box')
+    @include('admin.accounting.vouchers.box')
 @endif
 
 <script>

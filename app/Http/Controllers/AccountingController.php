@@ -15,7 +15,7 @@ class AccountingController extends Controller
 {
     public function tree() {
         $accounts = Account::where('parent_id', null)->get();
-        return view('admin.tree', compact('accounts'));
+        return view('admin.accounting.tree', compact('accounts'));
     }
 
     public function createRoot(RootRequest $request) {
@@ -71,7 +71,7 @@ class AccountingController extends Controller
             });
         }
         
-        return view('admin.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray'));
+        return view('admin.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray'));
     }
 
     public function createJournal(JournalRequest $request) {

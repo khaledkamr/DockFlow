@@ -130,7 +130,7 @@
             @else
                 @foreach ($contracts as $contract)
                     <tr>
-                        <td class="text-center">{{ $contract->id }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $contract->id }}</td>
                         <td class="text-center">{{ $contract->company->name }}</td>
                         <td class="text-center">{{ $contract->company_representative }}</td>
                         <td class="text-center">

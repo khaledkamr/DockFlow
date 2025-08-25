@@ -13,13 +13,13 @@ class ContractController extends Controller
 {
     public function contracts() {
         $contracts = Contract::orderBy('id', 'desc')->get();
-        return view('admin.contracts', compact('contracts'));
+        return view('admin.contracts.contracts', compact('contracts'));
     }
 
     public function createContract() {
         $company = Company::first();
         $customers = Customer::all();
-        return view('admin.createContract', compact('company', 'customers'));
+        return view('admin.contracts.createContract', compact('company', 'customers'));
     }
 
     public function storeContract(ContractRequest $request) {
@@ -34,7 +34,6 @@ class ContractController extends Controller
         $end = Carbon::parse($contract->end_date);
         $months = $start->diffInMonths($end);
         $days = $start->copy()->addMonths($months)->diffInDays($end);
-        // return $contract;
-        return view('admin.contractDetails', compact('contract', 'months', 'days'));
+        return view('admin.contracts.contractDetails', compact('contract', 'months', 'days'));
     }
 }

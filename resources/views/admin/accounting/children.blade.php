@@ -23,7 +23,7 @@
             </div>
             @if($child->children->count())
                 <div class="children-container">
-                    @include('admin.children', ['children' => $child->children])
+                    @include('admin.accounting.children', ['children' => $child->children])
                 </div>
             @endif
         </li>

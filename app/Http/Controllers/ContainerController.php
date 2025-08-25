@@ -15,7 +15,7 @@ class ContainerController extends Controller
 {
     public function containers() {
         $containers = Container::orderBy('id', 'desc')->get();
-        return view('admin.containers', compact('containers'));
+        return view('admin.containers.containers', compact('containers'));
     }
 
     public function createContainer(Request $request) {
@@ -33,7 +33,7 @@ class ContainerController extends Controller
                 'CR' => $customer->CR,  'phone' => $customer->phone,
             ];
         }
-        return view('admin.createContainer', compact('customers', 'containerTypes', 'client'));
+        return view('admin.containers.createContainer', compact('customers', 'containerTypes', 'client'));
     }
 
     public function containerStore(Request $request) {
@@ -66,7 +66,7 @@ class ContainerController extends Controller
 
     public function containersTypes() {
         $containerTypes = Container_type::all();
-        return view('admin.containersTypes', compact('containerTypes'));
+        return view('admin.containers.containersTypes', compact('containerTypes'));
     }
 
     public function containerTypeStore(ContainerTypesRequest $request) {

@@ -61,7 +61,7 @@
             position: fixed;
             right: 0;
             top: 0;
-            width: 250px;
+            width: 270px;
             overflow-y: auto;
             z-index: 100;
         }
@@ -112,7 +112,7 @@
             margin-bottom: 1px;
         }
         .main-content {
-            margin-right: 250px;
+            margin-right: 270px;
             min-height: 100vh;
         }
         .navbar {

@@ -12,12 +12,12 @@ class CustomerController extends Controller
 {
     public function customers() {
         $customers = Customer::orderBy('id', 'desc')->get();
-        return view('admin.customers', compact('customers'));
+        return view('admin.users.customers', compact('customers'));
     }
 
     public function customerProfile($id) {
         $user = User::findOrFail($id);
-        return view('admin.userProfile', compact('user'));
+        return view('admin.users.userProfile', compact('user'));
     }
 
     public function storeCustomer(CustomerRequest $request) {

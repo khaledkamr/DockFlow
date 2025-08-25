@@ -19,13 +19,13 @@ class PolicyController extends Controller
     public function policies() {
         $policies = Policy::orderBy('id', 'desc')->get();
         $customers = Customer::all();
-        return view('admin.policies', compact('policies', 'customers'));
+        return view('admin.policies.policies', compact('policies', 'customers'));
     }
 
     public function storagePolicy(Request $request) {
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
-        return view('admin.storagePolicy', compact('company', 'customers'));
+        return view('admin.policies.storagePolicy', compact('company', 'customers'));
     }
 
     public function storeStoragePolicy(PolicyRequest $request) {
@@ -40,7 +40,7 @@ class PolicyController extends Controller
     public function createReceivePolicy() {
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
-        return view('admin.receivePolicy', compact('company', 'customers'));
+        return view('admin.policies.receivePolicy', compact('company', 'customers'));
     }
 
     public function storeReceivePolicy(PolicyRequest $request) {
@@ -60,11 +60,12 @@ class PolicyController extends Controller
         $policy = Policy::with('containers.containerType')->findOrFail($id);
         if($policy->type == 'إستلام') {
             $storage_price = 0;
+            $late_fee = 0;
             foreach($policy->containers as $container) {
-                $days = Carbon::parse($container->created_at)->diffInDays(Carbon::parse($policy->contract->storage_date));
-                $storage_price += $policy->contract->container_storage_price * $days;
+                $days = Carbon::parse($container->date)->diffInDays(Carbon::parse($policy->contract->storage_date));
+                $storage_price += $policy->contract->container_storage_price * (int) $days;
             }
-            $late_fee = $days > $policy->contract->late_fee_period ? $policy->late_fee * ($days - $policy->contract->late_fee_period) : 0;
+            $late_fee += $days > $policy->contract->container_storage_period ? $policy->late_fee * ( (int) $days - $policy->contract->container_storage_period) : 0;
             $tax = 'غير معفي';
         } else {
             $storage_price = $policy->storage_price;
@@ -72,6 +73,6 @@ class PolicyController extends Controller
             $tax = $policy->tax;
         }
             
-        return view('admin.policyDetails', compact('policy', 'storage_price', 'late_fee', 'tax'));
+        return view('admin.policies.policyDetails', compact('policy', 'storage_price', 'late_fee', 'tax'));
     }
 }

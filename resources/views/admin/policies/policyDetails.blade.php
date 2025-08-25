@@ -107,7 +107,7 @@
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-warehouse fa-2x text-success mb-2"></i>
                                             <small class="text-muted d-block">سعر التخزين</small>
-                                            <div class="fw-bold text-success fs-5">{{ $storage_price == 0 || $storage_price == 'مجاناً' ? 'مجاناً' : $storage_price . ' ريال' }}</div>
+                                            <div class="fw-bold text-success fs-5">{{ $storage_price == 0 ? 'مجاناً' : $storage_price . ' ريال' }}</div>
                                         </div>
                                     </div>
                                     <div class="col-4">
@@ -119,9 +119,9 @@
                                     </div>
                                     <div class="col-4">
                                         <div class="text-center p-3 bg-light rounded">
-                                            <i class="fas fa-receipt fa-2x text-warning mb-2"></i>
-                                            <small class="text-muted d-block">حالة الضريبة</small>
-                                            <div class="fw-bold text-warning fs-6">{{ $tax }}</div>
+                                            <i class="fas fa-receipt fa-2x text-primary mb-2"></i>
+                                            <small class="text-muted d-block">الضريبة المضافة</small>
+                                            <div class="fw-bold text-primary fs-6">{{ $tax == 'غير معفي' ? '15%' : '0%' }}</div>
                                         </div>
                                     </div>
                                 </div>
