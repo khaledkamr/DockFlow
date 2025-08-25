@@ -163,7 +163,12 @@
                                 {{ $invoice->policy_id }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $invoice->customer->name }}</td>
+                         <td class="text-center">
+                            <a href="{{ route('users.customer.profile', $invoice->customer->id) }}"
+                                class="text-dark text-decoration-none">
+                                {{ $invoice->customer->name }}
+                            </a>
+                        </td>
                         <td class="text-center">{{ $invoice->made_by }}</td>
                         <td class="text-center fw-bold">{{ $invoice->amount }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>

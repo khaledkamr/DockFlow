@@ -215,7 +215,7 @@
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $customer->id }}</td>
                         <td class="text-center">
-                            <a href=""
+                            <a href="{{ route('users.customer.profile', $customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $customer->name }}
                             </a>

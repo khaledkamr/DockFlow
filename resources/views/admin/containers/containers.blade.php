@@ -61,7 +61,7 @@
     }
 </style>
 
-<h1 class="mb-5">ساحة التخزين</h1>
+<h1 class="mb-4">ساحة التخزين</h1>
 
 <div class="row mb-4">
     <div class="col-md-6">
@@ -148,7 +148,7 @@
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $container->id }}</td>
                         <td class="text-center">
-                            <a href=""
+                            <a href="{{ route('users.customer.profile', $container->customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $container->customer->name }}
                             </a>

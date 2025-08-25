@@ -20,7 +20,7 @@ Route::get('/', function () {
 })->name('admin.home');
 
 Route::get('/users/customers', [CustomerController::class, 'customers'])->name('users.customers');
-Route::get('/users/{id}', [CustomerController::class, 'userProfile'])->name('user.profile');
+Route::get('/users/customer/{id}', [CustomerController::class, 'customerProfile'])->name('users.customer.profile');
 Route::post('/users/customer/store', [CustomerController::class, 'storeCustomer'])->name('users.customer.store');
 Route::put('/users/customer/update/{id}', [CustomerController::class, 'updateCustomer'])->name('users.customer.update');
 Route::delete('/users/customer/delete/{id}', [CustomerController::class, 'deleteCustomer'])->name('users.customer.delete');
@@ -53,7 +53,6 @@ Route::post('/contracts/update/{id}', [ContractController::class, 'updateContrac
 Route::get('/invoices', [InvoiceController::class, 'invoices'])->name('invoices');
 Route::post('invoice/create', [InvoiceController::class, 'storeInvoice'])->name('invoices.store');
 Route::put('invoice/update/{id}', [InvoiceController::class, 'updateInvoice'])->name('invoices.update');
-Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');
 
 Route::get('/admin/money/tree', [AccountingController::class, 'tree'])->name('admin.money.tree');
 Route::post('/admin/money/tree/create/root', [AccountingController::class, 'createRoot'])->name('admin.create.root');

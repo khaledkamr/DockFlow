@@ -16,8 +16,9 @@ class CustomerController extends Controller
     }
 
     public function customerProfile($id) {
-        $user = User::findOrFail($id);
-        return view('admin.users.userProfile', compact('user'));
+        $customer = Customer::findOrFail($id);
+        
+        return view('admin.users.customerProfile', compact('customer'));
     }
 
     public function storeCustomer(CustomerRequest $request) {

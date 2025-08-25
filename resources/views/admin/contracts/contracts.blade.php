@@ -134,7 +134,7 @@
                         <td class="text-center">{{ $contract->company->name }}</td>
                         <td class="text-center">{{ $contract->company_representative }}</td>
                         <td class="text-center">
-                            <a href=""
+                            <a href="{{ route('users.customer.profile', $contract->customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $contract->customer->name }}
                             </a>

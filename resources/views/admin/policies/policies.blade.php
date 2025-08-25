@@ -134,7 +134,7 @@
                     <tr>
                         <td class="text-center">{{ $policy->id }}</td>
                         <td class="text-center">
-                            <a href=""
+                            <a href="{{ route('users.customer.profile', $policy->customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $policy->customer->name }}
                             </a>

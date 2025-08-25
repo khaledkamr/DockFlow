@@ -25,6 +25,10 @@ class Customer extends Model
         return $this->hasMany(Container::class);
     }
 
+    public function policies() {
+        return $this->hasMany(Policy::class);
+    }
+
     public function invoices() {
         return $this->hasMany(Invoice::class);
     }
