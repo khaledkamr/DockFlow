@@ -24,7 +24,7 @@ class PolicyRequest extends FormRequest
             'car_code' => 'required',
             'storage_price' => 'numeric|nullable',
             'late_fee' => 'numeric|nullable', 
-            'tax' => 'numeric|nullable'  
+            'tax' => 'nullable'  
         ];
     }
 }

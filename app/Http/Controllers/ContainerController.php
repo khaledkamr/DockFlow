@@ -9,6 +9,7 @@ use App\Models\Container_type;
 use App\Http\Requests\ContainerRequest;
 use App\Http\Requests\ContainerTypesRequest;
 use App\Models\Customer;
+use Carbon\Carbon;
 
 class ContainerController extends Controller
 {
@@ -53,6 +54,11 @@ class ContainerController extends Controller
         $container = Container::findOrFail($id);
         $name = $container->code;
         $container->location = $request->location;
+        $old_status = $container->status;
+        $new_status = $request->status;
+        if($new_status == 'متوفر' && $old_status != $new_status) {
+            $container->date = Carbon::now()->format('Y-m-d');
+        }
         $container->status = $request->status;
         $container->save();
         return redirect()->back()->with('success', "تم تعديل بيانات الحاوية '$name' بنجاح");

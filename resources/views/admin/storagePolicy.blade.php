@@ -142,7 +142,7 @@
         let storage_period = $(this).find(':selected').data('storage-period');
         $('#storage_period').html(`سعر التخزين لمدة ${storage_period} أيام` || 'سعر التخزين');
         let storage_price = $(this).find(':selected').data('storage-price');
-        if(storage_price == 0) { storage_price = 'مجاناً' }
+        // if(storage_price == 0) { storage_price = 'مجاناً' }
         $('#storage_price').val(`${storage_price}` || '');
         let late_fee = $(this).find(':selected').data('late-fee');
         $('#late_fee').val(`${late_fee}` || '');

@@ -25,17 +25,13 @@ class PolicyController extends Controller
     public function storagePolicy(Request $request) {
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
-        // return $customers;
-
         return view('admin.storagePolicy', compact('company', 'customers'));
     }
 
     public function storeStoragePolicy(PolicyRequest $request) {
         $validated = $request->validated();
-        
         $containers = Container::where('customer_id', $validated['customer_id'])
-        ->where('status', 'في الإنتظار')->get();
-
+            ->where('status', 'في الإنتظار')->get();
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
         return redirect()->back()->with('success', 'تم إنشاء إتفاقية تخزين جديدة بنجاح');

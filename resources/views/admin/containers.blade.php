@@ -146,7 +146,7 @@
             @else
                 @foreach ($containers as $container)
                     <tr>
-                        <td class="text-center">{{ $container->id }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $container->id }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">
@@ -155,7 +155,7 @@
                         </td>
                         <td class="text-center">{{ $container->code }}</td>
                         <td class="text-center">{{ $container->containerType->name }}</td>
-                        <td class="text-center">{{ $container->location }}</td>
+                        <td class="text-center {{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد بعد' }}</td>
                         <td class="text-center">
                             <div class="{{ $container->status == 'متوفر' ? 'status-available' : ($container->status == 'غير متوفر' ? 'status-danger' : 'status-waiting') }}">
                                 {{ $container->status }}

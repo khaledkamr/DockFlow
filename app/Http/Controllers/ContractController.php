@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class ContractController extends Controller
 {
     public function contracts() {
-        $contracts = Contract::all();
+        $contracts = Contract::orderBy('id', 'desc')->get();
         return view('admin.contracts', compact('contracts'));
     }
 
