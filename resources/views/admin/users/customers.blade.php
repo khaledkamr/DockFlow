@@ -213,7 +213,7 @@
             @else
                 @foreach ($customers as $customer)
                     <tr>
-                        <td class="text-center">{{ $customer->id }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $customer->id }}</td>
                         <td class="text-center">
                             <a href=""
                                 class="text-dark text-decoration-none">

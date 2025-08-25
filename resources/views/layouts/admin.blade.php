@@ -125,16 +125,17 @@
         }
         .logo-section {
             /* border-bottom: 1px solid #ddd; */
-            padding-bottom: 1rem;
+            /* padding-bottom: 1rem; */
             margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar shadow-sm p-2">
-        <div class="logo-section d-flex justify-content-center align-items-center mb-3">
-            <img class="p-2" src="{{ asset('img/logo-2.jpg') }}" width="150px" alt="logo">
+    <div class="sidebar shadow-sm p-2 relative">
+        <div class="logo-section d-flex flex-column justify-content-center align-items-center">
+            <img class="" src="{{ asset('img/logo.png') }}" width="150px" alt="logo">
+            <h2 class="text-center fw-bold" style="background: linear-gradient(45deg, #42b3af, #0b56a9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DockFlow</h2>
         </div>
 
         <ul class="nav flex-column">
