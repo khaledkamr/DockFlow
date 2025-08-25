@@ -9,12 +9,11 @@ class invoice extends Model
     protected $fillable = [
         'policy_id',
         'customer_id', 
+        'made_by',
+        'amount',
+        'payment_method',
         'date',
-        'base_price', 
-        'late_fee_total', 
-        'tax_total', 
-        'grand_total',
-        'payment_method'
+        'payment'
     ];
 
     public function policy() {

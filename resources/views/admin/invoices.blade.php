@@ -68,7 +68,7 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن فاتورة بإسم العميل او بتاريخ الفاتورة... "
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن فاتورة بالرقم او بإسم العميل او بتاريخ الفاتورة... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span>بحث</span>
@@ -79,9 +79,9 @@
     </div>
     <div class="col-md-3">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="paymentMethodFilter" class="form-label text-dark fw-bold">تصفية حسب طريقــة الدفــع:</label>
+            <label class="form-label text-dark fw-bold">تصفية حسب طريقــة الدفــع:</label>
             <div class="d-flex">
-                <select id="paymentMethodFilter" name="paymentMethod" class="form-select border-primary" onchange="this.form.submit()">
+                <select name="paymentMethod" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('paymentMethod') === 'all' || !request()->query('paymentMethod') ? 'selected' : '' }}>
                         جميع الطرق</option>
@@ -100,15 +100,15 @@
     </div>
     <div class="col-md-3">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="paymentMethodFilter" class="form-label text-dark fw-bold">تصفية حسب الدفــع:</label>
+            <label class="form-label text-dark fw-bold">تصفية حسب الدفــع:</label>
             <div class="d-flex">
-                <select id="paymentMethodFilter" name="paymentMethod" class="form-select border-primary" onchange="this.form.submit()">
+                <select name="payment" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
-                        {{ request()->query('paymentMethod') === 'all' || !request()->query('paymentMethod') ? 'selected' : '' }}>
+                        {{ request()->query('payment') === 'all' || !request()->query('payment') ? 'selected' : '' }}>
                         جميع الفواتير</option>
-                    <option value="كريدت" {{ request()->query('paymentMethod') === 'كريدت' ? 'selected' : '' }}>
+                    <option value="تم الدفع" {{ request()->query('payment') === 'كريدت' ? 'selected' : '' }}>
                         تم الدفع</option>
-                    <option value="كاش" {{ request()->query('paymentMethod') === 'كاش' ? 'selected' : '' }}>
+                    <option value="لم يتم الدفع" {{ request()->query('payment') === 'كاش' ? 'selected' : '' }}>
                         لم يتم الدفع</option>
                 </select>
                 @if (request()->query('search'))
@@ -119,6 +119,19 @@
     </div>
 </div>
 
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>{{ session('success') }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>حدث خطأ في العمليه الرجاء مراجعة البيانات!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
 <div class="table-container">
     <table class="table table-hover">
         <thead>
@@ -126,36 +139,81 @@
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
                 <th class="text-center bg-dark text-white">رقــم الإتفاقيــة</th>
                 <th class="text-center bg-dark text-white">العميــل</th>
-                <th class="text-center bg-dark text-white">سعــر التخزيــن</th>
-                <th class="text-center bg-dark text-white">غرامــة التأخيــر</th>
-                <th class="text-center bg-dark text-white">الضريبـــة المضافــة</th>
-                <th class="text-center bg-dark text-white">إجمالــي المبلـــغ</th>
+                <th class="text-center bg-dark text-white">تم بواسطة</th>
+                <th class="text-center bg-dark text-white">المبلغ</th>
                 <th class="text-center bg-dark text-white">طريقــة الدفـــع</th>
                 <th class="text-center bg-dark text-white">تاريــخ الفــاتورة</th>
                 <th class="text-center bg-dark text-white">عملية الدفع</th>
+                <th class="text-center bg-dark text-white">الإجرائات</th>
             </tr>
         </thead>
         <tbody>
             @if ($invoices->isEmpty())
                 <tr>
-                    <td colspan="9" class="text-center">
+                    <td colspan="8" class="text-center">
                         <div class="status-danger fs-6">لا يوجد اي فواتيـــر!</div>
                     </td>
                 </tr>
             @else
                 @foreach ($invoices as $invoice)
                     <tr>
-                        <td class="text-center">{{ $invoice->id }}</td>
-                        <td class="text-center">{{ $invoice->contract_id }}</td>
-                        <td class="text-center">{{ $invoice->user->name }}</td>
-                        <td class="text-center">{{ $invoice->base_price }}</td>
-                        <td class="text-center">{{ $invoice->late_fee_total }}</td>
-                        <td class="text-center">{{ $invoice->tax_total }}</td>
-                        <td class="text-center">{{ $invoice->grand_total }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $invoice->id }}</td>
+                        <td class="text-center text-primary fw-bold">
+                            <a href="{{ route('policies.receive.details', $invoice->policy->id) }}" class="text-decoration-none">
+                                {{ $invoice->policy_id }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ $invoice->customer->name }}</td>
+                        <td class="text-center">{{ $invoice->made_by }}</td>
+                        <td class="text-center fw-bold">{{ $invoice->amount }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
                         <td class="text-center">{{ $invoice->date }}</td>
-                        <td class="text-center"></td>
+                        <td class="text-center fw-bold {{ $invoice->payment == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
+                            {{ $invoice->payment }}
+                        </td>
+                        <td class="action-icons text-center">
+                            <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice{{ $invoice->id }}">
+                                <i class="fa-solid fa-pen text-primary" title="تحديث"></i>
+                            </button>
+                            <button class="btn btn-link p-0 pb-1 m-0" type="button">
+                                <i class="fa-solid fa-print text-secondary" title="طباعة"></i>
+                            </button>
+                        </td>
                     </tr>
+                    <div class="modal fade" id="updateInvoice{{ $invoice->id }}" tabindex="-1" aria-labelledby="updateInvoiceLabel{{ $invoice->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-dark fw-bold" id="updateInvoiceLabel{{ $invoice->id }}">تحديث بيانات الفاتورة</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="{{ route('invoices.update', $invoice->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="modal-body text-dark">
+                                        <div class="row mb-3">
+                                            <div class="col">
+                                                <label for="amount" class="form-label">المبلغ</label>
+                                                <input type="text" class="form-control border-primary" name="amount" value="{{ $invoice->amount }}" readonly>
+                                            </div>
+                                            <div class="col">
+                                                <label for="payment" class="form-label">عملية الدفع</label>
+                                                <select name="payment" class="form-select border-primary" required>
+                                                    <option value="" selected disabled>اختر عملية الدفع</option>
+                                                    <option value="تم الدفع">تم الدفع</option>
+                                                    <option value="لم يتم الدفع">لم يتم الدفع</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                        <button type="submit" class="btn btn-primary fw-bold">حفظ الفاتورة</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 @endforeach
             @endif
         </tbody>

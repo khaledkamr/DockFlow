@@ -12,12 +12,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('policy_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->date('date');
-            $table->decimal('base_price', 10, 2);
-            $table->decimal('late_fee_total', 10, 2)->default(0);
-            $table->decimal('tax_total', 10, 2);
-            $table->decimal('grand_total', 10, 2);
+            $table->string('made_by');
+            $table->decimal('amount', 10, 2);
             $table->enum('payment_method', ['كاش', 'كريدت', 'تحويل بنكي']);
+            $table->date('date');
+            $table->enum('payment', ['تم الدفع', 'لم يتم الدفع']);
             $table->timestamps();
         });
     }

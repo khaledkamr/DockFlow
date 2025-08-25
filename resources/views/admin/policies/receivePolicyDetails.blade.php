@@ -36,6 +36,19 @@
             </div>
         </div>
 
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>{{ session('success') }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>حدث خطأ في العمليه الرجاء مراجعة البيانات!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="row">
             <!-- Driver Information -->
             <div class="col-lg-6 mb-4">
@@ -235,10 +248,47 @@
 </div>
 <div class="d-flex gap-3">
     <button class="btn btn-primary fw-bold">تصريح خروج</button>
-    <button class="btn btn-primary fw-bold">
-        إستخراج فاتورة
-        <i class="fa-solid fa-scroll"></i>
+    <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
+        إنشاء فاتورة <i class="fa-solid fa-scroll"></i>
     </button>
+    <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">بيانات الفاتورة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('invoices.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="policy_id" value="{{ $policy->id }}">
+                    <input type="hidden" name="customer_id" value="{{ $policy->customer->id }}">
+                    <input type="hidden" name="made_by" value="خالد قمر">
+                    <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                    <div class="modal-body text-dark">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="amount" class="form-label">المبلغ</label>
+                                <input type="text" class="form-control border-primary" name="amount" value="{{ $policy->containers->sum('total') * 1.15 + $policy->contract->move_container_price * $policy->containers->count() }}" readonly>
+                            </div>
+                            <div class="col">
+                                <label for="payment_method" class="form-label">طريقة الدفع</label>
+                                <select name="payment_method" class="form-select border-primary" required>
+                                    <option value="" selected disabled>اختر طريقة الدفع</option>
+                                    <option value="كريدت">كريدت</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                    <option value="كاش">كاش</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-primary fw-bold">إنشاء فاتورة</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 

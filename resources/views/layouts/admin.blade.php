@@ -230,6 +230,12 @@
                     </a>
                 </div>
             </li>
+            
+            <li class="nav-item">
+                <a class="nav-link fw-bold {{ request()->routeIs('invoices') ? 'active' : '' }}" href="{{ route('invoices') }}">
+                    <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــــــواتيــــــــــر
+                </a>
+            </li>
 
             <li class="nav-item">
                 <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.money*']) ? 'expanded' : '' }}" 
@@ -250,18 +256,6 @@
                     </a>
                 </div>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link fw-bold {{ request()->routeIs('admin.invoices') ? 'active' : '' }}" href="{{ route('admin.invoices') }}">
-                    <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــــــواتيــــــــــر
-                </a>
-            </li>
-
-            {{-- <li class="nav-item">
-                <a class="nav-link fw-bold {{ request()->routeIs('admin.tree') ? 'active' : '' }}" href="{{ route('admin.tree') }}">
-                    <i class="fa-solid fa-folder-tree ms-2 me-2"></i> شجــرة الحسابـــات
-                </a>
-            </li> --}}
         </ul>
     </div>
     

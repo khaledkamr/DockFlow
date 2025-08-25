@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -49,9 +50,10 @@ Route::post('/contracts/store', [ContractController::class, 'storeContract'])->n
 Route::get('/contracts/{id}', [ContractController::class, 'contractDetails'])->name('contracts.details');
 Route::post('/contracts/update/{id}', [ContractController::class, 'updateContract'])->name('contracts.update');
 
-Route::post('admin/invoice/create', [AdminController::class, 'createInvoice'])->name('admin.invoice.create');
+Route::get('/invoices', [InvoiceController::class, 'invoices'])->name('invoices');
+Route::post('invoice/create', [InvoiceController::class, 'storeInvoice'])->name('invoices.store');
+Route::put('invoice/update/{id}', [InvoiceController::class, 'updateInvoice'])->name('invoices.update');
 Route::post('/admin/exit_permission/create', [AdminController::class, 'exitPermission'])->name('admin.exitPermission.create');
-Route::get('/admin/invoices', [AdminController::class, 'invoices'])->name('admin.invoices');
 
 Route::get('/admin/money/tree', [AccountingController::class, 'tree'])->name('admin.money.tree');
 Route::post('/admin/money/tree/create/root', [AccountingController::class, 'createRoot'])->name('admin.create.root');
