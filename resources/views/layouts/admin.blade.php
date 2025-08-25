@@ -34,16 +34,6 @@
             --primary-color: #10d5bf;
             --secondary-color: #0ec5a9;
         }
-        .btn-1 {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: #ffffff;
-        }
-        .btn-1:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: #ffffff;
-        }
         body {
             font-family: "Cairo", sans-serif;
             font-optical-sizing: auto;
@@ -280,7 +270,9 @@
                         <i class="fa-solid fa-user-circle fa-2xl text-secondary me-2"></i>
                         خالد قمر
                     </span>
-                    <button class="btn btn-outline-danger btn-sm">تسجيل خروج</button>
+                    <a href="{{ route('login.form') }}" class="btn btn-outline-primary btn-sm">
+                        تسجيل دخول
+                    </a>
                 </div>
             </div>
         </nav>
