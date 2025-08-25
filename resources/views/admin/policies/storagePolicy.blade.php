@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'إضافة إتفاقية')
+@section('title', 'إضافة إتفاقية تخزين')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -11,17 +11,13 @@
 
 @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
+        <strong>{{ session('success') }}</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 @if ($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        <strong>حدث خطأ في العملية الرجاء مراجعة البيانات</strong>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
@@ -50,9 +46,7 @@
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" 
                             data-contract="{{ $customer->contract ? $customer->contract->id : null }}" 
-                            data-storage-period="{{ $customer->contract ? $customer->contract->container_storage_period : null }}"
-                            data-storage-price="{{ $customer->contract ? $customer->contract->container_storage_price : null }}"
-                            data-late-fee="{{ $customer->contract ? $customer->contract->late_fee : null }}">
+                            data-containers="{{ $customer->containers }}">
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -97,30 +91,21 @@
                 @endif
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col">
-                <label id="storage_period" class="form-label">سعر تخزين الحاوية</label>
-                <input type="text" class="form-control border-primary" id="storage_price" name="storage_price">
-                @error('storage_price')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col">
-                <label for="late_fee" class="form-label">غرامة التأخير (للــيوم الواحــد)</label>
-                <input type="text" class="form-control border-primary" id="late_fee" name="late_fee" value="{{ old('late_fee') }}">
-                @error('late_fee')
-                <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col">
-                <label for="tax" class="form-label">الضريبة</label>
-                <select class="form-select border-primary" id="tax" name="tax">
-                    <option value="غير معفي" {{ old('tax') == 'غير معفي' ? 'selected' : '' }}>غير معفي</option>
-                    <option value="معفي" {{ old('tax') == 'معفي' ? 'selected' : '' }}>معفي</option>
-                </select>
-                @error('tax')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
+
+        <div class="row mb-4" id="container-section" >
+            <div class="col-12">
+                <h5 class="mb-3">حاويات العميل</h5>
+                <div class="card border-primary bg-light p-3">
+                    <div class="mb-3">
+                        <label class="form-label">الحاويات المتاحة للتخزين</label>
+                        <div id="containers-list" class="row">
+                            <!-- Containers will be populated here dynamically -->
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex flex-column">
+                        {{-- <small class="text-danger">* لا يمكن للعميل سحب اخر حاوية اذا عليه فواتير لم يدفعها بعد</small> --}}
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -139,14 +124,84 @@
         $('#customer_id').val(id || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
-        let storage_period = $(this).find(':selected').data('storage-period');
-        $('#storage_period').html(`سعر التخزين لمدة ${storage_period} أيام` || 'سعر التخزين');
-        let storage_price = $(this).find(':selected').data('storage-price');
-        // if(storage_price == 0) { storage_price = 'مجاناً' }
-        $('#storage_price').val(`${storage_price}` || '');
-        let late_fee = $(this).find(':selected').data('late-fee');
-        $('#late_fee').val(`${late_fee}` || '');
+        let containers = $(this).find(':selected').data('containers');
+
+        if (containers && containers.length > 0) {
+            displayContainers(containers);
+            $('#containers-list').show();
+        } else if (containers) {
+            displayContainers(containers);
+        } else {
+            $('#containers-list').hide();
+        }
     });
+
+    function displayContainers(containers) {
+        const containersList = $('#containers-list');
+        containersList.empty();
+
+        // Filter containers that are available for receiving (status: 'متوفر' or 'في الإنتظار')
+        const availableContainers = containers.filter(container => 
+            container.status === 'في الإنتظار'
+        );
+
+        if (availableContainers.length === 0) {
+            containersList.html(`
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        لا توجد حاويات متاحة للتخزين لهذا العميل
+                    </div>
+                </div>
+            `);
+            return;
+        }
+
+        availableContainers.forEach(container => {
+            const containerCard = `
+                <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="card container-card border-primary bg-primary-subtle" data-container-id="${container.id}">
+                        <div class="card-body p-3">
+                            <div class="form-check">
+                                <input class="form-check-input container-checkbox" type="checkbox" 
+                                       name="selected_containers[]" value="${container.id}" 
+                                       id="container_${container.id}" checked>
+                                <label class="form-check-label w-100" for="container_${container.id}">
+                                    <div class="container-info">
+                                        <div class="d-flex justify-content-between"> 
+                                            <div class="fw-bold text-primary">${container.code}</div>
+                                            <div class="text-primary">#${container.id}</div>
+                                        </div>
+                                        <div class="small text-muted">الحالة: ${container.status}</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            containersList.append(containerCard);
+        });
+
+        // Add click event to container cards
+        $('.container-card').on('click', function() {
+            const checkbox = $(this).find('.container-checkbox');
+            checkbox.prop('checked', !checkbox.prop('checked'));
+            updateContainerCardStyle($(this), checkbox.prop('checked'));
+        });
+
+        // Style checkboxes when clicked directly
+        $('.container-checkbox').on('change', function() {
+            updateContainerCardStyle($(this).closest('.container-card'), $(this).prop('checked'));
+        });
+    }
+
+    function updateContainerCardStyle(card, isSelected) {
+        if (isSelected) {
+            card.addClass('border-primary bg-primary-subtle');
+        } else {
+            card.removeClass('border-primary bg-primary-subtle');
+        }
+    }
 </script>
 
 <style>
@@ -159,9 +214,38 @@
     .select2-container .select2-selection__rendered {
         line-height: 30px; 
     }
-    /* .select2-container .select2-selection__arrow {
-        height: 100%; /* يخلي السهم في النص */
-    } */
+    .container-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid #dee2e6;
+    }
+
+    .container-card:hover {
+        border-color: #0d6efd;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .container-card.border-primary {
+        border-color: #0d6efd !important;
+    }
+
+    .bg-primary-subtle {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+    }
+
+    .container-info {
+        margin-left: 10px;
+    }
+
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
 </style>
 
 @endsection

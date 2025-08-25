@@ -234,7 +234,7 @@
     </div>
 </div>
 <div class="d-flex gap-3">
-    <button class="btn btn-primary fw-bold">إذن خروج</button>
+    <button class="btn btn-primary fw-bold">تصريح خروج</button>
     <button class="btn btn-primary fw-bold">
         إستخراج فاتورة
         <i class="fa-solid fa-scroll"></i>

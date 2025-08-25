@@ -15,6 +15,12 @@ class ContainerController extends Controller
 {
     public function containers() {
         $containers = Container::orderBy('id', 'desc')->get();
+        $containerFilter = request()->query('status');
+        if ($containerFilter && $containerFilter !== 'all') {
+            $containers = $containers->filter(function ($container) use ($containerFilter) {
+                return $container->status === $containerFilter;
+            });
+        }
         return view('admin.containers.containers', compact('containers'));
     }
 

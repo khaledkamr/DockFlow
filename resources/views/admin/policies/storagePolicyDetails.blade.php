@@ -37,7 +37,6 @@
         </div>
 
         <div class="row">
-            <!-- Driver Information -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
@@ -50,7 +49,7 @@
                         <div class="row g-4">
                             <!-- Driver Info -->
                             <div class="col-12">
-                                <div class="border-bottom pb-3 mb-3">
+                                <div class="border-bottom pb-3 mb-2">
                                     <h6 class="text-muted mb-2">
                                         <i class="fas fa-user me-2"></i>
                                         بيانات السائق
@@ -90,7 +89,6 @@
                 </div>
             </div>
 
-            <!-- Policy Financial Information -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
@@ -136,7 +134,7 @@
                                         </div>
                                         <div class="col-6">
                                             <small class="text-muted">العميل</small>
-                                            <div class="fw-bold">#{{ $policy->customer_id }}</div>
+                                            <div class="fw-bold">{{ $policy->customer->name }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +230,7 @@
         </button>
     </div>
 @else
-    <button class="btn btn-primary fw-bold">إذن دخول</button>
+    <button class="btn btn-primary fw-bold">تصريح دخول</button>
 @endif
 
 <style>

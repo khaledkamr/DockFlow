@@ -85,8 +85,8 @@
                     <option value="all"
                         {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
                         جميع الحاويات</option>
-                    <option value="موجود" {{ request()->query('status') === 'موجود' ? 'selected' : '' }}>
-                        موجود</option>
+                    <option value="متوفر" {{ request()->query('status') === 'متوفر' ? 'selected' : '' }}>
+                        متوفر</option>
                     <option value="في الإنتظار" {{ request()->query('status') === 'في الإنتظار' ? 'selected' : '' }}>
                         في الإنتظار</option>
                     <option value="غير متوفر" {{ request()->query('status') === 'غير متوفر' ? 'selected' : '' }}>

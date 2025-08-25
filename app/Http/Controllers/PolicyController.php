@@ -19,6 +19,13 @@ class PolicyController extends Controller
     public function policies() {
         $policies = Policy::orderBy('id', 'desc')->get();
         $customers = Customer::all();
+
+        $policyFilter = request()->query('type');
+        if ($policyFilter && $policyFilter !== 'all') {
+            $policies = $policies->filter(function ($policy) use ($policyFilter) {
+                return $policy->type === $policyFilter;
+            });
+        }
         return view('admin.policies.policies', compact('policies', 'customers'));
     }
 
@@ -29,9 +36,13 @@ class PolicyController extends Controller
     }
 
     public function storeStoragePolicy(PolicyRequest $request) {
+        $selected_containers = $request->selected_containers;
+        $containers = [];
+        foreach($selected_containers as $container) {
+            $containers[] = Container::findOrFail($container);
+        }
         $validated = $request->validated();
-        $containers = Container::where('customer_id', $validated['customer_id'])
-            ->where('status', 'في الإنتظار')->get();
+        
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
         return redirect()->back()->with('success', 'تم إنشاء إتفاقية تخزين جديدة بنجاح');
