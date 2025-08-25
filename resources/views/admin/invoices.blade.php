@@ -77,7 +77,7 @@
             </div>
         </form>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-3">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="paymentMethodFilter" class="form-label text-dark fw-bold">تصفية حسب طريقــة الدفــع:</label>
             <div class="d-flex">
@@ -98,14 +98,33 @@
             </div>
         </form>
     </div>
+    <div class="col-md-3">
+        <form method="GET" action="" class="d-flex flex-column">
+            <label for="paymentMethodFilter" class="form-label text-dark fw-bold">تصفية حسب الدفــع:</label>
+            <div class="d-flex">
+                <select id="paymentMethodFilter" name="paymentMethod" class="form-select border-primary" onchange="this.form.submit()">
+                    <option value="all"
+                        {{ request()->query('paymentMethod') === 'all' || !request()->query('paymentMethod') ? 'selected' : '' }}>
+                        جميع الفواتير</option>
+                    <option value="كريدت" {{ request()->query('paymentMethod') === 'كريدت' ? 'selected' : '' }}>
+                        تم الدفع</option>
+                    <option value="كاش" {{ request()->query('paymentMethod') === 'كاش' ? 'selected' : '' }}>
+                        لم يتم الدفع</option>
+                </select>
+                @if (request()->query('search'))
+                    <input type="hidden" name="search" value="{{ request()->query('search') }}">
+                @endif
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="table-container">
-    <table class="table table-striped">
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
-                <th class="text-center bg-dark text-white">رقــم العقــد</th>
+                <th class="text-center bg-dark text-white">رقــم الإتفاقيــة</th>
                 <th class="text-center bg-dark text-white">العميــل</th>
                 <th class="text-center bg-dark text-white">سعــر التخزيــن</th>
                 <th class="text-center bg-dark text-white">غرامــة التأخيــر</th>
@@ -113,6 +132,7 @@
                 <th class="text-center bg-dark text-white">إجمالــي المبلـــغ</th>
                 <th class="text-center bg-dark text-white">طريقــة الدفـــع</th>
                 <th class="text-center bg-dark text-white">تاريــخ الفــاتورة</th>
+                <th class="text-center bg-dark text-white">عملية الدفع</th>
             </tr>
         </thead>
         <tbody>
@@ -134,6 +154,7 @@
                         <td class="text-center">{{ $invoice->grand_total }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
                         <td class="text-center">{{ $invoice->date }}</td>
+                        <td class="text-center"></td>
                     </tr>
                 @endforeach
             @endif

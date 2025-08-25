@@ -61,7 +61,7 @@
     }
 </style>
 
-<h1 class="mb-4">إتفاقيات التخزين</h1>
+<h1 class="mb-4">إتفاقيات التخزين و الإستلام</h1>
 
 <div class="row mb-4">
     <div class="col-md-5">
@@ -143,7 +143,7 @@
                         <td class="text-center">{{ $policy->date }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('policies.details', $policy->id) }}" 
+                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy->id) : route('policies.receive.details', $policy->id) }}" 
                                 class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
                                 عرض
                             </a>

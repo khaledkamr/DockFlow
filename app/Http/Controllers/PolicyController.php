@@ -56,7 +56,7 @@ class PolicyController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء إتفاقية إستلام جديدة بنجاح');
     }
 
-    public function policyDetails($id) {
+    public function storagePolicyDetails($id) {
         $policy = Policy::with('containers.containerType')->findOrFail($id);
         if($policy->type == 'إستلام') {
             $storage_price = 0;
@@ -73,6 +73,24 @@ class PolicyController extends Controller
             $tax = $policy->tax;
         }
             
-        return view('admin.policies.policyDetails', compact('policy', 'storage_price', 'late_fee', 'tax'));
+        return view('admin.policies.storagePolicyDetails', compact('policy', 'storage_price', 'late_fee', 'tax'));
+    }
+
+    public function receivePolicyDetails($id) {
+        $policy = Policy::with('containers.containerType')->findOrFail($id);
+        foreach($policy->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($policy->date));
+            $container->storage_price = $policy->contract->container_storage_price;
+            if($container->period > $policy->contract->container_storage_period) {
+                $days = (int) Carbon::parse($container->date)->addDays($policy->contract->container_storage_period)->diffInDays(Carbon::parse($policy->date));
+                $container->late_days = $days;
+                $container->late_fee = $days * $policy->contract->late_fee;
+            } else {
+                $container->late_fee = 0;
+            }
+            $container->total = $container->storage_price + $container->late_fee;
+        }
+            
+        return view('admin.policies.receivePolicyDetails', compact('policy'));
     }
 }

@@ -33,12 +33,15 @@ Route::post('/yard/containers/types/store', [ContainerController::class, 'contai
 Route::put('/yard/containers/types/update/{id}', [ContainerController::class, 'updateContainerType'])->name('yard.containers.types.update');
 Route::delete('/yard/containers/types/delete/{id}', [ContainerController::class, 'deleteContainerType'])->name('yard.containers.types.delete');
 
-Route::get('/policies', [PolicyController::class, 'policies'])->name('policies');
-Route::get('/policies/storage/create', [PolicyController::class, 'storagePolicy'])->name('policies.storage.create');
-Route::get('/policies/receive/create', [PolicyController::class, 'createReceivePolicy'])->name('policies.receive.create');
-Route::post('/policies/storage/store', [PolicyController::class, 'storeStoragePolicy'])->name('policies.storage.store');
-Route::post('/policies/receive/store', [PolicyController::class, 'storeReceivePolicy'])->name('policies.receive.store');
-Route::get('/policies/details/{id}', [PolicyController::class, 'policyDetails'])->name('policies.details');
+Route::controller(PolicyController::class)->group(function () {
+    Route::get('/policies', 'policies')->name('policies');
+    Route::get('/policies/storage/create', 'storagePolicy')->name('policies.storage.create');
+    Route::get('/policies/receive/create', 'createReceivePolicy')->name('policies.receive.create');
+    Route::post('/policies/storage/store', 'storeStoragePolicy')->name('policies.storage.store');
+    Route::post('/policies/receive/store', 'storeReceivePolicy')->name('policies.receive.store');
+    Route::get('/policies/storage/details/{id}', 'storagePolicyDetails')->name('policies.storage.details');
+    Route::get('/policies/receive/details/{id}', 'receivePolicyDetails')->name('policies.receive.details');
+});
 
 Route::get('/contracts', [ContractController::class, 'contracts'])->name('contracts');
 Route::get('/contracts/create', [ContractController::class, 'createContract'])->name('contracts.create');
