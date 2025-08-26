@@ -20,27 +20,16 @@ class AuthController extends Controller
 
         if($valid) {
             $user = User::where('email', $request->email)->first();
-            if($user->role == 'student') {
-                return redirect(route('student.home'));
-            } 
-            elseif($user->role == 'professor') {
-                return redirect(route('professor.home'));
-            }
-            elseif($user->role == 'parent') {
-                return redirect(route('parent.home'));
-            }
-            elseif($user->role == 'admin') {
-                return redirect(route('admin.home'));
-            }
+            return redirect((route('admin.home')))->with('success', 'مرحبا بك من جديد');
         } 
         else {
-            return redirect(route('loginForm'))->with('error', 'Invalid email or password');
+            return redirect(route('login.form'))->with('error', 'فشلت علمية المصادقة');
         }
     }
 
     public function logout() {
         Auth::logout();
-        return redirect(route('loginForm'));
+        return redirect(route('login.form'));
     }
 
 }

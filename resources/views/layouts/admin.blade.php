@@ -268,7 +268,7 @@
                 <div class="ms-auto">
                     <span class="me-3 text-dark">
                         <i class="fa-solid fa-user-circle fa-2xl text-secondary me-2"></i>
-                        خالد قمر
+                        {{ Auth::user()->name }}
                     </span>
                     <a href="{{ route('login.form') }}" class="btn btn-outline-primary btn-sm">
                         تسجيل دخول

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Blade</title>
+    <title>DockFlow - تسجيل دخول</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,14 +20,6 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #f8f9fc 0%, #e9ecef 100%);
         }
-
-        .login-container {
-            background: white;
-            border: 2px solid #0d6efd;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(13, 110, 253, 0.1);
-        }
-
         .form-control {
             border: 2px solid #0d6efd;
             border-radius: 8px;
@@ -35,16 +27,13 @@
             font-size: 16px;
             transition: all 0.3s ease;
         }
-
         .form-control:focus {
             border-color: #0b5ed7;
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
-
         .form-control::placeholder {
             color: #6c757d;
         }
-
         .btn-primary {
             background-color: #0d6efd;
             border-color: #0d6efd;
@@ -53,63 +42,38 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-
         .btn-primary:hover {
             background-color: #0b5ed7;
             border-color: #0a58ca;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
         }
-
         .btn-primary:active {
             transform: translateY(0);
         }
-
         .form-check-input:checked {
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
-
         .text-primary {
             color: #0d6efd !important;
         }
-
         .text-primary:hover {
             color: #0b5ed7 !important;
             text-decoration: underline;
         }
-
         .form-floating > .form-control {
             padding: 1rem 0.75rem;
         }
-
         .form-floating > label {
             color: #6c757d;
             font-weight: 500;
         }
-
-        .input-group-text {
-            border: 2px solid #0d6efd;
-            background-color: #f8f9fa;
-            color: #0d6efd;
-        }
-
         .animate-input {
             transition: transform 0.2s ease;
         }
-
         .animate-input:focus-within {
             transform: scale(1.02);
-        }
-
-        @media (max-width: 576px) {
-            .brand-title {
-                font-size: 2rem;
-            }
-            
-            .login-container {
-                margin: 1rem;
-            }
         }
     </style>
 </head>
@@ -117,38 +81,32 @@
     <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4">
         <div class="row w-100 justify-content-center">
             <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-                <div class="login-container p-4 p-md-5">
-                    <!-- Brand Header -->
+                <div class="bg-white border border-2 border-primary rounded-4 shadow p-4 p-md-5">
                     <div class="text-center mb-4">
                         <img src="{{ asset('img/logo.png') }}" width="170px" alt="">
                         <h1 class="fw-bold" style="background: linear-gradient(45deg, #42b3af, #0b56a9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DockFlow</h1>
-                        {{-- <p class="brand-subtitle mb-0">Welcome back! Please sign in to your account</p> --}}
                     </div>
 
                     <!-- Login Form -->
-                    <form id="loginForm">
-                        <!-- Email Input -->
+                    <form action="{{ route('login') }}" method="POST" id="loginForm">
+                        @csrf
                         <div class="mb-3 animate-input">
                             <div class="form-floating">
-                                <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                                <input type="text" class="form-control" id="email" name="email" placeholder="">
                                 <label for="email"><i class="fa-solid fa-envelope me-2"></i>البريد الإلكتروني</label>
                             </div>
                         </div>
-
-                        <!-- Password Input -->
                         <div class="mb-3 animate-input">
                             <div class="form-floating">
-                                <input type="password" class="form-control" id="password" placeholder="Password" required>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="">
                                 <label for="password"><i class="fa-solid fa-lock me-2"></i>كلمة السر</label>
                             </div>
                         </div>
-
-                        <!-- Remember Me & Forgot Password -->
                         <div class="row mb-4">
                             <div class="col-12 col-sm-6 mb-2 mb-sm-0">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember">
-                                    <label class="form-check-label text-muted" for="remember">
+                                    <input class="form-check-input border border-2 border-primary" type="checkbox" id="remember">
+                                    <label class="form-check-label fw-bold small text-muted" for="remember">
                                         تذكرني
                                     </label>
                                 </div>
@@ -159,11 +117,8 @@
                                 </a>
                             </div>
                         </div>
-
-                        <!-- Login Button -->
                         <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fa-solid fa-arrow-right-to-bracket me-2 fw-bold"></i>
                                 <span id="loginText" class="fw-bold">تسجيل الدخول</span>
                             </button>
                         </div>
@@ -173,9 +128,7 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -188,33 +141,29 @@
             // Validation
             if (!email || !password) {
                 // Bootstrap toast for validation error
-                showToast('Please fill in all fields', 'warning');
+                showToast('بالرجاء ادخال جميع البيانات', 'danger');
                 return;
             }
             
             // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                showToast('Please enter a valid email address', 'warning');
+                showToast('بالله عليك دا منظر ايميل', 'danger');
                 return;
             }
             
             // Loading state
-            loginBtn.disabled = true;
-            loginText.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing In...';
+            loginText.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> يتم تسجيل دخول...';
             
             // Simulate API call
             setTimeout(() => {
                 // Success simulation
-                showToast(`Welcome back! Logged in as ${email}`, 'success');
-                
-                // Reset button
-                loginBtn.disabled = false;
-                loginText.innerHTML = 'Sign In';
-                
-                // Clear form
+                showToast(`وصل وصل شغالة يعم الحج الله ينور`, 'success');
+                loginText.innerHTML = 'تسجيل الدخول';
                 document.getElementById('loginForm').reset();
             }, 2000);
+
+            document.getElementById('loginForm').submit();
         });
 
         // Toast notification function
@@ -222,7 +171,7 @@
             const toastContainer = document.getElementById('toastContainer') || createToastContainer();
             
             const toast = document.createElement('div');
-            toast.className = `toast align-items-center text-white bg-${type === 'warning' ? 'warning' : type === 'success' ? 'success' : 'primary'} border-0`;
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
             toast.setAttribute('role', 'alert');
             toast.innerHTML = `
                 <div class="d-flex">
@@ -253,19 +202,6 @@
             document.body.appendChild(container);
             return container;
         }
-
-        // Add smooth animations for form inputs
-        const formInputs = document.querySelectorAll('.form-control');
-        formInputs.forEach(input => {
-            input.addEventListener('input', function() {
-                if (this.value) {
-                    this.classList.add('is-valid');
-                    this.classList.remove('is-invalid');
-                } else {
-                    this.classList.remove('is-valid', 'is-invalid');
-                }
-            });
-        });
 
         // Add ripple effect to button
         document.querySelector('.btn-primary').addEventListener('click', function(e) {

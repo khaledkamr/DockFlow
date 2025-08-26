@@ -22,6 +22,7 @@ Route::get('/', function () {
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'loginForm')->name('login.form');
+    Route::post('/login', 'login')->name('login');
 });
 
 Route::controller(CustomerController::class)->group(function () {
