@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');            
-            $table->string('type');              // شركة او مؤسسة
             $table->string('CR');                // السجل التجاري
             $table->string('TIN');               // الرقم الضريبي
             $table->string('national_address');  // العنوان الوطني
