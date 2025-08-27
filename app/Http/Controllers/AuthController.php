@@ -23,13 +23,13 @@ class AuthController extends Controller
             return redirect((route('admin.home')))->with('success', 'مرحبا بك من جديد');
         } 
         else {
-            return redirect(route('login.form'))->with('error', 'فشلت علمية المصادقة');
+            return redirect(route('login.form'))->with('error', 'البريد الإلكتروني او كلمة السر غير صحيحة');
         }
     }
 
     public function logout() {
         Auth::logout();
-        return redirect(route('login.form'));
+        return redirect(route('login.form'))->with('success', 'تم تسجيل الخروج من الحساب');
     }
 
 }

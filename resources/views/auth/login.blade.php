@@ -92,7 +92,7 @@
                         @csrf
                         <div class="mb-3 animate-input">
                             <div class="form-floating">
-                                <input type="text" class="form-control" id="email" name="email" placeholder="">
+                                <input type="text" class="form-control" id="email" name="email" placeholder="" value="{{ old('email') }}">
                                 <label for="email"><i class="fa-solid fa-envelope me-2"></i>البريد الإلكتروني</label>
                             </div>
                         </div>
@@ -140,8 +140,7 @@
             
             // Validation
             if (!email || !password) {
-                // Bootstrap toast for validation error
-                showToast('بالرجاء ادخال جميع البيانات', 'danger');
+                showToast('بالرجاء إدخال جميع البيانات', 'danger');
                 return;
             }
             
@@ -153,14 +152,11 @@
             }
             
             // Loading state
-            loginText.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> يتم تسجيل دخول...';
+            loginText.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> يتم تسجيل دخول';
             
             // Simulate API call
             setTimeout(() => {
-                // Success simulation
-                showToast(`وصل وصل شغالة يعم الحج الله ينور`, 'success');
                 loginText.innerHTML = 'تسجيل الدخول';
-                document.getElementById('loginForm').reset();
             }, 2000);
 
             document.getElementById('loginForm').submit();
@@ -173,13 +169,14 @@
             const toast = document.createElement('div');
             toast.className = `toast align-items-center text-white bg-${type} border-0`;
             toast.setAttribute('role', 'alert');
+            toast.style.direction = 'rtl';
             toast.innerHTML = `
                 <div class="d-flex">
                     <div class="toast-body">
-                        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} ms-2"></i>
                         ${message}
                     </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    <button type="button" class="btn-close btn-close-white ms-3 m-auto" data-bs-dismiss="toast"></button>
                 </div>
             `;
             
@@ -197,7 +194,7 @@
         function createToastContainer() {
             const container = document.createElement('div');
             container.id = 'toastContainer';
-            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.className = 'toast-container position-fixed top-0 end-0 p-4';
             container.style.zIndex = '1055';
             document.body.appendChild(container);
             return container;
@@ -243,5 +240,16 @@
         `;
         document.head.appendChild(style);
     </script>
+
+    @if (session('error'))
+        <script>
+            showToast("{{ session('error') }}", "danger");
+        </script>
+    @endif
+    @if (session('success'))
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endif
 </body>
 </html>
