@@ -10,17 +10,21 @@
 <h2 class="mb-4">إضافة إتفاقية إستلام</h2>
 
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>{{ session('success') }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    @push('scripts')
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
 @endif
-@if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>حدث خطأ في العمليه الرجاء مراجعة البيانات!</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+
+@if (session('errors'))
+    @push('scripts')
+        <script>
+            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+        </script>
+    @endpush
 @endif
+
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
     <form action="{{ route('policies.receive.store') }}" method="POST">

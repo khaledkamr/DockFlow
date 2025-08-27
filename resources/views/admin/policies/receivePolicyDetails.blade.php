@@ -262,7 +262,7 @@
                     @csrf
                     <input type="hidden" name="policy_id" value="{{ $policy->id }}">
                     <input type="hidden" name="customer_id" value="{{ $policy->customer->id }}">
-                    <input type="hidden" name="made_by" value="خالد قمر">
+                    <input type="hidden" name="made_by" value="{{ Auth::user()->name }}">
                     <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                     <div class="modal-body text-dark">
                         <div class="row mb-3">

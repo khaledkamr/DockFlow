@@ -73,23 +73,26 @@
     <div class="d-block text-center">
         <button type="button" class="btn btn-secondary btn-sm" id="add-row">+ إضافة سطر</button>
     </div>
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>{{ session('success') }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if (session('success'))
+        @push('scripts')
+            <script>
+                showToast("{{ session('success') }}", "success");
+            </script>
+        @endpush
     @endif
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            <strong>{{ session('error') }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if (session('error'))
+        @push('scripts')
+            <script>
+                showToast("{{ session('error') }}", "danger");
+            </script>
+        @endpush
     @endif
-    @if(session('errors'))
-        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            <strong>حدث خطأ في العملية الرجاء مراجعة البيانات</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if (session('errors'))
+        @push('scripts')
+            <script>
+                showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+            </script>
+        @endpush
     @endif
     <button type="submit" id="submit" class="btn btn-primary fw-bold">حفظ القيد</button>
 </form>

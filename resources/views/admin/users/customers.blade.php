@@ -121,14 +121,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <label for="name" class="form-label">إسم العميل</label>
-                            <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}" required>
+                            <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}">
                             @error('name')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">
                             <label for="CR" class="form-label">السجل التجاري</label>
-                            <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ old('CR') }}" required>
+                            <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ old('CR') }}">
                             @error('CR')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -137,14 +137,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <label for="TIN" class="form-label">الرقم الضريبي</label>
-                            <input type="text" class="form-control border-primary" id="TIN" name="TIN" value="{{ old('TIN') }}" required>
+                            <input type="text" class="form-control border-primary" id="TIN" name="TIN" value="{{ old('TIN') }}">
                             @error('TIN')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">
                             <label for="national_address" class="form-label">العنوان الوطني</label>
-                            <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ old('national_address') }}" required>
+                            <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ old('national_address') }}">
                             @error('national_address')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -153,14 +153,14 @@
                     <div class="row mb-3">
                         <div class="col">
                             <label for="phone" class="form-label">رقم الهاتف</label>
-                            <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ old('phone') }}" required>
+                            <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ old('phone') }}">
                             @error('phone')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">
                             <label for="email" class="form-label">الإيميل</label>
-                            <input type="text" class="form-control border-primary" id="email" name="email" value="{{ old('email') }}" required>
+                            <input type="text" class="form-control border-primary" id="email" name="email" value="{{ old('email') }}">
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
@@ -176,19 +176,20 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>{{ session('success') }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+@if (session('success'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
 @endif
 
-@if(session('errors'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>حدث خطأ في العملية الرجاء مراحعة البيانات</strong>
-        {{ session('errors') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+@if (session('errors'))
+    @push('scripts')
+        <script>
+            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+        </script>
+    @endpush
 @endif
 
 <div class="table-container">
@@ -247,7 +248,7 @@
                                         <div class="row mb-3">
                                             <div class="col">
                                                 <label for="name" class="form-label">إسم العميل</label>
-                                                <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $customer->name }}" required>
+                                                <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $customer->name }}">
                                                 @error('name')
                                                 <div class="text-danger">{{ $message }}</div>
                                                 @enderror

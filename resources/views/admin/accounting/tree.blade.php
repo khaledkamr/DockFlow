@@ -142,21 +142,22 @@
         <button class="btn btn-danger" onclick="collapseAll()">طي الكل</button>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>{{ session('success') }}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if (session('success'))
+        @push('scripts')
+            <script>
+                showToast("{{ session('success') }}", "success");
+            </script>
+        @endpush
     @endif
 
-    @if(session('errors'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>حدث خطأ في العملية الرجاء مراحعة البيانات</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if (session('errors'))
+        @push('scripts')
+            <script>
+                showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+            </script>
+        @endpush
     @endif
 
-    
     <div class="bg-white rounded-3 shadow-sm p-3 mt-3">
         <ul class="tree-list">
             @foreach($accounts as $account)

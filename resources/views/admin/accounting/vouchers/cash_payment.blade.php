@@ -77,7 +77,6 @@
                             </div>
                         </div>
                     </div>
-
                 @endforeach
             @endif
         </tbody>

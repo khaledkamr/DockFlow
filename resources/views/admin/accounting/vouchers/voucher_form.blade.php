@@ -67,7 +67,6 @@
                 <div class="text-danger">{{ $message }}</div>
             @endif
         </div>
-        
     </div>
     <button type="submit" class="btn btn-primary fw-bold mt-2">إضافة سند</button>
 </form>
