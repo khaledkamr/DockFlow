@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
-    public function invoices() {
+    public function invoices(Request $request) {
         $invoices = invoice::orderBy('id', 'desc')->get();
         $methodFilter = request()->query('paymentMethod');
         if ($methodFilter && $methodFilter !== 'all') {
@@ -20,6 +20,14 @@ class InvoiceController extends Controller
         if ($paymentFilter && $paymentFilter !== 'all') {
             $invoices = $invoices->filter(function ($invoice) use ($paymentFilter) {
                 return $invoice->payment === $paymentFilter;
+            });
+        }
+        $search = $request->input('search', null);
+        if($search) {
+            $invoices = $invoices->filter(function($invoice) use($search) {
+                return stripos($invoice->id, $search) !== false 
+                    || stripos($invoice->customer->name, $search) !== false
+                    || stripos($invoice->date, $search) !== false;
             });
         }
         return view('admin.invoices', compact('invoices'));

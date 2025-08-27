@@ -11,8 +11,16 @@ use Illuminate\Http\Request;
 
 class ContractController extends Controller
 {
-    public function contracts() {
+    public function contracts(Request $request) {
         $contracts = Contract::orderBy('id', 'desc')->get();
+        $search = $request->input('search', null);
+        if($search) {
+            $contracts = $contracts->filter(function($contract) use($search) {
+                return stripos($contract->id, $search) !== false 
+                    || stripos($contract->customer->name, $search) !== false
+                    || stripos($contract->start_date, $search) !== false;
+            });
+        }
         return view('admin.contracts.contracts', compact('contracts'));
     }
 

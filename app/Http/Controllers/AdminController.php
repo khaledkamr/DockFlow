@@ -29,7 +29,6 @@ class AdminController extends Controller
         $receivedContainers = $containers->where('date', $date)->count();
         $deliveredContainers = $containers->where('exit_date', $date)->count();
         $policies = Policy::where('date', $date)->get();
-        // $received
         
         return view('admin.home', compact(
             'customers', 

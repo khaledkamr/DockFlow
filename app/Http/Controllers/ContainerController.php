@@ -13,12 +13,21 @@ use Carbon\Carbon;
 
 class ContainerController extends Controller
 {
-    public function containers() {
+    public function containers(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
         $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
             $containers = $containers->filter(function ($container) use ($containerFilter) {
                 return $container->status === $containerFilter;
+            });
+        }
+        $search = $request->input('search', null);
+        if($search) {
+            $containers = $containers->filter(function($container) use($search) {
+                return stripos($container->id, $search) !== false 
+                    || stripos($container->code, $search) !== false 
+                    || stripos($container->customer->name, $search) !== false
+                    || stripos($container->location, $search) !== false;
             });
         }
         return view('admin.containers.containers', compact('containers'));

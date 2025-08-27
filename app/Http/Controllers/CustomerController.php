@@ -10,8 +10,15 @@ use App\Http\Requests\UserRequest;
 
 class CustomerController extends Controller
 {
-    public function customers() {
+    public function customers(Request $request) {
         $customers = Customer::orderBy('id', 'desc')->get();
+        $search = $request->input('search', null);
+        if($search) {
+            $customers = $customers->filter(function($customer) use($search) {
+                return stripos($customer->id, $search) !== false 
+                    || stripos($customer->name, $search) !== false;
+            });
+        }
         return view('admin.users.customers', compact('customers'));
     }
 

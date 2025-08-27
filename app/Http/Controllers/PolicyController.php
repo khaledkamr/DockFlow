@@ -16,14 +16,21 @@ use Carbon\Carbon;
 
 class PolicyController extends Controller
 {
-    public function policies() {
+    public function policies(Request $request) {
         $policies = Policy::orderBy('id', 'desc')->get();
         $customers = Customer::all();
-
         $policyFilter = request()->query('type');
         if ($policyFilter && $policyFilter !== 'all') {
             $policies = $policies->filter(function ($policy) use ($policyFilter) {
                 return $policy->type === $policyFilter;
+            });
+        }
+        $search = $request->input('search', null);
+        if($search) {
+            $policies = $policies->filter(function($policy) use($search) {
+                return stripos($policy->id, $search) !== false 
+                    || stripos($policy->customer->name, $search) !== false
+                    || stripos($policy->date, $search) !== false;
             });
         }
         return view('admin.policies.policies', compact('policies', 'customers'));
