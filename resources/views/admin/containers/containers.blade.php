@@ -63,6 +63,48 @@
 
 <h1 class="mb-4">ساحة التخزين</h1>
 
+<div class="row mb-3">
+    <div class="col">
+        <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title">إجمالي عدد الحاويات في الساحة</h5>
+                    <h2 class="text-primary fw-bold">{{ $containers->where('status', 'متوفر')->count() }}</h2>
+                </div>
+                <div>
+                    <i class="bi bi-boxes fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title">إجمالي الحاويات في الإنتظار</h5>
+                    <h2 class="text-primary fw-bold">{{ $containers->where('status', 'في الإنتظار')->count() }}</h2>
+                </div>
+                <div>
+                    <i class="fa-solid fa-hourglass-start fa-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title">إجمالي الحاويات التي تم تسليمها</h5>
+                    <h2 class="text-primary fw-bold">{{ $containers->where('status', 'غير متوفر')->count() }}</h2>
+                </div>
+                <div>
+                    <i class="bi bi-check-circle fs-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mb-4">
     <div class="col-md-6">
         <form method="GET" action="" class="d-flex flex-column">
@@ -107,19 +149,19 @@
 </div>
 
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>{{ session('success') }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    @push('scripts')
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
 @endif
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+
+@if (session('errors'))
+    @push('scripts')
+        <script>
+            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+        </script>
+    @endpush
 @endif
 
 <div class="table-container">

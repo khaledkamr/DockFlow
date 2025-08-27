@@ -8,17 +8,13 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
+use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\invoice;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $customers = Customer::all()->count();
-    $contracts = Contract::all()->count();
-    $invoices = invoice::all()->count();
-    return view('admin.home', compact('customers', 'contracts', 'invoices'));
-})->middleware('auth')->name('admin.home');
+Route::get('/', [AdminController::class, 'dashboard'])->middleware('auth')->name('admin.home');
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'loginForm')->name('login.form');
