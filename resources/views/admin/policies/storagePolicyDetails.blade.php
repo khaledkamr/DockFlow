@@ -38,7 +38,7 @@
 
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <div class="card shadow-sm h-100">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-user-shield me-2"></i>
@@ -90,7 +90,7 @@
             </div>
 
             <div class="col-lg-6 mb-4">
-                <div class="card shadow-sm h-100">
+                <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-money-bill-wave me-2"></i>
@@ -146,7 +146,7 @@
         </div>
 
         <!-- Containers Section -->
-        <div class="card shadow-sm mb-4">
+        <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <div class="d-flex justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
@@ -168,43 +168,45 @@
                                     <th class="border-0 fw-bold">صاحب الحاوية</th>
                                     <th class="border-0 fw-bold">الحالة</th>
                                     <th class="border-0 fw-bold">الموقع</th>
+                                    <th class="border-0 fw-bold">تم الإستلام بواسطة</th>
+                                    <th class="border-0 fw-bold">تم التسليم بواسطة</th>
                                 </trc>
                             </thead>
                             <tbody class="text-center">
                                 @foreach($policy->containers as $index => $container)
                                 <tr>
-                                    <td class="align-middle text-center">
+                                    <td class="text-center">
                                             {{ $container->id}}
                                     </td>
-                                    <td class="align-middle">
+                                    <td>
                                         <div class="fw-bold text-primary">{{ $container->code }}</div>
                                     </td>
-                                    <td class="align-middle">
+                                    <td>
                                         <div class="fw-bold">{{ $container->containerType->name }}</div>
                                     </td>
-                                    <td class="align-middle">
+                                    <td>
                                         <div>{{ $container->customer->name }}</div>
                                     </td>
-                                    <td class="align-middle">
+                                    <td>
                                         @php
                                             $statusClass = match($container->status) {
                                                 'في الإنتظار' => 'bg-warning text-dark',
-                                                'مخزن' => 'bg-success',
-                                                'مُسلم' => 'bg-info',
-                                                'متأخر' => 'bg-danger',
+                                                'متوفر' => 'bg-success',
+                                                'غير متوفر' => 'bg-danger',
                                                 default => 'bg-secondary'
                                             };
                                         @endphp
                                         <span class="badge {{ $statusClass }}">{{ $container->status }}</span>
                                     </td>
-                                    <td class="align-middle">
-                                        @if($container->location)
-                                            <span class="fw-bold">{{ $container->location }}</span>
-                                        @else
-                                            <span class="text-muted">لم يُحدد بعد</span>
-                                        @endif
+                                    <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">
+                                        {{ $container->location ?? 'لم يحدد بعد' }}
                                     </td>
-                                    
+                                    <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">
+                                        {{ $container->received_by ?? 'لم يتم الأستلام بعد' }}
+                                    </td>
+                                    <td class="{{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
+                                        {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -221,16 +223,29 @@
         </div>
     </div>
 </div>
-@if($policy->type == 'إستلام')
-    <div class="d-flex gap-3">
-        <button class="btn btn-primary fw-bold">إذن خروج</button>
-        <button class="btn btn-primary fw-bold">
-            إستخراج فاتورة
-            <i class="fa-solid fa-scroll"></i>
-        </button>
-    </div>
-@else
-    <button class="btn btn-primary fw-bold">تصريح دخول</button>
+<form action="{{ route('entry.permission') }}" method="POST">
+    @csrf
+    @foreach ($policy->containers as $container)
+        <input type="hidden" name="containers[]" value="{{ $container->id }}">
+    @endforeach
+    <input type="hidden" name="driver" value="{{ $policy->driver_name }}">
+    <button type="submit" class="btn btn-primary fw-bold">تصريح دخول</button>
+</form>
+
+@if (session('success'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
+@endif
+
+@if (session('errors'))
+    @push('scripts')
+        <script>
+            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+        </script>
+    @endpush
 @endif
 
 <style>

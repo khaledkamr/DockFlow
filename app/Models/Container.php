@@ -9,9 +9,13 @@ class Container extends Model
     protected $fillable = [
         'code', 
         'status', 
+        'received_by',
+        'delivered_by',
         'container_type_id', 
         'customer_id', 
-        'location'
+        'location',
+        'date',
+        'exit_date'
     ];
 
     public function containerType() {

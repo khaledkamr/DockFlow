@@ -132,37 +132,45 @@
                 <th class="text-center bg-dark text-white">الفئـــة</th>
                 <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الحالـــة</th>
+                <th class="text-center bg-dark text-white">تم الإستلام بواسطة</th>
+                <th class="text-center bg-dark text-white">تم التسليم بواسطة</th>
                 <th class="text-center bg-dark text-white">تاريخ الدخول</th>
                 <th class="text-center bg-dark text-white">الإجـــراءات</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="text-center">
             @if ($containers->isEmpty())
                 <tr>
-                    <td colspan="9" class="text-center">
+                    <td colspan="10" class="text-center">
                         <div class="status-danger fs-6">لا يوجد اي حاويات في الساحــة!</div>
                     </td>
                 </tr>
             @else
                 @foreach ($containers as $container)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $container->id }}</td>
-                        <td class="text-center">
+                        <td class="text-primary fw-bold">{{ $container->id }}</td>
+                        <td>
                             <a href="{{ route('users.customer.profile', $container->customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $container->customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $container->code }}</td>
-                        <td class="text-center">{{ $container->containerType->name }}</td>
-                        <td class="text-center {{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد بعد' }}</td>
-                        <td class="text-center">
+                        <td>{{ $container->code }}</td>
+                        <td>{{ $container->containerType->name }}</td>
+                        <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد بعد' }}</td>
+                        <td>
                             <div class="{{ $container->status == 'متوفر' ? 'status-available' : ($container->status == 'غير متوفر' ? 'status-danger' : 'status-waiting') }}">
                                 {{ $container->status }}
                             </div>
                         </td>
-                        <td class="text-center">{{ $container->date }}</td>
-                        <td class="action-icons text-center">
+                        <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">
+                            {{ $container->received_by ?? 'لم يتم الأستلام بعد' }}
+                        </td>
+                        <td class="{{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
+                            {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
+                        </td>
+                        <td>{{ $container->date ?? '-' }}</td>
+                        <td class="action-icons">
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen text-primary" title="Edit container"></i>
                             </button>

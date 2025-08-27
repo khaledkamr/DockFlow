@@ -12,8 +12,11 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->enum('status', ['في الإنتظار', 'متوفر', 'غير متوفر'])->default('في الإنتظار');
+            $table->string('received_by')->nullable();
+            $table->string('delivered_by')->nullable();
             $table->string('location')->nullable();
             $table->date('date')->nullable();
+            $table->date('exit_date')->nullable();
             $table->foreignId('container_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();

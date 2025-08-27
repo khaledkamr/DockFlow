@@ -19,6 +19,10 @@
             width: 10px;
             height: 0; 
         }
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+            height: 0; 
+        }
         ::-webkit-scrollbar-track {
             background: #121212 !important;
         }

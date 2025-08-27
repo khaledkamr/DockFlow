@@ -36,6 +36,7 @@ class ContainersSeeder extends Seeder
                 'customer_id' => 1,
                 'status' => 'متوفر',
                 'location' => 'B-38',
+                'received_by' => 'ادم محمد',
                 'date' => Carbon::now()->format('Y-m-d')
             ],
             [
@@ -44,6 +45,7 @@ class ContainersSeeder extends Seeder
                 'customer_id' => 1,
                 'status' => 'متوفر',
                 'location' => 'B-39',
+                'received_by' => 'ادم محمد',
                 'date' => Carbon::now()->format('Y-m-d')
             ],
             [
@@ -52,6 +54,7 @@ class ContainersSeeder extends Seeder
                 'customer_id' => 1,
                 'status' => 'متوفر',
                 'location' => 'B-40',
+                'received_by' => 'ادم محمد',
                 'date' => Carbon::now()->format('Y-m-d')
             ],
         ];

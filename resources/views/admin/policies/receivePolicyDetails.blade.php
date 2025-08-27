@@ -36,19 +36,6 @@
             </div>
         </div>
 
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>{{ session('success') }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>حدث خطأ في العمليه الرجاء مراجعة البيانات!</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
         <div class="row">
             <!-- Driver Information -->
             <div class="col-lg-6 mb-4">
@@ -247,7 +234,14 @@
     </div>
 </div>
 <div class="d-flex gap-3">
-    <button class="btn btn-primary fw-bold">تصريح خروج</button>
+    <form action="{{ route('exit.permission') }}" method="POST">
+        @csrf
+        @foreach ($policy->containers as $container)
+            <input type="hidden" name="containers[]" value="{{ $container->id }}">
+        @endforeach
+        <input type="hidden" name="driver" value="{{ $policy->driver_name }}">
+        <button type="submit" class="btn btn-primary fw-bold">تصريح خروج</button>
+    </form>
     <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
         إنشاء فاتورة <i class="fa-solid fa-scroll"></i>
     </button>
@@ -291,6 +285,21 @@
     </div>
 </div>
 
+@if (session('success'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
+@endif
+
+@if (session('errors'))
+    @push('scripts')
+        <script>
+            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+        </script>
+    @endpush
+@endif
 
 <style>
 .bg-gradient {
