@@ -62,4 +62,30 @@ class ContractController extends Controller
         $days = $start->copy()->addMonths($months)->diffInDays($end);
         return view('admin.contracts.contractDetails', compact('contract', 'months', 'days'));
     }
+
+    public function services() {
+        $services = Service::all();
+        return view('admin.contracts.services', compact('services'));
+    }
+
+    public function storeService(Request $request) {
+        Service::create(['description' => $request->description]);
+        return redirect()->back()->with('success', 'تم إضافة خدمة جديدة بنجاح');
+    }
+
+    public function updateService(Request $request, $id) {
+        $service = Service::findOrFail($id);
+        $service->description = $request->description;
+        $service->save();
+        return redirect()->back()->with('success', 'تم تحديث الخدمة بنجاح');
+    }
+
+    public function deleteService($id) {
+        if(in_array($id, [0,1,2,3])) {
+            return redirect()->back()->with('error', 'لا يمكنك حذف هذه الخدمة');
+        }
+        $service = Service::findOrFail($id);
+        $service->delete();
+        return redirect()->back()->with('success', 'تم حذف الخدمة بنجاح');
+    }
 }

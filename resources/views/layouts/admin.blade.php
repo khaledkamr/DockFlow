@@ -201,6 +201,9 @@
                     <a class="nav-link fw-bold {{ request()->routeIs('contracts.create') ? 'active' : '' }}" href="{{ route('contracts.create') }}">
                         <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة عقــــد
                     </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('contracts.services') ? 'active' : '' }}" href="{{ route('contracts.services') }}">
+                        <i class="fa-solid fa-screwdriver-wrench ms-3 me-2"></i> الخدمـــــات
+                    </a>
                 </div>
             </li>
 

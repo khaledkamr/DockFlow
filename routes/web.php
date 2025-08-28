@@ -59,6 +59,10 @@ Route::controller(ContractController::class)->middleware('auth')->group(function
     Route::post('/contracts/store', 'storeContract')->name('contracts.store');
     Route::get('/contracts/{id}', 'contractDetails')->name('contracts.details');
     Route::post('/contracts/update/{id}', 'updateContract')->name('contracts.update');
+    Route::get('/services', 'services')->name('contracts.services');
+    Route::post('/service/store', 'storeService')->name('contracts.service.store');
+    Route::put('/service/update/{id}', 'updateService')->name('contracts.service.update');
+    Route::delete('/contracts/service/delete/{id}', 'deleteService')->name('contracts.service.delete');
 });
 
 Route::controller(InvoiceController::class)->middleware('auth')->group(function () {
