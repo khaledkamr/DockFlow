@@ -151,7 +151,7 @@
         if (availableContainers.length === 0) {
             containersList.html(`
                 <div class="col-12">
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger text-center">
                         لا توجد حاويات متاحة للتخزين لهذا العميل
                     </div>
                 </div>

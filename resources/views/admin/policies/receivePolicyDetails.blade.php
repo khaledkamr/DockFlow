@@ -302,27 +302,59 @@
 @endif
 
 <style>
-.bg-gradient {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-}
-
-.table-hover tbody tr:hover {
-    background-color: rgba(0,123,255,0.05);
-}
-
-.card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-@media (max-width: 768px) {
-    .d-flex.justify-content-between {
-        flex-direction: column;
-        gap: 1rem;
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     }
-    
-    .btn-group {
-        justify-content: center;
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,123,255,0.05);
     }
-}
+
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    @media (max-width: 768px) {
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .btn-group {
+            justify-content: center;
+        }
+    }
+    .table .status-waiting {
+        background-color: #ffe590;
+        color: #745700;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-available {
+        background-color: #d4d7ed;
+        color: #151657;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-delivered {
+        background-color: #c1eccb;
+        color: #155724;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
 </style>
 @endsection

@@ -25,7 +25,6 @@
     @endpush
 @endif
 
-
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
     <form action="{{ route('policies.receive.store') }}" method="POST">
         @csrf
@@ -102,7 +101,7 @@
                 <h5 class="mb-3">اختيار الحاويات</h5>
                 <div class="card border-primary bg-light p-3">
                     <div class="mb-3">
-                        <label class="form-label">الحاويات المتاحة للإستلام</label>
+                        <label class="form-label">الحاويات المتاحة للتسليم</label>
                         <div id="containers-list" class="row">
                             <!-- Containers will be populated here dynamically -->
                         </div>
@@ -154,8 +153,8 @@
         if (availableContainers.length === 0) {
             containersList.html(`
                 <div class="col-12">
-                    <div class="alert alert-danger">
-                        لا توجد حاويات متاحة للإستلام لهذا العميل
+                    <div class="alert alert-danger text-center">
+                        لا توجد حاويات متاحة للتسليم لهذا العميل
                     </div>
                 </div>
             `);

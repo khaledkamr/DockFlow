@@ -226,12 +226,17 @@
                         <td class="fw-bold text-primary">{{ $container->id }}</td>
                         <td class="fw-bold">{{ $container['code'] }}</td>
                         <td>
-                            @if($container['status'] === 'متوفر')
-                                <span class="status-available">{{ $container['status'] }}</span>
-                            @elseif($container['status'] === 'في الإنتظار')
-                                <span class="status-waiting">{{ $container['status'] }}</span>
-                            @else
-                                <span class="status-danger">{{ $container['status'] }}</span>
+                            @if($container->status == 'متوفر')
+                                <div class="status-available">{{ $container->status }}</div>
+                            @elseif($container->status == 'مُسلم')
+                                <div class="status-delivered">
+                                    {{ $container->status }}
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                            @elseif($container->status == 'متأخر')
+                                <div class="status-danger">{{ $container->status }}</div>
+                            @elseif($container->status == 'في الإنتظار')
+                                <div class="status-waiting">{{ $container->status }}</div>
                             @endif
                         </td>
                         <td class="{{ $container['location'] ? 'fw-bold' : 'text-muted' }}">{{ $container['location'] ?? 'غير محدد' }}</td>
@@ -320,40 +325,47 @@
 </div>
 
 <style>
-.card-header {
-    border-radius: 10px 10px 0 0 !important;
-    border: none;
-}
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+        border: none;
+    }
 
-.bg-outline-primary {
-    color: #0d6efd;
-    border: 1px solid #0d6efd;
-    background-color: transparent;
-}
-
-.table .status-waiting {
-    background-color: #ffe590;
-    color: #856404;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    display: inline-block;
-}
-.table .status-available {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    display: inline-block;
-}
-.table .status-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    display: inline-block;
-}
+    .bg-outline-primary {
+        color: #0d6efd;
+        border: 1px solid #0d6efd;
+        background-color: transparent;
+    }
+    .table .status-waiting {
+        background-color: #ffe590;
+        color: #745700;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-available {
+        background-color: #d4d7ed;
+        color: #151657;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-delivered {
+        background-color: #c1eccb;
+        color: #155724;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
 </style>
 @endsection

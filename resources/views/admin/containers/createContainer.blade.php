@@ -90,8 +90,9 @@
                             <label class="form-label">الحالــة</label>
                             <select class="form-select border-primary" name="containers[0][status]" required>
                                 <option value="في الإنتظار">في الإنتظار</option>
-                                <option value="غير متوفر">غير متوفر</option>
                                 <option value="متوفر">متوفر</option>
+                                <option value="مُسلم">مُسلم</option>
+                                <option value="متأخر">متأخر</option>
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>

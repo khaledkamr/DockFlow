@@ -116,4 +116,14 @@
             </script>
         @endpush
     @endif
+
+    @if ($errors->any())
+        @push('scripts')
+            <script>
+                @foreach ($errors->all() as $error)
+                    showToast("{{ $error }}", "danger");
+                @endforeach
+            </script>
+        @endpush
+    @endif
 @endsection

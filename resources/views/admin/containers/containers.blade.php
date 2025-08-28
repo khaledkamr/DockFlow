@@ -44,7 +44,15 @@
         display: inline-block;
     }
     .table .status-available {
-        background-color: #d4edda;
+        background-color: #d4d7ed;
+        color: #151657;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        display: inline-block;
+    }
+    .table .status-delivered {
+        background-color: #c1eccb;
         color: #155724;
         padding: 5px 10px;
         border-radius: 12px;
@@ -69,7 +77,7 @@
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="card-title">إجمالي عدد الحاويات في الساحة</h5>
-                    <h2 class="text-primary fw-bold">{{ $containers->where('status', 'متوفر')->count() }}</h2>
+                    <h2 class="text-primary fw-bold">{{ $availableContainer }}</h2>
                 </div>
                 <div>
                     <i class="bi bi-boxes fs-1"></i>
@@ -82,7 +90,7 @@
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="card-title">إجمالي الحاويات في الإنتظار</h5>
-                    <h2 class="text-primary fw-bold">{{ $containers->where('status', 'في الإنتظار')->count() }}</h2>
+                    <h2 class="text-primary fw-bold">{{ $waitingContainers }}</h2>
                 </div>
                 <div>
                     <i class="fa-solid fa-hourglass-start fa-2xl"></i>
@@ -131,8 +139,10 @@
                         متوفر</option>
                     <option value="في الإنتظار" {{ request()->query('status') === 'في الإنتظار' ? 'selected' : '' }}>
                         في الإنتظار</option>
-                    <option value="غير متوفر" {{ request()->query('status') === 'غير متوفر' ? 'selected' : '' }}>
-                        غير متوفر</option>
+                    <option value="مُسلم" {{ request()->query('status') === 'مُسلم' ? 'selected' : '' }}>
+                        مُسلم</option>
+                    <option value="متأخر" {{ request()->query('status') === 'متأخر' ? 'selected' : '' }}>
+                        متأخر</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -201,9 +211,18 @@
                         <td>{{ $container->containerType->name }}</td>
                         <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد بعد' }}</td>
                         <td>
-                            <div class="{{ $container->status == 'متوفر' ? 'status-available' : ($container->status == 'غير متوفر' ? 'status-danger' : 'status-waiting') }}">
-                                {{ $container->status }}
-                            </div>
+                            @if($container->status == 'متوفر')
+                                <div class="status-available">{{ $container->status }}</div>
+                            @elseif($container->status == 'مُسلم')
+                                <div class="status-delivered">
+                                    {{ $container->status }}
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                            @elseif($container->status == 'متأخر')
+                                <div class="status-danger">{{ $container->status }}</div>
+                            @elseif($container->status == 'في الإنتظار')
+                                <div class="status-waiting">{{ $container->status }}</div>
+                            @endif
                         </td>
                         <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">
                             {{ $container->received_by ?? 'لم يتم الأستلام بعد' }}
