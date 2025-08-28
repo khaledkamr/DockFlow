@@ -21,6 +21,13 @@ class ContractController extends Controller
                     || stripos($contract->start_date, $search) !== false;
             });
         }
+        $contracts = new \Illuminate\Pagination\LengthAwarePaginator(
+            $contracts->forPage(request()->get('page', 1), 50),
+            $contracts->count(),
+            50,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('admin.contracts.contracts', compact('contracts'));
     }
 

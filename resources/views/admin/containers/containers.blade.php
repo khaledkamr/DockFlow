@@ -283,4 +283,7 @@
         </tbody>
     </table>
 </div>
+<div class="mt-4">
+    {{ $containers->appends(request()->query())->onEachSide(1)->links() }}
+</div>
 @endsection

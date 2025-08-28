@@ -30,6 +30,13 @@ class InvoiceController extends Controller
                     || stripos($invoice->date, $search) !== false;
             });
         }
+        $invoices = new \Illuminate\Pagination\LengthAwarePaginator(
+            $invoices->forPage(request()->get('page', 1), 50),
+            $invoices->count(),
+            50,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('admin.invoices', compact('invoices'));
     }
 

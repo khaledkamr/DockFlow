@@ -30,6 +30,13 @@ class ContainerController extends Controller
                     || stripos($container->location, $search) !== false;
             });
         }
+        $containers = new \Illuminate\Pagination\LengthAwarePaginator(
+            $containers->forPage(request()->get('page', 1), 50),
+            $containers->count(),
+            50,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('admin.containers.containers', compact('containers'));
     }
 

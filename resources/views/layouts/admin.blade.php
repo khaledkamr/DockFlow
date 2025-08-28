@@ -123,6 +123,30 @@
             /* padding-bottom: 1rem; */
             margin-bottom: 1rem;
         }
+        .pagination {
+            margin: 0;
+            padding: 0;
+        }
+        .pagination .page-item .page-link {
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+            padding: 8px 16px;
+            margin: 0 2px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .pagination .page-item.active .page-link,
+        .pagination .page-item .page-link:hover {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #fff;
+            pointer-events: none;
+            background-color: #d5d7d8;
+            border-color: #dee2e6;
+        }
     </style>
 </head>
 <body>

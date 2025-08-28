@@ -19,6 +19,13 @@ class CustomerController extends Controller
                     || stripos($customer->name, $search) !== false;
             });
         }
+        $customers = new \Illuminate\Pagination\LengthAwarePaginator(
+            $customers->forPage(request()->get('page', 1), 50),
+            $customers->count(),
+            50,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('admin.users.customers', compact('customers'));
     }
 

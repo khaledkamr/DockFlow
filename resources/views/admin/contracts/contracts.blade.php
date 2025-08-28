@@ -154,5 +154,7 @@
         </tbody>
     </table>
 </div>
-
+<div class="mt-4">
+    {{ $contracts->appends(request()->query())->onEachSide(1)->links() }}
+</div>
 @endsection

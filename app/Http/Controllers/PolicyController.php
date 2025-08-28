@@ -33,6 +33,13 @@ class PolicyController extends Controller
                     || stripos($policy->date, $search) !== false;
             });
         }
+        $policies = new \Illuminate\Pagination\LengthAwarePaginator(
+            $policies->forPage(request()->get('page', 1), 50),
+            $policies->count(),
+            50,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('admin.policies.policies', compact('policies', 'customers'));
     }
 
