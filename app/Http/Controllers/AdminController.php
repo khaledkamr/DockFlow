@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyRequest;
 use App\Http\Requests\InvoiceRequest;
+use App\Models\Company;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -40,5 +42,17 @@ class AdminController extends Controller
             'receivedContainers',
             'deliveredContainers'
         ));
+    }
+
+    public function company($id) {
+        $company = Company::findOrFail($id);
+        return view('admin.company', compact('company'));
+    }
+
+    public function updateCompany(CompanyRequest $request, $id) {
+        $validated = $request->validated();
+        $company = Company::findOrFail($id);
+        $company->update($validated);
+        return redirect()->back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
     }
 }

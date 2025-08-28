@@ -12,7 +12,6 @@ class CompanySeeder extends Seeder
     {
         Company::create([
             'name' => 'شركة تاج الأعمال للخدمات اللوجستية',
-            'type' => 'شركة',
             'branch' => 'فرع الرئيسي',
             'CR' => '1010771098',
             'TIN' => '7027331623',

@@ -14,7 +14,11 @@ use App\Models\Customer;
 use App\Models\invoice;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [AdminController::class, 'dashboard'])->middleware('auth')->name('admin.home');
+Route::controller(AdminController::class)->middleware('auth')->group(function() {
+    Route::get('/', 'dashboard')->name('admin.home');
+    Route::get('/company/{id}', 'company')->name('company');
+    Route::put('/company/update/{id}', 'updateCompany')->name('company.update');
+});
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/login', 'loginForm')->name('login.form');

@@ -123,7 +123,7 @@
                             <label for="name" class="form-label">إسم العميل</label>
                             <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}">
                             @error('name')
-                            <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col">

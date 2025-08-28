@@ -147,6 +147,9 @@
             background-color: #d5d7d8;
             border-color: #dee2e6;
         }
+        .dropdown-toggle::after {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -289,6 +292,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <form class="d-flex mx-auto" style="width: 40%;">
                     <div class="input-group">
                         <input class="form-control border-primary" type="search" placeholder="بحث..." aria-label="Search">
@@ -297,18 +301,37 @@
                         </button>
                     </div>
                 </form>
-                <div class="ms-auto d-flex align-items-center gap-2">
-                    <span class="me-3 text-dark">
-                        <i class="fa-solid fa-user-circle fa-2xl text-secondary me-2"></i>
+
+                <div class="ms-auto d-flex align-items-center gap-3">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-gear fa-xl text-secondary"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+                            <li><a class="dropdown-item" href="#">الإعدادات</a></li>
+                            <li><a class="dropdown-item" href="{{ route('company', 1) }}">بيانات الشركة</a></li>
+                            <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>
+                                        تسجيل خروج
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <span class="me-3 text-dark d-flex align-items-center">
                         {{ Auth::user()->name }}
+                        <i class="fa-solid fa-user-circle fa-2xl text-secondary ms-2"></i>
                     </span>
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger btn-sm">تسجيل خروج</button>
-                    </form>
                 </div>
             </div>
         </nav>
+
         
         <div class="content-area">
             @yield('content')
