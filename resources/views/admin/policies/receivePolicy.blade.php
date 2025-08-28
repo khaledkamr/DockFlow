@@ -49,7 +49,8 @@
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" 
                             data-contract="{{ $customer->contract ? $customer->contract->id : null }}"
-                            data-containers="{{ $customer->containers }}" >
+                            data-containers="{{ $customer->containers }}"
+                            data-invoices="{{ $customer->invoices }}" >
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -101,13 +102,20 @@
                 <h5 class="mb-3">اختيار الحاويات</h5>
                 <div class="card border-primary bg-light p-3">
                     <div class="mb-3">
-                        <label class="form-label">الحاويات المتاحة للتسليم</label>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label class="form-label">الحاويات المتاحة للتسليم</label>
+                            <div class="d-flex">
+                                <div class="input-group input-group-sm w-auto">
+                                    <input class="form-control border-primary" type="search" id="container-search" placeholder="إبحث عن حاوية بالكود..." aria-label="Search">
+                                    <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <div id="containers-list" class="row">
                             <!-- Containers will be populated here dynamically -->
                         </div>
-                    </div>
-                    <div class="mt-3 d-flex flex-column">
-                        <small class="text-danger">* لا يمكن للعميل سحب اخر حاوية اذا عليه فواتير لم يدفعها بعد</small>
                     </div>
                 </div>
             </div>
@@ -118,6 +126,10 @@
 </div>
 
 <script>
+    let currentContainers = [];
+    let hasUnpaidInvoices = false;
+    let maxSelectableContainers = 0;
+
     $('#customer_name').select2({
         placeholder: "ابحث عن إسم العميل...",
         allowClear: true
@@ -129,23 +141,65 @@
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
         let containers = $(this).find(':selected').data('containers');
+        let invoices = $(this).find(':selected').data('invoices');
+        
+        // Check for unpaid invoices
+        hasUnpaidInvoices = false;
+        if (invoices && Array.isArray(invoices)) {
+            hasUnpaidInvoices = invoices.some(invoice => invoice.payment === 'لم يتم الدفع');
+        }
         
         // Show/hide container selection section
         if (containers && containers.length > 0) {
+            currentContainers = containers;
             displayContainers(containers);
             $('#containers-list').show();
+            
+            // Calculate max selectable containers
+            const availableContainers = containers.filter(container => container.status === 'متوفر');
+            maxSelectableContainers = hasUnpaidInvoices ? Math.max(0, availableContainers.length - 1) : availableContainers.length;
+            
         } else if (containers) {
+            currentContainers = containers;
             displayContainers(containers);
         } else {
+            currentContainers = [];
             $('#containers-list').hide();
         }
+        
+        // Clear search when customer changes
+        $('#container-search').val('');
     });
+
+    // Container search functionality
+    $('#container-search').on('input', function() {
+        const searchTerm = $(this).val().toLowerCase().trim();
+        filterContainers(searchTerm);
+    });
+
+    $('#clear-search').on('click', function() {
+        $('#container-search').val('');
+        filterContainers('');
+    });
+
+    function filterContainers(searchTerm) {
+        $('.container-card').each(function() {
+            const containerCode = $(this).find('.fw-bold').text().toLowerCase();
+            const containerId = $(this).find('.text-primary:last').text().toLowerCase();
+            
+            if (searchTerm === '' || containerCode.includes(searchTerm) || containerId.includes(searchTerm)) {
+                $(this).parent().show();
+            } else {
+                $(this).parent().hide();
+            }
+        });
+    }
 
     function displayContainers(containers) {
         const containersList = $('#containers-list');
         containersList.empty();
 
-        // Filter containers that are available for receiving (status: 'متوفر' or 'في الإنتظار')
+        // Filter containers that are available for receiving (status: 'متوفر')
         const availableContainers = containers.filter(container => 
             container.status === 'متوفر'
         );
@@ -163,7 +217,7 @@
 
         availableContainers.forEach(container => {
             const containerCard = `
-                <div class="col-md-4 col-sm-6 mb-3">
+                <div class="col-md-4 col-sm-6 mb-3 container-item">
                     <div class="card container-card" data-container-id="${container.id}">
                         <div class="card-body p-3">
                             <div class="form-check">
@@ -191,13 +245,38 @@
         // Add click event to container cards
         $('.container-card').on('click', function() {
             const checkbox = $(this).find('.container-checkbox');
-            checkbox.prop('checked', !checkbox.prop('checked'));
+            const isCurrentlyChecked = checkbox.prop('checked');
+            
+            if (!isCurrentlyChecked) {
+                // Trying to check a container
+                const currentSelectedCount = $('.container-checkbox:checked').length;
+                
+                if (hasUnpaidInvoices && currentSelectedCount >= maxSelectableContainers) {
+                    showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');
+                    return;
+                }
+            }
+            
+            checkbox.prop('checked', !isCurrentlyChecked);
             updateContainerCardStyle($(this), checkbox.prop('checked'));
         });
 
         // Style checkboxes when clicked directly
         $('.container-checkbox').on('change', function() {
-            updateContainerCardStyle($(this).closest('.container-card'), $(this).prop('checked'));
+            const isChecked = $(this).prop('checked');
+            
+            if (isChecked) {
+                // Trying to check a container
+                const currentSelectedCount = $('.container-checkbox:checked').length;
+                
+                if (hasUnpaidInvoices && currentSelectedCount > maxSelectableContainers) {
+                    $(this).prop('checked', false);
+                    showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');
+                    return;
+                }
+            }
+            
+            updateContainerCardStyle($(this).closest('.container-card'), isChecked);
         });
     }
 
@@ -220,38 +299,34 @@
     .select2-container .select2-selection__rendered {
         line-height: 30px; 
     }
-
     .container-card {
         cursor: pointer;
         transition: all 0.2s ease;
         border: 2px solid #dee2e6;
     }
-
     .container-card:hover {
         border-color: #0d6efd;
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-
     .container-card.border-primary {
         border-color: #0d6efd !important;
     }
-
     .bg-primary-subtle {
         background-color: rgba(13, 110, 253, 0.1) !important;
     }
-
     .container-info {
         margin-left: 10px;
     }
-
     .form-check-input:checked {
         background-color: #0d6efd;
         border-color: #0d6efd;
     }
-
     .form-check-label {
         cursor: pointer;
+    }
+    #container-search {
+        min-width: 250px;
     }
 </style>
 
