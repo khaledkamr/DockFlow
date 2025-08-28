@@ -100,13 +100,22 @@
                 <h5 class="mb-3">حاويات العميل</h5>
                 <div class="card border-primary bg-light p-3">
                     <div class="mb-3">
-                        <label class="form-label">الحاويات المتاحة للتخزين</label>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label class="form-label">الحاويات المتاحة للتخزين</label>
+                            <div class="d-flex">
+                                <div class="input-group input-group-sm w-auto">
+                                    <input class="form-control border-primary" type="search" id="container-search" placeholder="إبحث عن حاوية بالكود..." aria-label="Search">
+                                    <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <div id="containers-list" class="row">
                             <!-- Containers will be populated here dynamically -->
                         </div>
                     </div>
                     <div class="mt-3 d-flex flex-column">
-                        {{-- <small class="text-danger">* لا يمكن للعميل سحب اخر حاوية اذا عليه فواتير لم يدفعها بعد</small> --}}
                     </div>
                 </div>
             </div>
@@ -137,7 +146,34 @@
         } else {
             $('#containers-list').hide();
         }
+        
+        // Clear search when customer changes
+        $('#container-search').val('');
     });
+
+    // Container search functionality
+    $('#container-search').on('input', function() {
+        const searchTerm = $(this).val().toLowerCase().trim();
+        filterContainers(searchTerm);
+    });
+
+    $('#clear-search').on('click', function() {
+        $('#container-search').val('');
+        filterContainers('');
+    });
+
+    function filterContainers(searchTerm) {
+        $('.container-card').each(function() {
+            const containerCode = $(this).find('.fw-bold').text().toLowerCase();
+            const containerId = $(this).find('.text-primary:last').text().toLowerCase();
+            
+            if (searchTerm === '' || containerCode.includes(searchTerm) || containerId.includes(searchTerm)) {
+                $(this).parent().show();
+            } else {
+                $(this).parent().hide();
+            }
+        });
+    }
 
     function displayContainers(containers) {
         const containersList = $('#containers-list');
@@ -161,7 +197,7 @@
 
         availableContainers.forEach(container => {
             const containerCard = `
-                <div class="col-md-4 col-sm-6 mb-3">
+                <div class="col-md-4 col-sm-6 mb-3 container-item">
                     <div class="card container-card border-primary bg-primary-subtle" data-container-id="${container.id}">
                         <div class="card-body p-3">
                             <div class="form-check">
@@ -248,6 +284,10 @@
 
     .form-check-label {
         cursor: pointer;
+    }
+    
+    #container-search {
+        min-width: 250px;
     }
 </style>
 
