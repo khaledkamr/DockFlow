@@ -105,11 +105,11 @@ class PolicyController extends Controller
         $policy = Policy::with('containers.containerType')->findOrFail($id);
         foreach($policy->containers as $container) {
             $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($policy->date));
-            $container->storage_price = $policy->contract->container_storage_price;
-            if($container->period > $policy->contract->container_storage_period) {
-                $days = (int) Carbon::parse($container->date)->addDays($policy->contract->container_storage_period)->diffInDays(Carbon::parse($policy->date));
+            $container->storage_price = $policy->contract->services[0]->pivot->price;
+            if($container->period > $policy->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)->addDays($policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($policy->date));
                 $container->late_days = $days;
-                $container->late_fee = $days * $policy->contract->late_fee;
+                $container->late_fee = $days * $policy->contract->services[3]->pivot->price;
             } else {
                 $container->late_fee = 0;
             }

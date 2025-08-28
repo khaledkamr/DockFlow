@@ -105,21 +105,26 @@
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-warehouse fa-2x text-success mb-2"></i>
                                             <small class="text-muted d-block">سعر التخزين</small>
-                                            <div class="fw-bold text-success fs-5">{{ $policy->contract->container_storage_price }} ريال لمدة {{ $policy->contract->container_storage_period }} أيام</div>
+                                            <div class="fw-bold text-success fs-5">
+                                                {{ $policy->contract->services[0]->pivot->price }} ريال
+                                                 لمدة {{ $policy->contract->services[0]->pivot->unit .' '. $policy->contract->services[0]->pivot->unit_desc }}
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
                                             <small class="text-muted d-block">غرامة التأخير</small>
-                                            <div class="fw-bold text-danger fs-5">{{ $policy->contract->late_fee }} ريال لليوم الواحد</div>
+                                            <div class="fw-bold text-danger fs-5">
+                                                {{ $policy->contract->services[2]->pivot->price }} ريال لليوم الواحد
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-4">
                                         <div class="text-center p-3 bg-light rounded">
                                             <i class="fas fa-receipt fa-2x text-primary mb-2"></i>
                                             <small class="text-muted d-block">الضريبة المضافة</small>
-                                            <div class="fw-bold text-primary fs-5">15%</div>
+                                            <div class="fw-bold text-primary fs-1">15%</div>
                                         </div>
                                     </div>
                                 </div>

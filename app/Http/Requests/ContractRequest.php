@@ -26,18 +26,6 @@ class ContractRequest extends FormRequest
             'customer_representative_nationality' => 'required',
             'customer_representative_NID' => 'required',
             'customer_representative_role' => 'required',
-            'service_one' => 'required',
-            'container_storage_price' => 'required',
-            'container_storage_period' => 'required',
-            'service_two' => 'required',
-            'move_container_price' => 'required',
-            'move_container_count' => 'required',
-            'service_three' => 'required',
-            'late_fee' => 'required',
-            'late_fee_period' => 'required',
-            'service_four' => 'required',
-            'exchange_container_price' => 'required',
-            'exchange_container_count' => 'required',
         ];
     }
 }

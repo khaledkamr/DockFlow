@@ -6,6 +6,7 @@ use App\Http\Requests\ContractRequest;
 use App\Models\Company;
 use App\Models\Contract;
 use App\Models\Customer;
+use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -34,12 +35,22 @@ class ContractController extends Controller
     public function createContract() {
         $company = Company::first();
         $customers = Customer::all();
-        return view('admin.contracts.createContract', compact('company', 'customers'));
+        $services = Service::all();
+        return view('admin.contracts.createContract', compact('company', 'customers', 'services'));
     }
 
     public function storeContract(ContractRequest $request) {
         $validated = $request->validated();
-        Contract::create($validated);
+        $contract = Contract::create($validated);
+        if($request->has('services')) {
+            foreach($request->services as $service) {
+                $contract->services()->attach($service['service_id'], [
+                    'price' => $service['price'],
+                    'unit' => $service['unit'],
+                    'unit_desc' => $service['unit_desc']
+                ]);
+            }
+        }
         return redirect()->back()->with('success', 'تم إنشاء العقد بنجاح');
     }
 

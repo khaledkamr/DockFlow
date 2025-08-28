@@ -180,105 +180,31 @@
             </div>
             <div class="card-body">
                 <div class="row g-4">
-                    <!-- Service One -->
-                    <div class="col-md-6">
-                        <div class="service-card border rounded p-3 h-100">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="service-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-warehouse"></i>
-                                </div>
-                                <h6 class="mb-0 text-primary">الخدمة الأولى</h6>
-                            </div>
-                            <p class="text-muted mb-2">{{ $contract->service_one }}</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <small class="text-muted">السعر</small>
-                                    <div class="fw-bold text-success">
-                                        {{ $contract->container_storage_price != 0 ? "$contract->container_storage_price ريال" : 'مجاناً' }} 
+                    @foreach($contract->services as $index => $service)
+                        <div class="col-md-6">
+                            <div class="service-card border border-primary rounded p-3 h-100">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="service-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-tools"></i>
                                     </div>
+                                    <h6 class="mb-0 text-primary">الخدمة #{{ $index + 1 }}</h6>
                                 </div>
-                                <div class="col-6">
-                                    <small class="text-muted">المدة</small>
-                                    <div class="fw-bold">{{ $contract->container_storage_period }} أيام</div>
+                                <p class="text-muted mb-2">{{ $service->description }}</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-muted">السعر</small>
+                                        <div class="fw-bold text-success">
+                                            {{ $service->pivot->price != 0 ? $service->pivot->price . ' ريال' : 'مجاناً' }} 
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">المدة</small>
+                                        <div class="fw-bold text-dark">{{ $service->pivot->unit . ' ' . $service->pivot->unit_desc }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Service Two -->
-                    <div class="col-md-6">
-                        <div class="service-card border rounded p-3 h-100">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="service-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-truck-loading"></i>
-                                </div>
-                                <h6 class="mb-0 text-success">الخدمة الثانية</h6>
-                            </div>
-                            <p class="text-muted mb-2">{{ $contract->service_two }}</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <small class="text-muted">السعر</small>
-                                    <div class="fw-bold text-success">
-                                        {{ number_format($contract->move_container_price) }} ريال
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-muted">الوحدة</small>
-                                    <div class="fw-bold">{{ $contract->move_container_count }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Service Three -->
-                    <div class="col-md-6">
-                        <div class="service-card border rounded p-3 h-100">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="service-icon bg-danger text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <h6 class="mb-0 text-danger">الخدمة الثالثة</h6>
-                            </div>
-                            <p class="text-muted mb-2">{{ $contract->service_three }}</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <small class="text-muted">الغرامة</small>
-                                    <div class="fw-bold text-danger">
-                                        {{ number_format($contract->late_fee) }} ريال
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-muted">المدة</small>
-                                    <div class="fw-bold">{{ $contract->late_fee_period }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Service Four -->
-                    <div class="col-md-6">
-                        <div class="service-card border rounded p-3 h-100">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="service-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas fa-exchange-alt"></i>
-                                </div>
-                                <h6 class="mb-0 text-info">الخدمة الرابعة</h6>
-                            </div>
-                            <p class="text-muted mb-2">{{ $contract->service_four }}</p>
-                            <div class="row">
-                                <div class="col-6">
-                                    <small class="text-muted">السعر</small>
-                                    <div class="fw-bold text-success">
-                                        {{ number_format($contract->exchange_container_price) }} ريال
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-muted">الوحدة</small>
-                                    <div class="fw-bold">{{ $contract->exchange_container_count }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>

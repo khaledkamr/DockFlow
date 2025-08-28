@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             ContainerTypesSeeder::class,
             ContainersSeeder::class,
             AccountTypesSeeder::class,
-            AccountsSeeder::class
+            AccountsSeeder::class,
+            ServiceSeeder::class
         ]);
     }
 }

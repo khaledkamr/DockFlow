@@ -19,18 +19,6 @@ class Contract extends Model
         'customer_representative_nationality',
         'customer_representative_NID',
         'customer_representative_role',
-        'service_one',
-        'container_storage_price',
-        'container_storage_period',
-        'service_two',
-        'move_container_price',
-        'move_container_count',
-        'service_three',
-        'late_fee',
-        'late_fee_period',
-        'service_four',
-        'exchange_container_price',
-        'exchange_container_count',
     ];
 
     public function company() {
@@ -39,6 +27,12 @@ class Contract extends Model
 
     public function customer() {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function services() {
+        return $this->belongsToMany(Service::class, 'contract_services')
+                    ->withPivot(['price', 'unit', 'unit_desc'])
+                    ->withTimestamps();
     }
 
     public function policies() {

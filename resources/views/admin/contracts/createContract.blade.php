@@ -25,12 +25,12 @@
     @endpush
 @endif
 
-
 <div class="card border-0 shadow-sm bg-white p-4">
     <form action="{{ route('contracts.store') }}" method="POST">
         @csrf
         <input type="hidden" name="start_date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
         <input type="hidden" name="end_date" value="{{ Carbon\Carbon::now()->addMonths(3)->format('Y-m-d') }}">
+        
         <h5 class="mb-3">بيانات الشركة</h5>
         <div class="mb-4 bg-light p-3 rounded">
             <div class="row mb-4">
@@ -71,6 +71,7 @@
                 </div>
             </div>
         </div>
+        
         <h5 class="mb-3">بيانات العميل</h5>
         <div class="mb-4 bg-light p-3 rounded">
             <div class="row mb-4">
@@ -118,82 +119,70 @@
                 </div>
             </div>
         </div>
-        <h5 class="mb-4">الخدمات والأسعار</h5>
-        <div class="mb-4 bg-light p-3 rounded">
-            <h6 class="mb-0 text-primary">خدمة #<span class="container-number">1</span></h6>
-            <div class="row">
-                <div class="col-8">
-                    <label for="service_one" class="form-label">الوصف</label>
-                    <input type="text" class="form-control border-primary" name="service_one" value="خدمة تخزين الحاوية الواحدة في ساحتنا" readonly>
-                </div>
-                <div class="col">
-                    <label for="container_storage_price" class="form-label">السعر</label>
-                    <input type="number" class="form-control border-primary" name="container_storage_price" value="{{ old('container_storage_price') }}">
-                </div>
-                <div class="col">
-                    <label for="container_storage_period" class="form-label">عدد الأيام</label>
-                    <input type="text" class="form-control border-primary" name="container_storage_period" value="{{ old('container_storage_period') }}">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="mb-0">الخدمات والأسعار</h5>
+            <button type="button" class="btn btn-primary" id="add-service-btn">
+                <i class="fas fa-plus me-2"></i>إضافة خدمة
+            </button>
+        </div>
+        
+        <div id="services-container">
+            <!-- Services will be added here dynamically -->
+        </div>
+        
+        <!-- Service Selection Modal -->
+        <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="serviceModalLabel">اختيار الخدمة</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="service-select" class="form-label">الخدمة المطلوبة</label>
+                            <select id="service-select" class="form-select">
+                                <option value="">اختر الخدمة...</option>
+                                @foreach($services as $service)
+                                    <option value="{{ $service->id }}" data-description="{{ $service->description }}">
+                                        {{ $service->description }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="service-price" class="form-label">السعر</label>
+                                <input type="number" step="0.01" class="form-control" id="service-price" placeholder="0.00">
+                            </div>
+                            <div class="col">
+                                <label for="service-unit" class="form-label">الكمية</label>
+                                <input type="number" class="form-control" id="service-unit" placeholder="1" value="1">
+                            </div>
+                            <div class="col-md-5">
+                                <label for="service-unit-desc" class="form-label">وحدة القياس</label>
+                                <input type="text" class="form-control" id="service-unit-desc" placeholder="شهر، يوم، حاوية...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-primary fw-bold" id="confirm-service">إضافة الخدمة</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="mb-4 bg-light p-3 rounded">
-            <h6 class="mb-0 text-primary">خدمة #<span class="container-number">2</span></h6>
-            <div class="row">
-                <div class="col-8">
-                    <label for="service_two" class="form-label">الوصف</label>
-                    <input type="text" class="form-control border-primary" name="service_two" value="خدمة تنزيل وتحميل الحاوية بالكرين لدينا بالساحة" readonly>
-                </div>
-                <div class="col">
-                    <label for="move_container_price" class="form-label">السعر</label>
-                    <input type="number" class="form-control border-primary" name="move_container_price" value="{{ old('move_container_price') }}">
-                </div>
-                <div class="col">
-                    <label for="move_container_count" class="form-label">عدد الحاويات</label>
-                    <input type="text" class="form-control border-primary" name="move_container_count" value="للحاوية الواحدة" readonly>
-                </div>
-            </div>
-        </div>
-        <div class="mb-4 bg-light p-3 rounded">
-            <h6 class="mb-0 text-primary">خدمة #<span class="container-number">3</span></h6>
-            <div class="row">
-                <div class="col-8">
-                    <label for="service_three" class="form-label">الوصف</label>
-                    <input type="text" class="form-control border-primary" name="service_three" value="خدمة تخزين الحاوية بعد المدة المتفق عليها" readonly>
-                </div>
-                <div class="col">
-                    <label for="late_fee" class="form-label">السعر</label>
-                    <input type="number" class="form-control border-primary" name="late_fee" value="{{ old('late_fee') }}">
-                </div>
-                <div class="col">
-                    <label for="late_fee_period" class="form-label">عدد الأيام</label>
-                    <input type="text" class="form-control border-primary" name="late_fee_period" value="لليوم الواحد" readonly>
-                </div>
-            </div>
-        </div>
-        <div class="mb-4 bg-light p-3 rounded">
-            <h6 class="mb-0 text-primary">خدمة #<span class="container-number">4</span></h6>
-            <div class="row">
-                <div class="col-8">
-                    <label for="service_four" class="form-label">الوصف</label>
-                    <input type="text" class="form-control border-primary" name="service_four" value="خدمة تبديل الحاوية من شاحنة الى شاحنة" readonly>
-                </div>
-                <div class="col">
-                    <label for="exchange_container_price" class="form-label">السعر</label>
-                    <input type="number" class="form-control border-primary" name="exchange_container_price" value="{{ old('exchange_container_price') }}">
-                </div>
-                <div class="col">
-                    <label for="exchange_container_count" class="form-label">عدد الحاويات</label>
-                    <input type="text" class="form-control border-primary" name="exchange_container_count" value="للحاوية الواحدة" readonly>
-                </div>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary fw-bold">
+        
+        <button type="submit" class="btn btn-primary fw-bold" id="submit-btn">
             حفظ العقد
         </button>
     </form>
 </div>
 
 <script>
+    let serviceCounter = 0;
+
     $('#customer_name').select2({
         placeholder: "ابحث عن الشركة...",
         allowClear: true
@@ -209,6 +198,114 @@
         let id = $(this).find(':selected').data('id');
         $('#customer_id').val(id || '');
     });
+
+    // Add service button click
+    $('#add-service-btn').on('click', function() {
+        $('#service-select').val('');
+        $('#service-price').val('');
+        $('#service-unit').val('1');
+        $('#service-unit-desc').val('');
+        $('#serviceModal').modal('show');
+    });
+
+    // Confirm service addition
+    $('#confirm-service').on('click', function() {
+        const serviceId = $('#service-select').val();
+        const serviceDescription = $('#service-select option:selected').data('description');
+        const price = $('#service-price').val();
+        const unit = $('#service-unit').val();
+        const unitDesc = $('#service-unit-desc').val();
+
+        if (!serviceId || !price || !unit) {
+            showToast('الرجاء ملء جميع الحقول المطلوبة', 'danger');
+            return;
+        }
+
+        // Check if service already exists
+        if ($(`input[name="services[${serviceId}][service_id]"]`).length > 0) {
+            showToast('هذه الخدمة مضافة مسبقاً', 'warning');
+            return;
+        }
+
+        addServiceToContract(serviceId, serviceDescription, price, unit, unitDesc);
+        $('#serviceModal').modal('hide');
+        checkSubmitButton();
+    });
+
+    function addServiceToContract(serviceId, description, price, unit, unitDesc) {
+        serviceCounter++;
+        
+        const serviceHtml = `
+            <div class="mb-4 bg-light p-3 rounded service-item" data-service-id="${serviceId}">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 text-primary">خدمة #${serviceCounter}</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-service">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">الوصف</label>
+                        <input type="text" class="form-control border-primary" value="${description}" readonly>
+                        <input type="hidden" name="services[${serviceId}][service_id]" value="${serviceId}">
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">السعر</label>
+                        <input type="number" step="0.01" class="form-control border-primary" name="services[${serviceId}][price]" value="${price}" readonly>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">الكمية</label>
+                        <input type="number" class="form-control border-primary" name="services[${serviceId}][unit]" value="${unit}" readonly>
+                    </div>
+                    <div class="col-2">
+                        <label class="form-label">وحدة القياس</label>
+                        <input type="text" class="form-control border-primary" name="services[${serviceId}][unit_desc]" value="${unitDesc}" readonly>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        $('#services-container').append(serviceHtml);
+    }
+
+    // Remove service
+    $(document).on('click', '.remove-service', function() {
+        $(this).closest('.service-item').remove();
+        checkSubmitButton();
+        updateServiceNumbers();
+    });
+
+    function updateServiceNumbers() {
+        $('#services-container .service-item').each(function(index) {
+            $(this).find('h6').text(`خدمة #${index + 1}`);
+        });
+        serviceCounter = $('#services-container .service-item').length;
+    }
+
+    function checkSubmitButton() {
+        const hasServices = $('#services-container .service-item').length > 0;
+        const hasCustomer = $('#customer_id').val() !== '';
+        
+        $('#submit-btn').prop('disabled', !hasServices || !hasCustomer);
+        
+        if (!hasServices) {
+            $('#submit-btn').text('الرجاء إضافة خدمة واحدة على الأقل');
+        } else if (!hasCustomer) {
+            $('#submit-btn').text('الرجاء اختيار العميل');
+        } else {
+            $('#submit-btn').text('حفظ العقد');
+        }
+    }
+
+    // Check on customer selection
+    $('#customer_name').on('change', function() {
+        checkSubmitButton();
+    });
+
+    // Initial check
+    $(document).ready(function() {
+        checkSubmitButton();
+    });
 </script>
 
 <style>
@@ -221,9 +318,24 @@
     .select2-container .select2-selection__rendered {
         line-height: 30px; 
     }
-    /* .select2-container .select2-selection__arrow {
-        height: 100%; /* يخلي السهم في النص */
-    } */
+    
+    .service-item {
+        border-left: 4px solid #0d6efd;
+    }
+    
+    .remove-service:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    #submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .modal-body .row {
+        margin-top: 15px;
+    }
 </style>
 
 @endsection
