@@ -76,24 +76,11 @@
         <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h5 class="card-title">إجمالي عدد الحاويات في الساحة</h5>
-                    <h2 class="text-primary fw-bold">{{ $availableContainer }}</h2>
+                    <h6 class="card-title fw-bold">إجمالي عدد الحاويات في الساحة</h6>
+                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $availableContainer }}</h6>
                 </div>
                 <div>
-                    <i class="bi bi-boxes fs-1"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="card-title">إجمالي الحاويات في الإنتظار</h5>
-                    <h2 class="text-primary fw-bold">{{ $waitingContainers }}</h2>
-                </div>
-                <div>
-                    <i class="fa-solid fa-hourglass-start fa-2xl"></i>
+                    <i class="bi bi-boxes fs-2"></i>
                 </div>
             </div>
         </div>
@@ -102,11 +89,24 @@
         <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h5 class="card-title">إجمالي الحاويات التي تم تسليمها</h5>
-                    <h2 class="text-primary fw-bold">{{ $containers->where('status', 'غير متوفر')->count() }}</h2>
+                    <h6 class="card-title fw-bold">إجمالي الحاويات في الإنتظار</h6>
+                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $waitingContainers }}</h6>
                 </div>
                 <div>
-                    <i class="bi bi-check-circle fs-1"></i>
+                    <i class="fa-solid fa-hourglass-start fs-2"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="card-title fw-bold">إجمالي الحاويات التي تم تسليمها</h6>
+                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $containers->where('status', 'غير متوفر')->count() }}</h6>
+                </div>
+                <div>
+                    <i class="bi bi-check-circle fs-2"></i>
                 </div>
             </div>
         </div>
@@ -233,10 +233,10 @@
                         <td>{{ $container->date ?? '-' }}</td>
                         <td class="action-icons">
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
-                                <i class="fa-solid fa-pen text-primary" title="Edit container"></i>
+                                <i class="fa-solid fa-pen-to-square text-primary" title="تحديث بيانات الحاوية"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container->id }}">
-                                <i class="fa-solid fa-trash-can text-danger" title="delete container"></i>
+                                <i class="fa-solid fa-trash-can text-danger" title="حذف الحاوية"></i>
                             </button>
                         </td>
                     </tr>
@@ -279,7 +279,7 @@
                                             <div class="col">
                                                 <label for="status" class="form-label">الحـــالـــة</label>
                                                 <select class="form-select border-primary" name="status" required>
-                                                    <option value="غير متوفر" {{ $container->status == "غير متوفر" ? 'selected' : '' }}>غير متوفر</option>
+                                                    <option value="مُسلم" {{ $container->status == "مُسلم" ? 'selected' : '' }}>مُسلم</option>
                                                     <option value="متوفر" {{ $container->status == "متوفر" ? 'selected' : '' }}>متوفر</option>
                                                     <option value="في الإنتظار" {{ $container->status == "في الإنتظار" ? 'selected' : '' }}>في الإنتظار</option>
                                                 </select>

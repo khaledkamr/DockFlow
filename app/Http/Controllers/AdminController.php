@@ -31,6 +31,8 @@ class AdminController extends Controller
         $receivedContainers = $containers->where('date', $date)->count();
         $deliveredContainers = $containers->where('exit_date', $date)->count();
         $policies = Policy::where('date', $date)->get();
+        $containersTrend = [1,5, 3,10,25 ,7, 10, 15, 11, 20];
+        $containersDistribution = [30, 25, 40, 5];
         
         return view('admin.home', compact(
             'customers', 
@@ -40,7 +42,9 @@ class AdminController extends Controller
             'availableContainers',
             'waitingContainers',
             'receivedContainers',
-            'deliveredContainers'
+            'deliveredContainers',
+            'containersTrend',
+            'containersDistribution'
         ));
     }
 

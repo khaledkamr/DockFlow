@@ -199,6 +199,7 @@
                 <th class="text-center bg-dark text-white">رقم العميل</th>
                 <th class="text-center bg-dark text-white">إسم العميل</th>
                 <th class="text-center bg-dark text-white">رقم السجل التجاري</th>
+                <th class="text-center bg-dark text-white">العنوان الوطني</th>
                 <th class="text-center bg-dark text-white">رقم الهاتف</th>
                 <th class="text-center bg-dark text-white">الإيميل</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
@@ -222,14 +223,15 @@
                             </a>
                         </td>
                         <td class="text-center">{{ $customer->CR }}</td>
+                        <td class="text-center">{{ $customer->national_address }}</td>
                         <td class="text-center">{{ $customer->phone }}</td>
                         <td class="text-center">{{ $customer->email }}</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-pen text-primary" title="Edit user"></i>
+                                <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-user-xmark text-danger" title="delete user"></i>
+                                <i class="fa-solid fa-user-xmark text-danger" title="حذف العميل"></i>
                             </button>
                         </td>
                     </tr>

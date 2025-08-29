@@ -144,7 +144,7 @@
                         <td class="text-center">{{ $contract->end_date }}</td>
                         <td class="action-icons text-center">
                             <a href="{{ route('contracts.details', $contract->id) }}" 
-                                class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
+                                class="btn btn-sm btn-primary rounded-3 m-0">
                                 عرض
                             </a>
                         </td>
