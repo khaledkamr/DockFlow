@@ -11,10 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     <style>
-        /* ::selection {
-            color: #ffffff;
-            background: #10d5bf;
-        } */
         ::-webkit-scrollbar {
             width: 10px;
             height: 0; 
@@ -34,10 +30,6 @@
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #0a57ca;
-        }
-        :root {
-            --primary-color: #10d5bf;
-            --secondary-color: #0ec5a9;
         }
         body {
             font-family: "Cairo", sans-serif;
@@ -150,6 +142,69 @@
         .dropdown-toggle::after {
             display: none !important;
         }
+        .table-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+        .table thead {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table td {
+            padding: 15px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        .table .status-waiting {
+            background-color: #ffe590;
+            color: #856404;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .table .status-available {
+            background-color: #d4d7ed;
+            color: #151657;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .table .status-delivered {
+            background-color: #c1eccb;
+            color: #155724;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .table .status-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -229,6 +284,9 @@
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.types') ? 'active' : '' }}" href="{{ route('yard.containers.types') }}">
                         <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.reports') ? 'active' : '' }}" href="{{ route('yard.containers.reports') }}">
+                        <i class="fa-solid fa-file-lines ms-4 me-2"></i> التقـــاريـــر
                     </a>
                 </div>
             </li>

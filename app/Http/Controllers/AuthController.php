@@ -20,7 +20,7 @@ class AuthController extends Controller
 
         if($valid) {
             $user = User::where('email', $request->email)->first();
-            return redirect((route('admin.home')))->with('success', 'مرحبا بك من جديد');
+            return redirect((route('admin.home')))->with('success', "$user->name, مربحاً بك من جديد");
         } 
         else {
             return redirect(route('login.form'))->with('error', 'البريد الإلكتروني او كلمة السر غير صحيحة');
@@ -31,5 +31,4 @@ class AuthController extends Controller
         Auth::logout();
         return redirect(route('login.form'))->with('success', 'تم تسجيل الخروج من الحساب');
     }
-
 }

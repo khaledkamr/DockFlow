@@ -45,6 +45,7 @@ Route::controller(ContainerController::class)->middleware('auth')->group(functio
     Route::delete('/yard/containers/types/delete/{id}', 'deleteContainerType')->name('yard.containers.types.delete');
     Route::post('/exit_permission', 'exitPermission')->name('exit.permission');
     Route::post('/entry_permission', 'entryPermission')->name('entry.permission');
+    Route::get('/yard/containers/reports', 'reports')->name('yard.containers.reports');
 });
 
 Route::controller(PolicyController::class)->middleware('auth')->group(function () {

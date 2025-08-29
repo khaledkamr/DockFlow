@@ -4,26 +4,12 @@
 
 @section('content')
 <style>
-    :root {
-        --primary-gradient: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
-        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --danger-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        --hover-shadow: 0 15px 40px rgba(0,0,0,0.15);
-        --border-radius: 15px;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
     .service-card {
        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
     .service-card:hover {
         transform: translateY(-5px);
-        box-shadow: var(--hover-shadow);
     }
-
     .service-number {
         background: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
         color: white;
@@ -32,15 +18,12 @@
         border-radius: 20px;
         font-size: 0.9rem;
     }
-
     .btn-edit, .btn-delete {
-        transition: var(--transition);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
     .btn-edit:hover, .btn-delete:hover {
         transform: scale(1.1);
     }
-
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-5">

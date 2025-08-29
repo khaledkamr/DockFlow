@@ -86,6 +86,8 @@ class ContainerController extends Controller
         $new_status = $request->status;
         if($new_status == 'متوفر' && $old_status != $new_status) {
             $container->date = Carbon::now()->format('Y-m-d');
+        } elseif($new_status == 'مُسلم' && $old_status != $new_status) {
+            $container->exit_date = Carbon::now()->format('Y-m-d');
         }
         $container->status = $request->status;
         $container->save();
@@ -133,5 +135,41 @@ class ContainerController extends Controller
             $container->save();
         }
         return redirect()->back()->with('success', 'تم إنشاء تصريح دخول بنجاح');
+    }
+
+    public function reports(Request $request) {
+        $containers = Container::orderBy('id', 'desc')->get();
+        $types = Container_type::all();
+        $customers = Customer::all();
+
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $status = $request->input('status', 'all');
+        $type = $request->input('type');
+        $customer =$request->input('customer');
+
+        if($to && $from) {
+            $containers = $containers->whereBetween('date', [$from, $to]);
+        }
+        if($status !== 'all') {
+            $containers = $containers->where('status', $status);
+        }
+        if($type !== 'all') {
+            $containers = $containers->filter(function($container) use($type) {
+                return $container->containerType->id == $type;
+            });
+        }
+        if($customer !== 'all') {
+            $containers = $containers->filter(function($container) use($customer) {
+                return $container->customer->id == $customer;
+            });
+        }
+        $perPage = $request->input('per_page', 50);
+        return view('admin.containers.reports', compact(
+            'containers',
+            'types',
+            'customers',
+            'perPage'
+        ));
     }
 }
