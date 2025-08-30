@@ -145,8 +145,8 @@ class ContainerController extends Controller
         $from = $request->input('from', null);
         $to = $request->input('to', null);
         $status = $request->input('status', 'all');
-        $type = $request->input('type');
-        $customer =$request->input('customer');
+        $type = $request->input('type', 'all');
+        $customer =$request->input('customer', 'all');
 
         if($to && $from) {
             $containers = $containers->whereBetween('date', [$from, $to]);
@@ -164,7 +164,14 @@ class ContainerController extends Controller
                 return $container->customer->id == $customer;
             });
         }
-        $perPage = $request->input('per_page', 50);
+        $perPage = $request->input('per_page', 10);
+        $containers = new \Illuminate\Pagination\LengthAwarePaginator(
+            $containers->forPage(request()->get('page', 1), $perPage),
+            $containers->count(),
+            $perPage,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
         return view('admin.containers.reports', compact(
             'containers',
             'types',

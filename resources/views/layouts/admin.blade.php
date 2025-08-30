@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dockflow - @yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -335,7 +335,10 @@
                         <i class="fa-solid fa-money-bill-transfer ms-3 me-2"></i> القيــــــود
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.money.tree') ? 'active' : '' }}" href="{{ route('admin.money.tree') }}">
-                        <i class="fa-solid fa-folder-tree ms-3 me-2"></i> شجــــرة الحسابـــات
+                        <i class="fa-solid fa-folder-tree ms-3 me-2"></i> دلـــيل الحسابـــات
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('admin.money.reports') ? 'active' : '' }}" href="{{ route('admin.money.reports') }}">
+                        <i class="fa-solid fa-receipt ms-3 me-2"></i> التقــــاريــــر
                     </a>
                 </div>
             </li>
@@ -389,13 +392,13 @@
                 </div>
             </div>
         </nav>
-
         
         <div class="content-area">
             @yield('content')
         </div>
     </div>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -472,6 +475,20 @@
             document.body.appendChild(container);
             return container;
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+
+        document.getElementById('reportForm').addEventListener('submit', function() {
+            let btn = document.getElementById('submitBtn');
+            let icon = document.getElementById('btnIcon');
+            icon.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+        });
     </script>
     @stack('scripts')
 </body>

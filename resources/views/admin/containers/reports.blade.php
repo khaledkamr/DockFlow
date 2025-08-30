@@ -57,28 +57,34 @@
 </div>
 
 <div class="row text-center mb-4">
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm rounded-3 p-3">
             <h6>إجمالي الحاويات</h6>
             <h3 class="fw-bold mb-0">{{ $containers->count() }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm rounded-3 p-3">
             <h6>في الساحة</h6>
             <h3 class="text-primary fw-bold mb-0">{{ $containers->where('status', 'متوفر')->count() }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm rounded-3 p-3">
             <h6>تم تسليمها</h6>
             <h3 class="text-primary fw-bold mb-0">{{ $containers->where('exit_date', '!=', null)->count() }}</h3>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col">
         <div class="card border-0 shadow-sm rounded-3 p-3">
             <h6>متأخره</h6>
             <h3 class="text-danger fw-bold mb-0">{{ $containers->where('status', 'متأخر')->count() }}</h3>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card border-0 shadow-sm rounded-3 p-3">
+            <h6>في الإنتظار</h6>
+            <h3 class="text-warning fw-bold mb-0">{{ $containers->where('status', 'في الإنتظار')->count() }}</h3>
         </div>
     </div>
 </div>
@@ -169,23 +175,11 @@
             </tbody>
         </table>
     </div>
+    <div class="mt-4">
+        {{ $containers->appends(request()->query())->onEachSide(1)->links() }}
+    </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    });
 
-    document.getElementById('reportForm').addEventListener('submit', function() {
-        let btn = document.getElementById('submitBtn');
-        let icon = document.getElementById('btnIcon');
-        icon.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        btn.disabled = true;
-    });
-</script>
 @endsection
