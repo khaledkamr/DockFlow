@@ -115,7 +115,7 @@
             <div class="card-body">
                 <h5 class="card-title d-flex justify-content-between align-items-center text-dark fw-bold">
                     <div>معدل دخول وخروج الحاويات</div>
-                    <a href="{{ route('yard.containers') }}" class="btn btn-sm btn-primary fw-bold">
+                    <a href="{{ route('yard.containers.reports') }}" class="btn btn-sm btn-primary fw-bold">
                         عرض تقارير الحاويات
                     </a>
                 </h5>
