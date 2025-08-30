@@ -11,11 +11,11 @@
     <div class="row mb-3">
         <div class="col">
             <label class="form-label">الشركة</label>
-            <input type="text" class="form-control" value="شركة تاج للتخزين" disabled>
+            <input type="text" class="form-control" value="{{ $company->name }}" disabled>
         </div>
         <div class="col">
             <label class="form-label">الفرع</label>
-            <input type="text" class="form-control" value="الفرع الرئيسي" disabled>
+            <input type="text" class="form-control" value="{{ $company->branch }}" disabled>
         </div>
         <div class="col">
             <label class="form-label">رقم القيد</label>
@@ -64,14 +64,15 @@
                     <td colspan="2" class="text-center fw-bold fs-5">الفــارق</td>
                     <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center" value="0.00"></td>
                     <td><input type="text" id="creditSum" name="creditSum" class="form-control text-center" value="0.00"></td>
-                    <td colspan="2"><input type="text" id="diff" name="diff" class="form-control text-center" value="0.00"></td>
+                    <td><input type="text" id="diff" name="diff" class="form-control text-center" value="0.00"></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
     <div class="d-block text-center">
-        <button type="button" class="btn btn-secondary btn-sm" id="add-row">+ إضافة سطر</button>
+        <button type="button" class="btn btn-primary btn-sm px-3 rounded-5" id="add-row">+ إضافة سطر</button>
     </div>
     @if (session('success'))
         @push('scripts')
@@ -91,6 +92,15 @@
         @push('scripts')
             <script>
                 showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+            </script>
+        @endpush
+    @endif
+    @if ($errors->any())
+        @push('scripts')
+            <script>
+                @foreach ($errors->all() as $error)
+                    showToast("{{ $error }}", "danger");
+                @endforeach
             </script>
         @endpush
     @endif
@@ -160,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let newRow = `
             <tr>
                 <td>
-                    <select name="account_name[]" class="form-select account_name">
+                    <select name="account_id[]" class="form-select account_name">
                         <option value="">-- اختر الحساب --</option>
                         @foreach($accounts as $account)
                             <option value="{{ $account->id }}" data-code="{{ $account->code }}">{{ $account->name }}</option>
@@ -168,8 +178,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     </select>
                 </td>
                 <td><input type="text" name="account_code[]" class="form-control account_code"></td>
-                <td><input type="text" name="debit[]" class="form-control"></td>
-                <td><input type="text" name="credit[]" class="form-control"></td>
+                <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center"></td>
+                <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center"></td>
                 <td><input type="text" name="description[]" class="form-control"></td>
                 <td class="text-center"><button type="button" class="btn btn-danger btn-sm remove-row">حذف</button></td>
             </tr>
@@ -193,19 +203,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
-
-<style>
-    .select2-container .select2-selection {
-        height: 38px;     
-        border-radius: 8px; 
-        border: 1px solid #d7dde4;
-        padding: 5px;
-    }
-    .select2-container .select2-selection__rendered {
-        line-height: 30px; 
-    }
-    /* .select2-container .select2-selection__arrow {
-        height: 100%; /* يخلي السهم في النص */
-    } */
-    
-</style>

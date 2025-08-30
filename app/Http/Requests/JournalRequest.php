@@ -16,6 +16,9 @@ class JournalRequest extends FormRequest
         return [
             'code' => 'required', 
             'date' => 'required|date',
+            'made_by' => 'nullable',
+            'modified_by' => 'nullable',
+            'voucher_id' => 'nullable',
         ];
     }
 }

@@ -10,7 +10,8 @@ class JournalEntryLine extends Model
         'journal_entry_id', 
         'account_id', 
         'debit', 
-        'credit'
+        'credit',
+        'description'
     ];
 
     public function account() {

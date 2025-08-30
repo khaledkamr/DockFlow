@@ -23,23 +23,23 @@
                     <tr>
                         <td class="text-center">{{ $journal->code }}</td>
                         <td class="text-center">قيد يومي</td>
-                        <td class="text-center"></td>
+                        <td class="text-center">{{ $journal->amount }}</td>
                         <td class="text-center">{{ $journal->date }}</td>
-                        <td class="text-center"></td>
-                        <td class="text-center"></td>
+                        <td class="text-center">{{ $journal->made_by }}</td>
+                        <td class="text-center {{ $journal->modified_by ? 'text-dark' : 'text-muted' }}">
+                            {{ $journal->modified_by ?? 'لم يتم التعديل' }}
+                        </td>
                         <td class="action-icons text-center">
-                            <button class="bg-primary text-white text-decoration-none border-0 rounded-2 m-0 pe-2 ps-2 p-1">
+                            <a href="{{ route('admin.journal.details', $journal->id) }}" 
+                                class="btn btn-sm btn-primary">
                                 عرض
-                            </button>
-                            <button class="bg-danger text-white text-decoration-none border-0 rounded-2 m-0 pe-2 ps-2 p-1" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $journal->id }}">
-                                حذف
-                            </button>
-                            <button class="bg-secondary text-white text-decoration-none border-0 rounded-2 m-0 pe-2 ps-2 p-1">
+                            </a>
+                            <a class="btn btn-sm btn-secondary">
                                 طباعة
-                            </button>
-                            <button class="bg-success text-white text-decoration-none border-0 rounded-2 m-0 pe-2 ps-2 p-1" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $journal->id }}">
+                            </a>
+                            <a class="btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $journal->id }}">
                                 تعديل
-                            </button>
+                            </a>
                         </td>
                     </tr>
 

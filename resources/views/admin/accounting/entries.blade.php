@@ -174,7 +174,7 @@
     .select2-container .select2-selection {
         height: 38px;       
         border-radius: 8px; 
-        border: 1px solid #d7dde4;
+        border: 1px solid #0d6efd;
         padding: 5px;
     }
     .select2-container .select2-selection__rendered {

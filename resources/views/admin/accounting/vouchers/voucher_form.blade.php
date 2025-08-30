@@ -25,7 +25,7 @@
             @endif
         </div>
         <div class="col-3">
-            <label for="account_name">اسم الحساب</label>
+            <label for="account_name" class="mb-2">اسم الحساب</label>
             <select id="account_name" class="form-select border-primary" style="width:100%;">
                 <option value="">-- اختر الحساب --</option>
                 @foreach($accounts as $account)

@@ -10,6 +10,8 @@ use App\Models\Account;
 use App\Http\Requests\RootRequest;
 use App\Http\Requests\JournalRequest;
 use App\Http\Requests\VoucherRequest;
+use App\Models\Company;
+use Illuminate\Support\Facades\Auth;
 
 class AccountingController extends Controller
 {
@@ -22,10 +24,18 @@ class AccountingController extends Controller
         $validated = $request->validated();
         $name = $validated['name'];
         Account::create($validated);
-        return redirect()->back()->with('success', "تم إنشاء الفرع $name بنجاح");
+        return redirect()->back()->with('success', "تم إنشاء الفرع '$name' بنجاح");
+    }
+
+    public function deleteRoot($id) {
+        $root = Account::findOrFail($id);
+        $name = $root->name;
+        $root->delete();
+        return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");
     }
 
     public function entries() {
+        $company = Company::first();
         $accounts = Account::where('level', 5)->get();
         $vouchers = Voucher::all();
         $journals = JournalEntry::all();
@@ -71,7 +81,7 @@ class AccountingController extends Controller
             });
         }
         
-        return view('admin.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray'));
+        return view('admin.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray', 'company'));
     }
 
     public function createJournal(JournalRequest $request) {
@@ -101,19 +111,28 @@ class AccountingController extends Controller
         $journalEntry = JournalEntry::create([
             'code' => $request->code,
             'date' => $request->date,
+            'amount' => $totalDebit,
+            'made_by' => Auth::user()->name
         ]);
 
         foreach ($request->account_id as $index => $accountId) {
             JournalEntryLine::create([
                 'journal_entry_id' => $journalEntry->id,
                 'account_id'       => $accountId,
-                'debit'            => $request->debit[$index],
-                'credit'           => $request->credit[$index],
+                'debit'            => $request->debit[$index] ?? 0,
+                'credit'           => $request->credit[$index] ?? 0,
                 'description'      => $request->description[$index],
             ]);
         }
 
         return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
+    }
+
+    public function journalDetails($id) {
+        $journal = JournalEntry::with('lines')->findOrFail($id);
+        return view('admin.accounting.vouchers.journalDetails', compact(
+            'journal'
+        ));
     }
 
     public function createVoucher(VoucherRequest $request) {
@@ -129,5 +148,13 @@ class AccountingController extends Controller
         $voucher = Voucher::findOrFail($id);
         $voucher->delete();
         return redirect()->back()->with('success', 'تم حذف السند بنجاح');
+    }
+
+    public function reports(Request $request) {
+        $accounts = Account::where('level', 5)->get();
+        $entries = JournalEntry::all();
+        $account = $request->input('account', null);
+        $statement = Voucher::where('account_id', $account)->get();
+        return view('admin.accounting.reports', compact('accounts', 'entries', 'statement'));
     }
 }

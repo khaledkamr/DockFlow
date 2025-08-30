@@ -8,8 +8,11 @@ class JournalEntry extends Model
 {
     protected $fillable = [
         'code',
-        'voucher_id', 
         'date',
+        'amount',
+        'made_by',
+        'modified_by',
+        'voucher_id'
     ];
 
     public function lines() {
