@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'شجرة الحسابات')
+@section('title', 'دليل الحسابات')
 
 @section('content')
 <style>
@@ -79,7 +79,11 @@
     }
     
     .toggle-btn.collapsed {
-        transform: rotate(-90deg);
+        transform: rotate(90deg);
+    }
+    
+    .toggle-btn.collapsed i {
+        transform: translateY(2px);
     }
     
     .account-info {
@@ -134,48 +138,55 @@
     }
 </style>
 
+@if (session('success'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
+@endif
+
+@if (session('errors'))
+    @push('scripts')
+        <script>
+            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+        </script>
+    @endpush
+@endif
+
 <div class="accounts-tree">
-    <h1 class="mb-4">شجرة الحسابات</h1>
-    
-    <div class="d-flex gap-3 mb-3">
-        <button class="btn btn-primary" onclick="expandAll()">توسيع الكل</button>
-        <button class="btn btn-danger" onclick="collapseAll()">طي الكل</button>
-    </div>
-
-    @if (session('success'))
-        @push('scripts')
-            <script>
-                showToast("{{ session('success') }}", "success");
-            </script>
-        @endpush
-    @endif
-
-    @if (session('errors'))
-        @push('scripts')
-            <script>
-                showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-            </script>
-        @endpush
-    @endif
+    <h1 class="mb-4">دليل الحسابات</h1>
 
     <div class="bg-white rounded-3 shadow-sm p-3 mt-3">
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-sm btn-outline-primary" onclick="expandAll()">
+                <i class="fa-solid fa-maximize"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="collapseAll()">
+                <i class="fa-solid fa-minimize"></i>
+            </button>
+        </div>
         <ul class="tree-list">
             @foreach($accounts as $account)
                 <li class="relative m-0 p-0 mb-3">
                     <div class="account-node {{ $account->children->count() ? 'has-children' : '' }} bg-level-{{$account->level}}" 
                          onclick="toggleNode(this)">
                         @if($account->children->count())
-                            <button class="toggle-btn">▼</button>
+                            <button class="toggle-btn">
+                                <i class="fa-solid fa-angle-down"></i>
+                            </button>
                         @endif
                         <div class="account-info">
-                            <div class="d-flex">
+                            <div class="d-flex align-items-center">
                                 <div class="account-code">{{ $account->code }}</div>
                                 <div class="account-name">{{ $account->name }}</div>
                                 <div class="ms-2">({{ $account->level }})</div>
                             </div>
                             <div>
-                                <button class="z-3 badge bg-dark text-white fs-6 rounded-1 border-0" style="z-index: 1000;" 
-                                    type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $account->id }}">+</button>
+                                <button class="z-3 badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
+                                    type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $account->id }}">
+                                    <i class="fa-solid fa-plus fa-xs"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -215,8 +226,8 @@
                                     <input type="hidden" name="level" value={{ $account->level + 1 }}>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إالغاء</button>
-                                    <button type="submit" class="btn btn-1">إنشاء</button>
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                                    <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
                                 </div>
                             </form>
                         </div>
