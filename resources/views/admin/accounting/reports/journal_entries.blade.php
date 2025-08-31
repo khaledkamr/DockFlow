@@ -72,26 +72,21 @@
                 </tr>
             </thead>
             <tbody class="text-center">
+                @php
+                    $totalEntriesDebit = 0;
+                    $totalEntriesCredit = 0;
+                @endphp
                 @forelse($entries as $entry)
                     <tr>
-                        
                         <td colspan="7" class="text-start table-secondary fw-bold">
                             <a href="{{ route('admin.journal.details', $entry->id) }}" class="text-decoration-none">
-                                قيد بتاريخ {{ $entry->date }}
+                                قيد - {{ $entry->voucher_id ? $entry->voucher->type : 'قيد يومي' }} - بتاريخ {{ $entry->date }}
                             </a>
                         </td>
                     </tr>
-                    @php
-                        $entryDebit = 0;
-                        $entryCredit = 0;
-                    @endphp
                     @foreach($entry->lines as $index => $line)
-                        @php
-                            $entryDebit += $line->debit;
-                            $entryCredit += $line->credit;
-                        @endphp
                         <tr>
-                            <td>{{ $line->journal_entry_id }}</td>
+                            <td>{{ $line->journal->code }}</td>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $line->account->code }}</td>
                             <td>{{ $line->account->name }}</td>
@@ -103,10 +98,14 @@
                     <tr class="table-secondary fw-bold">
                         <td colspan="4"></td>
                         <td>إجمالي</td>
-                        <td>{{ number_format($entryDebit, 2) }}</td>
-                        <td>{{ number_format($entryCredit, 2) }}</td>
+                        <td>{{ number_format($entry->totalDebit, 2) }}</td>
+                        <td>{{ number_format($entry->totalCredit, 2) }}</td>
                     </tr>
-                    <tr><td colspan="7"></td></tr>
+                    <tr><td colspan="7" class="p-1"></td></tr>
+                    @php
+                        $totalEntriesDebit += $entry->totalDebit;
+                        $totalEntriesCredit += $entry->totalCredit;
+                    @endphp
                 @empty
                     <tr>
                         <td colspan="7" class="text-center">
@@ -114,6 +113,14 @@
                         </td>
                     </tr>
                 @endforelse
+                <tr>
+                    <tr class="table-primary fw-bold">
+                        <td colspan="4"></td>
+                        <td class="fs-6">إجمالي القيود</td>
+                        <td class="fs-6">{{ number_format($totalEntriesDebit, 2) }}</td>
+                        <td class="fs-6">{{ number_format($totalEntriesCredit, 2) }}</td>
+                    </tr>
+                </tr>
             </tbody>
         </table>
 

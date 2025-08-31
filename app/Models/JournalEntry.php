@@ -9,7 +9,8 @@ class JournalEntry extends Model
     protected $fillable = [
         'code',
         'date',
-        'amount',
+        'totalDebit',
+        'totalCredit',
         'made_by',
         'modified_by',
         'voucher_id'
@@ -17,5 +18,9 @@ class JournalEntry extends Model
 
     public function lines() {
         return $this->hasMany(JournalEntryLine::class);
+    }
+
+    public function voucher() {
+        return $this->belongsTo(Voucher::class);
     }
 }

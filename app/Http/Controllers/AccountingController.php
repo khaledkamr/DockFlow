@@ -111,8 +111,9 @@ class AccountingController extends Controller
         $journalEntry = JournalEntry::create([
             'code' => $request->code,
             'date' => $request->date,
-            'amount' => $totalDebit,
-            'made_by' => Auth::user()->name
+            'made_by' => Auth::user()->name,
+            'totalDebit' => $totalDebit,
+            'totalCredit' => $totalDebit,
         ]);
 
         foreach ($request->account_id as $index => $accountId) {

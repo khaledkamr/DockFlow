@@ -370,13 +370,13 @@
                 </a>
                 <div class="collapse sub-menu {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.money.entries') ? 'active' : '' }}" href="{{ route('admin.money.entries') }}">
-                        <i class="fa-solid fa-money-bill-transfer ms-3 me-2"></i> القيــــــود
+                        <i class="fa-solid fa-money-bill-transfer ms-3 me-2"></i> القيود والسنـدات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.money.tree') ? 'active' : '' }}" href="{{ route('admin.money.tree') }}">
                         <i class="fa-solid fa-folder-tree ms-3 me-2"></i> دلـــيل الحسابـــات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('admin.money.reports') ? 'active' : '' }}" href="{{ route('admin.money.reports') }}">
-                        <i class="fa-solid fa-receipt ms-3 me-2"></i> التقــــاريــــر
+                        <i class="fa-solid fa-receipt ms-3 me-2"></i> تقاريـــــر القيـــــود
                     </a>
                 </div>
             </li>

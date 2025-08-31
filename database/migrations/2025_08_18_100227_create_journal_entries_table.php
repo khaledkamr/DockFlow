@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->date('date');
-            $table->float('amount');
+            $table->decimal('totalDebit', 10, 2);
+            $table->decimal('totalCredit', 10, 2);
             $table->string('made_by');
             $table->string('modified_by')->nullable();
             $table->foreignId('voucher_id')->nullable()->constrained()->cascadeOnDelete();
