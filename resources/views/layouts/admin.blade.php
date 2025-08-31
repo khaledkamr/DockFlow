@@ -31,6 +31,14 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #0a57ca;
         }
+        :root {
+            --blue-1: #0b56a9;
+            --blue-2: #217cab;
+            --blue-3: #2b87ac;
+            --blue-4: #42b3af;
+            --blue-5: #52d6cb;
+            --gradient: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
+        }
         body {
             font-family: "Cairo", sans-serif;
             font-optical-sizing: auto;
@@ -204,6 +212,36 @@
             border-radius: 12px;
             font-size: 12px;
             display: inline-block;
+        }
+        .go-to-top {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #0b56a9;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .go-to-top:hover {
+            background-color: #217cab;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .go-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .go-to-top:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -392,6 +430,11 @@
                 </div>
             </div>
         </nav>
+
+        <button class="go-to-top d-flex justify-content-center align-items-center border-0 rounded-circle text-white" 
+            id="goToTopBtn" onclick="scrollToTop()" title="العودة إلى الأعلى">
+            <i class="fa-solid fa-angles-up"></i>
+        </button>
         
         <div class="content-area">
             @yield('content')
@@ -481,6 +524,11 @@
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             })
+            // Listen for scroll events
+            window.addEventListener('scroll', toggleGoToTopButton);
+            
+            // Initial check
+            toggleGoToTopButton();
         });
 
         document.getElementById('reportForm').addEventListener('submit', function() {
@@ -489,6 +537,24 @@
             icon.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
             btn.disabled = true;
         });
+
+         // Go to Top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide go to top button based on scroll position
+        function toggleGoToTopButton() {
+            const goToTopBtn = document.getElementById('goToTopBtn');
+            if (window.pageYOffset > 300) {
+                goToTopBtn.classList.add('show');
+            } else {
+                goToTopBtn.classList.remove('show');
+            }
+        }
     </script>
     @stack('scripts')
 </body>

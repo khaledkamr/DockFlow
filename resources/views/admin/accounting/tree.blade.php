@@ -23,25 +23,25 @@
     }
     
     .bg-level-1 {
-        background-color: #0b56a9;
+        background-color: var(--blue-1);
         color: white;
         font-weight: 600;
     }
 
     .bg-level-2 {
-        background-color: #217cab;
+        background-color: var(--blue-2);
         color: white;
         font-weight: 600;
     }
 
     .bg-level-3 {
-        background-color: #2b87ac;
+        background-color: var(--blue-3);
         color: white;
         font-weight: 600;
     }
 
     .bg-level-4 {
-        background-color: #42b3af;
+        background-color: var(--blue-4);
         color: white;
         font-weight: 600;
     }
@@ -268,7 +268,7 @@
             btn.classList.add('collapsed');
         });
     }
-    
+
     document.addEventListener('DOMContentLoaded', function() {
         collapseAll();
     });
