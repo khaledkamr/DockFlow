@@ -201,7 +201,7 @@ class AccountingController extends Controller
         $accounts = Account::where('level', 5)->get();
         $entries = JournalEntry::all();
         $account = $request->input('account', null);
-        $statement = Voucher::where('account_id', $account)->get();
+        $statement = JournalEntryLine::where('account_id', $account)->get();
         return view('admin.accounting.reports', compact('accounts', 'entries', 'statement'));
     }
 }

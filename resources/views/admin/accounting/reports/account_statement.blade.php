@@ -45,8 +45,10 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="bg-dark text-center text-white">التاريخ</th>
+                    <th class="bg-dark text-center text-white">إسم الحساب</th>
+                    <th class="bg-dark text-center text-white">تاريخ</th>
                     <th class="bg-dark text-center text-white">رقم القيد</th>
+                    <th class="bg-dark text-center text-white">نوع القيد</th>
                     <th class="bg-dark text-center text-white">البيان</th>
                     <th class="bg-dark text-center text-white">مدين</th>
                     <th class="bg-dark text-center text-white">دائن</th>
@@ -54,18 +56,30 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($statement as $row)
+                @php
+                    $balance = 0;
+                @endphp
+                @forelse($statement as $line)
+                @php
+                    if($line->debit > 0) {
+                        $balance += $line->debit;
+                    } else {
+                        $balance -= $line->credit;
+                    }
+                @endphp
                     <tr class="text-center">
-                        <td>{{ $row->date }}</td>
-                        <td>{{ $row->entry_id }}</td>
-                        <td>{{ $row->description }}</td>
-                        <td>{{ $row->debit }}</td>
-                        <td>{{ $row->credit }}</td>
-                        <td>{{ $row->balance }}</td>
+                        <td>{{ $line->account->name }}</td>
+                        <td>{{ $line->journal->date }}</td>
+                        <td>{{ $line->journal_entry_id }}</td>
+                        <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
+                        <td>{{ $line->description }}</td>
+                        <td>{{ $line->debit }}</td>
+                        <td>{{ $line->credit }}</td>
+                        <td>{{ $balance }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center">
+                        <td colspan="8" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>
@@ -73,5 +87,5 @@
             </tbody>
         </table>
     </div>
-    <h5 class="mt-4">الرصيد الختامي: <strong>{{ $closing_balance ?? 0.00 }}</strong></h5>
+    <h5 class="mt-4">الرصيد الختامي: <strong>{{ $balance }}</strong></h5>
 </div>
