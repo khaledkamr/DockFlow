@@ -26,10 +26,10 @@
                         <td class="text-center text-success fw-bold">{{ (int) $voucher->amount }} ريال</td>
                         <td class="text-center">{{ $voucher->date }}</td>
                         <td class="action-icons text-center">
-                            <button class="bg-primary text-white text-decoration-none border-0 rounded-2 m-0 pe-2 ps-2 p-1" type="button" data-bs-toggle="modal" data-bs-target="#post{{ $voucher->id }}">
+                            <a href="{{ route('admin.voucher.to.journal', $voucher->id) }}" class="btn btn-sm btn-primary">
                                 ترحيل
-                            </button>
-                            <button class="bg-danger text-white text-decoration-none border-0 rounded-2 m-0 pe-2 ps-2 p-1" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $voucher->id }}">
+                            </a>
+                            <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $voucher->id }}">
                                 حذف
                             </button>
                         </td>
@@ -42,7 +42,7 @@
                                     <h5 class="modal-title text-dark fw-bold" id="postLabel{{ $voucher->id }}">تأكيد ترحيل</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('admin.create.voucher') }}" method="POST">
+                                <form action="" method="POST">
                                     @csrf
                                     <div class="modal-body text-dark">
                                         <div>هل انت متاكد من ترحيل السند</div>

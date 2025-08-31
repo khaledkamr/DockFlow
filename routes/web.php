@@ -83,6 +83,7 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::get('admin/money/entries', 'entries')->name('admin.money.entries');
     Route::post('admin/money/entries/create/voucher', 'createVoucher')->name('admin.create.voucher');
     Route::delete('admin/money/entries/delete/{id}', 'deleteVoucher')->name('admin.delete.voucher');
+    Route::get('/admin/money/voucher/{id}/toJournal', 'convertToJournal')->name('admin.voucher.to.journal');
     Route::post('admin/money/entries/create/journal', 'createJournal')->name('admin.create.journal');
     Route::get('admin/money/journal/{id}', 'journalDetails')->name('admin.journal.details');
     Route::get('/admin/money/reports', 'reports')->name('admin.money.reports');

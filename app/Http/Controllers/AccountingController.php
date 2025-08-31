@@ -11,6 +11,7 @@ use App\Http\Requests\RootRequest;
 use App\Http\Requests\JournalRequest;
 use App\Http\Requests\VoucherRequest;
 use App\Models\Company;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class AccountingController extends Controller
@@ -150,6 +151,51 @@ class AccountingController extends Controller
         $voucher->delete();
         return redirect()->back()->with('success', 'تم حذف السند بنجاح');
     }
+
+    public function convertToJournal($id) {
+        $voucher = Voucher::findOrFail($id);
+        if($voucher->type == 'سند صرف نقدي') {
+            $debitAccount = Account::findOrFail($voucher->account_id);
+            $creditAccount = Account::where('name', 'صندوق الساحة')->first();
+        } elseif($voucher->type == 'سند صرف بشيك') {
+            $debitAccount = Account::findOrFail($voucher->account_id);
+            $creditAccount = Account::where('name', 'البنك الاهلي')->first();
+        } elseif($voucher->type == 'سند قبض بشيك') {
+            $debitAccount = Account::where('name', 'البنك الاهلي')->first();
+            $creditAccount = Account::findOrFail($voucher->account_id);
+        } elseif ($voucher->type == 'سند قبض نقدي') {
+            $debitAccount = Account::where('name', 'صندوق الساحة')->first();
+            $creditAccount = Account::findOrFail($voucher->account_id);
+        }
+
+        $lastJournalCode = JournalEntry::latest('id')->first()->code;
+
+        $journal = JournalEntry::create([
+            'code' => $lastJournalCode + 1,
+            'date' => Carbon::now()->format('Y-m-d'),
+            'totalDebit' => $voucher->amount,
+            'totalCredit' => $voucher->amount,
+            'made_by' => Auth::user()->name,
+            'voucher_id' => $voucher->id
+        ]);
+
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $debitAccount->id,
+            'debit' => $voucher->amount,
+            'credit' => 0.00,
+            'description' => $voucher->description
+        ]);
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $creditAccount->id,
+            'debit' => 0.00,
+            'credit' => $voucher->amount,
+            'description' => $voucher->description
+        ]);
+
+        return redirect()->back()->with('success', 'تم ترحيل السند الى قيد بنجاح');
+    }   
 
     public function reports(Request $request) {
         $accounts = Account::where('level', 5)->get();
