@@ -18,23 +18,23 @@
 
 <form method="GET" action="" class="row g-3 bg-white p-3 rounded-3 shadow-sm border-0 mb-4">
     <div class="col-md-3">
+        <label class="form-label">نوع القيد</label>
+        <select name="type" class="form-select border-primary">
+            <option value="all" {{ request()->query('type') == 'all' ? 'selected' : '' }}>الكل</option>
+            <option value="قيد يومي" {{ request()->query('type') == 'قيد يومي' ? 'selected' : '' }}>قيد يومي</option>
+            <option value="سند صرف نقدي" {{ request()->query('type') == 'سند صرف نقدي' ? 'selected' : '' }}>سند صرف نقدي</option>
+            <option value="سند صرف بشيك" {{ request()->query('type') == 'سند صرف بشيك' ? 'selected' : '' }}>سند صرف بشيك</option>
+            <option value="سند قبض نقدي" {{ request()->query('type') == 'سند قبض نقدي' ? 'selected' : '' }}>سند قبض نقدي</option>
+            <option value="سند قبض بشيك" {{ request()->query('type') == 'سند قبض بشيك' ? 'selected' : '' }}>سند قبض بشيك</option>
+        </select>
+    </div>
+    <div class="col-md-3">
         <label class="form-label">من تاريخ</label>
         <input type="date" name="from" class="form-control border-primary" value="{{ request('from') }}">
     </div>
     <div class="col-md-3">
         <label class="form-label">إلى تاريخ</label>
         <input type="date" name="to" class="form-control border-primary" value="{{ request('to') }}">
-    </div>
-    <div class="col-md-3">
-        <label class="form-label">إسم الحساب</label>
-        <select name="user" class="form-select border-primary">
-            <option value="">الكل</option>
-            @foreach($accounts as $account)
-                <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
-                    {{ $account->name }}
-                </option>
-            @endforeach
-        </select>
     </div>
     <div class="col-md-3 d-flex align-items-end">
         <button type="submit" class="btn btn-primary fw-bold w-100">عرض التقرير</button>
@@ -44,18 +44,24 @@
 <div class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-3">
         <div></div>
-        <div>
+        <div class="export-buttons d-flex gap-2 align-items-center">
             <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                 <i class="fa-solid fa-file-excel"></i>
             </button>
-    
+
             <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
-    
-            <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
-                <i class="fa-solid fa-print"></i>
-            </button>
+            
+            <form action="{{ route('print', 'journal_entries') }}" method="POST" target="_blank">
+                @csrf
+                <input type="hidden" name="type" value="{{ request()->query('type') }}">
+                <input type="hidden" name="from" value="{{ request()->query('from') }}">
+                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+                <button type="submit" class="btn btn-outline-primary" target="top" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </form>
         </div>
     </div>
     <div class="table-container">
@@ -80,7 +86,7 @@
                     <tr>
                         <td colspan="7" class="text-start table-secondary fw-bold">
                             <a href="{{ route('admin.journal.details', $entry->id) }}" class="text-decoration-none">
-                                قيد - {{ $entry->voucher_id ? $entry->voucher->type : 'قيد يومي' }} - بتاريخ {{ $entry->date }}
+                                قيد - {{ $entry->voucher->type ?? 'قيد يومي' }} - بتاريخ {{ $entry->date }}
                             </a>
                         </td>
                     </tr>
@@ -123,7 +129,6 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
 </div>
 

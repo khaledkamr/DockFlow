@@ -198,10 +198,28 @@ class AccountingController extends Controller
     }   
 
     public function reports(Request $request) {
+        $company = Company::first();
         $accounts = Account::where('level', 5)->get();
+        $type = $request->input('type');
+        $from = $request->input('from');
+        $to = $request->input('to');
         $entries = JournalEntry::all();
+        if($type && $type !== 'all') {
+            $entries = $entries->filter(function($entry) use($type) {
+                return ($entry->voucher->type ?? 'قيد يومي') == $type;
+            });
+        }
+        if($from && $to) {
+            $entries = $entries->whereBetween('date', [$from, $to]);
+        }
+
         $account = $request->input('account', null);
         $statement = JournalEntryLine::where('account_id', $account)->get();
-        return view('admin.accounting.reports', compact('accounts', 'entries', 'statement'));
+        if($from && $to) {
+            $statement = $statement->filter(function($line) use($from, $to) {
+                return $line->journal->date >= $from && $line->journal->date <= $to;
+            });
+        }
+        return view('admin.accounting.reports', compact('company', 'accounts', 'entries', 'statement'));
     }
 }

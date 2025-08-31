@@ -22,8 +22,8 @@
                 @foreach ($journals as $journal)
                     <tr>
                         <td class="text-center">{{ $journal->code }}</td>
-                        <td class="text-center">قيد يومي</td>
-                        <td class="text-center">{{ $journal->amount }}</td>
+                        <td class="text-center fw-bold">{{ $journal->voucher->type ?? 'قيد يومي' }}</td>
+                        <td class="text-center">{{ $journal->totalDebit }}</td>
                         <td class="text-center">{{ $journal->date }}</td>
                         <td class="text-center">{{ $journal->made_by }}</td>
                         <td class="text-center {{ $journal->modified_by ? 'text-dark' : 'text-muted' }}">

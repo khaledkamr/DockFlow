@@ -24,10 +24,10 @@
     </div>
 </form>
 
-<div class="bg-white p-3 rounded-3 shadow-sm border-0">
+<div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h5>الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
-        <div>
+        <div class="export-buttons d-flex gap-2 align-items-center">
             <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                 <i class="fa-solid fa-file-excel"></i>
             </button>
@@ -35,10 +35,16 @@
             <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
-
-            <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
-                <i class="fa-solid fa-print"></i>
-            </button>
+            
+            <form action="{{ route('print', 'account_statement') }}" method="POST">
+                @csrf
+                <input type="hidden" name="account" value="{{ request()->query('account') }}">
+                <input type="hidden" name="from" value="{{ request()->query('from') }}">
+                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+                <button type="submit" class="btn btn-outline-primary" target="top" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </form>
         </div>
     </div>
     <div class="table-container">

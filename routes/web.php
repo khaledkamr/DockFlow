@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
 use App\Models\Container;
@@ -87,4 +88,8 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::post('admin/money/entries/create/journal', 'createJournal')->name('admin.create.journal');
     Route::get('admin/money/journal/{id}', 'journalDetails')->name('admin.journal.details');
     Route::get('/admin/money/reports', 'reports')->name('admin.money.reports');
+});
+
+Route::controller(ExportController::class)->group(function () {
+    Route::post('/print/{reportType}', 'print')->name('print');
 });
