@@ -36,7 +36,7 @@
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
             
-            <form action="{{ route('print', 'account_statement') }}" method="POST">
+            <form action="{{ route('print', 'account_statement') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="account" value="{{ request()->query('account') }}">
                 <input type="hidden" name="from" value="{{ request()->query('from') }}">

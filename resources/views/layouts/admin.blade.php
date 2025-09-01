@@ -324,7 +324,7 @@
                         <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.reports') ? 'active' : '' }}" href="{{ route('yard.containers.reports') }}">
-                        <i class="fa-solid fa-file-lines ms-4 me-2"></i> التقـــاريـــر
+                        <i class="fa-solid fa-file-lines ms-4 me-2"></i> تقارير الحاويات
                     </a>
                 </div>
             </li>

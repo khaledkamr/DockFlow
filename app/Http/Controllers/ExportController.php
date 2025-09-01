@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Company;
+use App\Models\Container;
 use App\Models\Contract;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
@@ -38,6 +39,13 @@ class ExportController extends Controller
                 $entries = $entries->whereBetween('date', [$from, $to]);
             }
             return view('reports.journal_entries', compact('entries', 'company', 'from', 'to'));
+        } elseif ($reportType == 'containers') {
+            $status = $request->input('status');
+            $customer = $request->input('customer');
+
+            $containers = Container::all();
+
+            return view('reports.containers', compact('company', 'containers', 'from', 'to', 'status', 'type', 'customer'));
         }
     }
 

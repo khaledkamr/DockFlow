@@ -102,7 +102,7 @@
                 </select>
             </form>
         </div>
-        <div>
+        <div class="d-flex gap-2">
             <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                 <i class="fa-solid fa-file-excel"></i>
             </button>
@@ -111,9 +111,17 @@
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
 
-            <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
-                <i class="fa-solid fa-print"></i>
-            </button>
+            <form action="{{ route('print', 'containers') }}" method="POST" target="_blank">
+                @csrf
+                <input type="hidden" name="from" value="{{ request()->query('from') }}">
+                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+                <input type="hidden" name="status" value="{{ request()->query('status') }}">
+                <input type="hidden" name="type" value="{{ request()->query('type') }}">
+                <input type="hidden" name="customer" value="{{ request()->query('customer') }}">
+                <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </form>
         </div>
     </div>
     <div class="table-container">
@@ -121,8 +129,8 @@
             <thead>
                 <tr>
                     <th class="text-center bg-dark text-white">#</th>
+                    <th class="text-center bg-dark text-white">كود الحاويــة</th>
                     <th class="text-center bg-dark text-white">صاحــب الحاويــة</th>
-                    <th class="text-center bg-dark text-white">كــود الحاويــة</th>
                     <th class="text-center bg-dark text-white">الفئـــة</th>
                     <th class="text-center bg-dark text-white">الموقــع</th>
                     <th class="text-center bg-dark text-white">الحالـــة</th>
