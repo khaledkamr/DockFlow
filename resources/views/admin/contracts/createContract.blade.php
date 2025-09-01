@@ -142,7 +142,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="service-select" class="form-label">الخدمة المطلوبة</label>
-                            <select id="service-select" class="form-select">
+                            <select id="service-select" class="form-select border-primary">
                                 <option value="">اختر الخدمة...</option>
                                 @foreach($services as $service)
                                     <option value="{{ $service->id }}" data-description="{{ $service->description }}">
@@ -154,15 +154,15 @@
                         <div class="row">
                             <div class="col">
                                 <label for="service-price" class="form-label">السعر</label>
-                                <input type="number" step="0.01" class="form-control" id="service-price" placeholder="0.00">
+                                <input type="number" step="0.01" class="form-control border-primary" id="service-price" placeholder="0.00">
                             </div>
                             <div class="col">
                                 <label for="service-unit" class="form-label">الكمية</label>
-                                <input type="number" class="form-control" id="service-unit" placeholder="1" value="1">
+                                <input type="number" class="form-control border-primary" id="service-unit" placeholder="1" value="1">
                             </div>
                             <div class="col-md-5">
                                 <label for="service-unit-desc" class="form-label">وحدة القياس</label>
-                                <input type="text" class="form-control" id="service-unit-desc" placeholder="شهر، يوم، حاوية...">
+                                <input type="text" class="form-control border-primary" id="service-unit-desc" placeholder="شهر، يوم، حاوية...">
                             </div>
                         </div>
                     </div>

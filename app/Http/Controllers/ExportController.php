@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Company;
+use App\Models\Contract;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ExportController extends Controller
@@ -37,5 +39,15 @@ class ExportController extends Controller
             }
             return view('reports.journal_entries', compact('entries', 'company', 'from', 'to'));
         }
+    }
+
+    public function printContract($id) {
+        $company = Company::first();
+        $contract = Contract::findOrFail($id);
+        $start = Carbon::parse($contract->start_date);
+        $end = Carbon::parse($contract->end_date);
+        $months = $start->diffInMonths($end);
+        $days = $start->copy()->addMonths($months)->diffInDays($end);
+        return view('reports.contract', compact('contract', 'company', 'months', 'days'));
     }
 }

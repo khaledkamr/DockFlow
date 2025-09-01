@@ -11,14 +11,12 @@
                 تفاصيل العقد #{{ $contract->id }}
             </h2>
             <div>
-                <button class="btn btn-primary me-2">
-                    <i class="fas fa-print me-1"></i>
-                    طباعة
-                </button>
-                <button class="btn btn-success">
-                    <i class="fas fa-download me-1"></i>
-                    تحميل PDF
-                </button>
+                <a href="{{ route('print.contract', $contract->id) }}" class="btn btn-primary me-2" target="_blank">
+                    <i class="fas fa-print me-1"></i> طباعة
+                </a>
+                <a class="btn btn-success">
+                    <i class="fas fa-download me-1"></i> تحميل PDF
+                </a>
             </div>
         </div>
 

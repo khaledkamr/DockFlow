@@ -19,9 +19,18 @@
             background-color: #fff;
             color: #000;
         }
-        .print-header, .print-footer {
-            text-align: center;
-            padding: 10px;
+        .no-print {
+            position: fixed;
+            bottom: 30px;
+            left: 45%;
+            z-index: 1000;
+        }
+        .no-print .btn {
+            background: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
+            transition: 0.3s;
+        }
+        .no-print .btn:hover {
+            transform: scale(1.1);
         }
         @media print {
             .no-print { display: none !important; }
@@ -29,22 +38,33 @@
     </style>
 </head>
 <body>
-    <div class="print-header text-center mb-4">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
-        <h2>{{ $company->name }}</h2>
-        <hr>
+    <div class="d-flex justify-content-between mx-3 mt-3">
+        <div class="d-flex flex-column align-items-start">
+            <span class="small">تاريخ الطباعة</span>
+            <span class="small fw-bold">{{ Carbon\Carbon::now()->format('Y-m-d') }}</span>
+        </div>
+        <div class="text-center">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
+            <h6 class="fw-bold">{{ $company->name }}</h6>
+            <div style="font-size: 10px;">
+                CR: {{ $company->CR }} | 
+                TIN: {{ $company->TIN }} | 
+                phone: <span class="text-primary">{{ $company->phone }}</span> | 
+                email: <span class="text-primary">{{ $company->email }} </span>
+            </div>
+        </div>
+        <div class="d-flex flex-column align-items-end">
+            <span class="small">أعد بواسطة</span>
+            <span class="small fw-semibold">{{ Auth::user()->name }}</span>
+        </div>
     </div>
+    <hr class="mt-1">
 
     @yield('content')
 
-    <div class="print-footer text-center mt-4">
-        <p>تاريخ الطباعة: <span id="printDate">({{ Carbon\Carbon::now()->format('Y-m-d') }})</span> اعد بواسطة {{ Auth::user()->name }}</p>
-    </div>
-
     <div class="text-center no-print my-3">
-        <button class="btn btn-primary fw-bold" onclick="window.print()">
-            طباعة
-            <i class="fa-solid fa-print"></i>
+        <button class="btn text-white border-0 shadow-lg fw-bold" onclick="window.print()">
+            طباعة <i class="fa-solid fa-print"></i>
         </button>
     </div>
 </body>
