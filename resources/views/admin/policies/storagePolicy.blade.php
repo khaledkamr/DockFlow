@@ -17,6 +17,14 @@
     @endpush
 @endif
 
+@if (session('yard'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('yard') }}", "success");
+        </script>
+    @endpush
+@endif
+
 @if (session('errors'))
     @push('scripts')
         <script>
@@ -25,7 +33,17 @@
     @endpush
 @endif
 
-<div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
+@if ($errors->any())
+    @push('scripts')
+        <script>
+            @foreach ($errors->all() as $error)
+                showToast("{{ $error }}", "danger");
+            @endforeach
+        </script>
+    @endpush
+@endif
+
+<div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
     <form action="{{ route('policies.storage.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
@@ -33,7 +51,7 @@
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم الشركة</label>
-                <input type="text" name="company_name" class="form-control border-primary" value="{{ $company->name }}">
+                <input type="text" name="company_name" class="form-control border-primary" value="{{ $company->name }}" readonly>
             </div>
             <div class="col">
                 <label class="form-label">رقــم الشركة</label>
@@ -48,8 +66,7 @@
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" 
-                            data-contract="{{ $customer->contract ? $customer->contract->id : null }}" 
-                            data-containers="{{ $customer->containers }}">
+                            data-contract="{{ $customer->contract ? $customer->contract->id : null }}">
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -95,33 +112,53 @@
             </div>
         </div>
 
-        <div class="row mb-4" id="container-section" >
-            <div class="col-12">
-                <h5 class="mb-3">حاويات العميل</h5>
-                <div class="card border-primary bg-light p-3">
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label class="form-label">الحاويات المتاحة للتخزين</label>
-                            <div class="d-flex">
-                                <div class="input-group input-group-sm w-auto">
-                                    <input class="form-control border-primary" type="search" id="container-search" placeholder="إبحث عن حاوية بالكود..." aria-label="Search">
-                                    <button class="btn btn-outline-primary" type="button" id="clear-search">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="containers-list" class="row">
-                            <!-- Containers will be populated here dynamically -->
-                        </div>
+        <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">بيانات الحاويات</h5>
+                <button type="button" class="btn btn-primary btn-sm" id="addContainerBtn">
+                    <i class="fas fa-plus me-1"></i> إضافة حاوية جديدة
+                </button>
+            </div>
+            
+            <div id="containersSection">
+                <div class="container-row border border-primary rounded p-3 mb-3" data-row="0">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0 text-primary">الحاوية #<span class="container-number">1</span></h6>
+                        <button type="button" class="btn btn-danger btn-sm remove-container" style="display: none;">
+                            <i class="fas fa-trash-can"></i> 
+                        </button>
                     </div>
-                    <div class="mt-3 d-flex flex-column">
+                    
+                    <div class="row">
+                        <div class="col">
+                            <label class="form-label">كــود الحاويــة</label>
+                            <input type="text" class="form-control border-primary" name="containers[0][code]" required>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">فئة الحاويــة</label>
+                            <select class="form-select border-primary" name="containers[0][container_type_id]" required>
+                                <option value="">اختر فئة الحاوية...</option>
+                                @foreach ($containerTypes as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback"></div>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">الموقــع</label>
+                            <input type="text" class="form-control border-primary" name="containers[0][location]">
+                            <div class="invalid-feedback"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary fw-bold">حفظ الإتفاقية</button>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <button type="submit" class="btn btn-primary fw-bold">حفظ الإتفاقية</button>
+            <span class="text-muted">إجمالي الحاويات: <span id="totalContainers">1</span></span>
+        </div>
     </form>
 </div>
 
@@ -136,111 +173,127 @@
         $('#customer_id').val(id || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
-        let containers = $(this).find(':selected').data('containers');
+    });
+document.addEventListener('DOMContentLoaded', function() {
+    let containerCount = 1;
+    const addBtn = document.getElementById('addContainerBtn');
+    const containersSection = document.getElementById('containersSection');
+    const totalContainersSpan = document.getElementById('totalContainers');
 
-        if (containers && containers.length > 0) {
-            displayContainers(containers);
-            $('#containers-list').show();
-        } else if (containers) {
-            displayContainers(containers);
-        } else {
-            $('#containers-list').hide();
+    // Add new container row
+    addBtn.addEventListener('click', function() {
+        const newRow = createContainerRow(containerCount);
+        containersSection.appendChild(newRow);
+        containerCount++;
+        updateContainerNumbers();
+        updateRemoveButtons();
+        updateTotalCount();
+    });
+
+    // Remove container row
+    containersSection.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-container') || e.target.closest('.remove-container')) {
+            const row = e.target.closest('.container-row');
+            row.remove();
+            updateContainerNumbers();
+            updateRemoveButtons();
+            updateTotalCount();
         }
+    });
+
+    function createContainerRow(index) {
+        const template = document.querySelector('.container-row');
+        const newRow = template.cloneNode(true);
         
-        // Clear search when customer changes
-        $('#container-search').val('');
-    });
+        // Update data-row attribute
+        newRow.setAttribute('data-row', index);
+        
+        // Clear input values
+        newRow.querySelectorAll('input').forEach(input => {
+            input.value = '';
+            input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+        });
+        
+        // Update select names
+        newRow.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+            select.name = select.name.replace(/\[\d+\]/, `[${index}]`);
+        });
+        
+        // Show remove button
+        const removeBtn = newRow.querySelector('.remove-container');
+        removeBtn.style.display = 'inline-block';
+        
+        return newRow;
+    }
 
-    // Container search functionality
-    $('#container-search').on('input', function() {
-        const searchTerm = $(this).val().toLowerCase().trim();
-        filterContainers(searchTerm);
-    });
-
-    $('#clear-search').on('click', function() {
-        $('#container-search').val('');
-        filterContainers('');
-    });
-
-    function filterContainers(searchTerm) {
-        $('.container-card').each(function() {
-            const containerCode = $(this).find('.fw-bold').text().toLowerCase();
-            const containerId = $(this).find('.text-primary:last').text().toLowerCase();
+    function updateContainerNumbers() {
+        const rows = containersSection.querySelectorAll('.container-row');
+        rows.forEach((row, index) => {
+            const numberSpan = row.querySelector('.container-number');
+            numberSpan.textContent = index + 1;
             
-            if (searchTerm === '' || containerCode.includes(searchTerm) || containerId.includes(searchTerm)) {
-                $(this).parent().show();
+            // Update input and select names
+            row.querySelectorAll('input, select').forEach(element => {
+                const name = element.name;
+                element.name = name.replace(/\[\d+\]/, `[${index}]`);
+            });
+        });
+    }
+
+    function updateRemoveButtons() {
+        const rows = containersSection.querySelectorAll('.container-row');
+        rows.forEach((row, index) => {
+            const removeBtn = row.querySelector('.remove-container');
+            if (rows.length > 1) {
+                removeBtn.style.display = 'inline-block';
             } else {
-                $(this).parent().hide();
+                removeBtn.style.display = 'none';
             }
         });
     }
 
-    function displayContainers(containers) {
-        const containersList = $('#containers-list');
-        containersList.empty();
-
-        // Filter containers that are available for receiving (status: 'متوفر' or 'في الإنتظار')
-        const availableContainers = containers.filter(container => 
-            container.status === 'في الإنتظار'
-        );
-
-        if (availableContainers.length === 0) {
-            containersList.html(`
-                <div class="col-12">
-                    <div class="alert alert-danger text-center">
-                        لا توجد حاويات متاحة للتخزين لهذا العميل
-                    </div>
-                </div>
-            `);
-            return;
-        }
-
-        availableContainers.forEach(container => {
-            const containerCard = `
-                <div class="col-md-4 col-sm-6 mb-3 container-item">
-                    <div class="card container-card border-primary bg-primary-subtle" data-container-id="${container.id}">
-                        <div class="card-body p-3">
-                            <div class="form-check">
-                                <input class="form-check-input container-checkbox" type="checkbox" 
-                                       name="selected_containers[]" value="${container.id}" 
-                                       id="container_${container.id}" checked>
-                                <label class="form-check-label w-100" for="container_${container.id}">
-                                    <div class="container-info">
-                                        <div class="d-flex justify-content-between"> 
-                                            <div class="fw-bold text-primary">${container.code}</div>
-                                            <div class="text-primary">#${container.id}</div>
-                                        </div>
-                                        <div class="small text-muted">الحالة: ${container.status}</div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            containersList.append(containerCard);
-        });
-
-        // Add click event to container cards
-        $('.container-card').on('click', function() {
-            const checkbox = $(this).find('.container-checkbox');
-            checkbox.prop('checked', !checkbox.prop('checked'));
-            updateContainerCardStyle($(this), checkbox.prop('checked'));
-        });
-
-        // Style checkboxes when clicked directly
-        $('.container-checkbox').on('change', function() {
-            updateContainerCardStyle($(this).closest('.container-card'), $(this).prop('checked'));
-        });
+    function updateTotalCount() {
+        const count = containersSection.querySelectorAll('.container-row').length;
+        totalContainersSpan.textContent = count;
     }
 
-    function updateContainerCardStyle(card, isSelected) {
-        if (isSelected) {
-            card.addClass('border-primary bg-primary-subtle');
-        } else {
-            card.removeClass('border-primary bg-primary-subtle');
+    // Form validation
+    document.getElementById('containerForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        const rows = containersSection.querySelectorAll('.container-row');
+        
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll('input[required], select[required]');
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('يرجى ملء جميع الحقول المطلوبة');
         }
-    }
+    });
+
+    // Remove validation errors on input
+    containersSection.addEventListener('input', function(e) {
+        if (e.target.value.trim()) {
+            e.target.classList.remove('is-invalid');
+        }
+    });
+
+    containersSection.addEventListener('change', function(e) {
+        if (e.target.value.trim()) {
+            e.target.classList.remove('is-invalid');
+        }
+    });
+});
 </script>
 
 <style>
@@ -252,42 +305,6 @@
     }
     .select2-container .select2-selection__rendered {
         line-height: 30px; 
-    }
-    .container-card {
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: 2px solid #dee2e6;
-    }
-
-    .container-card:hover {
-        border-color: #0d6efd;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .container-card.border-primary {
-        border-color: #0d6efd !important;
-    }
-
-    .bg-primary-subtle {
-        background-color: rgba(13, 110, 253, 0.1) !important;
-    }
-
-    .container-info {
-        margin-left: 10px;
-    }
-
-    .form-check-input:checked {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-    }
-
-    .form-check-label {
-        cursor: pointer;
-    }
-    
-    #container-search {
-        min-width: 250px;
     }
 </style>
 

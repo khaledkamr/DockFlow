@@ -22,9 +22,6 @@ class PolicyRequest extends FormRequest
             'driver_NID' => 'required',
             'driver_car' => 'required',
             'car_code' => 'required',
-            'storage_price' => 'numeric|nullable',
-            'late_fee' => 'numeric|nullable', 
-            'tax' => 'nullable'  
         ];
     }
 }

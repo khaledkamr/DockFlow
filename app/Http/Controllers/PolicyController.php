@@ -46,19 +46,28 @@ class PolicyController extends Controller
     public function storagePolicy(Request $request) {
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
-        return view('admin.policies.storagePolicy', compact('company', 'customers'));
+        $containerTypes = Container_type::all();
+        return view('admin.policies.storagePolicy', compact('company', 'customers', 'containerTypes'));
     }
 
     public function storeStoragePolicy(PolicyRequest $request) {
-        $selected_containers = $request->selected_containers;
-        $containers = [];
-        foreach($selected_containers as $container) {
-            $containers[] = Container::findOrFail($container);
+        $policy_containers = [];
+        foreach($request->containers as $container) {
+            $container = Container::create([
+                'customer_id' => $request->customer_id,
+                'code' => $container['code'],
+                'container_type_id' => $container['container_type_id'],
+                'location' => $container['location'],
+                'received_by' => $request->driver_name,
+                'date' => Carbon::now()->format('Y-m-d')
+            ]);
+            $policy_containers[] = $container;
         }
+        $count = count($request->containers);
+        session()->flash('yard', 'تم إضافة ' . $count . ' حاويات جديدة للساحة بنجاح');
         $validated = $request->validated();
-        
         $policy = Policy::create($validated);
-        $policy->containers()->attach($containers);
+        $policy->containers()->attach($policy_containers);
         return redirect()->back()->with('success', 'تم إنشاء إتفاقية تخزين جديدة بنجاح');
     }
     

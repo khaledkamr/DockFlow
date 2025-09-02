@@ -317,9 +317,9 @@
                     <a class="nav-link fw-bold {{ request()->routeIs('yard.containers') ? 'active' : '' }}" href="{{ route('yard.containers') }}">
                         <i class="fa-solid fa-boxes-stacked ms-4 me-2"></i> الحــــــاويـــات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.create') ? 'active' : '' }}" href="{{ route('yard.containers.create') }}">
+                    {{-- <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.create') ? 'active' : '' }}" href="{{ route('yard.containers.create') }}">
                         <i class="fa-solid fa-square-plus ms-4 me-2"></i> إضافة حــاويات
-                    </a>
+                    </a> --}}
                     <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.types') ? 'active' : '' }}" href="{{ route('yard.containers.types') }}">
                         <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
                     </a>
