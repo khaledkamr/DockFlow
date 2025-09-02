@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('received_by')->nullable();
             $table->string('delivered_by')->nullable();
             $table->string('location')->nullable();
+            $table->string('notes')->nullable();
             $table->date('date')->nullable();
             $table->date('exit_date')->nullable();
             $table->foreignId('container_type_id')->constrained()->cascadeOnDelete();

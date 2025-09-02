@@ -17,13 +17,6 @@
                 <div class="text-danger">{{ $message }}</div>
             @endif
         </div>
-        <div class="col">
-            <label for="code" class="form-label">رقم السنــد </label>
-            <input type="text" class="form-control border-primary" id="code" name="code" value="">
-            @error('code')
-                <div class="text-danger">{{ $message }}</div>
-            @endif
-        </div>
         <div class="col-3">
             <label for="account_name" class="mb-2">اسم الحساب</label>
             <select id="account_name" class="form-select border-primary" style="width:100%;">

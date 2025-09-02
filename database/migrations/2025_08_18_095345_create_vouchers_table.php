@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('code')->unique();
             $table->enum('type', ['سند قبض نقدي', 'سند قبض بشيك', 'سند صرف نقدي', 'سند صرف بشيك']);
             $table->date('date');
             $table->decimal('amount', 15, 2);

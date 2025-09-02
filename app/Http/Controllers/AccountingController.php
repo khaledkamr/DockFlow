@@ -50,7 +50,7 @@ class AccountingController extends Controller
             if($voucher->type == 'سند قبض نقدي') {
                 $balance += $voucher->amount;
                 $balanceArray[] = $balance;
-            } else {
+            } elseif($voucher->type == 'سند صرف نقدي') {
                 $balance -= $voucher->amount;
                 $balanceArray[] = $balance;
             }

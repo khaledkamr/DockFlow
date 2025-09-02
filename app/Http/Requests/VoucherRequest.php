@@ -14,7 +14,6 @@ class VoucherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required',
             'type' => 'required',
             'date' => 'required|date',
             'amount' => 'required',
