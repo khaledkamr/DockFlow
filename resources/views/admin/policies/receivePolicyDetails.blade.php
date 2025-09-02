@@ -20,24 +20,29 @@
                     </ol>
                 </nav>
             </div>
-            <div>
+            <div class="d-flex gap-2">
+                <form action="{{ route('print', 'exit_permission') }}" method="POST" target="_blank">
+                    @csrf
+                    @foreach($policy->containers as $container)
+                        <input type="hidden" name="containers[]" value="{{ $container->id }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-print me-1"></i>
+                        طباعة اذن خروج
+                    </button>
+                </form>
                 <button class="btn btn-primary me-2">
                     <i class="fas fa-print me-1"></i>
-                    طباعة
+                    طباعة الإتفاقية
                 </button>
-                <button class="btn btn-secondary me-2">
+                <button class="btn btn-secondary">
                     <i class="fas fa-download me-1"></i>
                     تحميل PDF
-                </button>
-                <button class="btn btn-primary">
-                    <i class="fas fa-edit me-1"></i>
-                    تعديل
                 </button>
             </div>
         </div>
 
         <div class="row">
-            <!-- Driver Information -->
             <div class="col-lg-6 mb-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
@@ -235,14 +240,6 @@
     </div>
 </div>
 <div class="d-flex gap-3">
-    <form action="{{ route('exit.permission') }}" method="POST">
-        @csrf
-        @foreach ($policy->containers as $container)
-            <input type="hidden" name="containers[]" value="{{ $container->id }}">
-        @endforeach
-        <input type="hidden" name="driver" value="{{ $policy->driver_name }}">
-        <button type="submit" class="btn btn-primary fw-bold">تصريح خروج</button>
-    </form>
     <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
         إنشاء فاتورة <i class="fa-solid fa-scroll"></i>
     </button>
