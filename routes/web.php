@@ -44,8 +44,6 @@ Route::controller(ContainerController::class)->middleware('auth')->group(functio
     Route::post('/yard/containers/types/store', 'containerTypeStore')->name('yard.containers.types.store');
     Route::put('/yard/containers/types/update/{id}', 'updateContainerType')->name('yard.containers.types.update');
     Route::delete('/yard/containers/types/delete/{id}', 'deleteContainerType')->name('yard.containers.types.delete');
-    Route::post('/exit_permission', 'exitPermission')->name('exit.permission');
-    Route::post('/entry_permission', 'entryPermission')->name('entry.permission');
     Route::get('/yard/containers/reports', 'reports')->name('yard.containers.reports');
 });
 

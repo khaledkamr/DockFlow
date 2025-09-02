@@ -119,24 +119,6 @@ class ContainerController extends Controller
         return redirect()->back()->with('success', 'تم حذف ' . $name . ' بنجاح');
     }
 
-    public function exitPermission(Request $request) {
-        foreach($request->containers as $id) {
-            $container = Container::findOrFail($id);
-            $container->delivered_by = $request->driver;
-            $container->save();
-        }
-        return redirect()->back()->with('success', 'تم إنشاء تصريح خروج بنجاح');
-    }
-
-    public function entryPermission(Request $request) {
-        foreach($request->containers as $id) {
-            $container = Container::findOrFail($id);
-            $container->received_by = $request->driver;
-            $container->save();
-        }
-        return redirect()->back()->with('success', 'تم إنشاء تصريح دخول بنجاح');
-    }
-
     public function reports(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
         $types = Container_type::all();

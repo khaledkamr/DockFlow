@@ -12,7 +12,7 @@
 @if (session('success'))
     @push('scripts')
         <script>
-            showToast("{{ session('success') }}", "success");
+            showToast(`{!! session('success') !!}`, "success");
         </script>
     @endpush
 @endif

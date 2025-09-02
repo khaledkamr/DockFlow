@@ -20,18 +20,24 @@
                     </ol>
                 </nav>
             </div>
-            <div>
+            <div class="d-flex gap-2">
+                <form action="{{ route('print', 'entry_permission') }}" method="POST" target="_blank">
+                    @csrf
+                    @foreach($policy->containers as $container)
+                        <input type="hidden" name="containers[]" value="{{ $container->id }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-print me-1"></i>
+                        طباعة اذن دخول
+                    </button>
+                </form>
                 <button class="btn btn-primary me-2">
                     <i class="fas fa-print me-1"></i>
-                    طباعة
+                    طباعة الإتفاقية
                 </button>
-                <button class="btn btn-secondary me-2">
+                <button class="btn btn-secondary">
                     <i class="fas fa-download me-1"></i>
                     تحميل PDF
-                </button>
-                <button class="btn btn-primary">
-                    <i class="fas fa-edit me-1"></i>
-                    تعديل
                 </button>
             </div>
         </div>
@@ -150,7 +156,6 @@
             </div>
         </div>
 
-        <!-- Containers Section -->
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <div class="d-flex justify-content-between align-items-center text-white">
@@ -165,21 +170,21 @@
                 @if(count($policy->containers) > 0)
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
-                            <thead class="table-light text-center">
-                                <trc>
-                                    <th class="border-0 fw-bold">#</th>
-                                    <th class="border-0 fw-bold">كود الحاوية</th>
-                                    <th class="border-0 fw-bold">نوع الحاوية</th>
-                                    <th class="border-0 fw-bold">صاحب الحاوية</th>
-                                    <th class="border-0 fw-bold">الحالة</th>
-                                    <th class="border-0 fw-bold">الموقع</th>
-                                    <th class="border-0 fw-bold">تم الإستلام بواسطة</th>
-                                    <th class="border-0 fw-bold">تم التسليم بواسطة</th>
-                                </trc>
+                            <thead class="table-primary">
+                                <tr class="">
+                                    <th class="text-center fw-bold">#</th>
+                                    <th class="text-center fw-bold">كود الحاوية</th>
+                                    <th class="text-center fw-bold">نوع الحاوية</th>
+                                    <th class="text-center fw-bold">صاحب الحاوية</th>
+                                    <th class="text-center fw-bold">الحالة</th>
+                                    <th class="text-center fw-bold">الموقع</th>
+                                    <th class="text-center fw-bold">تم الإستلام بواسطة</th>
+                                    <th class="text-center fw-bold">تم التسليم بواسطة</th>
+                                </tr>
                             </thead>
-                            <tbody class="text-center">
+                            <tbody>
                                 @foreach($policy->containers as $index => $container)
-                                <tr>
+                                <tr class="text-center">
                                     <td class="text-center">
                                             {{ $container->id}}
                                     </td>
@@ -231,14 +236,6 @@
         </div>
     </div>
 </div>
-<form action="{{ route('entry.permission') }}" method="POST">
-    @csrf
-    @foreach ($policy->containers as $container)
-        <input type="hidden" name="containers[]" value="{{ $container->id }}">
-    @endforeach
-    <input type="hidden" name="driver" value="{{ $policy->driver_name }}">
-    <button type="submit" class="btn btn-primary fw-bold">تصريح دخول</button>
-</form>
 
 @if (session('success'))
     @push('scripts')
@@ -257,18 +254,6 @@
 @endif
 
 <style>
-    .bg-gradient {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: rgba(0,123,255,0.05);
-    }
-
-    .card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
     @media (max-width: 768px) {
         .d-flex.justify-content-between {
             flex-direction: column;

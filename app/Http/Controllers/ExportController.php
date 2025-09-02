@@ -46,6 +46,12 @@ class ExportController extends Controller
             $containers = Container::all();
 
             return view('reports.containers', compact('company', 'containers', 'from', 'to', 'status', 'type', 'customer'));
+        } elseif ($reportType == 'entry_permission') {
+            $policyContainers = [];
+            foreach($request->containers as $container) {
+                $policyContainers[] = Container::findOrFail($container);
+            }
+            return view('reports.entry_permission', compact('company', 'policyContainers'));
         }
     }
 

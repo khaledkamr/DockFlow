@@ -68,7 +68,7 @@ class PolicyController extends Controller
         $validated = $request->validated();
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية تخزين جديدة بنجاح');
+        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy->id).'">عرض الاتفاقية؟</a>');
     }
     
     public function createReceivePolicy() {
