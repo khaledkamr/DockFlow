@@ -44,6 +44,18 @@ class ExportController extends Controller
             $customer = $request->input('customer');
 
             $containers = Container::all();
+            if($from && $to) {
+                $containers = $containers->whereBetween('date', [$from, $to]);
+            }
+            if($status && $status !== 'all') {
+                $containers = $containers->where('status', $status);
+            }
+            if($type && $type !== 'all') {
+                $containers = $containers->where('container_type_id', $type);
+            }
+            if($customer && $customer !== 'all') {
+                $containers = $containers->where('customer_id', $customer);
+            }
 
             return view('reports.containers', compact('company', 'containers', 'from', 'to', 'status', 'type', 'customer'));
         } elseif ($reportType == 'entry_permission') {
