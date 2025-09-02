@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ContainersExport;
 use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
@@ -10,6 +11,7 @@ use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExportController extends Controller
 {
@@ -81,5 +83,14 @@ class ExportController extends Controller
         $months = $start->diffInMonths($end);
         $days = $start->copy()->addMonths($months)->diffInDays($end);
         return view('reports.contract', compact('contract', 'company', 'months', 'days'));
+    }
+
+    public function excel($reportType, Request $request) {
+        if($reportType == 'containers') {
+            $filters = $request->all();
+            return Excel::download(new ContainersExport($filters), 'containers.xlsx');
+        }
+
+        abort(404);
     }
 }

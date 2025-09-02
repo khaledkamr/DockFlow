@@ -91,4 +91,5 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
 Route::controller(ExportController::class)->group(function () {
     Route::post('/print/{reportType}', 'print')->name('print');
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');
+    Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
 });

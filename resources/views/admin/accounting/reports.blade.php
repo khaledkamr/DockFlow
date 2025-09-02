@@ -45,5 +45,5 @@
 @elseif(request()->query('view') == 'الصندوق')
     @include('admin.accounting.vouchers.box')
 @endif
-
+<div class="mb-4"></div>
 @endsection

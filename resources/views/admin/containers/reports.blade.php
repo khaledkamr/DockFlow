@@ -96,9 +96,16 @@
             </form>
         </div>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
-                <i class="fa-solid fa-file-excel"></i>
-            </button>
+            <form method="GET" action="{{ route('export.excel', 'containers') }}">
+                <input type="hidden" name="type" value="{{ request('type') }}">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <input type="hidden" name="customer" value="{{ request('customer') }}">
+                <input type="hidden" name="from" value="{{ request('from') }}">
+                <input type="hidden" name="to" value="{{ request('to') }}">
+                <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
+                    <i class="fa-solid fa-file-excel"></i>
+                </button>
+            </form>
 
             <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
