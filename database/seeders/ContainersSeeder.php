@@ -12,24 +12,24 @@ class ContainersSeeder extends Seeder
     public function run(): void
     {
         $containers = [
-            [
-                'code' => 'SFD-127',
-                'container_type_id' => 1,
-                'customer_id' => 1,
-                'status' => 'في الإنتظار',
-            ],
-            [
-                'code' => 'SFD-128',
-                'container_type_id' => 1,
-                'customer_id' => 1,
-                'status' => 'في الإنتظار',
-            ],
-            [
-                'code' => 'SFD-129',
-                'container_type_id' => 1,
-                'customer_id' => 1,
-                'status' => 'في الإنتظار',
-            ],
+            // [
+            //     'code' => 'SFD-127',
+            //     'container_type_id' => 1,
+            //     'customer_id' => 1,
+            //     'status' => 'في الإنتظار',
+            // ],
+            // [
+            //     'code' => 'SFD-128',
+            //     'container_type_id' => 1,
+            //     'customer_id' => 1,
+            //     'status' => 'في الإنتظار',
+            // ],
+            // [
+            //     'code' => 'SFD-129',
+            //     'container_type_id' => 1,
+            //     'customer_id' => 1,
+            //     'status' => 'في الإنتظار',
+            // ],
             [
                 'code' => 'SFD-130',
                 'container_type_id' => 2,

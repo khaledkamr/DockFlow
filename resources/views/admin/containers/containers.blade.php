@@ -23,8 +23,8 @@
         <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="card-title fw-bold">إجمالي الحاويات في الإنتظار</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $waitingContainers }}</h6>
+                    <h6 class="card-title fw-bold">إجمالي الحاويات المتأخرة</h6>
+                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $lateContainers }}</h6>
                 </div>
                 <div>
                     <i class="fa-solid fa-hourglass-start fs-2"></i>
@@ -71,8 +71,6 @@
                         جميع الحاويات</option>
                     <option value="متوفر" {{ request()->query('status') === 'متوفر' ? 'selected' : '' }}>
                         متوفر</option>
-                    <option value="في الإنتظار" {{ request()->query('status') === 'في الإنتظار' ? 'selected' : '' }}>
-                        في الإنتظار</option>
                     <option value="مُسلم" {{ request()->query('status') === 'مُسلم' ? 'selected' : '' }}>
                         مُسلم</option>
                     <option value="متأخر" {{ request()->query('status') === 'متأخر' ? 'selected' : '' }}>
@@ -154,8 +152,6 @@
                                 </div>
                             @elseif($container->status == 'متأخر')
                                 <div class="status-danger">{{ $container->status }}</div>
-                            @elseif($container->status == 'في الإنتظار')
-                                <div class="status-waiting">{{ $container->status }}</div>
                             @endif
                         </td>
                         <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">

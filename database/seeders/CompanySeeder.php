@@ -16,6 +16,8 @@ class CompanySeeder extends Seeder
             'CR' => '1010771098',
             'TIN' => '7027331623',
             'national_address' => 'الدمام',
+            'phone' => '0123456789',
+            'email' => 'tag@gmail.com'
         ]);      
     }
 }

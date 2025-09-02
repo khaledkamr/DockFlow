@@ -21,7 +21,6 @@
                 <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
                 <option value="متوفر" {{ request('status') == 'متوفر' ? 'selected' : '' }}>متوفر</option>
                 <option value="مُسلم" {{ request('status') == 'مُسلم' ? 'selected' : '' }}>مُسلم</option>
-                <option value="في الإنتظار" {{ request('status') == 'في الإنتظار' ? 'selected' : '' }}>في الإنتظار</option>
                 <option value="متأخر" {{ request('status') == 'متأخر' ? 'selected' : '' }}>متأخر</option>
             </select>
         </div>
@@ -79,12 +78,6 @@
         <div class="card border-0 shadow-sm rounded-3 p-3">
             <h6>متأخره</h6>
             <h3 class="text-danger fw-bold mb-0">{{ $containers->where('status', 'متأخر')->count() }}</h3>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card border-0 shadow-sm rounded-3 p-3">
-            <h6>في الإنتظار</h6>
-            <h3 class="text-warning fw-bold mb-0">{{ $containers->where('status', 'في الإنتظار')->count() }}</h3>
         </div>
     </div>
 </div>

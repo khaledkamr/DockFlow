@@ -16,7 +16,7 @@ class ContainerController extends Controller
     public function containers(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
         $availableContainer = $containers->where('status', 'متوفر')->count();
-        $waitingContainers = $containers->where('status', 'في الإنتظار')->count();
+        $lateContainers = $containers->where('status', 'متأخر')->count();
         $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
             $containers = $containers->filter(function ($container) use ($containerFilter) {
@@ -42,7 +42,7 @@ class ContainerController extends Controller
         return view('admin.containers.containers', compact(
             'containers',
             'availableContainer',
-            'waitingContainers',
+            'lateContainers',
         ));
     }
 

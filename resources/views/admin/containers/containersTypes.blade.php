@@ -87,7 +87,7 @@
                         <td class="text-center text-success fw-bold">{{ $containerType->daily_price }} ريال</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $containerType->id }}">
-                                <i class="fa-solid fa-pen text-primary" title="Edit user"></i>
+                                <i class="fa-solid fa-pen-to-square text-primary" title="Edit user"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $containerType->id }}">
                                 <i class="fa-solid fa-trash-can text-danger" title="delete user"></i>
