@@ -28,9 +28,14 @@
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h5>الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
-            <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
-                <i class="fa-solid fa-file-excel"></i>
-            </button>
+            <form action="{{ route('export.excel', 'account_statement') }}" method="GET">
+                <input type="hidden" name="account" value="{{ request()->query('account') }}">
+                <input type="hidden" name="from" value="{{ request()->query('from') }}">
+                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+                <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
+                    <i class="fa-solid fa-file-excel"></i>
+                </button>
+            </form>
 
             <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
@@ -67,11 +72,7 @@
                 @endphp
                 @forelse($statement as $line)
                 @php
-                    if($line->debit > 0) {
-                        $balance += $line->debit;
-                    } else {
-                        $balance -= $line->credit;
-                    }
+                    $balance += $line->debit - $line->credit;
                 @endphp
                     <tr class="text-center">
                         <td>{{ $line->account->name }}</td>

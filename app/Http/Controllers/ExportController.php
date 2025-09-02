@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
 use App\Models\Account;
 use App\Models\Company;
@@ -88,7 +89,10 @@ class ExportController extends Controller
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
-            return Excel::download(new ContainersExport($filters), 'containers.xlsx');
+            return Excel::download(new ContainersExport($filters), 'تقرير الحاويات.xlsx');
+        } elseif($reportType == 'account_statement') {
+            $filters = $request->all();
+            return Excel::download(new AccountStatementExport($filters), 'تقرير كشف الحساب.xlsx');
         }
 
         abort(404);

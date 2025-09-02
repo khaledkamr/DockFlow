@@ -38,32 +38,32 @@ class ContainersExport implements FromCollection, WithHeadings
 
         return $query->get()->map(function ($container) {
             return [
-                'ID'           => $container->id,
-                'Code'         => $container->code,
-                'Customer'     => $container->customer ? $container->customer->name : 'N/A',
-                'Type'         => $container->containerType ? $container->containerType->name : 'N/A',
-                'Location'     => $container->location,
-                'Status'       => $container->status,
-                'Received By'  => $container->received_by,
-                'Delivered By' => $container->delivered_by,
-                'Date'         => $container->date,
-                'Exit Date'    => $container->exit_date,
+                $container->id,
+                $container->code,
+                $container->customer ? $container->customer->name : 'N/A',
+                $container->containerType ? $container->containerType->name : 'N/A',
+                $container->location,
+                $container->status,
+                $container->received_by,
+                $container->delivered_by,
+                $container->date,
+                $container->exit_date,
             ];
         });
     }
 
     public function headings(): array {
         return [
-            'ID',
-            'code',
-            'customer',
-            'type',
-            'location',
-            'status',
-            'received_by',
-            'delivered_by',
-            'date',
-            'exit_date'
+            'رقم',
+            'الكود',
+            'صاحب الحاوية',
+            'النوع',
+            'الموقع',
+            'الحالة',
+            'تم الإستلام بواسطة',
+            'تم التسليم بواسطة',
+            'تاريخ الدخول',
+            'تاريخ الخروج'
         ];
     }
 }
