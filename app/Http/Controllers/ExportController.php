@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
+use App\Exports\JournalEntryExport;
 use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
@@ -93,6 +94,9 @@ class ExportController extends Controller
         } elseif($reportType == 'account_statement') {
             $filters = $request->all();
             return Excel::download(new AccountStatementExport($filters), 'تقرير كشف الحساب.xlsx');
+        } elseif($reportType == 'journal_entries') {
+            $filters = $request->all();
+            return Excel::download(new JournalEntryExport($filters), 'تقرير القيود اليومية.xlsx');
         }
 
         abort(404);

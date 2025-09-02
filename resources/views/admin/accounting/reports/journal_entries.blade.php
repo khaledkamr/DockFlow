@@ -45,9 +45,14 @@
     <div class="d-flex justify-content-between align-items-end mb-3">
         <div></div>
         <div class="export-buttons d-flex gap-2 align-items-center">
-            <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
-                <i class="fa-solid fa-file-excel"></i>
-            </button>
+            <form action="{{ route('export.excel', 'journal_entries') }}" method="GET">
+                <input type="hidden" name="type" value="{{ request()->query('type') }}">
+                <input type="hidden" name="from" value="{{ request()->query('from') }}">
+                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+                <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
+                    <i class="fa-solid fa-file-excel"></i>
+                </button>
+            </form>
 
             <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
