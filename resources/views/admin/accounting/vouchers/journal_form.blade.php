@@ -18,10 +18,6 @@
             <input type="text" class="form-control" value="{{ $company->branch }}" disabled>
         </div>
         <div class="col">
-            <label class="form-label">رقم القيد</label>
-            <input type="text" class="form-control" name="code">
-        </div>
-        <div class="col">
             <label class="form-label">تاريخ القيد</label>
             <input type="date" class="form-control" name="date" value="{{ now()->format('Y-m-d') }}">
         </div>

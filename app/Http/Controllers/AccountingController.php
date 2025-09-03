@@ -110,7 +110,6 @@ class AccountingController extends Controller
         }
         
         $journalEntry = JournalEntry::create([
-            'code' => $request->code,
             'date' => $request->date,
             'made_by' => Auth::user()->name,
             'totalDebit' => $totalDebit,
@@ -168,10 +167,7 @@ class AccountingController extends Controller
             $creditAccount = Account::findOrFail($voucher->account_id);
         }
 
-        $lastJournalCode = JournalEntry::latest('id')->first()->code;
-
         $journal = JournalEntry::create([
-            'code' => $lastJournalCode + 1,
             'date' => Carbon::now()->format('Y-m-d'),
             'totalDebit' => $voucher->amount,
             'totalCredit' => $voucher->amount,
