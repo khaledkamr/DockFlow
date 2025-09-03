@@ -157,7 +157,7 @@
             @else
                 @foreach ($customers as $customer)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $customer->id }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $customer->account->code }}</td>
                         <td class="text-center">
                             <a href="{{ route('users.customer.profile', $customer->id) }}"
                                 class="text-dark text-decoration-none">

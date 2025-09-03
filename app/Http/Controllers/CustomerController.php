@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use App\Models\Account;
 
 class CustomerController extends Controller
 {
@@ -35,8 +36,31 @@ class CustomerController extends Controller
     }
 
     public function storeCustomer(CustomerRequest $request) {
-        $validated = $request->validated();
-        Customer::create($validated);
+        $accountId = Account::where('name', 'عملاء التشغيل')->first()->id;
+        $lastCustomer = Account::where('parent_id', $accountId)->latest('id')->first();
+        if($lastCustomer) {
+            $code = $lastCustomer->code + 1;
+        } else {
+            $code = Account::where('id', $accountId)->latest('id')->first()->code;
+            $code = $code . '0001';
+        }
+        $account = Account::create([
+            'name' => $request->name,
+            'code' => $code,
+            'parent_id' => $accountId,
+            'type_id' => 1,
+            'level' => 5
+        ]);
+
+        Customer::create([
+            'name' => $request->name,
+            'CR' => $request->CR,
+            'TIN' => $request->TIN,
+            'national_address' => $request->national_address,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'account_id' => $account->id
+        ]);
         return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
     }
 

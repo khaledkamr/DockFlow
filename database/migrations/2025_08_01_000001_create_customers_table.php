@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('national_address');  // العنوان الوطني
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->unsignedBigInteger('account_id');
             $table->timestamps();
         });
     }

@@ -13,7 +13,8 @@ class Customer extends Model
         'TIN',
         'national_address',
         'phone',
-        'email'
+        'email',
+        'account_id'
     ];
 
     public function contract() {
@@ -30,5 +31,9 @@ class Customer extends Model
 
     public function invoices() {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function account() {
+        return $this->belongsTo(Account::class);
     }
 }
