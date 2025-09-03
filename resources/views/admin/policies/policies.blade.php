@@ -74,7 +74,7 @@
             @else
                 @foreach ($policies as $policy)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $policy->id }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $policy->code }}</td>
                         <td class="text-center">
                             <a href="{{ route('users.customer.profile', $policy->customer->id) }}"
                                 class="text-dark text-decoration-none">

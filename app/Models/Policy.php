@@ -14,6 +14,7 @@ class Policy extends Model
         'driver_car',
         'car_code',
         'date',
+        'code',
         'type',
         'storage_price',
         'late_fee',
@@ -34,5 +35,25 @@ class Policy extends Model
 
     public function invoice() {
         return $this->hasOne(Invoice::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($policy) {
+            $year = date('Y');
+            if($policy->type == 'تخزين') {
+                $prefix = 'ST';
+            } elseif($policy->type == 'إستلام') {
+                $prefix = 'RE';
+            }
+            $lastPolicy = self::where('type', $policy->type)->whereYear('date', $year)->latest('id')->first();
+            if ($lastPolicy && $lastPolicy->code) {
+                $lastNumber = (int) substr($lastPolicy->code, -5);
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
+            $policy->code = $year . $prefix . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        });
     }
 }

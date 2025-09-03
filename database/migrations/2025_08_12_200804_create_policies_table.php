@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('driver_car');
             $table->string('car_code');
             $table->date('date');
+            $table->string('code')->unique();
             $table->enum('type', ['تخزين', 'إستلام'])->default('تخزين');
             $table->string('storage_price')->nullable();
             $table->string('late_fee')->nullable();

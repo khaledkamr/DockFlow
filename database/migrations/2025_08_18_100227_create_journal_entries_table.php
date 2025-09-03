@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('journal_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('code')->unique();
             $table->string('type');
             $table->date('date');
             $table->decimal('totalDebit', 10, 2);
