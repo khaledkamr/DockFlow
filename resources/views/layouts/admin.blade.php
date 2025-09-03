@@ -33,8 +33,8 @@
         }
         :root {
             --blue-1: #0b56a9;
-            --blue-2: #217cab;
-            --blue-3: #2b87ac;
+            --blue-2: #218bab;
+            --blue-3: #2cacbd;
             --blue-4: #42b3af;
             --blue-5: #52d6cb;
             --gradient: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);

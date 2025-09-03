@@ -150,6 +150,11 @@
                             <input type="text" class="form-control border-primary" name="containers[0][location]">
                             <div class="invalid-feedback"></div>
                         </div>
+                        <div class="col">
+                            <label class="form-label">ملاحظات</label>
+                            <input type="text" class="form-control border-primary" name="containers[0][notes]">
+                            <div class="invalid-feedback"></div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -209,14 +209,14 @@
                                 <div class="modal-body text-dark">
                                     <div class="mb-3">
                                         <label for="name" class="form-label">إسم الفرع</label>
-                                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                                        <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}" required>
                                         @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3">
                                         <label for="code" class="form-label">الرقم الفرع</label>
-                                        <input type="text" class="form-control" id="code" name="code" value="{{ $account->children->count() ? $account->children->last()->code + 1 : (int) ($account->code . '00') + 1 }}" required>
+                                        <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $account->children->count() ? $account->children->last()->code + 1 : (int) ($account->code . '00') + 1 }}" required>
                                         @error('code')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
