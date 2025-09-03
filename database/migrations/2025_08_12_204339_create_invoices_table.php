@@ -15,9 +15,10 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('made_by');
             $table->decimal('amount', 10, 2);
-            $table->enum('payment_method', ['كاش', 'كريدت', 'تحويل بنكي']);
+            $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي']);
             $table->date('date');
             $table->enum('payment', ['تم الدفع', 'لم يتم الدفع']);
+            $table->string('notes')->nullable();
             $table->timestamps();
         });
     }

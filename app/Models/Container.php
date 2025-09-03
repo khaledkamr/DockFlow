@@ -14,6 +14,7 @@ class Container extends Model
         'container_type_id', 
         'customer_id', 
         'location',
+        'notes',
         'date',
         'exit_date'
     ];

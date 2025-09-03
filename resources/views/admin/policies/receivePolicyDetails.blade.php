@@ -169,18 +169,18 @@
                 @if(count($policy->containers) > 0)
                     <div class="table-responsive">
                         <table class="table table-hover mb-0">
-                            <thead class="table-light text-center">
-                                <trc>
-                                    <th class="border-0 fw-bold">#</th>
-                                    <th class="border-0 fw-bold">كود الحاوية</th>
-                                    <th class="border-0 fw-bold">نوع الحاوية</th>
-                                    <th class="border-0 fw-bold">تاريخ الدخول</th>
-                                    <th class="border-0 fw-bold">مدة تخزين الحاوية</th>
-                                    <th class="border-0 fw-bold">سعر التخزين</th>
-                                    <th class="border-0 fw-bold">أيام التأخير</th>
-                                    <th class="border-0 fw-bold">غرامة تأخير</th>
-                                    <th class="border-0 fw-bold">إجمالي المبلغ</th>
-                                </trc>
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 text-center fw-bold">#</th>
+                                    <th class="border-0 text-center fw-bold">كود الحاوية</th>
+                                    <th class="border-0 text-center fw-bold">نوع الحاوية</th>
+                                    <th class="border-0 text-center fw-bold">تاريخ الدخول</th>
+                                    <th class="border-0 text-center fw-bold">مدة تخزين الحاوية</th>
+                                    <th class="border-0 text-center fw-bold">سعر التخزين</th>
+                                    <th class="border-0 text-center fw-bold">أيام التأخير</th>
+                                    <th class="border-0 text-center fw-bold">غرامة تأخير</th>
+                                    <th class="border-0 text-center fw-bold">إجمالي المبلغ</th>
+                                </tr>
                             </thead>
                             <tbody class="text-center">
                                 @foreach($policy->containers as $index => $container)
@@ -240,7 +240,7 @@
     </div>
 </div>
 <div class="d-flex gap-3">
-    <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
+    <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice" {{ $policy->invoice ? 'disabled' : '' }}>
         إنشاء فاتورة <i class="fa-solid fa-scroll"></i>
     </button>
     <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">

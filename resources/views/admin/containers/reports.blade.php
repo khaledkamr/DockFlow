@@ -20,7 +20,7 @@
             <select name="status" class="form-select border-primary">
                 <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
                 <option value="متوفر" {{ request('status') == 'متوفر' ? 'selected' : '' }}>متوفر</option>
-                <option value="مُسلم" {{ request('status') == 'مُسلم' ? 'selected' : '' }}>مُسلم</option>
+                <option value="تم التسليم" {{ request('status') == 'تم التسليم' ? 'selected' : '' }}>تم التسليم</option>
                 <option value="متأخر" {{ request('status') == 'متأخر' ? 'selected' : '' }}>متأخر</option>
             </select>
         </div>
@@ -158,15 +158,13 @@
                             <td class="text-center">
                                 @if($container->status == 'متوفر')
                                     <div class="status-available">{{ $container->status }}</div>
-                                @elseif($container->status == 'مُسلم')
+                                @elseif($container->status == 'تم التسليم')
                                     <div class="status-delivered">
                                         {{ $container->status }}
                                         <i class="fa-solid fa-check"></i>
                                     </div>
                                 @elseif($container->status == 'متأخر')
                                     <div class="status-danger">{{ $container->status }}</div>
-                                @elseif($container->status == 'في الإنتظار')
-                                    <div class="status-waiting">{{ $container->status }}</div>
                                 @endif
                             </td>
                             <td class="text-center {{ $container->received_by ? 'text-dark' : 'text-muted' }}">

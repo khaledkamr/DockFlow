@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('containers', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->enum('status', ['متوفر', 'مُسلم', 'متأخر'])->default('متوفر');
+            $table->enum('status', ['متوفر', 'تم التسليم', 'متأخر'])->default('متوفر');
             $table->string('received_by')->nullable();
             $table->string('delivered_by')->nullable();
             $table->string('location')->nullable();

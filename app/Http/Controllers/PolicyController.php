@@ -81,8 +81,13 @@ class PolicyController extends Controller
     public function storeReceivePolicy(PolicyRequest $request) {
         $selected_containers = $request->selected_containers;
         $containers = [];
-        foreach($selected_containers as $container) {
-            $containers[] = Container::findOrFail($container);
+        foreach($selected_containers as $id) {
+            $container = Container::findOrFail($id);
+            $container->status = 'تم التسليم';
+            $container->delivered_by = $request->driver_name;
+            $container->exit_date = Carbon::now()->format('Y-m-d');
+            $container->save();
+            $containers[] = $container;
         }
         $validated = $request->validated();
 

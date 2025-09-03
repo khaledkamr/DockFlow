@@ -56,7 +56,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم الإتفاقية</th>
+                <th class="text-center bg-dark text-white">كود الإتفاقية</th>
                 <th class="text-center bg-dark text-white">إسم العميل</th>
                 <th class="text-center bg-dark text-white">نوع الإتفاقية</th>
                 <th class="text-center bg-dark text-white">تاريخ الإتفاقية</th>
@@ -86,7 +86,7 @@
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
                         <td class="action-icons text-center">
                             <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy->id) : route('policies.receive.details', $policy->id) }}" 
-                                class="bg-primary text-white text-decoration-none rounded-2 m-0 pe-2 ps-2 p-1">
+                                class="btn btn-sm btn-primary">
                                 عرض
                             </a>
                         </td>

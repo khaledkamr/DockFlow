@@ -102,7 +102,7 @@
                         <td class="text-center text-primary fw-bold">{{ $invoice->code }}</td>
                         <td class="text-center text-primary fw-bold">
                             <a href="{{ route('policies.receive.details', $invoice->policy->id) }}" class="text-decoration-none">
-                                {{ $invoice->policy_id }}
+                                {{ $invoice->policy->code }}
                             </a>
                         </td>
                          <td class="text-center">
@@ -118,13 +118,13 @@
                         <td class="text-center fw-bold {{ $invoice->payment == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
                             {{ $invoice->payment }}
                         </td>
-                        <td class="action-icons text-center">
+                        <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice{{ $invoice->id }}">
-                                <i class="fa-solid fa-pen text-primary" title="تحديث"></i>
+                                <i class="fa-solid fa-pen-to-square text-primary" title="تحديث"></i>
                             </button>
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button">
-                                <i class="fa-solid fa-print text-secondary" title="طباعة"></i>
-                            </button>
+                            <a href="{{ route('print.invoice', $invoice->code) }}" target="_blank" class="text-decoration-none text-dark">
+                                <i class="fa-solid fa-print text-dark" title="طباعة"></i>
+                            </a>
                         </td>
                     </tr>
                     <div class="modal fade" id="updateInvoice{{ $invoice->id }}" tabindex="-1" aria-labelledby="updateInvoiceLabel{{ $invoice->id }}" aria-hidden="true">

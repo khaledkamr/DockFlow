@@ -82,14 +82,8 @@ class ContainerController extends Controller
         $container = Container::findOrFail($id);
         $name = $container->code;
         $container->location = $request->location;
-        $old_status = $container->status;
-        $new_status = $request->status;
-        if($new_status == 'متوفر' && $old_status != $new_status) {
-            $container->date = Carbon::now()->format('Y-m-d');
-        } elseif($new_status == 'مُسلم' && $old_status != $new_status) {
-            $container->exit_date = Carbon::now()->format('Y-m-d');
-        }
-        $container->status = $request->status;
+      
+        $container->notes = $request->notes;
         $container->save();
         return redirect()->back()->with('success', "تم تعديل بيانات الحاوية '$name' بنجاح");
     }

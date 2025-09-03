@@ -71,8 +71,8 @@
                         جميع الحاويات</option>
                     <option value="متوفر" {{ request()->query('status') === 'متوفر' ? 'selected' : '' }}>
                         متوفر</option>
-                    <option value="مُسلم" {{ request()->query('status') === 'مُسلم' ? 'selected' : '' }}>
-                        مُسلم</option>
+                    <option value="تم التسليم" {{ request()->query('status') === 'تم التسليم' ? 'selected' : '' }}>
+                        تم التسليم</option>
                     <option value="متأخر" {{ request()->query('status') === 'متأخر' ? 'selected' : '' }}>
                         متأخر</option>
                 </select>
@@ -145,7 +145,7 @@
                         <td>
                             @if($container->status == 'متوفر')
                                 <div class="status-available">{{ $container->status }}</div>
-                            @elseif($container->status == 'مُسلم')
+                            @elseif($container->status == 'تم التسليم')
                                 <div class="status-delivered">
                                     {{ $container->status }}
                                     <i class="fa-solid fa-check"></i>
@@ -207,13 +207,9 @@
                                                 @enderror
                                             </div>
                                             <div class="col">
-                                                <label for="status" class="form-label">الحـــالـــة</label>
-                                                <select class="form-select border-primary" name="status" required>
-                                                    <option value="مُسلم" {{ $container->status == "مُسلم" ? 'selected' : '' }}>مُسلم</option>
-                                                    <option value="متوفر" {{ $container->status == "متوفر" ? 'selected' : '' }}>متوفر</option>
-                                                    <option value="في الإنتظار" {{ $container->status == "في الإنتظار" ? 'selected' : '' }}>في الإنتظار</option>
-                                                </select>
-                                                @error('status')
+                                                <label class="form-label">ملاحظـــات</label>
+                                                <input type="text" class="form-control border-primary" name="notes" value="{{ $container->notes }}">
+                                                @error('code')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>

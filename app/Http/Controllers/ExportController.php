@@ -9,6 +9,7 @@ use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
 use App\Models\Contract;
+use App\Models\invoice;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use Carbon\Carbon;
@@ -85,6 +86,36 @@ class ExportController extends Controller
         $months = $start->diffInMonths($end);
         $days = $start->copy()->addMonths($months)->diffInDays($end);
         return view('reports.contract', compact('contract', 'company', 'months', 'days'));
+    }
+
+    public function printInvoice($code) {
+        $company = Company::first();
+        $invoice = invoice::with('policy.containers')->where('code', $code)->first();
+
+        $amountBeforeTax = 0;
+
+        foreach($invoice->policy->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($invoice->policy->date));
+            $container->storage_price = $invoice->policy->contract->services[0]->pivot->price;
+            if($container->period > $invoice->policy->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)->addDays($invoice->policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($invoice->policy->date));
+                $container->late_days = $days;
+                $container->late_fee = $days * $invoice->policy->contract->services[3]->pivot->price;
+            } else {
+                $container->late_days = 'لا يوجد';
+                $container->late_fee = 0;
+            }
+            $container->storageService = $invoice->policy->contract->services[1]->pivot->price;
+            $container->total = $container->storage_price + $container->late_fee + $container->storageService;
+            $amountBeforeTax += $container->total;  
+        }
+
+        $invoice->subtotal = $amountBeforeTax;
+        $invoice->tax = $amountBeforeTax * 0.15;
+        $invoice->discount = 0;
+        $invoice->total = $amountBeforeTax + $invoice->tax;
+
+        return view('reports.invoice', compact('company', 'invoice'));
     }
 
     public function excel($reportType, Request $request) {

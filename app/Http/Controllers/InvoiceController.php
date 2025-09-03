@@ -37,7 +37,7 @@ class InvoiceController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.invoices', compact('invoices'));
+        return view('admin.policies.invoices', compact('invoices'));
     }
 
     public function storeInvoice(InvoiceRequest $request) {
