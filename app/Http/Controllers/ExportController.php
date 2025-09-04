@@ -16,6 +16,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
+use App\Helpers\QrHelper;
+
 class ExportController extends Controller
 {
     public function print($reportType, Request $request) {
@@ -115,7 +117,15 @@ class ExportController extends Controller
         $invoice->discount = 0;
         $invoice->total = $amountBeforeTax + $invoice->tax;
 
-        return view('reports.invoice', compact('company', 'invoice'));
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->policy->contract->customer->name,
+            $invoice->policy->contract->customer->CR,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('reports.invoice', compact('company', 'invoice', 'qrCode'));
     }
 
     public function excel($reportType, Request $request) {

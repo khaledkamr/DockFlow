@@ -27,8 +27,9 @@
             <p><strong>التاريخ:</strong> {{ $invoice->date ?? now()->format('Y-m-d') }}</p>
         </div>
         
-        <div class="">
-            <img src="{{ asset('img/qrcode.png') }}" alt="QR Code" width="120">
+        <div>
+            {!! $qrCode !!}
+            {{-- <img src="{{ asset('img/qrcode.png') }}" alt="QR Code" width="120"> --}}
         </div>
     </div>
 </div>
