@@ -118,19 +118,6 @@ class PolicyController extends Controller
 
     public function receivePolicyDetails($id) {
         $policy = Policy::with('containers.containerType')->findOrFail($id);
-        foreach($policy->containers as $container) {
-            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($policy->date));
-            $container->storage_price = $policy->contract->services[0]->pivot->price;
-            if($container->period > $policy->contract->services[0]->pivot->unit) {
-                $days = (int) Carbon::parse($container->date)->addDays($policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($policy->date));
-                $container->late_days = $days;
-                $container->late_fee = $days * $policy->contract->services[3]->pivot->price;
-            } else {
-                $container->late_fee = 0;
-            }
-            $container->total = $container->storage_price + $container->late_fee;
-        }
-            
         return view('admin.policies.receivePolicyDetails', compact('policy'));
     }
 }

@@ -99,7 +99,11 @@
             @else
                 @foreach ($invoices as $invoice)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $invoice->code }}</td>
+                        <td class="text-center text-primary fw-bold">
+                            <a href="{{ route('invoices.details', $invoice->code) }}" class="text-decoration-none">
+                                {{ $invoice->code }}
+                            </a>
+                        </td>
                         <td class="text-center text-primary fw-bold">
                             <a href="{{ route('policies.receive.details', $invoice->policy->id) }}" class="text-decoration-none">
                                 {{ $invoice->policy->code }}

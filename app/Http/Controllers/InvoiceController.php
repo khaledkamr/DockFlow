@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ArabicNumberConverter;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\invoice;
 use Carbon\Carbon;
@@ -72,6 +73,37 @@ class InvoiceController extends Controller
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة بنجاح');
     } 
+
+    public function invoiceDetails($code) {
+        $invoice = Invoice::where('code', $code)->firstOrFail();
+
+        $amountBeforeTax = 0;
+
+        foreach($invoice->policy->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($invoice->policy->date));
+            $container->storage_price = $invoice->policy->contract->services[0]->pivot->price;
+            if($container->period > $invoice->policy->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)->addDays($invoice->policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($invoice->policy->date));
+                $container->late_days = $days;
+                $container->late_fee = $days * $invoice->policy->contract->services[3]->pivot->price;
+            } else {
+                $container->late_days = 'لا يوجد';
+                $container->late_fee = 0;
+            }
+            $container->storageService = $invoice->policy->contract->services[1]->pivot->price;
+            $container->total = $container->storage_price + $container->late_fee + $container->storageService;
+            $amountBeforeTax += $container->total;  
+        }
+
+        $invoice->subtotal = $amountBeforeTax;
+        $invoice->tax = $amountBeforeTax * 0.15;
+        $invoice->discount = 0;
+        $invoice->total = $amountBeforeTax + $invoice->tax;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
+
+        return view('admin.policies.invoiceDetails', compact('invoice', 'hatching_total'));
+    }
 
     public function updateInvoice(Request $request, $id) {
         $invoice = Invoice::findOrFail($id);

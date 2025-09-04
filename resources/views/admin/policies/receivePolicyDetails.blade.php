@@ -175,11 +175,10 @@
                                     <th class="border-0 text-center fw-bold">كود الحاوية</th>
                                     <th class="border-0 text-center fw-bold">نوع الحاوية</th>
                                     <th class="border-0 text-center fw-bold">تاريخ الدخول</th>
-                                    <th class="border-0 text-center fw-bold">مدة تخزين الحاوية</th>
-                                    <th class="border-0 text-center fw-bold">سعر التخزين</th>
-                                    <th class="border-0 text-center fw-bold">أيام التأخير</th>
-                                    <th class="border-0 text-center fw-bold">غرامة تأخير</th>
-                                    <th class="border-0 text-center fw-bold">إجمالي المبلغ</th>
+                                    <th class="border-0 text-center fw-bold">تاريخ الخروج</th>
+                                    <th class="border-0 text-center fw-bold">تم الإستلام بواسطة</th>
+                                    <th class="border-0 text-center fw-bold">تم التسليم بواسطة</th>
+                                    <th class="border-0 text-center fw-bold">ملاحظات</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
@@ -189,11 +188,10 @@
                                         <td class="fw-bold text-primary">{{ $container->code }}</td>
                                         <td class="fw-bold">{{ $container->containerType->name }}</td>
                                         <td>{{ $container->date }}</td>
-                                        <td>{{ $container->period }} يوم</td>
-                                        <td>{{ $container->storage_price }} ريال</td>
-                                        <td>{{ $container->late_days }} يوم</td>
-                                        <td>{{ $container->late_fee }} ريال</td>
-                                        <td class="text-success fw-bold">{{ $container->total }} ريال</td>
+                                        <td>{{ $container->exit_date }}</td>
+                                        <td>{{ $container->received_by }}</td>
+                                        <td>{{ $container->delivered_by }}</td>
+                                        <td>{{ $container->notes }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -205,36 +203,6 @@
                         <h5 class="text-muted">لا توجد حاويات مرتبطة بهذه الإتفاقية</h5>
                     </div>
                 @endif
-                <div class="card-footer bg-light">
-                    <div class="d-flex gap-3 justify-content-center">
-                        <div class="card bg-white shadow-sm" style="min-width: 250px;">
-                            <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                                <span class="text-muted fw-bold">خدمة تنزيل الحاويات</span>
-                                <span class="fw-bold">{{ $policy->contract->services[1]->pivot->price * $policy->containers->count() }} ريال</span>
-                            </div>
-                        </div>
-                        <div class="card bg-white shadow-sm" style="min-width: 250px;">
-                            <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                                <span class="text-muted fw-bold">المجموع</span>
-                                <span class="fw-bold">{{ $policy->containers->sum('total') }} ريال</span>
-                            </div>
-                        </div>
-                        <div class="card bg-white shadow-sm" style="min-width: 250px;">
-                            <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                                <span class="text-muted fw-bold">الضريبة (15%)</span>
-                                <span class="fw-bold text-dark">{{ $policy->containers->sum('total') * 0.15 }} ريال</span>
-                            </div>
-                        </div>
-                        <div class="card bg-primary bg-opacity-10 shadow-sm" style="min-width: 250px;">
-                            <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                                <span class="text-primary fw-bold">الإجمالي النهائي</span>
-                                <span class="fw-bold text-primary fs-5">
-                                    {{ $policy->containers->sum('total') * 1.15 + $policy->contract->move_container_price * $policy->containers->count() }} ريال
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

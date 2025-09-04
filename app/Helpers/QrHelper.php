@@ -26,6 +26,6 @@ class QrHelper
         $base64 = base64_encode($tlv);
 
         // QR code
-        return QrCode::size(120)->color(11, 50, 255)->generate($base64);
+        return QrCode::size(120)->color(0, 0, 0)->generate($base64);
     }
 }

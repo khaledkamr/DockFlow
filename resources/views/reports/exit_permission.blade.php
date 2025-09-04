@@ -20,9 +20,9 @@
             @foreach($policyContainers as $index => $container)
             <tr class="text-center">
                 <td class="text-center">{{ $index + 1 }}</td>
-                <td class="fw-bold">{{ $container->containerType->name }}</td>
                 <td class="fw-bold text-primary">{{ $container->code }}</td>
                 <td>{{ $container->customer->name }}</td>
+                <td class="fw-bold">{{ $container->containerType->name }}</td>
                 <td class="fw-bold">{{ $container->location }}</td>
             </tr>
             @endforeach

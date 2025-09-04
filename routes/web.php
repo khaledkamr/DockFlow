@@ -73,6 +73,7 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoices', 'invoices')->name('invoices');
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
     Route::put('invoice/update/{id}', 'updateInvoice')->name('invoices.update');
+    Route::get('/invoice/{code}', 'invoiceDetails')->name('invoices.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
