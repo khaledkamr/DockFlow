@@ -6,7 +6,7 @@
 <h1 class="mb-4">الفواتير</h1>
 
 <div class="row mb-4">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
             <div class="d-flex">
@@ -40,7 +40,7 @@
             </div>
         </form>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <form method="GET" action="" class="d-flex flex-column">
             <label class="form-label text-dark fw-bold">تصفية حسب الدفــع:</label>
             <div class="d-flex">
@@ -58,6 +58,14 @@
                 @endif
             </div>
         </form>
+    </div>
+    <div class="col-md-2">
+        <div class="d-flex flex-column justify-content-end h-100">
+            <a href="{{ route('invoices.claim') }}" class="btn btn-primary fw-bold">
+                <i class="fa-solid fa-paper-plane me-2"></i>
+                مطالبة
+            </a>
+        </div>
     </div>
 </div>
 

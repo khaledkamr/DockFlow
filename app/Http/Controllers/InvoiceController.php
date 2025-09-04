@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ArabicNumberConverter;
 use App\Http\Requests\InvoiceRequest;
+use App\Models\Customer;
 use App\Models\invoice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -103,6 +104,14 @@ class InvoiceController extends Controller
         $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
 
         return view('admin.policies.invoiceDetails', compact('invoice', 'hatching_total'));
+    }
+
+    public function claimInvoices(Request $request) {
+        $customers = Customer::all();
+        $customer_id = $request->input('customer_id', null);
+        $customer = Customer::findOrFail($customer_id);
+        $invoices = $customer->invoices->where('payment', 'لم يتم الدفع');
+        return view('admin.policies.claim', compact('customers', 'invoices'));
     }
 
     public function updateInvoice(Request $request, $id) {
