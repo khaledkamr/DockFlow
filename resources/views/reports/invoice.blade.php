@@ -88,6 +88,6 @@
         <hr>
         <h3 class="fw-bold">{{ $invoice->total }}</h3>
     </div>
-    <h3 class="align-self-end fw-bold ms-5">اربعمائة و اربعة عشر ريال سعودي</h3>
+    <h3 class="align-self-end fw-bold ms-5">{{ $hatching_total }}</h3>
 </div>
 @endsection

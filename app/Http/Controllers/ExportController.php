@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Helpers\QrHelper;
+use App\Helpers\ArabicNumberConverter;
 
 class ExportController extends Controller
 {
@@ -117,6 +118,8 @@ class ExportController extends Controller
         $invoice->discount = 0;
         $invoice->total = $amountBeforeTax + $invoice->tax;
 
+        $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
+
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->policy->contract->customer->name,
             $invoice->policy->contract->customer->CR,
@@ -125,7 +128,7 @@ class ExportController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('reports.invoice', compact('company', 'invoice', 'qrCode'));
+        return view('reports.invoice', compact('company', 'invoice', 'qrCode', 'hatching_total'));
     }
 
     public function excel($reportType, Request $request) {
