@@ -6,7 +6,7 @@
 <div class="container">
     <h1 class="mb-4">مطالبة فواتير</h1>
 
-    <form method="GET" action="{{ route('invoices.claim') }}" class="mb-4">
+    <form method="GET" action="" class="mb-4">
         <div class="row g-2">
             <div class="col-md-6">
                 <select name="customer_id" class="form-select border-primary" required>

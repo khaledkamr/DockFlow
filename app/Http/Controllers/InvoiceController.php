@@ -108,9 +108,15 @@ class InvoiceController extends Controller
 
     public function claimInvoices(Request $request) {
         $customers = Customer::all();
-        $customer_id = $request->input('customer_id', null);
-        $customer = Customer::findOrFail($customer_id);
-        $invoices = $customer->invoices->where('payment', 'لم يتم الدفع');
+        $customer = null;
+        $invoices = collect();
+
+        if ($request->has('customer_id') && $request->customer_id) {
+            $customer = Customer::find($request->customer_id);
+            if ($customer) {
+                $invoices = $customer->invoices->where('payment', 'لم يتم الدفع');
+            }
+        }
         return view('admin.policies.claim', compact('customers', 'invoices'));
     }
 
