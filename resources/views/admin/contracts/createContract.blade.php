@@ -128,7 +128,35 @@
         </div>
         
         <div id="services-container">
-            <!-- Services will be added here dynamically -->
+            @foreach ($services as $index => $service)
+                <div class="mb-4 bg-light p-3 rounded service-item" data-service-id="{{ $service->id }}">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0 text-primary">خدمة #{{ $index + 1 }}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-service">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label">الوصف</label>
+                            <input type="text" class="form-control border-primary" value="{{ $service->description }}" readonly>
+                            <input type="hidden" name="services[{{ $service->id }}][service_id]" value="{{ $service->id }}">
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">السعر</label>
+                            <input type="number" step="0.01" class="form-control border-primary" name="services[{{ $service->id }}][price]">
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">الكمية</label>
+                            <input type="number" class="form-control border-primary" name="services[{{ $service->id }}][unit]">
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">الوحدة</label>
+                            <input type="text" class="form-control border-primary" name="services[{{ $service->id }}][unit_desc]">
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
         
         <!-- Service Selection Modal -->
@@ -223,7 +251,7 @@
 
         // Check if service already exists
         if ($(`input[name="services[${serviceId}][service_id]"]`).length > 0) {
-            showToast('هذه الخدمة مضافة مسبقاً', 'warning');
+            showToast('هذه الخدمة مضافة مسبقاً', 'danger');
             return;
         }
 
@@ -258,7 +286,7 @@
                         <input type="number" class="form-control border-primary" name="services[${serviceId}][unit]" value="${unit}" readonly>
                     </div>
                     <div class="col-2">
-                        <label class="form-label">وحدة القياس</label>
+                        <label class="form-label">الوحدة</label>
                         <input type="text" class="form-control border-primary" name="services[${serviceId}][unit_desc]" value="${unitDesc}" readonly>
                     </div>
                 </div>
@@ -321,6 +349,7 @@
     
     .service-item {
         border-left: 4px solid #0d6efd;
+        border-right: 4px solid #0d6efd;
     }
     
     .remove-service:hover {
