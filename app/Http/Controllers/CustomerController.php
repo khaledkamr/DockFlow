@@ -32,6 +32,7 @@ class CustomerController extends Controller
 
     public function customerProfile($id) {
         $customer = Customer::findOrFail($id);
+        // return $customer->contract->services;
         return view('admin.users.customerProfile', compact('customer'));
     }
 
