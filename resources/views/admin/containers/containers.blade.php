@@ -110,9 +110,9 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم الحاوية</th>
+                <th class="text-center bg-dark text-white">مسلسل</th>
                 <th class="text-center bg-dark text-white">صاحــب الحاويــة</th>
-                <th class="text-center bg-dark text-white">كــود الحاويــة</th>
+                <th class="text-center bg-dark text-white">رقم الحاوية</th>
                 <th class="text-center bg-dark text-white">الفئـــة</th>
                 <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الحالـــة</th>
