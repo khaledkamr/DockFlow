@@ -48,7 +48,6 @@
                 <th class="text-center">سعر التخزين</th>
                 <th class="text-center">أيام التأخير</th>
                 <th class="text-center">غرامة التأخير</th>
-                <th class="text-center">تحميل وتنزيل</th>
                 <th class="text-center">الإجمالي</th>
             </tr>
         </thead>
@@ -65,7 +64,6 @@
                     <td class="text-center">{{ $container->storage_price }}</td>
                     <td class="text-center">{{ $container->late_days }}</td>
                     <td class="text-center">{{ $container->late_fee }}</td>
-                    <td class="text-center">{{ $container->storageService }}</td>
                     <td class="text-center">{{ $container->total }}</td>
                 </tr>
             @endforeach

@@ -134,7 +134,6 @@
                             <th class="text-center bg-dark text-white">سعر التخزين</th>
                             <th class="text-center bg-dark text-white">أيام التأخير</th>
                             <th class="text-center bg-dark text-white">غرامة التأخير</th>
-                            <th class="text-center bg-dark text-white">تحميل وتنزيل</th>
                             <th class="text-center bg-dark text-white">الإجمالي</th>
                         </tr>
                     </thead>
@@ -157,7 +156,6 @@
                                 <td class="text-center fw-bold">{{ number_format($container->storage_price, 2) }}</td>
                                 <td class="text-center fw-bold">{{ $container->late_days }}</td>
                                 <td class="text-center fw-bold">{{ number_format($container->late_fee, 2) }}</td>
-                                <td class="text-center fw-bold">{{ number_format($container->storageService, 2) }}</td>
                                 <td class="text-center text-primary fw-bold">{{ number_format($container->total, 2) }}</td>
                             </tr>
                         @endforeach

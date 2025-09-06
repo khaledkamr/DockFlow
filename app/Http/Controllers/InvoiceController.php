@@ -63,8 +63,7 @@ class InvoiceController extends Controller
             } else {
                 $late_fee = 0;
             }
-            $storageService = $invoice->policy->contract->services[1]->pivot->price;
-            $total = $storage_price + $late_fee + $storageService;
+            $total = $storage_price + $late_fee;
             $amountBeforeTax += $total;
         }
 
@@ -91,8 +90,7 @@ class InvoiceController extends Controller
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;
             }
-            $container->storageService = $invoice->policy->contract->services[1]->pivot->price;
-            $container->total = $container->storage_price + $container->late_fee + $container->storageService;
+            $container->total = $container->storage_price + $container->late_fee;
             $amountBeforeTax += $container->total;  
         }
 

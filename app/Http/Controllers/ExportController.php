@@ -108,8 +108,7 @@ class ExportController extends Controller
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;
             }
-            $container->storageService = $invoice->policy->contract->services[1]->pivot->price;
-            $container->total = $container->storage_price + $container->late_fee + $container->storageService;
+            $container->total = $container->storage_price + $container->late_fee;
             $amountBeforeTax += $container->total;  
         }
 
