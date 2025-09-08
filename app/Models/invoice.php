@@ -25,6 +25,10 @@ class invoice extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function claims() {
+        return $this->belongsToMany(Claim::class, 'claim_invoice');
+    }
+
     protected static function booted()
     {
         static::creating(function ($invoice) {

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ArabicNumberConverter;
+use App\Http\Requests\ClaimRequest;
 use App\Http\Requests\InvoiceRequest;
+use App\Models\Claim;
 use App\Models\Customer;
 use App\Models\invoice;
 use Carbon\Carbon;
@@ -116,6 +118,24 @@ class InvoiceController extends Controller
             }
         }
         return view('admin.policies.claim', compact('customers', 'invoices'));
+    }
+
+    public function storeClaim(ClaimRequest $request) {
+        $customer = Customer::findOrFail($request->customer_id);
+        $invoices = Invoice::whereIn('id', $request->invoice_ids)->get();
+
+        $totalAmount = $invoices->sum('amount');
+        
+        $claim = Claim::create([
+            'customer_id' => $customer->id,
+            'total_amount' => $totalAmount,
+        ]);
+
+        foreach ($invoices as $invoice) {
+            $claim->invoices()->attach($invoice->id);
+        }
+
+        return redirect()->back()->with('success', 'تم إنشاء المطالبة بنجاح');
     }
 
     public function updateInvoice(Request $request, $id) {
