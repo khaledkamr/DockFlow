@@ -71,11 +71,10 @@ Route::controller(ContractController::class)->middleware('auth')->group(function
 
 Route::controller(InvoiceController::class)->middleware('auth')->group(function () {
     Route::get('/invoices', 'invoices')->name('invoices');
+    Route::get('invoice/create', 'createInvoice')->name('invoices.create');
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
     Route::put('invoice/update/{id}', 'updateInvoice')->name('invoices.update');
     Route::get('/invoice/{code}', 'invoiceDetails')->name('invoices.details');
-    Route::get('/invoices/claim', 'claimInvoices')->name('invoices.claim');
-    Route::post('/invoices/claim/store', 'storeClaim')->name('invoices.claim.store');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {

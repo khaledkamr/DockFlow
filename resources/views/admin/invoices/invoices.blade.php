@@ -59,14 +59,6 @@
             </div>
         </form>
     </div>
-    <div class="col-md-2">
-        <div class="d-flex flex-column justify-content-end h-100">
-            <a href="{{ route('invoices.claim') }}" class="btn btn-primary fw-bold">
-                <i class="fa-solid fa-paper-plane me-2"></i>
-                مطالبة
-            </a>
-        </div>
-    </div>
 </div>
 
 @if (session('success'))

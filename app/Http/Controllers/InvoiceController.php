@@ -6,6 +6,7 @@ use App\Helpers\ArabicNumberConverter;
 use App\Http\Requests\ClaimRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Claim;
+use App\Models\Container;
 use App\Models\Customer;
 use App\Models\invoice;
 use Carbon\Carbon;
@@ -43,6 +44,13 @@ class InvoiceController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
         return view('admin.invoices.invoices', compact('invoices'));
+    }
+
+    public function createInvoice(Request $request) {
+        $customers = Customer::all();
+        $customer_id = $request->input('customer_id');
+        $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
+        return view('admin.invoices.createInvoice', compact('customers', 'containers'));
     }
 
     public function storeInvoice(InvoiceRequest $request) {

@@ -351,11 +351,25 @@
                     </a>
                 </div>
             </li>
-            
+
             <li class="nav-item">
-                <a class="nav-link fw-bold {{ request()->routeIs('invoices') ? 'active' : '' }}" href="{{ route('invoices') }}">
-                    <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــــــواتيــــــــــر
+                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['invoices*']) ? 'expanded' : '' }}" 
+                   data-bs-toggle="collapse" 
+                   href="#invoice-management" 
+                   role="button" 
+                   aria-expanded="{{ request()->routeIs(['invoices*']) ? 'true' : 'false' }}" 
+                   aria-controls="invoice-management"
+                   onclick="toggleSubmenu(this, event)">
+                    <i class="fa-solid fa-receipt ms-2 me-2"></i> إدارة الفــــواتيــــــر
                 </a>
+                <div class="collapse sub-menu {{ request()->routeIs(['invoices*']) ? 'show' : '' }}" id="invoice-management">
+                    <a class="nav-link fw-bold {{ request()->routeIs('invoices') ? 'active' : '' }}" href="{{ route('invoices') }}">
+                        <i class="fa-solid fa-scroll ms-4 me-2"></i> الفــــواتيـــــر
+                    </a>
+                    <a class="nav-link fw-bold {{ request()->routeIs('invoices.create') ? 'active' : '' }}" href="{{ route('invoices.create') }}">
+                        <i class="fa-solid fa-circle-plus ms-4 me-2"></i> إضافة فاتورة
+                    </a>
+                </div>
             </li>
 
             <li class="nav-item">
