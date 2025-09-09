@@ -132,7 +132,7 @@
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
                 <h5 class="card-title text-center fw-bold mb-4">توزيع الحاويات في الساحة</h5>
-                <div class="chart-container" style="position: relative; height:257px;">
+                <div class="chart-container d-flex justify-content-center align-items-center" style="position: relative; height:257px;">
                     <canvas id="containersDistribution"></canvas>
                 </div>
                 <a href="{{ route('yard.containers') }}" class="btn btn-primary fw-bold w-100">

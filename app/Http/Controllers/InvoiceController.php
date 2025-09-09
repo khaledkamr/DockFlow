@@ -42,7 +42,7 @@ class InvoiceController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.policies.invoices', compact('invoices'));
+        return view('admin.invoices.invoices', compact('invoices'));
     }
 
     public function storeInvoice(InvoiceRequest $request) {
@@ -103,39 +103,7 @@ class InvoiceController extends Controller
 
         $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
 
-        return view('admin.policies.invoiceDetails', compact('invoice', 'hatching_total'));
-    }
-
-    public function claimInvoices(Request $request) {
-        $customers = Customer::all();
-        $customer = null;
-        $invoices = collect();
-
-        if ($request->has('customer_id') && $request->customer_id) {
-            $customer = Customer::find($request->customer_id);
-            if ($customer) {
-                $invoices = $customer->invoices->where('payment', 'لم يتم الدفع');
-            }
-        }
-        return view('admin.policies.claim', compact('customers', 'invoices'));
-    }
-
-    public function storeClaim(ClaimRequest $request) {
-        $customer = Customer::findOrFail($request->customer_id);
-        $invoices = Invoice::whereIn('id', $request->invoice_ids)->get();
-
-        $totalAmount = $invoices->sum('amount');
-        
-        $claim = Claim::create([
-            'customer_id' => $customer->id,
-            'total_amount' => $totalAmount,
-        ]);
-
-        foreach ($invoices as $invoice) {
-            $claim->invoices()->attach($invoice->id);
-        }
-
-        return redirect()->back()->with('success', 'تم إنشاء المطالبة بنجاح');
+        return view('admin.invoices.invoiceDetails', compact('invoice', 'hatching_total'));
     }
 
     public function updateInvoice(Request $request, $id) {

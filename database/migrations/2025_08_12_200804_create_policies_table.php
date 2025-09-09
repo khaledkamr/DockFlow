@@ -19,9 +19,6 @@ return new class extends Migration
             $table->date('date');
             $table->string('code')->unique();
             $table->enum('type', ['تخزين', 'إستلام'])->default('تخزين');
-            $table->string('storage_price')->nullable();
-            $table->string('late_fee')->nullable();
-            $table->enum('tax', ['غير معفي', 'معفي'])->default('غير معفي')->nullable();
             $table->timestamps();
         });
     }
