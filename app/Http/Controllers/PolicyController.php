@@ -11,6 +11,7 @@ use App\Models\Container_type;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Policy;
+use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -97,6 +98,7 @@ class PolicyController extends Controller
     }
 
     public function storagePolicyDetails($id) {
+        $services = Service::all();
         $policy = Policy::with('containers.containerType')->findOrFail($id);
         if($policy->type == 'إستلام') {
             $storage_price = 0;
@@ -113,7 +115,13 @@ class PolicyController extends Controller
             $tax = $policy->tax;
         }
             
-        return view('admin.policies.storagePolicyDetails', compact('policy', 'storage_price', 'late_fee', 'tax'));
+        return view('admin.policies.storagePolicyDetails', compact(
+            'policy', 
+            'storage_price', 
+            'late_fee', 
+            'tax',
+            'services'
+        ));
     }
 
     public function receivePolicyDetails($id) {

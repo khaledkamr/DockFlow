@@ -156,7 +156,7 @@
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm mb-4">
+        <div class="card border-0 shadow-sm mb-5">
             <div class="card-header bg-dark text-white">
                 <div class="d-flex justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
@@ -180,23 +180,20 @@
                                     <th class="text-center fw-bold">الموقع</th>
                                     <th class="text-center fw-bold">تم الإستلام بواسطة</th>
                                     <th class="text-center fw-bold">تم التسليم بواسطة</th>
+                                    <th class="text-center fw-bold">الإجرائات</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($policy->containers as $index => $container)
                                 <tr class="text-center">
-                                    <td class="text-center">
-                                            {{ $container->id}}
-                                    </td>
+                                    <td class="text-center">{{ $container->id}}</td>
                                     <td>
-                                        <div class="fw-bold text-primary">{{ $container->code }}</div>
+                                        <a href="{{ route('container.details', $container->id) }}" class="fw-bold text-decoration-none">
+                                            {{ $container->code }}
+                                        </a>
                                     </td>
-                                    <td>
-                                        <div class="fw-bold">{{ $container->containerType->name }}</div>
-                                    </td>
-                                    <td>
-                                        <div>{{ $container->customer->name }}</div>
-                                    </td>
+                                    <td><div class="fw-bold">{{ $container->containerType->name }}</div></td>
+                                    <td><div>{{ $container->customer->name }}</div></td>
                                     <td>
                                         @if($container->status == 'متوفر')
                                             <div class="status-available">{{ $container->status }}</div>
@@ -220,12 +217,51 @@
                                     <td class="{{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
                                         {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
                                     </td>
+                                    <td>
+                                       <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal-{{ $container->id }}">
+                                            إضافة خدمة
+                                        </button> 
+                                    </td>
                                 </tr>
+                                <div class="modal fade" id="addServiceModal-{{ $container->id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('containers.add.service', $container->id) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title fw-bold">إضافة خدمة للحاوية {{ $container->code }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">الخدمة</label>
+                                                        <select name="service_id" class="form-select border-primary" required>
+                                                            <option value="" disabled selected>اختر خدمة</option>
+                                                            @foreach($services as $service)
+                                                                <option value="{{ $service->id }}">{{ $service->description }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">السعر</label>
+                                                        <input type="number" name="price" class="form-control border-primary" step="0.01">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">ملاحظات</label>
+                                                        <textarea name="notes" class="form-control border-primary"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-
                 @else
                     <div class="text-center py-5">
                         <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
@@ -241,6 +277,14 @@
     @push('scripts')
         <script>
             showToast("{{ session('success') }}", "success");
+        </script>
+    @endpush
+@endif
+
+@if (session('error'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('error') }}", "danger");
         </script>
     @endpush
 @endif

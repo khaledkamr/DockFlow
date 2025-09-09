@@ -155,4 +155,24 @@ class ContainerController extends Controller
             'perPage'
         ));
     }
+
+    public function addService(Request $request, $id) {
+        $container = Container::findOrFail($id);
+        $serviceId = $request->input('service_id');
+        $price = $request->input('price', 0);
+        $notes = $request->input('notes', '');
+        if($container->services->contains($serviceId)) {
+            return redirect()->back()->with('error', 'هذه الخدمة مضافة مسبقاً لهذه الحاوية');
+        }
+        $container->services()->attach($serviceId, [
+            'price' => $price,
+            'notes' => $notes
+        ]);
+        return redirect()->back()->with('success', 'تم إضافة الخدمة الى الحاوية بنجاح');
+    }
+
+    public function containerDetails($id) {
+        $container = Container::with(['customer', 'policies', 'invoices', 'services'])->findOrFail($id);
+        return view('admin.containers.containerDetails', compact('container'));
+    }
 }

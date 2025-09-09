@@ -36,4 +36,10 @@ class Container extends Model
             ->withPivot('amount')
             ->withTimestamps();
     }
+
+    public function services() {
+        return $this->belongsToMany(Service::class, 'container_services')
+            ->withPivot('price', 'notes')
+            ->withTimestamps();
+    }
 }
