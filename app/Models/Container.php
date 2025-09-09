@@ -28,6 +28,6 @@ class Container extends Model
     }
 
     public function policies() {
-        return $this->belongsToMany(Contract::class, 'policy_container');
+        return $this->belongsToMany(Policy::class, 'policy_container');
     }
 }
