@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class invoice extends Model
 {
     protected $fillable = [
-        'policy_id',
         'customer_id', 
         'code',
         'made_by',
@@ -17,12 +16,14 @@ class invoice extends Model
         'payment'
     ];
 
-    public function policy() {
-        return $this->belongsTo(Policy::class);
-    }
-
     public function customer() {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function containers() {
+        return $this->belongsToMany(Container::class, 'invoice_containers')
+            ->withPivot('amount')
+            ->withTimestamps();
     }
 
     protected static function booted()

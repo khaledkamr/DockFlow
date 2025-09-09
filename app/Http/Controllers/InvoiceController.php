@@ -53,35 +53,42 @@ class InvoiceController extends Controller
         return view('admin.invoices.createInvoice', compact('customers', 'containers'));
     }
 
-    public function storeInvoice(InvoiceRequest $request) {
-        $validated = $request->validated();
-        if($validated['payment_method'] == 'كريدت') {
-            $validated['payment'] = 'لم يتم الدفع';
-        } else {
-            $validated['payment'] = 'تم الدفع';
-        }
-        $invoice = Invoice::create($validated);
+    public function storeInvoice(Request $request) {
+        $containerIds = $request->input('container_ids', []);
+        $invoice = Invoice::create([
+            'customer_id' => $request->customer_id,
+            'made_by' => $request->made_by,
+            'amount' => 0,
+            'payment_method' => 'آجل',
+            'date' => Carbon::now()->format('Y-m-d'),
+            'payment' => 'لم يتم الدفع'
+        ]);
 
+        $containers = Container::whereIn('id', $containerIds)->get();
         $amountBeforeTax = 0;
 
-        foreach($invoice->policy->containers as $container) {
-            $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($invoice->policy->date));
-            $storage_price = $invoice->policy->contract->services[0]->pivot->price;
-            if($period > $invoice->policy->contract->services[0]->pivot->unit) {
-                $days = (int) Carbon::parse($container->date)->addDays($invoice->policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($invoice->policy->date));
-                $late_fee = $days * $invoice->policy->contract->services[3]->pivot->price;
+        foreach($containers as $container) {
+            $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $storage_price = $container->policies->first()->contract->services[0]->pivot->price;
+            if($period > $container->policies->first()->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->diffInDays(Carbon::parse($container->exit_date));
+                $late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
             } else {
                 $late_fee = 0;
             }
-            $total = $storage_price + $late_fee;
-            $amountBeforeTax += $total;
+            $amountBeforeTax += $storage_price + $late_fee;
+            $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee]);
         }
 
         $tax = $amountBeforeTax * 0.15;
-        $invoice->amount = $amountBeforeTax + $tax;
+        $amount = $amountBeforeTax + $tax;
+
+        $invoice->amount = $amount;
         $invoice->save();
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة بنجاح');
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice->code).'">عرض الفاتورة</a>');
     } 
 
     public function invoiceDetails($code) {

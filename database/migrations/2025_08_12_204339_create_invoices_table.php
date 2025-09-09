@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('policy_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('code')->unique();
             $table->string('made_by');
             $table->decimal('amount', 10, 2);
-            $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي']);
+            $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
             $table->date('date');
             $table->enum('payment', ['تم الدفع', 'لم يتم الدفع']);
             $table->string('notes')->nullable();

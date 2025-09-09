@@ -14,7 +14,6 @@ class InvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'policy_id' => 'required',
             'customer_id' => 'required',
             'made_by' => 'required',
             'date' => 'required|date',

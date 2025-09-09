@@ -208,7 +208,7 @@
     </div>
 </div>
 <div class="d-flex gap-3">
-    <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice" {{ $policy->invoice ? 'disabled' : '' }}>
+    <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createInvoice">
         إنشاء فاتورة <i class="fa-solid fa-scroll"></i>
     </button>
     <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
