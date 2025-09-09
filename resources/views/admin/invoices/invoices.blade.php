@@ -19,7 +19,7 @@
             </div>
         </form>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <form method="GET" action="" class="d-flex flex-column">
             <label class="form-label text-dark fw-bold">تصفية حسب طريقــة الدفــع:</label>
             <div class="d-flex">
@@ -40,7 +40,7 @@
             </div>
         </form>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <form method="GET" action="" class="d-flex flex-column">
             <label class="form-label text-dark fw-bold">تصفية حسب الدفــع:</label>
             <div class="d-flex">
@@ -79,7 +79,6 @@
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
-                <th class="text-center bg-dark text-white">رقــم الإتفاقيــة</th>
                 <th class="text-center bg-dark text-white">العميــل</th>
                 <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">المبلغ</th>
@@ -104,12 +103,7 @@
                                 {{ $invoice->code }}
                             </a>
                         </td>
-                        <td class="text-center text-primary fw-bold">
-                            <a href="{{ route('policies.receive.details', $invoice->policy->id) }}" class="text-decoration-none">
-                                {{ $invoice->policy->code }}
-                            </a>
-                        </td>
-                         <td class="text-center">
+                        <td class="text-center">
                             <a href="{{ route('users.customer.profile', $invoice->customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $invoice->customer->name }}

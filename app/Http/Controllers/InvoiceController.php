@@ -50,6 +50,9 @@ class InvoiceController extends Controller
         $customers = Customer::all();
         $customer_id = $request->input('customer_id');
         $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
+        $containers = $containers->filter(function($container) {
+            return !$container->invoices->isEmpty();
+        });
         return view('admin.invoices.createInvoice', compact('customers', 'containers'));
     }
 
@@ -96,13 +99,15 @@ class InvoiceController extends Controller
 
         $amountBeforeTax = 0;
 
-        foreach($invoice->policy->containers as $container) {
-            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($invoice->policy->date));
-            $container->storage_price = $invoice->policy->contract->services[0]->pivot->price;
-            if($container->period > $invoice->policy->contract->services[0]->pivot->unit) {
-                $days = (int) Carbon::parse($container->date)->addDays($invoice->policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($invoice->policy->date));
+        foreach($invoice->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $container->storage_price = $container->policies->first()->contract->services[0]->pivot->price;
+            if($container->period > $container->policies->first()->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->diffInDays(Carbon::parse($container->exit_date));
                 $container->late_days = $days;
-                $container->late_fee = $days * $invoice->policy->contract->services[3]->pivot->price;
+                $container->late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
             } else {
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;

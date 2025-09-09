@@ -52,10 +52,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($invoice->policy->containers as $index => $container)
+            @foreach ($invoice->containers as $index => $container)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td class="text-center">{{ $invoice->policy->code }}</td>
+                    <td class="text-center">{{ $container->policies->where('type', 'إستلام')->first()->code }}</td>
                     <td class="text-center">{{ $container->code }}</td>
                     <td class="text-center">{{ $container->containerType->name }}</td>
                     <td class="text-center">{{ $container->date }}</td>

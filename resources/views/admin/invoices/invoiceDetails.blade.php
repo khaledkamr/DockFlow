@@ -94,8 +94,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <strong class="text-muted">رقم الإتفاقية:</strong>
-                                        <span class="fw-bold">{{ $invoice->policy->code ?? '---' }}</span>
+                                        <strong class="text-muted">أعدت بواسطة:</strong>
+                                        <span class="text-muted fw-bold">{{ $invoice->made_by ?? '---' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +117,7 @@
                 <h5 class="mb-0 text-dark">
                     <i class="fas fa-boxes me-2"></i>تفاصيل الحاويات
                 </h5>
-                <span class="badge bg-primary text-white">عدد الحاويات: {{ count($invoice->policy->containers) }}</span>
+                <span class="badge bg-primary text-white">عدد الحاويات: {{ count($invoice->containers) }}</span>
             </div>
             
             <div class="table-responsive">
@@ -138,10 +138,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($invoice->policy->containers as $index => $container)
+                        @foreach ($invoice->containers as $index => $container)
                             <tr>
                                 <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                <td class="text-center fw-bold">{{ $invoice->policy->code }}</td>
+                                <td class="text-center fw-bold">{{ $container->policies->where('type', 'إستلام')->first()->code ?? '---' }}</td>
                                 <td class="text-center fw-bold">{{ $container->code }}</td>
                                 <td class="text-center">
                                     <span class="badge bg-primary text-white">{{ $container->containerType->name }}</span>

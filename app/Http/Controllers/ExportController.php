@@ -93,17 +93,19 @@ class ExportController extends Controller
 
     public function printInvoice($code) {
         $company = Company::first();
-        $invoice = invoice::with('policy.containers')->where('code', $code)->first();
+        $invoice = Invoice::with('containers')->where('code', $code)->first();
 
         $amountBeforeTax = 0;
 
-        foreach($invoice->policy->containers as $container) {
-            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($invoice->policy->date));
-            $container->storage_price = $invoice->policy->contract->services[0]->pivot->price;
-            if($container->period > $invoice->policy->contract->services[0]->pivot->unit) {
-                $days = (int) Carbon::parse($container->date)->addDays($invoice->policy->contract->services[0]->pivot->unit)->diffInDays(Carbon::parse($invoice->policy->date));
+        foreach($invoice->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $container->storage_price = $container->policies->first()->contract->services[0]->pivot->price;
+            if($container->period > $container->policies->first()->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->diffInDays(Carbon::parse($container->exit_date));
                 $container->late_days = $days;
-                $container->late_fee = $days * $invoice->policy->contract->services[3]->pivot->price;
+                $container->late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
             } else {
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;
@@ -120,8 +122,8 @@ class ExportController extends Controller
         $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
 
         $qrCode = QrHelper::generateZatcaQr(
-            $invoice->policy->contract->customer->name,
-            $invoice->policy->contract->customer->CR,
+            $invoice->customer->name,
+            $invoice->customer->CR,
             $invoice->created_at->toIso8601String(),
             number_format($invoice->total, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
