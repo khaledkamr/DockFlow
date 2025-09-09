@@ -6,6 +6,10 @@
 # Generate application key if not set
 # php artisan key:generate --no-interaction --force
 
+if [ -n "$PORT" ]; then
+  sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf
+fi
+
 # Run Laravel optimization commands
 php artisan config:cache
 php artisan route:cache
