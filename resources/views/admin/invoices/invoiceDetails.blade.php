@@ -141,8 +141,16 @@
                         @foreach ($invoice->containers as $index => $container)
                             <tr>
                                 <td class="text-center fw-bold">{{ $index + 1 }}</td>
-                                <td class="text-center fw-bold">{{ $container->policies->where('type', 'إستلام')->first()->code ?? '---' }}</td>
-                                <td class="text-center fw-bold">{{ $container->code }}</td>
+                                <td class="text-center fw-bold">
+                                    <a href="{{ route('policies.receive.details', $container->policies->where('type', 'إستلام')->first()->id) }}" class="text-decoration-none">
+                                        {{ $container->policies->where('type', 'إستلام')->first()->code ?? '---' }}
+                                    </a>
+                                </td>
+                                <td class="text-center fw-bold">
+                                    <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none">
+                                        {{ $container->code }}
+                                    </a>
+                                </td>
                                 <td class="text-center">
                                     <span class="badge bg-primary text-white">{{ $container->containerType->name }}</span>
                                 </td>

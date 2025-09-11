@@ -139,7 +139,11 @@
                                 {{ $container->customer->name }}
                             </a>
                         </td>
-                        <td>{{ $container->code }}</td>
+                        <td class="fw-bold">
+                            <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none">
+                                {{ $container->code }}
+                            </a>
+                        </td>
                         <td>{{ $container->containerType->name }}</td>
                         <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد بعد' }}</td>
                         <td>
