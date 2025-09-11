@@ -151,7 +151,11 @@
                     @foreach ($containers as $index => $container)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
-                            <td class="text-center text-primary fw-bold">{{ $container->code }}</td>
+                            <td class="text-center fw-bold">
+                            <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none">
+                                {{ $container->code }}
+                            </a>
+                        </td>
                             <td class="text-center">{{ $container->customer->name }}</td>
                             <td class="text-center">{{ $container->containerType->name }}</td>
                             <td class="text-center">{{ $container->location ?? '-' }}</td>
