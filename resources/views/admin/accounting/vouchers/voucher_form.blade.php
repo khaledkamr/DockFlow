@@ -61,6 +61,7 @@
             @endif
         </div>
     </div>
+    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
     <button type="submit" class="btn btn-primary fw-bold mt-2">إضافة سند</button>
 </form>
 

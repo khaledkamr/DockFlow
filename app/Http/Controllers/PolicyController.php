@@ -60,7 +60,7 @@ class PolicyController extends Controller
                 'container_type_id' => $container['container_type_id'],
                 'location' => $container['location'],
                 'received_by' => $request->driver_name,
-                'date' => Carbon::now()->format('Y-m-d'),
+                'date' => Carbon::now(),
                 'notes' => $container['notes']
             ]);
             $policy_containers[] = $container;

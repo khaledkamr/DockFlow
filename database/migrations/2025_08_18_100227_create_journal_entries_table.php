@@ -15,8 +15,7 @@ return new class extends Migration
             $table->date('date');
             $table->decimal('totalDebit', 10, 2);
             $table->decimal('totalCredit', 10, 2);
-            $table->string('made_by');
-            $table->string('modified_by')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('voucher_id')->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

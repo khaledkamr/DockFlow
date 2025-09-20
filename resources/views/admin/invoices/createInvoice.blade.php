@@ -40,7 +40,7 @@
     <form method="POST" action="{{ route('invoices.store') }}" class="mb-5">
         @csrf
         <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
-        <input type="hidden" name="made_by" value="{{ auth()->user()->name }}">
+        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
 
         <!-- Search results info -->
         <div class="alert alert-secondary mb-3" id="search-info" style="display: none;">

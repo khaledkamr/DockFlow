@@ -7,7 +7,7 @@
 
 <div class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h5 class="fw-bold">تقرير قيد - {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ $journal->date }}</h5>
+        <h5 class="fw-bold">تقرير قيد - {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h5>
         <div>
             <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                 <i class="fa-solid fa-file-excel"></i>

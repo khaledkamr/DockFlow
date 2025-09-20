@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('customer_representative_nationality');
             $table->string('customer_representative_NID');
             $table->string('customer_representative_role');
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ class InvoiceRequest extends FormRequest
     {
         return [
             'customer_id' => 'required',
-            'made_by' => 'required',
+            'user_id' => 'required',
             'date' => 'required|date',
             'amount' => 'required|numeric',
             'payment_method' => 'required'

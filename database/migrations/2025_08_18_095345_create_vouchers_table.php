@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('description');
             $table->foreignId('account_id')->constrained()->cascadeOnDelete();
             $table->boolean('is_posted')->default(false);
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

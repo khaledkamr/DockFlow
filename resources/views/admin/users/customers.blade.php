@@ -160,7 +160,7 @@
                         <td class="text-center text-primary fw-bold">{{ $customer->account->code }}</td>
                         <td class="text-center">
                             <a href="{{ route('users.customer.profile', $customer->id) }}"
-                                class="text-dark text-decoration-none">
+                                class="text-dark fw-bold text-decoration-none">
                                 {{ $customer->name }}
                             </a>
                         </td>
@@ -178,6 +178,7 @@
                         </td>
                     </tr>
 
+                    {{-- update modal --}}
                     <div class="modal fade" id="editUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
@@ -247,6 +248,7 @@
                         </div>
                     </div>
 
+                    {{-- delete modal --}}
                     <div class="modal fade" id="deleteUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -254,15 +256,18 @@
                                     <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body text-dark">
+                                <div class="modal-body text-center text-dark">
                                     هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟
                                 </div>
+                                <p class="text-danger text-center px-3">
+                                    سوف يتم حذف جميع العقود و الحاويات و الفواتير المرتبطة بهذا العميل.!
+                                </p>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     <form action="{{ route('users.customer.delete', $customer->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">حذف</button>
+                                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
                                     </form>
                                 </div>
                             </div>

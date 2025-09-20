@@ -16,6 +16,7 @@ class ContractRequest extends FormRequest
         return [
             'start_date' => 'required',
             'end_date' => 'required',
+            'user_id' => 'nullable|exists:users,id',
             'company_id' => 'required',
             'company_representative' => 'required',
             'company_representative_nationality' => 'required',

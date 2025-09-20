@@ -89,13 +89,13 @@
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">التاريخ:</strong>
-                                        <span class="fw-bold">{{ $invoice->date ?? now()->format('Y-m-d') }}</span>
+                                        <span class="fw-bold">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</span>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">أعدت بواسطة:</strong>
-                                        <span class="text-muted fw-bold">{{ $invoice->made_by ?? '---' }}</span>
+                                        <span class="text-muted fw-bold">{{ $invoice->made_by->name ?? '---' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -142,8 +142,8 @@
                             <tr>
                                 <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('policies.receive.details', $container->policies->where('type', 'إستلام')->first()->id) }}" class="text-decoration-none">
-                                        {{ $container->policies->where('type', 'إستلام')->first()->code ?? '---' }}
+                                    <a href="{{ route('policies.receive.details', $container->policies->where('type', 'تسليم')->first()->id) }}" class="text-decoration-none">
+                                        {{ $container->policies->where('type', 'تسليم')->first()->code ?? '---' }}
                                     </a>
                                 </td>
                                 <td class="text-center fw-bold">

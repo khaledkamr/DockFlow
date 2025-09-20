@@ -28,8 +28,9 @@
 <div class="card border-0 shadow-sm bg-white p-4">
     <form action="{{ route('contracts.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="start_date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-        <input type="hidden" name="end_date" value="{{ Carbon\Carbon::now()->addMonths(3)->format('Y-m-d') }}">
+        <input type="hidden" name="start_date" value="{{ Carbon\Carbon::now() }}">
+        <input type="hidden" name="end_date" value="{{ Carbon\Carbon::now()->addMonths(3) }}">
+        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         
         <h5 class="mb-3">بيانات الشركة</h5>
         <div class="mb-4 bg-light p-3 rounded">

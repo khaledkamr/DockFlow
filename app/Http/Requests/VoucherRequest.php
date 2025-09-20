@@ -18,7 +18,8 @@ class VoucherRequest extends FormRequest
             'date' => 'required|date',
             'amount' => 'required',
             'hatching' => 'required|string',
-            'description' => 'required|string'
+            'description' => 'required|string',
+            'user_id' => 'required',
         ];
     }
 }

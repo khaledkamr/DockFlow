@@ -24,8 +24,8 @@
                         <td class="text-center">{{ $journal->code }}</td>
                         <td class="text-center fw-bold">{{ $journal->voucher->type ?? 'قيد يومي' }}</td>
                         <td class="text-center">{{ $journal->totalDebit }}</td>
-                        <td class="text-center">{{ $journal->date }}</td>
-                        <td class="text-center">{{ $journal->made_by }}</td>
+                        <td class="text-center">{{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</td>
+                        <td class="text-center">{{ $journal->made_by->name ?? '-' }}</td>
                         <td class="text-center {{ $journal->modified_by ? 'text-dark' : 'text-muted' }}">
                             {{ $journal->modified_by ?? 'لم يتم التعديل' }}
                         </td>

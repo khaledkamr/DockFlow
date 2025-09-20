@@ -7,7 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h2 class="mb-4">إضافة إتفاقية إستلام</h2>
+<h2 class="mb-4">إضافة إتفاقية تسليم</h2>
 
 @if (session('success'))
     @push('scripts')
@@ -28,8 +28,10 @@
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
     <form action="{{ route('policies.receive.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-        <input type="hidden" name="type" value="إستلام">
+        <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
+        <input type="hidden" name="type" value="تسليم">
+        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+        
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم الشركة</label>

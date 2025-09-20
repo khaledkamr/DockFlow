@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('car_code');
             $table->date('date');
             $table->string('code')->unique();
-            $table->enum('type', ['تخزين', 'إستلام'])->default('تخزين');
+            $table->enum('type', ['تخزين', 'تسليم'])->default('تخزين');
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -16,6 +16,7 @@ class PolicyRequest extends FormRequest
         return [
             'contract_id' => 'required',
             'customer_id' => 'required',
+            'user_id' => 'required',
             'date' => 'required',
             'type' => 'required',
             'driver_name' => 'required',

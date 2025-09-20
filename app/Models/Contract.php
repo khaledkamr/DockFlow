@@ -19,6 +19,7 @@ class Contract extends Model
         'customer_representative_nationality',
         'customer_representative_NID',
         'customer_representative_role',
+        'user_id',
     ];
 
     public function company() {
@@ -37,5 +38,9 @@ class Contract extends Model
 
     public function policies() {
         return $this->hasMany(Policy::class);
+    }
+
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

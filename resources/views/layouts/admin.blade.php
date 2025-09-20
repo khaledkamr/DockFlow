@@ -347,7 +347,7 @@
                         <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية تخزين
                     </a>
                     <a class="nav-link fw-bold {{ request()->routeIs('policies.receive.create') ? 'active' : '' }}" href="{{ route('policies.receive.create') }}">
-                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية إستلام
+                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية تسليم
                     </a>
                 </div>
             </li>

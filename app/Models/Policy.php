@@ -16,9 +16,7 @@ class Policy extends Model
         'date',
         'code',
         'type',
-        'storage_price',
-        'late_fee',
-        'tax'
+        'user_id'
     ];
 
     public function contract() {
@@ -37,13 +35,17 @@ class Policy extends Model
         return $this->hasOne(Invoice::class);
     }
 
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     protected static function booted()
     {
         static::creating(function ($policy) {
             $year = date('Y');
             if($policy->type == 'تخزين') {
                 $prefix = 'ST';
-            } elseif($policy->type == 'إستلام') {
+            } elseif($policy->type == 'تسليم') {
                 $prefix = 'RE';
             }
             $lastPolicy = self::where('type', $policy->type)->whereYear('date', $year)->latest('id')->first();

@@ -109,10 +109,10 @@
                                 {{ $invoice->customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $invoice->made_by }}</td>
+                        <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
                         <td class="text-center fw-bold">{{ $invoice->amount }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
-                        <td class="text-center">{{ $invoice->date }}</td>
+                        <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                         <td class="text-center fw-bold {{ $invoice->payment == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
                             {{ $invoice->payment }}
                         </td>
