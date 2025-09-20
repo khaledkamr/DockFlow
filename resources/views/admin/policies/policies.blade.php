@@ -3,7 +3,7 @@
 @section('title', 'إتفاقيات التخزين')
 
 @section('content')
-<h1 class="mb-4">إتفاقيات التخزين و الإستلام</h1>
+<h1 class="mb-4">إتفاقيات التخزين و التسليم</h1>
 
 <div class="row mb-4">
     <div class="col-md-5">
@@ -29,8 +29,8 @@
                         جميع الإتفاقيات</option>
                     <option value="تخزين" {{ request()->query('type') === 'تخزين' ? 'selected' : '' }}>
                         إتفاقية تخزين</option>
-                    <option value="إستلام" {{ request()->query('type') === 'إستلام' ? 'selected' : '' }}>
-                        إتفاقية إستلام</option>
+                    <option value="تسليم" {{ request()->query('type') === 'تسليم' ? 'selected' : '' }}>
+                        إتفاقية تسليم</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -47,7 +47,7 @@
     <div class="col-md-2 d-flex align-items-end">
         <a href="{{ route('policies.receive.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            إتفاقية إستلام
+            إتفاقية تسليم
         </a>
     </div>
 </div>
@@ -61,6 +61,7 @@
                 <th class="text-center bg-dark text-white">نوع الإتفاقية</th>
                 <th class="text-center bg-dark text-white">تاريخ الإتفاقية</th>
                 <th class="text-center bg-dark text-white">عدد الحاويات</th>
+                <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
@@ -68,7 +69,7 @@
             @if ($policies->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-canceled fs-6">لم يتم العثور على اي إتفاقيات!</div>
+                        <div class="status-danger fs-6">لم يتم العثور على اي إتفاقيات!</div>
                     </td>
                 </tr>
             @else
@@ -82,8 +83,9 @@
                             </a>
                         </td>
                         <td class="text-center">{{ $policy->type }}</td>
-                        <td class="text-center">{{ $policy->date }}</td>
+                        <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
+                        <td class="text-center">{{ $policy->made_by->name ?? "-" }}</td>
                         <td class="action-icons text-center">
                             <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy->id) : route('policies.receive.details', $policy->id) }}" 
                                 class="btn btn-sm btn-primary">

@@ -69,7 +69,7 @@
                     <i class="fas fa-calendar-plus text-muted me-2"></i>
                     <div>
                         <small class="text-muted">تاريخ التسجيل</small>
-                        <div class="fw-bold">{{ \Carbon\Carbon::parse($customer['created_at'])->format('Y-m-d') }}</div>
+                        <div class="fw-bold">{{ \Carbon\Carbon::parse($customer['created_at'])->format('Y/m/d') }}</div>
                     </div>
                 </div>
             </div>
@@ -92,14 +92,14 @@
                     <div class="text-center p-3 border rounded">
                         <i class="fas fa-calendar-check text-success fs-4 mb-2"></i>
                         <div class="small text-muted">تاريخ البداية</div>
-                        <div class="fw-bold">{{ $customer->contract->start_date }}</div>
+                        <div class="fw-bold">{{ Carbon\Carbon::parse($customer->contract->start_date)->format('Y/m/d') }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="text-center p-3 border rounded">
                         <i class="fas fa-calendar-times text-danger fs-4 mb-2"></i>
                         <div class="small text-muted">تاريخ الانتهاء</div>
-                        <div class="fw-bold">{{ $customer->contract->end_date }}</div>
+                        <div class="fw-bold">{{ Carbon\Carbon::parse($customer->contract->end_date)->format('Y/m/d') }}</div>
                     </div>
                 </div>
                 <div class="col-md-4">

@@ -138,9 +138,12 @@
                                     <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $containerType->id }}">تأكيد الحذف</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body text-dark">
+                                <div class="modal-body text-center text-dark">
                                     هل انت متأكد من حذف  <strong>{{ $containerType->name }}</strong>؟
                                 </div>
+                                <p class="text-danger text-center px-3">
+                                    سوف يتم حذف جميع الحاويات المرتبطة بهذه الفئة.!
+                                </p>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     <form action="{{ route('yard.containers.types.delete', $containerType->id) }}" method="POST">

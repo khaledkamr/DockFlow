@@ -174,7 +174,7 @@ class ContainerController extends Controller
     public function containerDetails($id) {
         $container = Container::with(['customer', 'policies', 'invoices', 'services'])->findOrFail($id);
         $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-        $receivePolicy = $container->policies->where('type', 'إستلام')->first();
+        $receivePolicy = $container->policies->where('type', 'تسليم')->first();
         $invoice = $container->invoices->first();
         return view('admin.containers.containerDetails', compact('container', 'storagePolicy', 'receivePolicy', 'invoice'));
     }

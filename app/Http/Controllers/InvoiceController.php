@@ -51,8 +51,9 @@ class InvoiceController extends Controller
         $customer_id = $request->input('customer_id');
         $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
         $containers = $containers->filter(function($container) {
-            return !$container->invoices->isEmpty();
+            return $container->invoices->count() == 0;
         });
+        // return $containers;
         return view('admin.invoices.createInvoice', compact('customers', 'containers'));
     }
 
@@ -60,10 +61,10 @@ class InvoiceController extends Controller
         $containerIds = $request->input('container_ids', []);
         $invoice = Invoice::create([
             'customer_id' => $request->customer_id,
-            'made_by' => $request->made_by,
+            'user_id' => $request->user_id,
             'amount' => 0,
             'payment_method' => 'آجل',
-            'date' => Carbon::now()->format('Y-m-d'),
+            'date' => Carbon::now(),
             'payment' => 'لم يتم الدفع'
         ]);
 

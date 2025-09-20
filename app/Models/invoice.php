@@ -9,11 +9,11 @@ class invoice extends Model
     protected $fillable = [
         'customer_id', 
         'code',
-        'made_by',
         'amount',
         'payment_method',
         'date',
-        'payment'
+        'payment',
+        'user_id'
     ];
 
     public function customer() {
@@ -24,6 +24,10 @@ class invoice extends Model
         return $this->belongsToMany(Container::class, 'invoice_containers')
             ->withPivot('amount')
             ->withTimestamps();
+    }
+    
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected static function booted()

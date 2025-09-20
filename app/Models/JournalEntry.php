@@ -12,7 +12,7 @@ class JournalEntry extends Model
         'date',
         'totalDebit',
         'totalCredit',
-        'made_by',
+        'user_id',
         'modified_by',
         'voucher_id'
     ];
@@ -23,6 +23,10 @@ class JournalEntry extends Model
 
     public function voucher() {
         return $this->belongsTo(Voucher::class);
+    }
+
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected static function booted()

@@ -24,7 +24,7 @@
         <div>
             <h6 class="fw-bold mb-3">بيانات الفاتورة</h6>
             <p><strong>رقم الفاتورة:</strong> {{ $invoice->code ?? '---' }}</p>
-            <p><strong>التاريخ:</strong> {{ $invoice->date ?? now()->format('Y-m-d') }}</p>
+            <p><strong>التاريخ:</strong> {{ Carbon\Carbon::parse($invoice->date)->format('Y-m-d') ?? '---' }}</p>
         </div>
         
         <div>

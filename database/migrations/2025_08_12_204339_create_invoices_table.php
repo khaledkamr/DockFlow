@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('code')->unique();
-            $table->string('made_by');
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('amount', 10, 2);
             $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
             $table->date('date');

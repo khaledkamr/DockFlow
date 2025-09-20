@@ -177,8 +177,8 @@
                             <td class="text-center {{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
                                 {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
                             </td>
-                            <td class="text-center">{{ $container->date ?? '-' }}</td>
-                            <td class="text-center">{{ $container->exit_date ?? '-' }}</td>
+                            <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
+                            <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') ?? '-' }}</td>
                         </tr>
                     @endforeach
                 @endif

@@ -7,6 +7,7 @@
                 <th class="text-center bg-dark text-white">رقم الحساب</th>
                 <th class="text-center bg-dark text-white">المبلغ</th>
                 <th class="text-center bg-dark text-white">التاريــخ</th>
+                <th class="text-center bg-dark text-white">أعد بواسطة</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
@@ -24,7 +25,8 @@
                         <td class="text-center">{{ $voucher->account->name }}</td>
                         <td class="text-center">{{ $voucher->account->code }}</td>
                         <td class="text-center text-success fw-bold">{{ (int) $voucher->amount }} ريال</td>
-                        <td class="text-center">{{ $voucher->date }}</td>
+                        <td class="text-center">{{ Carbon\Carbon::parse($voucher->date)->format('Y/m/d') }}</td>
+                        <td class="text-center">{{ $voucher->made_by->name ?? '-' }}</td>
                         <td class="action-icons text-center">
                             <a href="{{ route('admin.voucher.to.journal', $voucher->id) }}" class="btn btn-sm btn-primary">
                                 ترحيل

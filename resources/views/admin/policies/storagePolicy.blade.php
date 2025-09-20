@@ -46,8 +46,10 @@
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
     <form action="{{ route('policies.storage.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+        <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
         <input type="hidden" name="type" value="تخزين">
+        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم الشركة</label>

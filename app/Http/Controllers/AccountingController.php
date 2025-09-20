@@ -111,7 +111,7 @@ class AccountingController extends Controller
         
         $journalEntry = JournalEntry::create([
             'date' => $request->date,
-            'made_by' => Auth::user()->name,
+            'user_id' => Auth::user()->id,
             'totalDebit' => $totalDebit,
             'totalCredit' => $totalDebit,
         ]);
@@ -171,7 +171,7 @@ class AccountingController extends Controller
             'date' => Carbon::now()->format('Y-m-d'),
             'totalDebit' => $voucher->amount,
             'totalCredit' => $voucher->amount,
-            'made_by' => Auth::user()->name,
+            'user_id' => Auth::user()->id,
             'voucher_id' => $voucher->id
         ]);
 

@@ -29,7 +29,7 @@
                         <td class="text-center">{{ $voucher->type }}</td>
                         <td class="text-center">{{ $voucher->account->name }}</td>
                         <td class="text-center">{{ $voucher->account->code }}</td>
-                        <td class="text-center">{{ $voucher->date }}</td>
+                        <td class="text-center">{{ Carbon\Carbon::parse($voucher->date)->format('Y/m/d') }}</td>
                         <td class="text-center text-success fw-bold">{{ $voucher->type == 'سند صرف نقدي' ?  (int) $voucher->amount : '0.00' }}</td>
                         <td class="text-center text-success fw-bold">{{ $voucher->type == 'سند قبض نقدي' ?  (int) $voucher->amount : '0.00' }}</td>
                         <td class="text-center text-success fw-bold">{{ $balanceArray[$i + 1] }}</td>

@@ -164,7 +164,7 @@
                         <td class="{{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
                             {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
                         </td>
-                        <td>{{ $container->date ?? '-' }}</td>
+                        <td>{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
                         <td class="action-icons">
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تحديث بيانات الحاوية"></i>

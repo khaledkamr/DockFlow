@@ -14,11 +14,16 @@ class Voucher extends Model
         'hatching',
         'description',
         'account_id', 
-        'is_posted'
+        'is_posted',
+        'user_id'
     ];
 
     public function account() {
         return $this->belongsTo(Account::class);
+    }
+
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected static function booted()
