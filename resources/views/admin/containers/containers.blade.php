@@ -83,7 +83,7 @@
         </form>
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <a href="{{ route('yard.containers.create') }}" class="btn btn-primary w-100 fw-bold">
+        <a href="{{ route('policies.storage.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-box pe-1"></i>
             أضف حاوية
         </a>

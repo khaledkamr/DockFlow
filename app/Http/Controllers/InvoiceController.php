@@ -8,14 +8,14 @@ use App\Http\Requests\InvoiceRequest;
 use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
-use App\Models\invoice;
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
-        $invoices = invoice::orderBy('id', 'desc')->get();
+        $invoices = Invoice::orderBy('id', 'desc')->get();
         $methodFilter = request()->query('paymentMethod');
         if ($methodFilter && $methodFilter !== 'all') {
             $invoices = $invoices->filter(function ($invoice) use ($methodFilter) {
