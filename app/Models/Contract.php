@@ -43,4 +43,8 @@ class Contract extends Model
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function attachments() {
+        return $this->hasMany(Attachment::class);
+    }
 }

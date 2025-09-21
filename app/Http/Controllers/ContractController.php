@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContractRequest;
+use App\Models\Attachment;
 use App\Models\Company;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ContractController extends Controller
 {
@@ -87,5 +90,32 @@ class ContractController extends Controller
         $service = Service::findOrFail($id);
         $service->delete();
         return redirect()->back()->with('success', 'تم حذف الخدمة بنجاح');
+    }
+
+    public function attachFile(Request $request, $id) {
+        $contract = Contract::findOrFail($id);
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments', $fileName, 'public');
+            Attachment::create([
+                'contract_id' => $contract->id,
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+            return redirect()->back()->with('success', 'تم إرفاق الملف بنجاح');
+        }
+        return redirect()->back()->with('error', 'لم يتم إرفاق أي ملف');
+    }
+
+    public function deleteAttachment($id) {
+        $attachment = Attachment::findOrFail($id);
+        if (Storage::disk('public')->exists($attachment->file_path)) {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
+        $attachment->delete();
+        return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
 }

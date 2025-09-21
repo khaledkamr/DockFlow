@@ -20,6 +20,30 @@
             </div>
         </div>
 
+        @if (session('success'))
+            @push('scripts')
+                <script>
+                    showToast("{{ session('success') }}", "success");
+                </script>
+            @endpush
+        @endif
+
+        @if (session('error'))
+            @push('scripts')
+                <script>
+                    showToast("{{ session('error') }}", "danger");
+                </script>
+            @endpush
+        @endif
+
+        @if (session('errors'))
+            @push('scripts')
+                <script>
+                    showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
+                </script>
+            @endpush
+        @endif
+
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <h5 class="card-title mb-0">
@@ -206,6 +230,125 @@
                 </div>
             </div>
         </div>
+
+        <!-- File Attachments Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-paperclip me-2"></i>
+                    مرفقات العقد
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Upload Form -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <form action="{{ route('contracts.add.attachment', $contract->id) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-3">
+                            @csrf
+                            <div class="flex-grow-1">
+                                <input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-1"></i>
+                                إرفاق ملف
+                            </button>
+                        </form>
+                        <small class="text-muted mt-1 d-block">
+                            يمكنك إرفاق الملفات التالية: PDF, Word, صور, Excel, نصوص
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Attached Files List -->
+                @if($contract->attachments && $contract->attachments->count() > 0)
+                    <div class="row g-3">
+                        @foreach($contract->attachments as $attachment)
+                            <div class="col-md-6 col-lg-4">
+                                <div class="attachment-card bg-light border rounded p-3 h-100 position-relative">
+                                    <form action="{{ route('contracts.delete.attachment', $attachment->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2" 
+                                            type="submit" title="حذف المرفق">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    </form>
+                                    <div class="d-flex align-items-start">
+                                        <div class="file-icon me-3">
+                                            @php
+                                                $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
+                                                $iconClass = 'fas fa-file';
+                                                $iconColor = 'text-secondary';
+                                                
+                                                switch(strtolower($extension)) {
+                                                    case 'pdf':
+                                                        $iconClass = 'fas fa-file-pdf';
+                                                        $iconColor = 'text-danger';
+                                                        break;
+                                                    case 'doc':
+                                                    case 'docx':
+                                                        $iconClass = 'fas fa-file-word';
+                                                        $iconColor = 'text-primary';
+                                                        break;
+                                                    case 'xls':
+                                                    case 'xlsx':
+                                                        $iconClass = 'fas fa-file-excel';
+                                                        $iconColor = 'text-success';
+                                                        break;
+                                                    case 'jpg':
+                                                    case 'jpeg':
+                                                    case 'png':
+                                                    case 'gif':
+                                                        $iconClass = 'fas fa-file-image';
+                                                        $iconColor = 'text-info';
+                                                        break;
+                                                    case 'txt':
+                                                        $iconClass = 'fas fa-file-alt';
+                                                        $iconColor = 'text-dark';
+                                                        break;
+                                                }
+                                            @endphp
+                                            <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 text-truncate" title="{{ $attachment->file_name }}">
+                                                {{ Str::limit($attachment->file_name, 25) }}
+                                            </h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-user me-1"></i>{{ $attachment->made_by->name ?? 'مستخدم محذوف' }}
+                                            </small>
+                                            <br>
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>{{ $attachment->created_at->format('Y/m/d H:i') }}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                           target="_blank" 
+                                           class="btn btn-sm btn-outline-primary flex-grow-1">
+                                            <i class="fas fa-eye me-1"></i>
+                                            عرض
+                                        </a>
+                                        <a href="{{ asset('storage/' . $attachment->file_path) }}" 
+                                           download="{{ $attachment->file_name }}" 
+                                           class="btn btn-sm btn-outline-success flex-grow-1">
+                                            <i class="fas fa-download me-1"></i>
+                                            تحميل
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-4">
+                        <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2 mb-0">لا توجد مرفقات لهذا العقد</p>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
 </div>
 
@@ -223,6 +366,22 @@
     font-size: 1.2rem;
 }
 
+.attachment-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #f8f9fa;
+}
+
+.attachment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+}
+
+.file-icon {
+    min-width: 50px;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     .border-end {
         border-end: none !important;
@@ -235,6 +394,14 @@
         border-bottom: none;
         margin-bottom: 0;
         padding-bottom: 0;
+    }
+    
+    .attachment-card .d-flex.gap-2 {
+        flex-direction: column;
+    }
+    
+    .attachment-card .d-flex.gap-2 .btn {
+        margin-bottom: 0.25rem;
     }
 }
 </style>
