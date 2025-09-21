@@ -14,7 +14,8 @@ class Customer extends Model
         'national_address',
         'phone',
         'email',
-        'account_id'
+        'account_id',
+        'user_id'
     ];
 
     public function contract() {
@@ -35,5 +36,9 @@ class Customer extends Model
 
     public function account() {
         return $this->belongsTo(Account::class);
+    }
+
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -19,7 +19,8 @@ class CustomerRequest extends FormRequest
             'TIN' => 'required|max:255',
             'national_address' => 'required',
             'phone' => 'max:15',
-            'email' => 'max:255'
+            'email' => 'max:255',
+            'user_id' => 'required|exists:users,id'
         ];
     }
 }

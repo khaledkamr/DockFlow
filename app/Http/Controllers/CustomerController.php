@@ -32,7 +32,6 @@ class CustomerController extends Controller
 
     public function customerProfile($id) {
         $customer = Customer::findOrFail($id);
-        // return $customer->contract->services;
         return view('admin.users.customerProfile', compact('customer'));
     }
 
@@ -60,7 +59,8 @@ class CustomerController extends Controller
             'national_address' => $request->national_address,
             'phone' => $request->phone,
             'email' => $request->email,
-            'account_id' => $account->id
+            'account_id' => $account->id,
+            'user_id' => $request->user_id
         ]);
         return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
     }

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('driver_name');
             $table->string('driver_NID');
+            $table->string('driver_number')->nullable();
             $table->string('driver_car');
             $table->string('car_code');
             $table->date('date');
