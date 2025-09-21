@@ -59,6 +59,7 @@
             </div>
             <form action="{{ route('users.customer.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                 <div class="modal-body text-dark">
                     <div class="row mb-3">
                         <div class="col">
@@ -144,13 +145,14 @@
                 <th class="text-center bg-dark text-white">العنوان الوطني</th>
                 <th class="text-center bg-dark text-white">رقم الهاتف</th>
                 <th class="text-center bg-dark text-white">الإيميل</th>
+                <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
         </thead>
         <tbody>
             @if ($customers->isEmpty())
                 <tr>
-                    <td colspan="7" class="text-center">
+                    <td colspan="8" class="text-center">
                         <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
                     </td>
                 </tr>
@@ -168,6 +170,7 @@
                         <td class="text-center">{{ $customer->national_address }}</td>
                         <td class="text-center">{{ $customer->phone }}</td>
                         <td class="text-center">{{ $customer->email }}</td>
+                        <td class="text-center">{{ $customer->made_by->name ?? '-' }}</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>

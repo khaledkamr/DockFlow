@@ -11,6 +11,7 @@ class Policy extends Model
         'customer_id',
         'driver_name',
         'driver_NID',
+        'driver_number',
         'driver_car',
         'car_code',
         'date',
