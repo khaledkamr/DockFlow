@@ -69,6 +69,8 @@ Route::controller(ContractController::class)->middleware('auth')->group(function
     Route::post('/service/store', 'storeService')->name('contracts.service.store');
     Route::put('/service/update/{id}', 'updateService')->name('contracts.service.update');
     Route::delete('/contracts/service/delete/{id}', 'deleteService')->name('contracts.service.delete');
+    Route::post('/contracts/{id}/add/attachment', 'attachFile')->name('contracts.add.attachment');
+    Route::delete('/contracts/attachment/delete/{id}', 'deleteAttachment')->name('contracts.delete.attachment');
 });
 
 Route::controller(InvoiceController::class)->middleware('auth')->group(function () {
