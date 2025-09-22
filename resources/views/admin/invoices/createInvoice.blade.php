@@ -115,11 +115,50 @@
             لم يتم العثور على حاويات تطابق البحث <span id="search-term"></span>
         </div>
 
+        <!-- Payment Details Section -->
+        <div class="card border-dark mb-3 mt-4" id="payment-details" style="">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-credit-card me-2"></i>
+                    تفاصيل الدفع
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label for="payment_method" class="form-label fw-bold">
+                            <i class="fas fa-money-bill me-1"></i>
+                            طريقة الدفع
+                        </label>
+                        <select name="payment_method" id="payment_method" class="form-select border-primary" required>
+                            <option value="آجل">آجل</option>
+                            <option value="كاش">كاش</option>
+                            <option value="تحويل بنكي">تحويل بنكي</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="discount" class="form-label fw-bold">
+                            <i class="fas fa-percent me-1"></i>
+                            نسبة الخصم (%)
+                        </label>
+                        <input type="number" name="discount" id="discount" class="form-control border-primary" 
+                               min="0" max="100" step="0.01" value="0" placeholder="0.00">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn" disabled>
+                            <i class="fas fa-plus me-1"></i>
+                            إنشاء فاتورة
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="d-flex justify-content-between align-items-center mt-4">
-            <button type="submit" class="btn btn-primary fw-bold" id="create-invoice-btn" disabled>
+            {{-- <button type="submit" class="btn btn-primary fw-bold" id="create-invoice-btn" disabled>
                 <i class="fas fa-plus me-1"></i>
                 إنشاء فاتورة
-            </button>
+            </button> --}}
             <button type="button" class="btn btn-outline-danger fw-bold" id="clear-selection-btn"
                 style="display: none;">
                 <i class="fas fa-times me-1"></i>

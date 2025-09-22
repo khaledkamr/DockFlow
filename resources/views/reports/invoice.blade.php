@@ -74,15 +74,15 @@
 <div class="d-flex justify-content-start gap-5 border p-3 rounded-3">
     <div class="d-flex flex-column me-5">
         <h4>الإجمالي قبل الضريبه</h4>
-        <h4>الخصم</h4>
         <h4>الضريبة المضافة (15%)</h4>
+        <h4>الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }})</h4>
         <hr>
         <h3>الإجمالي بعد الضريبة</h3>
     </div>
     <div class="d-flex flex-column text-end ms-5">
         <h4>{{ $invoice->subtotal }}</h4>
-        <h4>{{ $invoice->discount }}</h4>
         <h4>{{ $invoice->tax }}</h4>
+        <h4> - {{ number_format($discountValue, 2) }}</h4>
         <hr>
         <h3 class="fw-bold">{{ $invoice->total }}</h3>
     </div>

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('amount', 10, 2);
+            $table->decimal('discount', 5, 2)->default(0);
             $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
             $table->date('date');
             $table->enum('payment', ['تم الدفع', 'لم يتم الدفع']);
