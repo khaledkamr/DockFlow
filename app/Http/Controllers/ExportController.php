@@ -110,7 +110,11 @@ class ExportController extends Controller
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;
             }
-            $container->total = $container->storage_price + $container->late_fee;
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total = $container->storage_price + $container->late_fee + $services;
             $amountBeforeTax += $container->total;  
         }
 
@@ -130,7 +134,7 @@ class ExportController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('reports.invoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
+        return view('reports.invoice', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
     public function excel($reportType, Request $request) {

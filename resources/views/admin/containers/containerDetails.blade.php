@@ -221,7 +221,7 @@
                             </div>
                             <p class="text-muted mb-0">
                                 تم إنشاء الحاوية برقم <strong>{{ $container->code }}</strong> من نوع <strong>{{ $container->containerType->name }}</strong> في النظام بواسطة 
-                                <strong>{{ $container->made_by ?? 'خالد قمر' }}</strong>
+                                <strong>{{ $container->policies->where('type', 'تخزين')->first()->made_by->name }}</strong>
                             </p>
                         </div>
                     </div>
@@ -247,7 +247,7 @@
                                     </small>
                                 </div>
                                 <div class="text-muted">
-                                    تم تخزين الحاوية بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.storage.details', $storagePolicy->id) }}">{{ $storagePolicy->code }}</a> و موقعها في الساحه <i class="fas fa-map-marker-alt text-muted me-1 ms-1"></i> <strong>{{ $container->location }}</strong> 
+                                    تم تخزين الحاوية بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.storage.details', $storagePolicy->id) }}">{{ $storagePolicy->code }}</a> بواسطة <strong>{{ $storagePolicy->made_by->name }}</strong> و موقعها في الساحه <i class="fas fa-map-marker-alt text-muted me-1 ms-1"></i> <strong>{{ $container->location }}</strong> 
                                 </div>
                                 <small class="bg-light p-3 rounded-3 mt-3 d-flex gap-5">
                                     <div>
@@ -288,7 +288,7 @@
                                     </small>
                                 </div>
                                 <div class="text-muted">
-                                    تم تسليم الحاوية للعميل <strong>{{ $receivePolicy->customer->name }}</strong> بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.receive.details', $receivePolicy->id) }}">{{ $receivePolicy->code }}</a> 
+                                    تم تسليم الحاوية للعميل <strong>{{ $receivePolicy->customer->name }}</strong> بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.receive.details', $receivePolicy->id) }}">{{ $receivePolicy->code }}</a> بواسطة <strong>{{ $receivePolicy->made_by->name }}</strong>
                                 </div>
                                 <small class="bg-light p-3 rounded-3 mt-3 d-flex gap-5">
                                     <div>

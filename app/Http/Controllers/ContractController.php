@@ -93,10 +93,10 @@ class ContractController extends Controller
     }
 
     public function deleteService($id) {
-        if(in_array($id, [0,1,2,3])) {
+        $service = Service::findOrFail($id);
+        if($service->type == 'primary') {
             return redirect()->back()->with('error', 'لا يمكنك حذف هذه الخدمة');
         }
-        $service = Service::findOrFail($id);
         $service->delete();
         return redirect()->back()->with('success', 'تم حذف الخدمة بنجاح');
     }

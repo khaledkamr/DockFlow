@@ -48,13 +48,33 @@ class InvoiceController extends Controller
     }
 
     public function createInvoice(Request $request) {
-        $customers = Customer::all();
+        $customers = Customer::all(); 
         $customer_id = $request->input('customer_id');
         $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
         $containers = $containers->filter(function($container) {
             return $container->invoices->count() == 0;
         });
-        // return $containers;
+
+        foreach($containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $container->storage_price = $container->policies->first()->contract->services[0]->pivot->price;
+            if($container->period > $container->policies->first()->contract->services[0]->pivot->unit) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->diffInDays(Carbon::parse($container->exit_date));
+                $container->late_days = $days;
+                $container->late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
+            } else {
+                $container->late_days = 'لا يوجد';
+                $container->late_fee = 0;
+            }
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total = $container->storage_price + $container->late_fee + $services;
+        }
+
         return view('admin.invoices.createInvoice', compact('customers', 'containers'));
     }
 
@@ -84,8 +104,12 @@ class InvoiceController extends Controller
             } else {
                 $late_fee = 0;
             }
-            $amountBeforeTax += $storage_price + $late_fee;
-            $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee]);
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $amountBeforeTax += $storage_price + $late_fee + $services;
+            $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee + $services]);
         }
 
         $tax = $amountBeforeTax * 0.15;
@@ -117,7 +141,11 @@ class InvoiceController extends Controller
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;
             }
-            $container->total = $container->storage_price + $container->late_fee;
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total = $container->storage_price + $container->late_fee + $services;
             $amountBeforeTax += $container->total;  
         }
 
@@ -137,7 +165,7 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('admin.invoices.invoiceDetails', compact('invoice', 'discountValue', 'hatching_total', 'qrCode'));
+        return view('admin.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
     }
 
     public function updateInvoice(Request $request, $id) {

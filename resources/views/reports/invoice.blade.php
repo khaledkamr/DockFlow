@@ -24,7 +24,7 @@
         <div>
             <h6 class="fw-bold mb-3">بيانات الفاتورة</h6>
             <p><strong>رقم الفاتورة:</strong> {{ $invoice->code ?? '---' }}</p>
-            <p><strong>التاريخ:</strong> {{ Carbon\Carbon::parse($invoice->date)->format('Y-m-d') ?? '---' }}</p>
+            <p><strong>التاريخ:</strong> {{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
         </div>
         
         <div>
@@ -41,13 +41,13 @@
                 <th class="text-center">#</th>
                 <th class="text-center">رقم الإتفاقية</th>
                 <th class="text-center">رقم الحاوية</th>
-                <th class="text-center">نوع الحاوية</th>
                 <th class="text-center">تاريخ الدخول</th>
                 <th class="text-center">تاريخ الخروج</th>
                 <th class="text-center">أيام التخزين</th>
                 <th class="text-center">سعر التخزين</th>
                 <th class="text-center">أيام التأخير</th>
                 <th class="text-center">غرامة التأخير</th>
+                <th class="text-center">خدمات</th>
                 <th class="text-center">الإجمالي</th>
             </tr>
         </thead>
@@ -57,13 +57,13 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td class="text-center">{{ $container->policies->where('type', 'تسليم')->first()->code }}</td>
                     <td class="text-center">{{ $container->code }}</td>
-                    <td class="text-center">{{ $container->containerType->name }}</td>
-                    <td class="text-center">{{ $container->date }}</td>
-                    <td class="text-center">{{ $container->exit_date }}</td>
+                    <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
+                    <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
                     <td class="text-center">{{ $container->period }}</td>
                     <td class="text-center">{{ $container->storage_price }}</td>
                     <td class="text-center">{{ $container->late_days }}</td>
                     <td class="text-center">{{ $container->late_fee }}</td>
+                    <td class="text-center">{{ $services }}</td>
                     <td class="text-center">{{ $container->total }}</td>
                 </tr>
             @endforeach
