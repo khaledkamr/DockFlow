@@ -8,7 +8,7 @@ use App\Models\Company;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
-use App\Models\invoice;
+use App\Models\Invoice;
 use App\Models\Policy;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
