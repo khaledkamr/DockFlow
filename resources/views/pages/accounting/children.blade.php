@@ -30,7 +30,7 @@
             </div>
             @if($child->children->count())
                 <div class="children-container">
-                    @include('admin.accounting.children', ['children' => $child->children])
+                    @include('pages.accounting.children', ['children' => $child->children])
                 </div>
             @endif
         </li>

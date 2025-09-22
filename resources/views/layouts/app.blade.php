@@ -11,26 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 0; 
-        }
-        .sidebar::-webkit-scrollbar {
-            width: 5px;
-            height: 0; 
-        }
-        ::-webkit-scrollbar-track {
-            background: #121212 !important;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #0d6efd !important;
-            /* color: #00246171; */
-            cursor: grab;
-            transition: 0.3s;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #0a57ca;
-        }
         :root {
             --blue-1: #0b56a9;
             --blue-2: #218bab;
@@ -39,53 +19,52 @@
             --blue-5: #52d6cb;
             --gradient: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
         }
+
         body {
             font-family: "Cairo", sans-serif;
             font-optical-sizing: auto;
             font-weight: 400;
             font-style: normal;
             font-variation-settings: "slnt" 0;
-            min-height: 100vh;
             background-color: #eeeeee;
         }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121212 !important;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d6efd !important;
+            cursor: grab;
+            transition: 0.3s;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0a57ca;
+        }
+
+        /* Sidebar width */
         .sidebar {
-            height: 100vh;
-            background-color: white;
-            /* border-left: 1px solid #ddd; */
-            padding-top: 1rem;
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 270px;
-            overflow-y: auto;
-            z-index: 100;
+            width: 300px;
         }
-        .sidebar .nav-link {
-            display: block;
-            padding: 12px 15px;
-            margin-bottom: 2px;
-            color: black;
-            text-decoration: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .main-content {
+            margin-right: 300px;
         }
-        .sidebar .nav-link:hover {
-            color: #0d6efd;
-            background-color: rgba(16, 46, 213, 0.1);
+
+        /* Logo gradient text */
+        .logo-gradient {
+            background: linear-gradient(45deg, #42b3af, #0b56a9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .sidebar .nav-link.active {
-            background-color: #0d6efd;
-            color: white;
-        }
-        .sidebar .nav-link.active:hover {
-            background-color: #0d5dd6;
-            color: white;
-        }
-        .sidebar .parent-link {
-            position: relative;
-        }
-        .sidebar .parent-link::after {
+
+        /* Parent link arrow */
+        .parent-link::after {
             content: '\f078';
             font-family: "Font Awesome 6 Free";
             font-weight: 900;
@@ -93,63 +72,14 @@
             left: 15px;
             transition: transform 0.3s ease;
         }
-        .sidebar .parent-link.expanded::after {
+        .parent-link.collapsed::after {
+            transform: rotate(0deg);
+        }
+        .parent-link:not(.collapsed)::after {
             transform: rotate(180deg);
         }
-        .sidebar .sub-menu {
-            background-color: rgba(0,0,0,0.05);
-            border-radius: 5px;
-            margin: 2px 0;
-        }
-        .sidebar .sub-menu .nav-link {
-            padding: 8px 15px 8px 30px;
-            font-size: 0.9em;
-            margin-bottom: 1px;
-        }
-        .main-content {
-            margin-right: 270px;
-            min-height: 100vh;
-        }
-        .navbar {
-            background-color: white !important;
-            /* border-bottom: 1px solid #ddd; */
-            height: 70px;
-        }
-        .content-area {
-            padding: 2rem;
-        }
-        .logo-section {
-            /* border-bottom: 1px solid #ddd; */
-            /* padding-bottom: 1rem; */
-            margin-bottom: 1rem;
-        }
-        .pagination {
-            margin: 0;
-            padding: 0;
-        }
-        .pagination .page-item .page-link {
-            color: #0d6efd;
-            border: 1px solid #0d6efd;
-            padding: 8px 16px;
-            margin: 0 2px;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-        .pagination .page-item.active .page-link,
-        .pagination .page-item .page-link:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: white;
-        }
-        .pagination .page-item.disabled .page-link {
-            color: #fff;
-            pointer-events: none;
-            background-color: #d5d7d8;
-            border-color: #dee2e6;
-        }
-        .dropdown-toggle::after {
-            display: none !important;
-        }
+
+        /* table styling */
         .table-container {
             background-color: #fff;
             border-radius: 8px;
@@ -213,6 +143,34 @@
             font-size: 12px;
             display: inline-block;
         }
+        
+        /* paginator styling */
+        .pagination {
+            margin: 0;
+            padding: 0;
+        }
+        .pagination .page-item .page-link {
+            color: #0d6efd;
+            border: 1px solid #0d6efd;
+            padding: 8px 16px;
+            margin: 0 2px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .pagination .page-item.active .page-link,
+        .pagination .page-item .page-link:hover {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #fff;
+            pointer-events: none;
+            background-color: #d5d7d8;
+            border-color: #dee2e6;
+        }
+
+        /* Go to top button */
         .go-to-top {
             position: fixed;
             bottom: 30px;
@@ -220,25 +178,20 @@
             width: 50px;
             height: 50px;
             background-color: #0b56a9;
-            cursor: pointer;
-            font-size: 18px;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
         }
-
         .go-to-top:hover {
             background-color: #217cab;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
         }
-
         .go-to-top.show {
             opacity: 1;
             visibility: visible;
         }
-
         .go-to-top:active {
             transform: translateY(0);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -247,150 +200,157 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar shadow-sm p-2 relative">
-        <div class="logo-section d-flex flex-column justify-content-center align-items-center">
+    <div class="sidebar bg-white shadow-sm p-3 position-fixed top-0 start-0 vh-100 overflow-auto" style="z-index: 100;">
+        <div class="text-center mb-4">
             <img class="" src="{{ asset('img/logo.png') }}" width="150px" alt="logo">
-            <h2 class="text-center fw-bold" style="background: linear-gradient(45deg, #42b3af, #0b56a9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DockFlow</h2>
+            <h2 class="fw-bold logo-gradient">DockFlow</h2>
         </div>
 
         <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link fw-bold {{ request()->routeIs('admin.home') ? 'active' : '' }}" href="{{ route('admin.home') }}">
+            <li class="nav-item mb-1">
+                <a class="nav-link fw-bold rounded px-3 py-2 {{ request()->routeIs('admin.home') ? 'bg-primary text-white' : 'text-dark' }}" 
+                   href="{{ route('admin.home') }}">
                     <i class="fa-solid fa-house ms-2 me-2"></i> الصفحة الرئيسيـــة
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['users*']) ? 'expanded' : '' }}" 
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['users*']) ? '' : 'collapsed' }}" 
                    data-bs-toggle="collapse" 
                    href="#users-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['users*']) ? 'true' : 'false' }}" 
-                   aria-controls="users-management"
-                   onclick="toggleSubmenu(this, event)">
+                   aria-controls="users-management">
                     <i class="fa-solid fa-users ms-2 me-2"></i> إدارة المستخدمون
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['users*']) ? 'show' : '' }}" id="users-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('users.customers') ? 'active' : '' }}" href="{{ route('users.customers') }}">
-                        <i class="fa-solid fa-user ms-4 me-2"></i> العمــــلاء
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['users*']) ? 'show' : '' }}" id="users-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('users.customers') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('users.customers') }}">
+                        <i class="fa-solid fa-user ms-2 me-2"></i> العمــــلاء
                     </a>
-                    <a class="nav-link fw-bold " href="">
-                        <i class="fa-solid fa-user-tie ms-4 me-2"></i>  الموظفين
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 text-dark" href="">
+                        <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
                     </a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['contracts*']) ? 'expanded' : '' }}" 
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['contracts*']) ? '' : 'collapsed' }}" 
                    data-bs-toggle="collapse" 
                    href="#contract-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['contracts*']) ? 'true' : 'false' }}" 
-                   aria-controls="contract-management"
-                   onclick="toggleSubmenu(this, event)">
+                   aria-controls="contract-management">
                     <i class="fa-solid fa-file ms-2 me-2"></i> إدارة العقــــــــــــود
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['contracts*']) ? 'show' : '' }}" id="contract-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('contracts') ? 'active' : '' }}" href="{{ route('contracts') }}">
-                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> العقــــــود
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['contracts*']) ? 'show' : '' }}" id="contract-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('contracts') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('contracts') }}">
+                        <i class="fa-solid fa-file-contract ms-2 me-2"></i> العقــــــود
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('contracts.create') ? 'active' : '' }}" href="{{ route('contracts.create') }}">
-                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة عقــــد
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('contracts.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('contracts.create') }}">
+                        <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة عقــــد
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('contracts.services') ? 'active' : '' }}" href="{{ route('contracts.services') }}">
-                        <i class="fa-solid fa-screwdriver-wrench ms-3 me-2"></i> الخدمـــــات
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('contracts.services') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('contracts.services') }}">
+                        <i class="fa-solid fa-screwdriver-wrench ms-2 me-2"></i> الخدمـــــات
                     </a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['yard*']) ? 'expanded' : '' }}" 
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['yard*']) ? '' : 'collapsed' }}" 
                    data-bs-toggle="collapse" 
                    href="#yard-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['yard*']) ? 'true' : 'false' }}" 
-                   aria-controls="yard-management"
-                   onclick="toggleSubmenu(this, event)">
+                   aria-controls="yard-management">
                     <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحــــــــــــة
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers') ? 'active' : '' }}" href="{{ route('yard.containers') }}">
-                        <i class="fa-solid fa-boxes-stacked ms-4 me-2"></i> الحــــــاويـــات
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('yard.containers') }}">
+                        <i class="fa-solid fa-boxes-stacked ms-2 me-2"></i> الحــــــاويـــات
                     </a>
-                    {{-- <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.create') ? 'active' : '' }}" href="{{ route('yard.containers.create') }}">
-                        <i class="fa-solid fa-square-plus ms-4 me-2"></i> إضافة حــاويات
-                    </a> --}}
-                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.types') ? 'active' : '' }}" href="{{ route('yard.containers.types') }}">
-                        <i class="fa-solid fa-sitemap ms-4 me-2"></i> أنواع الحاويات
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers.types') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('yard.containers.types') }}">
+                        <i class="fa-solid fa-sitemap ms-2 me-2"></i> أنواع الحاويات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('yard.containers.reports') ? 'active' : '' }}" href="{{ route('yard.containers.reports') }}">
-                        <i class="fa-solid fa-file-lines ms-4 me-2"></i> تقارير الحاويات
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('yard.containers.reports') }}">
+                        <i class="fa-solid fa-file-lines ms-2 me-2"></i> تقارير الحاويات
                     </a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['policies*']) ? 'expanded' : '' }}" 
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['policies*']) ? '' : 'collapsed' }}" 
                    data-bs-toggle="collapse" 
                    href="#policy-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}" 
-                   aria-controls="policy-management"
-                   onclick="toggleSubmenu(this, event)">
+                   aria-controls="policy-management">
                     <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('policies') ? 'active' : '' }}" href="{{ route('policies') }}">
-                        <i class="fa-solid fa-file-contract ms-4 me-2"></i> الإتفاقيـــــات
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('policies') }}">
+                        <i class="fa-solid fa-file-contract ms-2 me-2"></i> الإتفاقيـــــات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('policies.storage.create') ? 'active' : '' }}" href="{{ route('policies.storage.create') }}">
-                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية تخزين
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.storage.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('policies.storage.create') }}">
+                        <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تخزين
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('policies.receive.create') ? 'active' : '' }}" href="{{ route('policies.receive.create') }}">
-                        <i class="fa-solid fa-file-circle-plus ms-3 me-2"></i> إضافة إتفاقية تسليم
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.receive.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('policies.receive.create') }}">
+                        <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تسليم
                     </a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['invoices*']) ? 'expanded' : '' }}" 
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['invoices*']) ? '' : 'collapsed' }}" 
                    data-bs-toggle="collapse" 
                    href="#invoice-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['invoices*']) ? 'true' : 'false' }}" 
-                   aria-controls="invoice-management"
-                   onclick="toggleSubmenu(this, event)">
+                   aria-controls="invoice-management">
                     <i class="fa-solid fa-receipt ms-2 me-2"></i> إدارة الفــــواتيــــــر
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['invoices*']) ? 'show' : '' }}" id="invoice-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('invoices') ? 'active' : '' }}" href="{{ route('invoices') }}">
-                        <i class="fa-solid fa-scroll ms-4 me-2"></i> الفــــواتيـــــر
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['invoices*']) ? 'show' : '' }}" id="invoice-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('invoices') }}">
+                        <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــواتيـــــر
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('invoices.create') ? 'active' : '' }}" href="{{ route('invoices.create') }}">
-                        <i class="fa-solid fa-circle-plus ms-4 me-2"></i> إضافة فاتورة
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('invoices.create') }}">
+                        <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إضافة فاتورة
                     </a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link parent-link fw-bold {{ request()->routeIs(['admin.money*']) ? 'expanded' : '' }}" 
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['admin.money*']) ? '' : 'collapsed' }}" 
                    data-bs-toggle="collapse" 
                    href="#money-management" 
                    role="button" 
                    aria-expanded="{{ request()->routeIs(['admin.money*']) ? 'true' : 'false' }}" 
-                   aria-controls="money-management"
-                   onclick="toggleSubmenu(this, event)">
+                   aria-controls="money-management">
                     <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> الإدارة المـــاليــــة 
                 </a>
-                <div class="collapse sub-menu {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.money.entries') ? 'active' : '' }}" href="{{ route('admin.money.entries') }}">
-                        <i class="fa-solid fa-money-bill-transfer ms-3 me-2"></i> القيود والسنـدات
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.entries') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('admin.money.entries') }}">
+                        <i class="fa-solid fa-money-bill-transfer ms-2 me-2"></i> القيود والسنـدات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.money.tree') ? 'active' : '' }}" href="{{ route('admin.money.tree') }}">
-                        <i class="fa-solid fa-folder-tree ms-3 me-2"></i> دلـــيل الحسابـــات
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.tree') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('admin.money.tree') }}">
+                        <i class="fa-solid fa-folder-tree ms-2 me-2"></i> دلـــيل الحسابـــات
                     </a>
-                    <a class="nav-link fw-bold {{ request()->routeIs('admin.money.reports') ? 'active' : '' }}" href="{{ route('admin.money.reports') }}">
-                        <i class="fa-solid fa-receipt ms-3 me-2"></i> تقاريـــــر القيـــــود
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                       href="{{ route('admin.money.reports') }}">
+                        <i class="fa-solid fa-receipt ms-2 me-2"></i> تقاريـــــر القيـــــود
                     </a>
                 </div>
             </li>
@@ -399,104 +359,101 @@
     
     <div class="main-content">
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg bg-white shadow-sm" style="height: 70px;">
             <div class="container-fluid">
                 <a class="navbar-brand text-dark fw-bold" href="#">شركة تاج الأعمال للخدمات اللوجستية</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <form class="d-flex mx-auto" style="width: 40%;">
-                    <div class="input-group">
-                        <input class="form-control border-primary" type="search" placeholder="بحث..." aria-label="Search">
-                        <button class="btn btn-outline-primary" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </form>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <form class="d-flex mx-auto" style="width: 40%;">
+                        <div class="input-group">
+                            <input class="form-control border-primary" type="search" placeholder="بحث..." aria-label="Search">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
 
-                <div class="ms-auto d-flex align-items-center gap-3">
-                    <i class="fa-solid fa-globe fa-xl text-secondary"></i>
-                    <i class="fa-solid fa-bell fa-xl text-secondary"></i>
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" 
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-gear fa-xl text-secondary"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
-                            <li><a class="dropdown-item" href="#">الإعدادات</a></li>
-                            <li><a class="dropdown-item" href="{{ route('company', 1) }}">بيانات الشركة</a></li>
-                            <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST" class="m-0">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>
-                                        تسجيل خروج
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
+                    <div class="d-flex align-items-center gap-3 ms-auto">
+                        <i class="fa-solid fa-globe fa-xl text-secondary"></i>
+                        <i class="fa-solid fa-bell fa-xl text-secondary"></i>
+                        
+                        <!-- Settings Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-link p-0 border-0" type="button" id="settingsDropdown" 
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-gear fa-xl text-secondary"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
+                                <li><a class="dropdown-item" href="#">الإعدادات</a></li>
+                                <li><a class="dropdown-item" href="{{ route('company', 1) }}">بيانات الشركة</a></li>
+                                <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>
+                                            تسجيل خروج
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex align-items-center text-dark">
+                            {{ Auth::user()->name }}
+                            <i class="fa-solid fa-user-circle fa-2xl text-secondary ms-2"></i>
+                        </div>
                     </div>
-                    <span class="me-3 text-dark d-flex align-items-center">
-                        {{ Auth::user()->name }}
-                        <i class="fa-solid fa-user-circle fa-2xl text-secondary ms-2"></i>
-                    </span>
                 </div>
             </div>
         </nav>
 
-        <button class="go-to-top d-flex justify-content-center align-items-center border-0 rounded-circle text-white" 
-            id="goToTopBtn" onclick="scrollToTop()" title="العودة إلى الأعلى">
+        <button class="go-to-top btn btn-primary rounded-circle border-0" id="goToTopBtn" 
+                onclick="scrollToTop()" title="العودة إلى الأعلى">
             <i class="fa-solid fa-angles-up"></i>
         </button>
         
-        <div class="content-area">
+        <div class="content-area p-4">
             @yield('content')
         </div>
     </div>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function toggleSubmenu(element, event) {
-            event.preventDefault();
-            
-            // Get all parent links
-            const allParentLinks = document.querySelectorAll('.parent-link');
-            const targetId = element.getAttribute('href').substring(1);
-            const targetCollapse = document.getElementById(targetId);
-            
-            // Close all other submenus (except the current one)
-            allParentLinks.forEach(link => {
-                if (link !== element && !link.classList.contains('expanded')) {
-                    const otherTargetId = link.getAttribute('href').substring(1);
-                    const otherCollapse = document.getElementById(otherTargetId);
-                    if (otherCollapse && otherCollapse.classList.contains('show')) {
-                        bootstrap.Collapse.getInstance(otherCollapse).hide();
-                        link.classList.remove('expanded');
-                    }
-                }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
             
-            // Toggle current submenu only if it's not already expanded due to active route
-            if (!element.classList.contains('expanded')) {
-                const bsCollapse = bootstrap.Collapse.getOrCreateInstance(targetCollapse);
-                bsCollapse.toggle();
+            // Listen for scroll events
+            window.addEventListener('scroll', toggleGoToTopButton);
+            
+            // Initial check for go to top button
+            toggleGoToTopButton();
+
+            // Handle sidebar collapse events to update arrow rotation
+            const collapseElements = document.querySelectorAll('.collapse');
+            collapseElements.forEach(function(collapseEl) {
+                const parentLink = document.querySelector(`[href="#${collapseEl.id}"]`);
                 
-                // Add expanded class when opening
-                targetCollapse.addEventListener('shown.bs.collapse', () => {
-                    element.classList.add('expanded');
+                collapseEl.addEventListener('show.bs.collapse', function() {
+                    parentLink.classList.remove('collapsed');
                 });
                 
-                // Remove expanded class when closing
-                targetCollapse.addEventListener('hidden.bs.collapse', () => {
-                    element.classList.remove('expanded');
+                collapseEl.addEventListener('hide.bs.collapse', function() {
+                    parentLink.classList.add('collapsed');
                 });
-            }
-        }
+            });
+        });
 
         // Toast notification function
         function showToast(message, type = 'info') {
@@ -535,26 +492,7 @@
             return container;
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-            // Listen for scroll events
-            window.addEventListener('scroll', toggleGoToTopButton);
-            
-            // Initial check
-            toggleGoToTopButton();
-        });
-
-        // document.getElementById('reportForm').addEventListener('submit', function() {
-        //     let btn = document.getElementById('submitBtn');
-        //     let icon = document.getElementById('btnIcon');
-        //     icon.innerHTML = '<i class="fa fa-spinner fa-spin"></i>';
-        //     btn.disabled = true;
-        // });
-
-         // Go to Top functionality
+        // Go to Top functionality
         function scrollToTop() {
             window.scrollTo({
                 top: 0,

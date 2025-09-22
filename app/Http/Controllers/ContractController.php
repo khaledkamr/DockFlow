@@ -32,14 +32,14 @@ class ContractController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.contracts.contracts', compact('contracts'));
+        return view('pages.contracts.contracts', compact('contracts'));
     }
 
     public function createContract() {
         $company = Company::first();
         $customers = Customer::all();
         $services = Service::all();
-        return view('admin.contracts.createContract', compact('company', 'customers', 'services'));
+        return view('pages.contracts.createContract', compact('company', 'customers', 'services'));
     }
 
     public function storeContract(ContractRequest $request) {
@@ -66,12 +66,12 @@ class ContractController extends Controller
         $end = Carbon::parse($contract->end_date);
         $months = $start->diffInMonths($end);
         $days = $start->copy()->addMonths($months)->diffInDays($end);
-        return view('admin.contracts.contractDetails', compact('contract', 'months', 'days'));
+        return view('pages.contracts.contractDetails', compact('contract', 'months', 'days'));
     }
 
     public function services() {
         $services = Service::all();
-        return view('admin.contracts.services', compact('services'));
+        return view('pages.contracts.services', compact('services'));
     }
 
     public function storeService(Request $request) {

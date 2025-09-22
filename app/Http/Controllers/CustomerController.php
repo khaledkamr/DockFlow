@@ -27,12 +27,12 @@ class CustomerController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.users.customers', compact('customers'));
+        return view('pages.users.customers', compact('customers'));
     }
 
     public function customerProfile($id) {
         $customer = Customer::findOrFail($id);
-        return view('admin.users.customerProfile', compact('customer'));
+        return view('pages.users.customerProfile', compact('customer'));
     }
 
     public function storeCustomer(CustomerRequest $request) {

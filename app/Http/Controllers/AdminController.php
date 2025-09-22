@@ -34,7 +34,7 @@ class AdminController extends Controller
         $containersTrend = [1,5, 3,10,25 ,7, 10, 15, 11, 20];
         $containersDistribution = [30, 25, 40, 5];
         
-        return view('admin.home', compact(
+        return view('pages.home', compact(
             'customers', 
             'contracts', 
             'invoices', 
@@ -50,7 +50,7 @@ class AdminController extends Controller
 
     public function company($id) {
         $company = Company::findOrFail($id);
-        return view('admin.company', compact('company'));
+        return view('pages.company', compact('company'));
     }
 
     public function updateCompany(CompanyRequest $request, $id) {

@@ -33,17 +33,17 @@
 </ul>
 
 @if(request()->query('view', 'تقارير القيود') == 'تقارير القيود')
-    @include('admin.accounting.reports.journal_entries')
+    @include('pages.accounting.reports.journal_entries')
 @elseif(request()->query('view') == 'كشف حساب')
-    @include('admin.accounting.reports.account_statement')
+    @include('pages.accounting.reports.account_statement')
 @elseif(request()->query('view') == 'سند قبض بشيك')
-    @include('admin.accounting.vouchers.cheque_payment')
+    @include('pages.accounting.vouchers.cheque_payment')
 @elseif(request()->query('view') == 'سند صرف نقدي')
-    @include('admin.accounting.vouchers.cash_receipt')
+    @include('pages.accounting.vouchers.cash_receipt')
 @elseif(request()->query('view') == 'سند صرف بشيك')
-    @include('admin.accounting.vouchers.cheque_receipt')
+    @include('pages.accounting.vouchers.cheque_receipt')
 @elseif(request()->query('view') == 'الصندوق')
-    @include('admin.accounting.vouchers.box')
+    @include('pages.accounting.vouchers.box')
 @endif
 <div class="mb-4"></div>
 @endsection
