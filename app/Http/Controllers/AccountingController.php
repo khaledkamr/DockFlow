@@ -18,7 +18,7 @@ class AccountingController extends Controller
 {
     public function tree() {
         $accounts = Account::where('parent_id', null)->get();
-        return view('admin.accounting.tree', compact('accounts'));
+        return view('pages.accounting.tree', compact('accounts'));
     }
 
     public function createRoot(RootRequest $request) {
@@ -82,7 +82,7 @@ class AccountingController extends Controller
             });
         }
         
-        return view('admin.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray', 'company'));
+        return view('pages.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray', 'company'));
     }
 
     public function createJournal(JournalRequest $request) {
@@ -131,7 +131,7 @@ class AccountingController extends Controller
 
     public function journalDetails($id) {
         $journal = JournalEntry::with('lines')->findOrFail($id);
-        return view('admin.accounting.vouchers.journalDetails', compact(
+        return view('pages.accounting.vouchers.journalDetails', compact(
             'journal'
         ));
     }
@@ -216,6 +216,11 @@ class AccountingController extends Controller
                 return $line->journal->date >= $from && $line->journal->date <= $to;
             });
         }
-        return view('admin.accounting.reports', compact('company', 'accounts', 'entries', 'statement'));
+        return view('pages.accounting.reports', compact(
+            'company', 
+            'accounts', 
+            'entries', 
+            'statement'
+        ));
     }
 }

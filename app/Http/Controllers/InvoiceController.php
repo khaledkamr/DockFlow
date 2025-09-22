@@ -44,7 +44,7 @@ class InvoiceController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.invoices.invoices', compact('invoices'));
+        return view('pages.invoices.invoices', compact('invoices'));
     }
 
     public function createInvoice(Request $request) {
@@ -75,7 +75,7 @@ class InvoiceController extends Controller
             $container->total = $container->storage_price + $container->late_fee + $services;
         }
 
-        return view('admin.invoices.createInvoice', compact('customers', 'containers'));
+        return view('pages.invoices.createInvoice', compact('customers', 'containers'));
     }
 
     public function storeInvoice(Request $request) {
@@ -165,7 +165,7 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('admin.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
+        return view('pages.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
     }
 
     public function updateInvoice(Request $request, $id) {

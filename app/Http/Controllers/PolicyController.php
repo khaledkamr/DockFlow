@@ -41,14 +41,14 @@ class PolicyController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.policies.policies', compact('policies', 'customers'));
+        return view('pages.policies.policies', compact('policies', 'customers'));
     }
 
     public function storagePolicy(Request $request) {
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
-        return view('admin.policies.storagePolicy', compact('company', 'customers', 'containerTypes'));
+        return view('pages.policies.storagePolicy', compact('company', 'customers', 'containerTypes'));
     }
 
     public function storeStoragePolicy(PolicyRequest $request) {
@@ -76,7 +76,7 @@ class PolicyController extends Controller
     public function createReceivePolicy() {
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
-        return view('admin.policies.receivePolicy', compact('company', 'customers'));
+        return view('pages.policies.receivePolicy', compact('company', 'customers'));
     }
 
     public function storeReceivePolicy(PolicyRequest $request) {
@@ -114,11 +114,11 @@ class PolicyController extends Controller
             $late_fee = $policy->late_fee;
             $tax = $policy->tax;
         }
-            
-        return view('admin.policies.storagePolicyDetails', compact(
-            'policy', 
-            'storage_price', 
-            'late_fee', 
+
+        return view('pages.policies.storagePolicyDetails', compact(
+            'policy',
+            'storage_price',
+            'late_fee',
             'tax',
             'services'
         ));
@@ -126,6 +126,6 @@ class PolicyController extends Controller
 
     public function receivePolicyDetails($id) {
         $policy = Policy::with('containers.containerType')->findOrFail($id);
-        return view('admin.policies.receivePolicyDetails', compact('policy'));
+        return view('pages.policies.receivePolicyDetails', compact('policy'));
     }
 }

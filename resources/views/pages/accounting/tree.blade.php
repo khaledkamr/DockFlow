@@ -192,7 +192,7 @@
                     </div>
                     @if($account->children->count())
                         <div class="children-container">
-                            @include('admin.accounting.children', ['children' => $account->children])
+                            @include('pages.accounting.children', ['children' => $account->children])
                         </div>
                     @endif
                 </li>

@@ -57,7 +57,7 @@ class ContainerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('admin.containers.containers', compact(
+        return view('pages.containers.containers', compact(
             'containers',
             'availableContainer',
             'lateContainers',
@@ -79,7 +79,7 @@ class ContainerController extends Controller
                 'CR' => $customer->CR,  'phone' => $customer->phone,
             ];
         }
-        return view('admin.containers.createContainer', compact('customers', 'containerTypes', 'client'));
+        return view('pages.containers.createContainer', compact('customers', 'containerTypes', 'client'));
     }
 
     public function containerStore(Request $request) {
@@ -108,7 +108,7 @@ class ContainerController extends Controller
 
     public function containersTypes() {
         $containerTypes = Container_type::all();
-        return view('admin.containers.containersTypes', compact('containerTypes'));
+        return view('pages.containers.containersTypes', compact('containerTypes'));
     }
 
     public function containerTypeStore(ContainerTypesRequest $request) {
@@ -180,7 +180,7 @@ class ContainerController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
-        return view('admin.containers.reports', compact(
+        return view('pages.containers.reports', compact(
             'containers',
             'types',
             'customers',
@@ -208,6 +208,6 @@ class ContainerController extends Controller
         $storagePolicy = $container->policies->where('type', 'تخزين')->first();
         $receivePolicy = $container->policies->where('type', 'تسليم')->first();
         $invoice = $container->invoices->first();
-        return view('admin.containers.containerDetails', compact('container', 'storagePolicy', 'receivePolicy', 'invoice'));
+        return view('pages.containers.containerDetails', compact('container', 'storagePolicy', 'receivePolicy', 'invoice'));
     }
 }
