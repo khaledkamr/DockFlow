@@ -17,12 +17,31 @@
     @endpush
 @endif
 
+@if (session('error'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('error') }}", "danger");
+        </script>
+    @endpush
+@endif
+
 @if (session('errors'))
     @push('scripts')
         <script>
             showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
         </script>
     @endpush
+@endif
+
+
+@if ($errors->any())
+    @foreach ($errors->all() as $error)
+        @push('scripts')
+            <script>
+                showToast("{{ $error }}", "danger");
+            </script>
+        @endpush
+    @endforeach
 @endif
 
 <div class="card border-0 shadow-sm bg-white p-4">
@@ -57,18 +76,30 @@
                 <div class="col">
                     <label for="company_representative" class="form-label">إسم الممثل</label>
                     <input type="text" class="form-control border-primary" name="company_representative" value="{{ old('company_representative') }}">
+                    @error('company_representative')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col">
                     <label for="company_representative_nationality" class="form-label">الجنسية</label>
                     <input type="text" class="form-control border-primary" name="company_representative_nationality" value="{{ old('company_representative_nationality') }}">
+                    @error('company_representative_nationality')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col">
                     <label for="company_representative_NID" class="form-label">الهوية الوطنية</label>
                     <input type="text" class="form-control border-primary" name="company_representative_NID" value="{{ old('company_representative_NID') }}">
+                    @error('company_representative_NID')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col">
                     <label for="company_representative_role" class="form-label">بصفته</label>
                     <input type="text" class="form-control border-primary" name="company_representative_role" value="{{ old('company_representative_role') }}">
+                    @error('company_representative_role')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>
@@ -105,18 +136,30 @@
                 <div class="col">
                     <label for="customer_representative" class="form-label">إسم الممثل</label>
                     <input type="text" class="form-control border-primary" name="customer_representative" value="{{ old('customer_representative') }}">
+                    @error('customer_representative')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col">
                     <label for="customer_representative_nationality" class="form-label">الجنسية</label>
                     <input type="text" class="form-control border-primary" name="customer_representative_nationality" value="{{ old('customer_representative_nationality') }}">
+                    @error('customer_representative_nationality')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col">
                     <label for="customer_representative_NID" class="form-label">الهوية الوطنية</label>
                     <input type="text" class="form-control border-primary" name="customer_representative_NID" value="{{ old('customer_representative_NID') }}">
+                    @error('customer_representative_NID')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col">
                     <label for="customer_representative_role" class="form-label">بصفته</label>
                     <input type="text" class="form-control border-primary" name="customer_representative_role" value="{{ old('customer_representative_role') }}">
+                    @error('customer_representative_role')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>
@@ -145,15 +188,15 @@
                         </div>
                         <div class="col-2">
                             <label class="form-label">السعر</label>
-                            <input type="number" step="0.01" class="form-control border-primary" name="services[{{ $service->id }}][price]">
+                            <input type="number" step="0.01" class="form-control border-primary" name="services[{{ $service->id }}][price]" value="{{ old('services.'.$service->id.'.price') }}">
                         </div>
                         <div class="col-2">
                             <label class="form-label">الكمية</label>
-                            <input type="number" class="form-control border-primary" name="services[{{ $service->id }}][unit]">
+                            <input type="number" class="form-control border-primary" name="services[{{ $service->id }}][unit]" value="{{ old('services.'.$service->id.'.unit') }}">
                         </div>
                         <div class="col-2">
                             <label class="form-label">الوحدة</label>
-                            <input type="text" class="form-control border-primary" name="services[{{ $service->id }}][unit_desc]">
+                            <input type="text" class="form-control border-primary" name="services[{{ $service->id }}][unit_desc]" value="{{ old('services.'.$service->id.'.unit_desc') }}">
                         </div>
                     </div>
                 </div>

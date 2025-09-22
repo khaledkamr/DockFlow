@@ -135,6 +135,16 @@
     @endpush
 @endif
 
+@if ($errors->any())
+    @foreach ($errors->all() as $error)
+        @push('scripts')
+            <script>
+                showToast("{{ $error }}", "danger");
+            </script>
+        @endpush
+    @endforeach
+@endif
+
 <div class="table-container">
     <table class="table table-hover">
         <thead>
