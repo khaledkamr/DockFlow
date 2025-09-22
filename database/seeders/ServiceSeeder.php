@@ -12,16 +12,20 @@ class ServiceSeeder extends Seeder
     {
         $services = [
             [
-                'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا'
+                'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا',
+                'type' => 'primary'
             ],
             [
-                'description' => 'خدمة تنزيل وتحميل الحاوية بالكرين لدينا بالساحة'
+                'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها',
+                'type' => 'primary'
             ],
             [
-                'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها'
+                'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة',
+                'type' => 'additional'
             ],
             [
-                'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة'
+                'description' => 'خدمة تفريغ الحاوية',
+                'type' => 'additional'
             ],
         ];
 
