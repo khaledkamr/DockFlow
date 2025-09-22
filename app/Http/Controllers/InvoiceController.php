@@ -64,9 +64,10 @@ class InvoiceController extends Controller
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
             'amount' => 0,
-            'payment_method' => 'آجل',
+            'discount' => $request->discount ?? 0,
+            'payment_method' => $request->payment_method,
             'date' => Carbon::now(),
-            'payment' => 'لم يتم الدفع'
+            'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
         ]);
 
         $containers = Container::whereIn('id', $containerIds)->get();
@@ -89,6 +90,8 @@ class InvoiceController extends Controller
 
         $tax = $amountBeforeTax * 0.15;
         $amount = $amountBeforeTax + $tax;
+        $discountValue = ($request->discount ?? 0) / 100 * $amount;
+        $amount -= $discountValue;
 
         $invoice->amount = $amount;
         $invoice->save();
@@ -120,8 +123,9 @@ class InvoiceController extends Controller
 
         $invoice->subtotal = $amountBeforeTax;
         $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->discount = 0;
         $invoice->total = $amountBeforeTax + $invoice->tax;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
+        $invoice->total -= $discountValue;
 
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
 
@@ -133,7 +137,7 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('admin.invoices.invoiceDetails', compact('invoice', 'hatching_total', 'qrCode'));
+        return view('admin.invoices.invoiceDetails', compact('invoice', 'discountValue', 'hatching_total', 'qrCode'));
     }
 
     public function updateInvoice(Request $request, $id) {

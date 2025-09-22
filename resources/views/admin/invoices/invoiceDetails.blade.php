@@ -189,13 +189,13 @@
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">الخصم:</span>
-                            <span class="fw-bold fs-5 text-dark">{{ number_format($invoice->discount, 2) }} ريال</span>
+                            <span class="text-muted">الضريبة المضافة (15%):</span>
+                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} ريال</span>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">الضريبة المضافة (15%):</span>
-                            <span class="fw-bold fs-5 text-dark">{{ number_format($invoice->tax, 2) }} ريال</span>
+                            <span class="text-muted">الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }}):</span>
+                            <span class="fw-bold fs-5 text-danger"> - {{ number_format($discountValue, 2) }} ريال</span>
                         </div>
                         
                         <hr class="my-3">

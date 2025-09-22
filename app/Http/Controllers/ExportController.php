@@ -116,8 +116,9 @@ class ExportController extends Controller
 
         $invoice->subtotal = $amountBeforeTax;
         $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->discount = 0;
         $invoice->total = $amountBeforeTax + $invoice->tax;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
+        $invoice->total -= $discountValue;
 
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
 
@@ -129,7 +130,7 @@ class ExportController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('reports.invoice', compact('company', 'invoice', 'qrCode', 'hatching_total'));
+        return view('reports.invoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
     public function excel($reportType, Request $request) {
