@@ -329,7 +329,7 @@
                                     </small>
                                 </div>
                                 <p class="text-muted">
-                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.details', $invoice->code) }}" class="text-decoration-none fw-bold">{{ $invoice->code }}</a> بواسطة <strong>{{ $invoice->made_by }}</strong>
+                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.details', $invoice->code) }}" class="text-decoration-none fw-bold">{{ $invoice->code }}</a> بواسطة <strong>{{ $invoice->made_by->name }}</strong>
                                 </p>
                             </div>
                         </div>
