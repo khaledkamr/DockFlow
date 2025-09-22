@@ -119,7 +119,7 @@ class ExportController extends Controller
         $invoice->discount = 0;
         $invoice->total = $amountBeforeTax + $invoice->tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->customer->name,

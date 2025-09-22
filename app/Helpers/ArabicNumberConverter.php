@@ -96,4 +96,41 @@ class ArabicNumberConverter
 
         return implode(" و", $result);
     }
+
+    public static function numberToArabicMoney($amount)
+    {
+        if ($amount == 0) return "صفر ريال";
+        
+        // تحويل إلى string للتعامل مع الأرقام العشرية بدقة
+        $amountStr = (string) $amount;
+        $parts = explode('.', $amountStr);
+        
+        $riyals = intval($parts[0]) ?: 0;
+        $halalas = 0;
+        
+        if (count($parts) > 1) {
+            // إضافة صفر إذا كان هناك رقم واحد فقط بعد العلامة العشرية
+            $decimalPart = str_pad(substr($parts[1], 0, 2), 2, '0', STR_PAD_RIGHT);
+            $halalas = intval($decimalPart);
+        }
+        
+        $result = [];
+        
+        // إضافة الريالات
+        if ($riyals > 0) {
+            $result[] = self::numberToArabicWords($riyals) . " ريال";
+        }
+        
+        // إضافة الهللات
+        if ($halalas > 0) {
+            $result[] = self::numberToArabicWords($halalas) . " هللة";
+        }
+        
+        // إذا لم يكن هناك ريالات أو هللات
+        if (count($result) === 0) {
+            return "صفر ريال";
+        }
+        
+        return implode(" و", $result);
+    }
 }

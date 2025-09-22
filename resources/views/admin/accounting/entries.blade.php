@@ -164,9 +164,45 @@
         return result.join(" و");
     }
 
+    function numberToArabicMoney(amount) {
+        if (amount === 0) return "صفر ريال";
+        
+        // تحويل إلى string للتعامل مع الأرقام العشرية بدقة
+        const amountStr = amount.toString();
+        const parts = amountStr.split('.');
+        
+        const riyals = parseInt(parts[0]) || 0;
+        let halalas = 0;
+        
+        if (parts.length > 1) {
+            // إضافة صفر إذا كان هناك رقم واحد فقط بعد العلامة العشرية
+            const decimalPart = parts[1].padEnd(2, '0').substring(0, 2);
+            halalas = parseInt(decimalPart);
+        }
+        
+        let result = [];
+        
+        // إضافة الريالات
+        if (riyals > 0) {
+            result.push(numberToArabicWords(riyals) + " ريال");
+        }
+        
+        // إضافة الهللات
+        if (halalas > 0) {
+            result.push(numberToArabicWords(halalas) + " هللة");
+        }
+        
+        // إذا لم يكن هناك ريالات أو هللات
+        if (result.length === 0) {
+            return "صفر ريال";
+        }
+        
+        return result.join(" و");
+    }
+
     document.getElementById("amount").addEventListener("input", function() {
-        const num = parseInt(this.value) || 0;
-        document.getElementById("hatching").value = numberToArabicWords(num) + " ريال";
+        const amount = parseFloat(this.value) || 0;
+        document.getElementById("hatching").value = numberToArabicMoney(amount);
     });
 </script>
 

@@ -101,7 +101,8 @@
                             </div>
                             <div class="col-4 text-center">
                                 <div class="qr-code-container">
-                                    <img src="{{ asset('img/qrcode.png') }}" alt="QR Code" width="120">
+                                    {!! $qrCode !!}
+                                    {{-- <img src="{{ asset('img/qrcode.png') }}" alt="QR Code" width="120"> --}}
                                 </div>
                                 <small class="text-muted">QR code</small>
                             </div>
