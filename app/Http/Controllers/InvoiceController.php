@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ArabicNumberConverter;
+use App\Helpers\QrHelper;
 use App\Http\Requests\ClaimRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Claim;
@@ -122,9 +123,17 @@ class InvoiceController extends Controller
         $invoice->discount = 0;
         $invoice->total = $amountBeforeTax + $invoice->tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicWords((int)$invoice->total) . " ريالاً لا غير";
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
 
-        return view('admin.invoices.invoiceDetails', compact('invoice', 'hatching_total'));
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->customer->name,
+            $invoice->customer->CR,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('admin.invoices.invoiceDetails', compact('invoice', 'hatching_total', 'qrCode'));
     }
 
     public function updateInvoice(Request $request, $id) {
