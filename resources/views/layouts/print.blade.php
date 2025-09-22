@@ -42,7 +42,7 @@
     <div class="d-flex justify-content-between mx-3 mt-3">
         <div class="d-flex flex-column align-items-start">
             <span class="small">تاريخ الطباعة</span>
-            <span class="small fw-bold">{{ Carbon\Carbon::now()->format('Y-m-d') }}</span>
+            <span class="small fw-bold">{{ Carbon\Carbon::now()->format('Y/m/d') }}</span>
         </div>
         <div class="text-center">
             <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">

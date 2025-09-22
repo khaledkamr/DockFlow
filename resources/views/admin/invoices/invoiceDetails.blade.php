@@ -128,13 +128,13 @@
                             <th class="text-center bg-dark text-white">#</th>
                             <th class="text-center bg-dark text-white">رقم الإتفاقية</th>
                             <th class="text-center bg-dark text-white">رقم الحاوية</th>
-                            <th class="text-center bg-dark text-white">نوع الحاوية</th>
                             <th class="text-center bg-dark text-white">تاريخ الدخول</th>
                             <th class="text-center bg-dark text-white">تاريخ الخروج</th>
                             <th class="text-center bg-dark text-white">أيام التخزين</th>
                             <th class="text-center bg-dark text-white">سعر التخزين</th>
                             <th class="text-center bg-dark text-white">أيام التأخير</th>
                             <th class="text-center bg-dark text-white">غرامة التأخير</th>
+                            <th class="text-center bg-dark text-white">خدمات</th>
                             <th class="text-center bg-dark text-white">الإجمالي</th>
                         </tr>
                     </thead>
@@ -153,9 +153,6 @@
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-primary text-white">{{ $container->containerType->name }}</span>
-                                </td>
-                                <td class="text-center">
                                     <small>{{ \Carbon\Carbon::parse($container->date)->format('d/m/Y') }}</small>
                                 </td>
                                 <td class="text-center">
@@ -165,6 +162,7 @@
                                 <td class="text-center fw-bold">{{ number_format($container->storage_price, 2) }}</td>
                                 <td class="text-center fw-bold">{{ $container->late_days }}</td>
                                 <td class="text-center fw-bold">{{ number_format($container->late_fee, 2) }}</td>
+                                <td class="text-center fw-bold">{{ number_format($services, 2) }}</td>
                                 <td class="text-center text-primary fw-bold">{{ number_format($container->total, 2) }}</td>
                             </tr>
                         @endforeach

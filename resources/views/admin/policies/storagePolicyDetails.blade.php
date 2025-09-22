@@ -224,7 +224,7 @@
                                         {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
                                     </td>
                                     <td>
-                                       <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal-{{ $container->id }}">
+                                       <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal-{{ $container->id }}" {{ $container->status == 'تم التسليم' ? 'disabled' : '' }}>
                                             إضافة خدمة
                                         </button> 
                                     </td>

@@ -100,8 +100,8 @@
                                     {{ $container->customer->name }}
                                 </a>
                             </td>
-                            <td>{{ $container->exit_date ?? $container->date }}</td>
-                            <td class="fw-bold">{{ number_format($container->amount, 2) }}</td>
+                            <td>{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
+                            <td class="fw-bold">{{ number_format($container->total, 2) }}</td>
                             <td><span class="badge bg-success">تم التسليم <i class="fa-solid fa-check"></i></span></td>
                         </tr>
                     @endforeach
