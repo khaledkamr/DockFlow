@@ -18,7 +18,7 @@ class AdminController extends Controller
     public function dashboard(Request $request) {
         $customers = Customer::all()->count();
         $contracts = Contract::all()->count();
-        $invoices = invoice::all()->count();
+        $invoices = Invoice::all()->count();
         $containers = Container::all();
 
         $date = $request->input('date', Carbon::now()->format('Y-m-d'));
