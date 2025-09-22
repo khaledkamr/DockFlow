@@ -15,14 +15,30 @@ class ContainerController extends Controller
 {
     public function containers(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
+        foreach($containers as $container) {
+            if($container->status == 'متوفر') {
+                $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+                if($storagePolicy) {
+                    $dueDays = $storagePolicy->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit;
+                    $containerDays = Carbon::parse($container->date)->diffInDays(Carbon::now());
+                    if($containerDays > $dueDays) {
+                        $container->status = 'متأخر';
+                        $container->save();
+                    }
+                }
+            }
+        }
+
         $availableContainer = $containers->where('status', 'متوفر')->count();
         $lateContainers = $containers->where('status', 'متأخر')->count();
+
         $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
             $containers = $containers->filter(function ($container) use ($containerFilter) {
                 return $container->status === $containerFilter;
             });
         }
+
         $search = $request->input('search', null);
         if($search) {
             $containers = $containers->filter(function($container) use($search) {
@@ -32,6 +48,7 @@ class ContainerController extends Controller
                     || stripos($container->location, $search) !== false;
             });
         }
+
         $containers = new \Illuminate\Pagination\LengthAwarePaginator(
             $containers->forPage(request()->get('page', 1), 50),
             $containers->count(),
@@ -39,6 +56,7 @@ class ContainerController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
+
         return view('admin.containers.containers', compact(
             'containers',
             'availableContainer',
@@ -115,6 +133,20 @@ class ContainerController extends Controller
 
     public function reports(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
+        foreach($containers as $container) {
+            if($container->status == 'متوفر') {
+                $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+                if($storagePolicy) {
+                    $dueDays = $storagePolicy->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit;
+                    $containerDays = Carbon::parse($container->date)->diffInDays(Carbon::now());
+                    if($containerDays > $dueDays) {
+                        $container->status = 'متأخر';
+                        $container->save();
+                    }
+                }
+            }
+        }
+        
         $types = Container_type::all();
         $customers = Customer::all();
 
