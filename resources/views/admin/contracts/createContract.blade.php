@@ -172,8 +172,8 @@
         </div>
         
         <div id="services-container">
-            @foreach ($services as $index => $service)
-                <div class="mb-4 bg-light p-3 rounded service-item" data-service-id="{{ $service->id }}">
+            @foreach ($services->where('type', 'primary') as $index => $service)
+                <div class="mb-4 bg-light p-3 rounded service-item" data-service-id="{{ $service->id }}" data-service-type="{{ $service->type }}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0 text-primary">خدمة #{{ $index + 1 }}</h6>
                         <button type="button" class="btn btn-sm btn-outline-danger remove-service">
@@ -342,7 +342,12 @@
 
     // Remove service
     $(document).on('click', '.remove-service', function() {
-        $(this).closest('.service-item').remove();
+        serviceItem = $(this).closest('.service-item');
+        if(serviceItem.data('service-type') === 'primary') {
+            showToast('هذه خدمة أساسية في العقد لا يمكن حذفها', 'danger');
+            return;
+        }
+        serviceItem.remove();
         checkSubmitButton();
         updateServiceNumbers();
     });

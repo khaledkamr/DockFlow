@@ -43,50 +43,66 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-6 mb-4">
+            <div class="col-lg-6 d-flex flex-column gap-3 mb-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-user-shield me-2"></i>
+                            <i class="fas fa-info-circle me-2"></i>
+                            معلومات الإتفاقية
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div>
+                                    
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label text-muted small">تاريخ الإتفاقية</label>
+                                            <div class="fw-bold fs-5">{{ $policy->created_at->format('Y/m/d') }}</div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label text-muted small">تم الإنشاء بواسطة</label>
+                                            <div class="fw-bold">{{ $policy->made_by->name }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-user me-2"></i>
                             معلومات السائق والمركبة
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
-                            <!-- Driver Info -->
                             <div class="col-12">
-                                <div class="border-bottom pb-3 mb-2">
+                                <div>
                                     <h6 class="text-muted mb-2">
-                                        <i class="fas fa-user me-2"></i>
-                                        بيانات السائق
+                                        <i class="fas fa-truck me-2"></i>
+                                        بيانات السائق والمركبة
                                     </h6>
                                     <div class="row">
-                                        <div class="col-8">
+                                        <div class="col">
                                             <label class="form-label text-muted small">اسم السائق</label>
                                             <div class="fw-bold fs-5">{{ $policy->driver_name }}</div>
                                         </div>
-                                        <div class="col-4">
+                                        <div class="col">
                                             <label class="form-label text-muted small">الرقم القومي</label>
                                             <div class="fw-bold">{{ $policy->driver_NID }}</div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Vehicle Info -->
-                            <div class="col-12">
-                                <h6 class="text-muted mb-2">
-                                    <i class="fas fa-truck me-2"></i>
-                                    بيانات المركبة
-                                </h6>
-                                <div class="row">
-                                    <div class="col-8">
-                                        <label class="form-label text-muted small">نوع المركبة</label>
-                                        <div class="fw-bold fs-5">{{ $policy->driver_car }}</div>
-                                    </div>
-                                    <div class="col-4">
-                                        <label class="form-label text-muted small">رقم اللوحة</label>
-                                        <div class="fw-bold">{{ $policy->car_code }}</div>
+                                        <div class="col">
+                                            <label class="form-label text-muted small">نوع المركبة</label>
+                                            <div class="fw-bold fs-5">{{ $policy->driver_car }}</div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label text-muted small">رقم اللوحة</label>
+                                            <div class="fw-bold">{{ $policy->car_code }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -100,54 +116,46 @@
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-money-bill-wave me-2"></i>
-                            المعلومات المالية والضريبية
+                            اطراف الإتفاقية
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <i class="fas fa-warehouse fa-2x text-success mb-2"></i>
-                                            <small class="text-muted d-block">سعر التخزين</small>
-                                            <div class="fw-bold text-success fs-5">
-                                                {{ $policy->contract->services[0]->pivot->price }} ريال
-                                                 لمدة {{ $policy->contract->services[0]->pivot->unit .' '. $policy->contract->services[0]->pivot->unit_desc }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <i class="fas fa-exclamation-triangle fa-2x text-danger mb-2"></i>
-                                            <small class="text-muted d-block">غرامة التأخير</small>
-                                            <div class="fw-bold text-danger fs-5">
-                                                {{ $policy->contract->services[2]->pivot->price }} ريال لليوم الواحد
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="text-center p-3 bg-light rounded">
-                                            <i class="fas fa-receipt fa-2x text-primary mb-2"></i>
-                                            <small class="text-muted d-block">الضريبة المضافة</small>
-                                            <div class="fw-bold text-primary fs-1">15%</div>
-                                        </div>
-                                    </div>
+                            <h6 class="text-muted mb-2">
+                                <i class="fas fa-building me-2"></i>
+                                الطرف الأول
+                            </h6>
+                            <div class="row border-bottom pb-3">
+                                <div class="col">
+                                    <label class="form-label text-muted small">الاسم</label>
+                                    <div class="fw-bold">{{ $policy->contract->company->name }}</div>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label text-muted small">السجل التجاري</label>
+                                    <div class="fw-bold">{{ $policy->contract->company->CR }}</div>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label text-muted small">الرقم الضريبي</label>
+                                    <div class="fw-bold">{{ $policy->contract->company->TIN }}</div>
                                 </div>
                             </div>
                             
-                            <div class="col-12">
-                                <div class="border-top pt-3">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <small class="text-muted">تاريخ الإتفاقية</small>
-                                            <div class="fw-bold">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">العميل</small>
-                                            <div class="fw-bold">{{ $policy->customer->name }}</div>
-                                        </div>
-                                    </div>
+                            <h6 class="text-muted mb-2">
+                                <i class="fas fa-user-tie me-2"></i>
+                                الطرف الثاني
+                            </h6>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label class="form-label text-muted small">الاسم</label>
+                                    <div class="fw-bold">{{ $policy->contract->customer->name }}</div>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label text-muted small">السجل التجاري</label>
+                                    <div class="fw-bold">{{ $policy->contract->customer->CR }}</div>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label text-muted small">الرقم الضريبي</label>
+                                    <div class="fw-bold">{{ $policy->contract->customer->TIN }}</div>
                                 </div>
                             </div>
                         </div>
@@ -197,15 +205,13 @@
                                     <td>
                                         @if($container->status == 'متوفر')
                                             <div class="status-available">{{ $container->status }}</div>
-                                        @elseif($container->status == 'مُسلم')
+                                        @elseif($container->status == 'تم التسليم')
                                             <div class="status-delivered">
                                                 {{ $container->status }}
                                                 <i class="fa-solid fa-check"></i>
                                             </div>
                                         @elseif($container->status == 'متأخر')
                                             <div class="status-danger">{{ $container->status }}</div>
-                                        @elseif($container->status == 'في الإنتظار')
-                                            <div class="status-waiting">{{ $container->status }}</div>
                                         @endif
                                     </td>
                                     <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">
