@@ -147,13 +147,13 @@
 @endif
 
 @if ($errors->any())
-    @push('scripts')
-        <script>
-            @foreach ($errors->all() as $error)
+    @foreach ($errors->all() as $error)
+        @push('scripts')
+            <script>
                 showToast("{{ $error }}", "danger");
-            @endforeach
-        </script>
-    @endpush
+            </script>
+        @endpush
+    @endforeach
 @endif
 
 @endsection

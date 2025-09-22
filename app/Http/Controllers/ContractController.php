@@ -47,6 +47,9 @@ class ContractController extends Controller
         $contract = Contract::create($validated);
         if($request->has('services')) {
             foreach($request->services as $service) {
+                if( !isset($service['price']) || !isset($service['unit']) || !isset($service['unit_desc']) ) {
+                    return redirect()->back()->withInput()->with('error', 'جميع حقول الخدمات مطلوبة');
+                }
                 $contract->services()->attach($service['service_id'], [
                     'price' => $service['price'],
                     'unit' => $service['unit'],
@@ -72,11 +75,17 @@ class ContractController extends Controller
     }
 
     public function storeService(Request $request) {
+        if(!$request->description) {
+            return redirect()->back()->with('error', 'وصف الخدمة مطلوب');
+        }
         Service::create(['description' => $request->description]);
         return redirect()->back()->with('success', 'تم إضافة خدمة جديدة بنجاح');
     }
 
     public function updateService(Request $request, $id) {
+        if(!$request->description) {
+            return redirect()->back()->with('error', 'وصف الخدمة مطلوب');
+        }
         $service = Service::findOrFail($id);
         $service->description = $request->description;
         $service->save();
