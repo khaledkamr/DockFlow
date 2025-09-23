@@ -120,12 +120,10 @@ class InvoiceController extends Controller
         $invoice->amount = $amount;
         $invoice->save();
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice->code).'">عرض الفاتورة</a>');
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
     } 
 
-    public function invoiceDetails($code) {
-        $invoice = Invoice::where('code', $code)->firstOrFail();
-
+    public function invoiceDetails(Invoice $invoice) {
         $amountBeforeTax = 0;
 
         foreach($invoice->containers as $container) {
@@ -168,8 +166,7 @@ class InvoiceController extends Controller
         return view('pages.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
     }
 
-    public function updateInvoice(Request $request, $id) {
-        $invoice = Invoice::findOrFail($id);
+    public function updateInvoice(Request $request, Invoice $invoice) {
         $invoice->payment = $request->payment;
         $invoice->save();
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');

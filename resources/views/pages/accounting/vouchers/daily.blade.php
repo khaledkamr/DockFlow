@@ -30,7 +30,7 @@
                             {{ $journal->modified_by ?? 'لم يتم التعديل' }}
                         </td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('admin.journal.details', $journal->id) }}" 
+                            <a href="{{ route('admin.journal.details', $journal) }}" 
                                 class="btn btn-sm btn-primary">
                                 عرض
                             </a>

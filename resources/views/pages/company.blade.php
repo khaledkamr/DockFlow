@@ -6,7 +6,7 @@
 <h1 class="mb-4">بيانات الشركة</h1>
 
 <div class="card border-0 shadow-sm bg-white p-4">
-    <form action="{{ route('company.update', $company->id) }}" method="POST">
+    <form action="{{ route('company.update', $company) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="mb-4 bg-light p-3 rounded">

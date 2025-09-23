@@ -48,14 +48,12 @@ class AdminController extends Controller
         ));
     }
 
-    public function company($id) {
-        $company = Company::findOrFail($id);
+    public function company(Company $company) {
         return view('pages.company', compact('company'));
     }
 
-    public function updateCompany(CompanyRequest $request, $id) {
+    public function updateCompany(CompanyRequest $request, Company $company) {
         $validated = $request->validated();
-        $company = Company::findOrFail($id);
         $company->update($validated);
         return redirect()->back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
     }

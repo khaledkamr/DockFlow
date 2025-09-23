@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(AdminController::class)->middleware('auth')->group(function() {
     Route::get('/', 'dashboard')->name('admin.home');
-    Route::get('/company/{id}', 'company')->name('company');
-    Route::put('/company/update/{id}', 'updateCompany')->name('company.update');
+    Route::get('/company/{company:uuid}', 'company')->name('company');
+    Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -29,24 +29,24 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(CustomerController::class)->middleware('auth')->group(function () {
     Route::get('/users/customers', 'customers')->name('users.customers');
-    Route::get('/users/customer/{id}', 'customerProfile')->name('users.customer.profile');
+    Route::get('/users/customer/{customer:uuid}', 'customerProfile')->name('users.customer.profile');
     Route::post('/users/customer/store', 'storeCustomer')->name('users.customer.store');
-    Route::put('/users/customer/update/{id}', 'updateCustomer')->name('users.customer.update');
-    Route::delete('/users/customer/delete/{id}', 'deleteCustomer')->name('users.customer.delete');
+    Route::put('/users/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
+    Route::delete('/users/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
 });
 
 Route::controller(ContainerController::class)->middleware('auth')->group(function () {
     Route::get('/yard/containers', 'containers')->name('yard.containers');
     Route::get('/yard/containers/create', 'createContainer')->name('yard.containers.create');
     Route::post('/yard/containers/store', 'containerStore')->name('yard.containers.store');
-    Route::put('/yard/containers/update/{id}', 'containerUpdate')->name('yard.containers.update');
+    Route::put('/yard/containers/update/{container:uuid}', 'containerUpdate')->name('yard.containers.update');
     Route::get('/yard/containers/types', 'containersTypes')->name('yard.containers.types');
     Route::post('/yard/containers/types/store', 'containerTypeStore')->name('yard.containers.types.store');
     Route::put('/yard/containers/types/update/{id}', 'updateContainerType')->name('yard.containers.types.update');
     Route::delete('/yard/containers/types/delete/{id}', 'deleteContainerType')->name('yard.containers.types.delete');
     Route::get('/yard/containers/reports', 'reports')->name('yard.containers.reports');
-    Route::post('/yard/containers/{id}/add/service', 'addService')->name('containers.add.service');
-    Route::get('/yard/container/{id}', 'containerDetails')->name('container.details');
+    Route::post('/yard/containers/{container:uuid}/add/service', 'addService')->name('containers.add.service');
+    Route::get('/yard/container/{container:uuid}', 'containerDetails')->name('container.details');
 });
 
 Route::controller(PolicyController::class)->middleware('auth')->group(function () {
@@ -55,30 +55,30 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/receive/create', 'createReceivePolicy')->name('policies.receive.create');
     Route::post('/policies/storage/store', 'storeStoragePolicy')->name('policies.storage.store');
     Route::post('/policies/receive/store', 'storeReceivePolicy')->name('policies.receive.store');
-    Route::get('/policies/storage/details/{id}', 'storagePolicyDetails')->name('policies.storage.details');
-    Route::get('/policies/receive/details/{id}', 'receivePolicyDetails')->name('policies.receive.details');
+    Route::get('/policies/storage/details/{policy:uuid}', 'storagePolicyDetails')->name('policies.storage.details');
+    Route::get('/policies/receive/details/{policy:uuid}', 'receivePolicyDetails')->name('policies.receive.details');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
     Route::get('/contracts', 'contracts')->name('contracts');
     Route::get('/contracts/create', 'createContract')->name('contracts.create');
     Route::post('/contracts/store', 'storeContract')->name('contracts.store');
-    Route::get('/contracts/{id}', 'contractDetails')->name('contracts.details');
-    Route::post('/contracts/update/{id}', 'updateContract')->name('contracts.update');
+    Route::get('/contracts/{contract:uuid}', 'contractDetails')->name('contracts.details');
+    Route::post('/contracts/update/{contract:uuid}', 'updateContract')->name('contracts.update');
     Route::get('/services', 'services')->name('contracts.services');
     Route::post('/service/store', 'storeService')->name('contracts.service.store');
-    Route::put('/service/update/{id}', 'updateService')->name('contracts.service.update');
-    Route::delete('/contracts/service/delete/{id}', 'deleteService')->name('contracts.service.delete');
-    Route::post('/contracts/{id}/add/attachment', 'attachFile')->name('contracts.add.attachment');
-    Route::delete('/contracts/attachment/delete/{id}', 'deleteAttachment')->name('contracts.delete.attachment');
+    Route::put('/service/update/{contract:uuid}', 'updateService')->name('contracts.service.update');
+    Route::delete('/contracts/service/delete/{contract:uuid}', 'deleteService')->name('contracts.service.delete');
+    Route::post('/contracts/{contract:uuid}/add/attachment', 'attachFile')->name('contracts.add.attachment');
+    Route::delete('/contracts/attachment/delete/{contract:uuid}', 'deleteAttachment')->name('contracts.delete.attachment');
 });
 
 Route::controller(InvoiceController::class)->middleware('auth')->group(function () {
     Route::get('/invoices', 'invoices')->name('invoices');
     Route::get('invoice/create', 'createInvoice')->name('invoices.create');
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
-    Route::put('invoice/update/{id}', 'updateInvoice')->name('invoices.update');
-    Route::get('/invoice/{code}', 'invoiceDetails')->name('invoices.details');
+    Route::put('invoice/update/{invoice:uuid}', 'updateInvoice')->name('invoices.update');
+    Route::get('/invoice/{invoice:uuid}', 'invoiceDetails')->name('invoices.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -90,7 +90,7 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::delete('admin/money/entries/delete/{id}', 'deleteVoucher')->name('admin.delete.voucher');
     Route::get('/admin/money/voucher/{id}/toJournal', 'convertToJournal')->name('admin.voucher.to.journal');
     Route::post('admin/money/entries/create/journal', 'createJournal')->name('admin.create.journal');
-    Route::get('admin/money/journal/{id}', 'journalDetails')->name('admin.journal.details');
+    Route::get('admin/money/journal/{journal:uuid}', 'journalDetails')->name('admin.journal.details');
     Route::get('/admin/money/reports', 'reports')->name('admin.money.reports');
 });
 

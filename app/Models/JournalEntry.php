@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Traits\BelongsToCompany;
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Testing\Fluent\Concerns\Has;
 
 class JournalEntry extends Model
 {
-    use BelongsToCompany;
+    use BelongsToCompany, HasUuid;
     
     protected $fillable = [
         'code',

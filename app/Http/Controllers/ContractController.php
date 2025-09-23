@@ -60,8 +60,7 @@ class ContractController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء العقد بنجاح');
     }
 
-    public function contractDetails($id) {
-        $contract = Contract::findOrFail($id);
+    public function contractDetails(Contract $contract) {
         $start = Carbon::parse($contract->start_date);
         $end = Carbon::parse($contract->end_date);
         $months = $start->diffInMonths($end);
@@ -101,8 +100,7 @@ class ContractController extends Controller
         return redirect()->back()->with('success', 'تم حذف الخدمة بنجاح');
     }
 
-    public function attachFile(Request $request, $id) {
-        $contract = Contract::findOrFail($id);
+    public function attachFile(Request $request, Contract $contract) {
         if($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = time() . '_' . $file->getClientOriginalName();

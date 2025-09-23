@@ -70,7 +70,7 @@ class PolicyController extends Controller
         $validated = $request->validated();
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy->id).'">عرض الاتفاقية؟</a>');
+        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض الاتفاقية؟</a>');
     }
     
     public function createReceivePolicy() {
@@ -94,38 +94,18 @@ class PolicyController extends Controller
 
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy->id).'">عرض الاتفاقية؟</a>');
+        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض الاتفاقية؟</a>');
     }
 
-    public function storagePolicyDetails($id) {
+    public function storagePolicyDetails(Policy $policy) {
         $services = Service::all();
-        $policy = Policy::with('containers.containerType')->findOrFail($id);
-        if($policy->type == 'إستلام') {
-            $storage_price = 0;
-            $late_fee = 0;
-            foreach($policy->containers as $container) {
-                $days = Carbon::parse($container->date)->diffInDays(Carbon::parse($policy->contract->storage_date));
-                $storage_price += $policy->contract->container_storage_price * (int) $days;
-            }
-            $late_fee += $days > $policy->contract->container_storage_period ? $policy->late_fee * ( (int) $days - $policy->contract->container_storage_period) : 0;
-            $tax = 'غير معفي';
-        } else {
-            $storage_price = $policy->storage_price;
-            $late_fee = $policy->late_fee;
-            $tax = $policy->tax;
-        }
-
         return view('pages.policies.storagePolicyDetails', compact(
             'policy',
-            'storage_price',
-            'late_fee',
-            'tax',
             'services'
         ));
     }
 
-    public function receivePolicyDetails($id) {
-        $policy = Policy::with('containers.containerType')->findOrFail($id);
+    public function receivePolicyDetails(Policy $policy) {
         return view('pages.policies.receivePolicyDetails', compact('policy'));
     }
 }

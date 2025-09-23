@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Traits\BelongsToCompany;
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class Voucher extends Model
 {
-    use BelongsToCompany;
+    use BelongsToCompany, HasUuid;
 
     protected $fillable = [
         'code',

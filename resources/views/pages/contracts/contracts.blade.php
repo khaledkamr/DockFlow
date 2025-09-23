@@ -88,7 +88,7 @@
                         <td class="text-center">{{ Carbon\Carbon::parse($contract->end_date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $contract->made_by->name ?? "-" }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('contracts.details', $contract->id) }}" 
+                            <a href="{{ route('contracts.details', $contract) }}" 
                                 class="btn btn-sm btn-primary rounded-3 m-0">
                                 عرض
                             </a>

@@ -132,8 +132,7 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
     }
 
-    public function journalDetails($id) {
-        $journal = JournalEntry::with('lines')->findOrFail($id);
+    public function journalDetails(JournalEntry $journal) {
         return view('pages.accounting.vouchers.journalDetails', compact(
             'journal'
         ));

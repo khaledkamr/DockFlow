@@ -158,7 +158,7 @@
                             </a>
                         </td>
                         <td class="fw-bold">
-                            <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none">
+                            <a href="{{ route('container.details', $container) }}" class="text-decoration-none">
                                 {{ $container->code }}
                             </a>
                         </td>
@@ -200,7 +200,7 @@
                                     <h5 class="modal-title text-dark fw-bold" id="editContainerModalLabel{{ $container->id }}">تعديل بيانات العميل</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('yard.containers.update', $container->id) }}" method="POST">
+                                <form action="{{ route('yard.containers.update', $container) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-body text-dark">

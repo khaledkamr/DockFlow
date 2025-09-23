@@ -30,8 +30,7 @@ class CustomerController extends Controller
         return view('pages.users.customers', compact('customers'));
     }
 
-    public function customerProfile($id) {
-        $customer = Customer::findOrFail($id);
+    public function customerProfile(Customer $customer) {
         return view('pages.users.customerProfile', compact('customer'));
     }
 
@@ -69,15 +68,13 @@ class CustomerController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
     }
 
-    public function updateCustomer(CustomerRequest $request, $id) {
-        $customer = Customer::findOrFail($id);
+    public function updateCustomer(CustomerRequest $request, Customer $customer) {
         $validated = $request->validated();
         $customer->update($validated);
         return redirect()->back()->with('success', 'تم تحديث بيانات العميل بنجاح');
     }
 
-    public function deleteCustomer($id) {
-        $customer = Customer::findOrFail($id);
+    public function deleteCustomer(Customer $customer) {
         if($customer->invoices()->exists() || $customer->contract()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا العميل لوجود تعاملات مرتبطة به');
         }
