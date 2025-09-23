@@ -40,7 +40,7 @@
                 <div class="col-md-6">
                     <div class="info-item">
                         <strong class="text-muted">اسم العميل:</strong>
-                        <a href="{{ route('users.customer.profile', $container->customer->id) }}" 
+                        <a href="{{ route('users.customer.profile', $container->customer) }}" 
                             class="text-decoration-none fw-bold">
                             {{ $container->customer->name }}
                         </a>
@@ -94,7 +94,7 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <h6 class="mb-1">
-                                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy->id) : route('policies.receive.details', $policy->id) }}" 
+                                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy) : route('policies.receive.details', $policy) }}" 
                                                 class="badge bg-primary text-decoration-none me-2">{{ $policy->code }}</a>
                                             {{ $policy->type }}
                                         </h6>
@@ -247,7 +247,7 @@
                                     </small>
                                 </div>
                                 <div class="text-muted">
-                                    تم تخزين الحاوية بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.storage.details', $storagePolicy->id) }}">{{ $storagePolicy->code }}</a> بواسطة <strong>{{ $storagePolicy->made_by->name }}</strong> و موقعها في الساحه <i class="fas fa-map-marker-alt text-muted me-1 ms-1"></i> <strong>{{ $container->location }}</strong> 
+                                    تم تخزين الحاوية بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.storage.details', $storagePolicy) }}">{{ $storagePolicy->code }}</a> بواسطة <strong>{{ $storagePolicy->made_by->name }}</strong> و موقعها في الساحه <i class="fas fa-map-marker-alt text-muted me-1 ms-1"></i> <strong>{{ $container->location }}</strong> 
                                 </div>
                                 <small class="bg-light p-3 rounded-3 mt-3 d-flex gap-5">
                                     <div>
@@ -288,7 +288,7 @@
                                     </small>
                                 </div>
                                 <div class="text-muted">
-                                    تم تسليم الحاوية للعميل <strong>{{ $receivePolicy->customer->name }}</strong> بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.receive.details', $receivePolicy->id) }}">{{ $receivePolicy->code }}</a> بواسطة <strong>{{ $receivePolicy->made_by->name }}</strong>
+                                    تم تسليم الحاوية للعميل <strong>{{ $receivePolicy->customer->name }}</strong> بموجب إتفاقية رقم <a class="fw-bold text-decoration-none" href="{{ route('policies.receive.details', $receivePolicy) }}">{{ $receivePolicy->code }}</a> بواسطة <strong>{{ $receivePolicy->made_by->name }}</strong>
                                 </div>
                                 <small class="bg-light p-3 rounded-3 mt-3 d-flex gap-5">
                                     <div>
@@ -329,7 +329,7 @@
                                     </small>
                                 </div>
                                 <p class="text-muted">
-                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.details', $invoice->code) }}" class="text-decoration-none fw-bold">{{ $invoice->code }}</a> بواسطة <strong>{{ $invoice->made_by->name }}</strong>
+                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none fw-bold">{{ $invoice->code }}</a> بواسطة <strong>{{ $invoice->made_by->name }}</strong>
                                 </p>
                             </div>
                         </div>

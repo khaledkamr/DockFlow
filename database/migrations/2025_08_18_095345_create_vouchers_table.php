@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('code')->unique();
             $table->enum('type', ['سند قبض نقدي', 'سند قبض بشيك', 'سند صرف نقدي', 'سند صرف بشيك']);
             $table->date('date');

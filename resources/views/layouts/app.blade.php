@@ -390,7 +390,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
                                 <li><a class="dropdown-item" href="#">الإعدادات</a></li>
-                                <li><a class="dropdown-item" href="{{ route('company', 1) }}">بيانات الشركة</a></li>
+                                <li><a class="dropdown-item" href="{{ route('company', auth()->user()->company) }}">بيانات الشركة</a></li>
                                 <li><a class="dropdown-item" href="#">الملف الشخصي</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

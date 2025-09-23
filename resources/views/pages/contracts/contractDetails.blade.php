@@ -243,7 +243,7 @@
                 <!-- Upload Form -->
                 <div class="row mb-4">
                     <div class="col-12">
-                        <form action="{{ route('contracts.add.attachment', $contract->id) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-3">
+                        <form action="{{ route('contracts.add.attachment', $contract) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-3">
                             @csrf
                             <div class="flex-grow-1">
                                 <input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls">

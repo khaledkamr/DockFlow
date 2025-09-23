@@ -96,8 +96,7 @@ class ContainerController extends Controller
         return redirect()->back()->with('success', "تم إضافة $count حاويات جديدة بنجاح");
     }
 
-    public function containerUpdate(Request $request, $id) {
-        $container = Container::findOrFail($id);
+    public function containerUpdate(Request $request, Container $container) {
         $name = $container->code;
         $container->location = $request->location;
       
@@ -206,8 +205,7 @@ class ContainerController extends Controller
         return redirect()->back()->with('success', 'تم إضافة الخدمة الى الحاوية بنجاح');
     }
 
-    public function containerDetails($id) {
-        $container = Container::with(['customer', 'policies', 'invoices', 'services'])->findOrFail($id);
+    public function containerDetails(Container $container) {
         $storagePolicy = $container->policies->where('type', 'تخزين')->first();
         $receivePolicy = $container->policies->where('type', 'تسليم')->first();
         $invoice = $container->invoices->first();

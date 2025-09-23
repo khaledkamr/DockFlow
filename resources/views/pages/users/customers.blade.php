@@ -179,7 +179,7 @@
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $customer->account->code }}</td>
                         <td class="text-center">
-                            <a href="{{ route('users.customer.profile', $customer->id) }}"
+                            <a href="{{ route('users.customer.profile', $customer) }}"
                                 class="text-dark fw-bold text-decoration-none">
                                 {{ $customer->name }}
                             </a>
@@ -207,9 +207,10 @@
                                     <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('users.customer.update', $customer->id) }}" method="POST">
+                                <form action="{{ route('users.customer.update', $customer) }}" method="POST">
                                     @csrf
                                     @method('PUT')
+                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                     <div class="modal-body text-dark">
                                         <div class="row mb-3">
                                             <div class="col">
@@ -282,7 +283,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('users.customer.delete', $customer->id) }}" method="POST">
+                                    <form action="{{ route('users.customer.delete', $customer) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger fw-bold">حذف</button>

@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('driver_name');

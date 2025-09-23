@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Traits\BelongsToCompany;
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class Policy extends Model
 {
-    use BelongsToCompany;
+    use BelongsToCompany, HasUuid;
     
     protected $fillable = [
         'contract_id',

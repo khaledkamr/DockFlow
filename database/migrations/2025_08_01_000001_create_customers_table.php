@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('name');            
             $table->string('CR');                // السجل التجاري
             $table->string('TIN');               // الرقم الضريبي

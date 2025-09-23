@@ -87,7 +87,7 @@
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
                         <td class="text-center">{{ $policy->made_by->name ?? "-" }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy->id) : route('policies.receive.details', $policy->id) }}" 
+                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy) : route('policies.receive.details', $policy) }}" 
                                 class="btn btn-sm btn-primary">
                                 عرض
                             </a>
