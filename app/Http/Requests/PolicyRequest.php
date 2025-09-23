@@ -23,6 +23,7 @@ class PolicyRequest extends FormRequest
             'driver_NID' => 'required',
             'driver_car' => 'required',
             'car_code' => 'required',
+            'tax_statement' => 'nullable|string',
         ];
     }
 }

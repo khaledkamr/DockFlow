@@ -21,6 +21,7 @@ class Policy extends Model
         'date',
         'code',
         'type',
+        'tax_statement',
         'user_id',
         'company_id',
     ];

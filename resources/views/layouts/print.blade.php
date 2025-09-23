@@ -38,7 +38,7 @@
         }
     </style>
 </head>
-<body>
+<body onload="initPrint()">
     <div class="d-flex justify-content-between mx-3 mt-3">
         <div class="d-flex flex-column align-items-start">
             <span class="small">تاريخ الطباعة</span>
@@ -68,5 +68,15 @@
             طباعة <i class="fa-solid fa-print ps-1"></i>
         </button>
     </div>
+
+    {{-- <script>
+        function initPrint() {
+            window.print();
+
+            window.onafterprint = () => {
+                window.close();
+            };
+        }
+    </script> --}}
 </body>
 </html>
