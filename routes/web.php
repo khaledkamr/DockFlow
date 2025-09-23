@@ -19,6 +19,12 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::get('/', 'dashboard')->name('admin.home');
     Route::get('/company/{company:uuid}', 'company')->name('company');
     Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
+    Route::get('users', 'users')->name('admin.users');
+    Route::post('users/store', 'storeUser')->name('admin.users.store');
+    Route::get('users/{user:uuid}', 'userProfile')->name('admin.user.profile');
+    Route::put('users/update/{user:uuid}', 'updateUser')->name('admin.users.update');
+    Route::delete('users/delete/{user:uuid}', 'deleteUser')->name('admin.users.delete');
+    Route::get('roles', 'roles')->name('admin.roles');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -28,11 +34,11 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(CustomerController::class)->middleware('auth')->group(function () {
-    Route::get('/users/customers', 'customers')->name('users.customers');
-    Route::get('/users/customer/{customer:uuid}', 'customerProfile')->name('users.customer.profile');
-    Route::post('/users/customer/store', 'storeCustomer')->name('users.customer.store');
-    Route::put('/users/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
-    Route::delete('/users/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
+    Route::get('/customers', 'customers')->name('users.customers');
+    Route::get('/customer/{customer:uuid}', 'customerProfile')->name('users.customer.profile');
+    Route::post('/customer/store', 'storeCustomer')->name('users.customer.store');
+    Route::put('/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
+    Route::delete('/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
 });
 
 Route::controller(ContainerController::class)->middleware('auth')->group(function () {
