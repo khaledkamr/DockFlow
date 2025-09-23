@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Container extends Model
 {
+    use BelongsToCompany;
     protected $fillable = [
         'code', 
         'status', 
@@ -16,7 +18,8 @@ class Container extends Model
         'location',
         'notes',
         'date',
-        'exit_date'
+        'exit_date',
+        'company_id',
     ];
 
     public function containerType() {

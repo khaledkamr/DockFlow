@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->string('NID')->nullable()->unique();
             $table->string('phone')->nullable();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });

@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('accounts', function (Blueprint $table) {
@@ -19,13 +16,11 @@ return new class extends Migration
             $table->foreignId('type_id')->constrained('account_types')->cascadeOnDelete();
             $table->unsignedInteger('level')->default(1);
             $table->boolean('is_active')->default(true);
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('accounts');

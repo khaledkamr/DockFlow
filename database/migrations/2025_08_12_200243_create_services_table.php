@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->enum('type', ['primary', 'additional'])->default('additional');
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

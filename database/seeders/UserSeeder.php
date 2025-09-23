@@ -15,19 +15,24 @@ class UserSeeder extends Seeder
                 'name' => 'خالد قمر',
                 'email' => 'kk@gmail.com',
                 'password' => Hash::make('111'),
+                'company_id' => 1
             ],
             [
                 'name' => 'أدمن',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('111'),
+                'company_id' => 1
+            ],
+            [
+                'name' => 'محمد',
+                'email' => 'mo@gmail.com',
+                'password' => Hash::make('111'),
+                'company_id' => 2
             ],
         ];
 
         foreach ($users as $user) {
-            User::updateOrCreate(
-                ['email' => $user['email']],
-                $user 
-            );
+            User::updateOrCreate(['email' => $user['email']], $user);
         }
     }
 }

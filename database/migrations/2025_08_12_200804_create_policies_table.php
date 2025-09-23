@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->enum('type', ['تخزين', 'تسليم'])->default('تخزين');
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

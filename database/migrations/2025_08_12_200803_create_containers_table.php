@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('exit_date')->nullable();
             $table->foreignId('container_type_id')->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

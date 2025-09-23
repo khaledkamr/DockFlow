@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Policy extends Model
 {
+    use BelongsToCompany;
+    
     protected $fillable = [
         'contract_id',
         'customer_id',
@@ -17,7 +20,8 @@ class Policy extends Model
         'date',
         'code',
         'type',
-        'user_id'
+        'user_id',
+        'company_id',
     ];
 
     public function contract() {

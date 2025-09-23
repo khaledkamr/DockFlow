@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'name',
         'code',
         'parent_id',
         'type_id',
         'level',
-        'is_active'
+        'is_active',
+        'company_id',
     ];
 
     public function type() {
