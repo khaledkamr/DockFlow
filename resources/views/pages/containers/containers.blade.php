@@ -98,12 +98,30 @@
     @endpush
 @endif
 
+@if (session('error'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('error') }}", "danger");
+        </script>
+    @endpush
+@endif
+
 @if (session('errors'))
     @push('scripts')
         <script>
             showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
         </script>
     @endpush
+@endif
+
+@if ($errors->any())
+    @foreach ($errors->all() as $error)
+        @push('scripts')
+            <script>
+                showToast("{{ $error }}", "danger");
+            </script>
+        @endpush
+    @endforeach
 @endif
 
 <div class="table-container">
@@ -169,9 +187,9 @@
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تحديث بيانات الحاوية"></i>
                             </button>
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container->id }}">
+                            {{-- <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container->id }}">
                                 <i class="fa-solid fa-trash-can text-danger" title="حذف الحاوية"></i>
-                            </button>
+                            </button> --}}
                         </td>
                     </tr>
 

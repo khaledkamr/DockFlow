@@ -30,6 +30,9 @@ class AccountingController extends Controller
 
     public function deleteRoot($id) {
         $root = Account::findOrFail($id);
+        if($root->children()->exists()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود مستويات فرعية مرتبطة به');
+        }
         $name = $root->name;
         $root->delete();
         return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");

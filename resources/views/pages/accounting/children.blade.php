@@ -85,9 +85,6 @@
                         <div class="modal-body text-center text-dark">
                             <p>هل انت متاكد من حذف <strong>{{ $child->name }}</strong> من دليل الحسابات؟</p>
                         </div>
-                        <p class="text-danger text-center px-3">
-                            سوف يتم حذف جميع الفروع المرتبطة بهذا الحساب.!
-                        </p>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                             <button type="submit" class="btn btn-danger fw-bold">حذف</button>
