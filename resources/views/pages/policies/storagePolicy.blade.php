@@ -113,6 +113,18 @@
                 @endif
             </div>
         </div>
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label">البيان الضريبي</label>
+                <input type="text" name="tax_statement" class="form-control border-primary">
+                @error('tax_statement')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
 
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">

@@ -63,13 +63,13 @@
 
     @yield('content')
 
-    {{-- <div class="text-center no-print my-3">
+    <div class="text-center no-print my-3">
         <button class="btn text-white border-0 shadow-lg fw-bold" onclick="window.print()">
             طباعة <i class="fa-solid fa-print ps-1"></i>
         </button>
-    </div> --}}
+    </div>
 
-    <script>
+    {{-- <script>
         function initPrint() {
             window.print();
 
@@ -77,6 +77,6 @@
                 window.close();
             };
         }
-    </script>
+    </script> --}}
 </body>
 </html>

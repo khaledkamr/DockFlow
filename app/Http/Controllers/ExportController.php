@@ -71,7 +71,8 @@ class ExportController extends Controller
             foreach($request->containers as $container) {
                 $policyContainers[] = Container::findOrFail($container);
             }
-            return view('reports.entry_permission', compact('company', 'policyContainers'));
+            $policy = $policyContainers[0]->policies->where('type', 'تخزين')->first();
+            return view('reports.entry_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'exit_permission') {
             $policyContainers = [];
             foreach($request->containers as $container) {
