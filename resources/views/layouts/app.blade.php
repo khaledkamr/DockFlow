@@ -215,21 +215,29 @@
             </li>
 
             <li class="nav-item mb-1">
-                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['users*']) ? '' : 'collapsed' }}" 
-                   data-bs-toggle="collapse" 
-                   href="#users-management" 
-                   role="button" 
-                   aria-expanded="{{ request()->routeIs(['users*']) ? 'true' : 'false' }}" 
-                   aria-controls="users-management">
-                    <i class="fa-solid fa-users ms-2 me-2"></i> إدارة المستخدمون
+                <a class="nav-link fw-bold rounded px-3 py-2 {{ request()->routeIs('users.customers') ? 'bg-primary text-white' : 'text-dark' }}" 
+                   href="{{ route('users.customers') }}">
+                    <i class="fa-solid fa-users ms-2 me-2"></i> العـــــمــــــــــــــلاء
                 </a>
-                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['users*']) ? 'show' : '' }}" id="users-management">
-                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('users.customers') ? 'bg-primary text-white' : 'text-dark' }}" 
-                       href="{{ route('users.customers') }}">
-                        <i class="fa-solid fa-user ms-2 me-2"></i> العمــــلاء
-                    </a>
-                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 text-dark" href="">
+            </li>
+
+            <li class="nav-item mb-1">
+                <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['admin*']) ? '' : 'collapsed' }}" 
+                   data-bs-toggle="collapse" 
+                   href="#admin-management" 
+                   role="button" 
+                   aria-expanded="{{ request()->routeIs(['admin*']) ? 'true' : 'false' }}" 
+                   aria-controls="admin-management">
+                    <i class="fa-solid fa-users-gear ms-2 me-2"></i> إدارة المستخدمون
+                </a>
+                <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['admin*']) ? 'show' : '' }}" id="admin-management">
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.users') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('admin.users') }}">
                         <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
+                    </a>
+                    <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.roles') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('admin.roles') }}">
+                        <i class="fa-solid fa-shield-halved ms-2 me-2"></i> الصلاحيات
                     </a>
                 </div>
             </li>

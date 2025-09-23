@@ -55,11 +55,14 @@
                         <div class="row g-4">
                             <div class="col-12">
                                 <div>
-                                    
                                     <div class="row">
                                         <div class="col">
                                             <label class="form-label text-muted small">تاريخ الإتفاقية</label>
                                             <div class="fw-bold fs-5">{{ $policy->created_at->format('Y/m/d') }}</div>
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label text-muted small">البيان الضريبي</label>
+                                            <div class="fw-bold fs-5">{{ $policy->tax_statement }}</div>
                                         </div>
                                         <div class="col">
                                             <label class="form-label text-muted small">تم الإنشاء بواسطة</label>
