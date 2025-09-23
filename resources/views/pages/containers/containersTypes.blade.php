@@ -54,12 +54,30 @@
     @endpush
 @endif
 
+@if (session('error'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('error') }}", "danger");
+        </script>
+    @endpush
+@endif
+
 @if (session('errors'))
     @push('scripts')
         <script>
             showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
         </script>
     @endpush
+@endif
+
+@if ($errors->any())
+    @foreach ($errors->all() as $error)
+        @push('scripts')
+            <script>
+                showToast("{{ $error }}", "danger");
+            </script>
+        @endpush
+    @endforeach
 @endif
 
 <div class="table-container">
@@ -141,9 +159,6 @@
                                 <div class="modal-body text-center text-dark">
                                     هل انت متأكد من حذف  <strong>{{ $containerType->name }}</strong>؟
                                 </div>
-                                <p class="text-danger text-center px-3">
-                                    سوف يتم حذف جميع الحاويات المرتبطة بهذه الفئة.!
-                                </p>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     <form action="{{ route('yard.containers.types.delete', $containerType->id) }}" method="POST">

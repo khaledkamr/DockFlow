@@ -280,9 +280,6 @@
                                 <div class="modal-body text-center text-dark">
                                     هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟
                                 </div>
-                                <p class="text-danger text-center px-3">
-                                    سوف يتم حذف جميع العقود و الحاويات و الفواتير المرتبطة بهذا العميل.!
-                                </p>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     <form action="{{ route('users.customer.delete', $customer->id) }}" method="POST">

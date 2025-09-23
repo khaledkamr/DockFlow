@@ -126,6 +126,9 @@ class ContainerController extends Controller
 
     public function deleteContainerType($id) {
         $containerType = Container_type::findOrFail($id);
+        if($containerType->containers()->exists()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا النوع لوجود حاويات مرتبطة به');
+        }
         $name = $containerType->name;
         $containerType->delete();
         return redirect()->back()->with('success', 'تم حذف ' . $name . ' بنجاح');

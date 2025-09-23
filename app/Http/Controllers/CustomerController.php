@@ -78,6 +78,9 @@ class CustomerController extends Controller
 
     public function deleteCustomer($id) {
         $customer = Customer::findOrFail($id);
+        if($customer->invoices()->exists() || $customer->contract()->exists()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا العميل لوجود تعاملات مرتبطة به');
+        }
         $name = $customer->name;
         $customer->delete();
         return redirect()->back()->with('success', 'تم حذف العميل ' . $name . ' بنجاح');
