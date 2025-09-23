@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('totalCredit', 10, 2);
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('voucher_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

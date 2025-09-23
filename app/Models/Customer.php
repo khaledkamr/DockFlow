@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\Matcher\Contains;
 
 class Customer extends Model
 {
+    use BelongsToCompany;
+    
     protected $fillable = [
         'name',
         'CR',
@@ -15,7 +18,8 @@ class Customer extends Model
         'phone',
         'email',
         'account_id',
-        'user_id'
+        'user_id',
+        'company_id',
     ];
 
     public function contract() {

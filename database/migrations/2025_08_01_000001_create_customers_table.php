@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->unsignedBigInteger('account_id');
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

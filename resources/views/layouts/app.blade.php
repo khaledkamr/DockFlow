@@ -361,8 +361,8 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg bg-white shadow-sm" style="height: 70px;">
             <div class="container-fluid">
-                <a class="navbar-brand text-dark fw-bold" href="#">شركة تاج الأعمال للخدمات اللوجستية</a>
-                
+                <a class="navbar-brand text-dark fw-bold" href="#">{{ auth()->user()->company->name }}</a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
                         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -407,7 +407,7 @@
                         
                         <div class="d-flex align-items-center text-dark">
                             {{ Auth::user()->name }}
-                            <i class="fa-solid fa-user-circle fa-2xl text-secondary ms-2"></i>
+                            <i class="fa-solid fa-user-circle fa-2xl text-secondary ms-2 me-2"></i>
                         </div>
                     </div>
                 </div>

@@ -10,22 +10,28 @@ class ServiceSeeder extends Seeder
 {
     public function run(): void
     {
+        $company_id = 1;
+
         $services = [
             [
                 'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا',
-                'type' => 'primary'
+                'type' => 'primary',
+                'company_id' => $company_id
             ],
             [
                 'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها',
-                'type' => 'primary'
+                'type' => 'primary',
+                'company_id' => $company_id
             ],
             [
                 'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة',
-                'type' => 'additional'
+                'type' => 'additional',
+                'company_id' => $company_id
             ],
             [
                 'description' => 'خدمة تفريغ الحاوية',
-                'type' => 'additional'
+                'type' => 'additional',
+                'company_id' => $company_id
             ],
         ];
 

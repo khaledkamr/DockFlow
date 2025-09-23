@@ -19,7 +19,8 @@ class AuthController extends Controller
         ]);
 
         if($valid) {
-            $user = User::where('email', $request->email)->first();
+            $user = Auth::user();
+            session(['company_id' => $user->company_id]);
             return redirect((route('admin.home')))->with('success', "$user->name, مربحاً بك من جديد");
         } 
         else {
@@ -27,8 +28,9 @@ class AuthController extends Controller
         }
     }
 
-    public function logout() {
+    public function logout(Request $request) {
         Auth::logout();
+        $request->session()->invalidate(); 
         return redirect(route('login.form'))->with('success', 'تم تسجيل الخروج من الحساب');
     }
 }

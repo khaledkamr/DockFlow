@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Contract extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'customer_id',
         'company_id',

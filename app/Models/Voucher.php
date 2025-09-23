@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Voucher extends Model
 {
+    use BelongsToCompany;
+
     protected $fillable = [
         'code',
         'type', 
@@ -15,7 +18,8 @@ class Voucher extends Model
         'description',
         'account_id', 
         'is_posted',
-        'user_id'
+        'user_id',
+        'company_id',
     ];
 
     public function account() {

@@ -36,6 +36,10 @@ class CustomerController extends Controller
     }
 
     public function storeCustomer(CustomerRequest $request) {
+        if(Account::where('name', 'عملاء التشغيل')->doesntExist()) {
+            return redirect()->back()->with('error', 'يرجى إنشاء حساب عملاء التشغيل أولاً من شاشة الحسابات');
+        }
+        
         $accountId = Account::where('name', 'عملاء التشغيل')->first()->id;
         $lastCustomer = Account::where('parent_id', $accountId)->latest('id')->first();
         if($lastCustomer) {

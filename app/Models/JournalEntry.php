@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class JournalEntry extends Model
 {
+    use BelongsToCompany;
+    
     protected $fillable = [
         'code',
         'type',
@@ -14,7 +17,8 @@ class JournalEntry extends Model
         'totalCredit',
         'user_id',
         'modified_by',
-        'voucher_id'
+        'voucher_id',
+        'company_id',
     ];
 
     public function lines() {

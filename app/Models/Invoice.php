@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    use BelongsToCompany;
+    
     protected $fillable = [
         'customer_id', 
         'code',
@@ -14,7 +17,8 @@ class Invoice extends Model
         'payment_method',
         'date',
         'payment',
-        'user_id'
+        'user_id',
+        'company_id',
     ];
 
     public function customer() {

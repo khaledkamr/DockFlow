@@ -127,6 +127,14 @@
     @endpush
 @endif
 
+@if (session('error'))
+    @push('scripts')
+        <script>
+            showToast("{{ session('error') }}", "danger");
+        </script>
+    @endpush
+@endif
+
 @if (session('errors'))
     @push('scripts')
         <script>
