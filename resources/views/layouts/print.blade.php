@@ -38,7 +38,7 @@
         }
     </style>
 </head>
-<body>
+<body onload="initPrint()">
     <div class="d-flex justify-content-between mx-3 mt-3">
         <div class="d-flex flex-column align-items-start">
             <span class="small">تاريخ الطباعة</span>
@@ -63,10 +63,20 @@
 
     @yield('content')
 
-    <div class="text-center no-print my-3">
+    {{-- <div class="text-center no-print my-3">
         <button class="btn text-white border-0 shadow-lg fw-bold" onclick="window.print()">
             طباعة <i class="fa-solid fa-print ps-1"></i>
         </button>
-    </div>
+    </div> --}}
+
+    <script>
+        function initPrint() {
+            window.print();
+
+            window.onafterprint = () => {
+                window.close();
+            };
+        }
+    </script>
 </body>
 </html>
