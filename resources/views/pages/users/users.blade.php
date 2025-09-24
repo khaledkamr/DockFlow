@@ -102,9 +102,9 @@
                             </div>
                             <div class="col">
                                 <label class="form-label">رقم الهوية الوطنية</label>
-                                <input type="text" class="form-control border-primary" name="nid"
-                                    value="{{ old('nid') }}">
-                                @error('nid')
+                                <input type="text" class="form-control border-primary" name="NID"
+                                    value="{{ old('NID') }}">
+                                @error('NID')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -122,10 +122,11 @@
                                 <label class="form-label">الوظيفة</label>
                                 <select class="form-select border-primary" name="role">
                                     <option value="">اختر الوظيفة</option>
-                                    <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>مدير</option>
-                                    <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>مستخدم</option>
-                                    <option value="manager" {{ old('role') === 'manager' ? 'selected' : '' }}>مشرف
-                                    </option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}" {{ old('role') === $role->id ? 'selected' : '' }}>
+                                            {{ $role->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @error('role')
                                     <div class="text-danger">{{ $message }}</div>

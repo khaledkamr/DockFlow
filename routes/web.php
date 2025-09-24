@@ -25,6 +25,9 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::put('users/update/{user:uuid}', 'updateUser')->name('admin.users.update');
     Route::delete('users/delete/{user:uuid}', 'deleteUser')->name('admin.users.delete');
     Route::get('roles', 'roles')->name('admin.roles');
+    Route::post('roles/store', 'storeRole')->name('admin.roles.store');
+    Route::put('roles/update/{role:id}', 'updateRole')->name('admin.roles.update');
+    Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
 });
 
 Route::controller(AuthController::class)->group(function () {

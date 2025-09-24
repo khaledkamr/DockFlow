@@ -100,7 +100,7 @@
             @else
                 @foreach ($containerTypes as $containerType)
                     <tr>
-                        <td class="text-center">{{ $containerType->id }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $containerType->id }}</td>
                         <td class="text-center">{{ $containerType->name }}</td>
                         <td class="text-center text-success fw-bold">{{ $containerType->daily_price }} ريال</td>
                         <td class="action-icons text-center">

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
+    // use BelongsToCompany;
+
     protected $fillable = [
         "name",
     ];
@@ -15,6 +18,6 @@ class Role extends Model
     }
 
     public function permissions() {
-        return $this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class, 'role_permissions');
     }
 }

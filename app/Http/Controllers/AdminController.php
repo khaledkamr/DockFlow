@@ -10,7 +10,9 @@ use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Permission;
 use App\Models\Policy;
+use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -64,7 +66,8 @@ class AdminController extends Controller
 
     public function users() {
         $users = User::all();
-        return view('pages.users.users', compact('users'));
+        $roles = Role::all();
+        return view('pages.users.users', compact('users', 'roles'));
     }
 
     public function userProfile(User $user) {
@@ -123,6 +126,29 @@ class AdminController extends Controller
     }
 
     public function roles() {
-        return view('pages.users.roles');
+        $roles = Role::all();
+        $permissions = Permission::all();
+        return view('pages.users.roles', compact('roles', 'permissions'));
+    }
+
+    public function storeRole(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:roles,name',
+        ]);
+        $role = Role::create([
+            'name' => $request->name,
+        ]);
+        $role->permissions()->attach($request->permissions);
+        return redirect()->back()->with('success', 'تم إضافة وظيفة جديدة بنجاح');
+    }
+
+    public function updateRole(Request $request, Role $role) {
+        $role->permissions()->sync($request->permissions);
+        return redirect()->back()->with('success', 'تم تحديث صلاحيات الوظيفة بنجاح');
+    }
+
+    public function deleteRole(Role $role) {
+        $role->delete();
+        return redirect()->back()->with('success', 'تم حذف الوظيفة بنجاح');
     }
 }
