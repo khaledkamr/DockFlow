@@ -36,7 +36,7 @@ class CustomerController extends Controller
     }
 
     public function storeCustomer(CustomerRequest $request) {
-        if(Gate::allows('إنشاء عميل') == false) {
+        if(Gate::allows('إضافة عميل') == false) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء عميل');
         }
         if(Account::where('name', 'عملاء التشغيل')->doesntExist()) {

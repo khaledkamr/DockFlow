@@ -39,27 +39,33 @@
     </style>
 </head>
 <body onload="initPrint()">
-    <div class="d-flex justify-content-between mx-3 mt-3">
-        <div class="d-flex flex-column align-items-start">
-            <span class="small">تاريخ الطباعة</span>
-            <span class="small fw-bold">{{ Carbon\Carbon::now()->format('Y/m/d') }}</span>
-        </div>
+    <div class="d-flex justify-content-center">
         <div class="text-center">
             <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
             <h6 class="fw-bold">{{ $company->name }}</h6>
-            <div style="font-size: 10px;">
+            <div style="font-size: 15px;">
                 CR: {{ $company->CR }} | 
                 TIN: {{ $company->TIN }} | 
                 phone: <span class="text-primary">{{ $company->phone }}</span> | 
                 email: <span class="text-primary">{{ $company->email }} </span>
             </div>
         </div>
-        <div class="d-flex flex-column align-items-end">
-            <span class="small">أعد بواسطة</span>
-            <span class="small fw-semibold">{{ Auth::user()->name }}</span>
-        </div>
     </div>
     <hr class="mt-1">
+
+    <div class="position-fixed bottom-0 start-0 end-0 bg-white border-top p-2 no-print-footer" style="z-index: 9999;">
+        <div class="d-flex justify-content-between small text-muted">
+            <div>
+                <span>أعد بواسطة: </span>
+                <span class="fw-semibold">{{ Auth::user()->name }}</span>
+            </div>
+            <div>
+                <span>تاريخ الطباعة: </span>
+                <span class="fw-bold">{{ Carbon\Carbon::now()->format('Y/m/d') }}</span>
+            </div>
+        </div>
+    </div>
+
 
     @yield('content')
 

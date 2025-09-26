@@ -31,14 +31,14 @@
                         طباعة اذن خروج
                     </button>
                 </form>
-                <button class="btn btn-primary me-2">
+                {{-- <button class="btn btn-primary me-2">
                     <i class="fas fa-print me-1"></i>
                     طباعة الإتفاقية
                 </button>
                 <button class="btn btn-secondary">
                     <i class="fas fa-download me-1"></i>
                     تحميل PDF
-                </button>
+                </button> --}}
             </div>
         </div>
 
