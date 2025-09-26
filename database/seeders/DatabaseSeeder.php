@@ -13,13 +13,15 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // CompanySeeder::class,
             // AccountTypesSeeder::class,
-            // AccountsSeeder::class,
-            PrimaryAccountSeeder::class,
-            UserSeeder::class,
-            ContainerTypesSeeder::class,
-            ServiceSeeder::class,
-            RoleSeeder::class,
-            PermissionSeeder::class,
+            // // AccountsSeeder::class,
+            // PrimaryAccountSeeder::class,
+            // UserSeeder::class,
+            // ContainerTypesSeeder::class,
+            // ServiceSeeder::class,
+            // RoleSeeder::class,
+            // PermissionSeeder::class,
+            UserRoleSeeder::class,
+            // RolePermissionsSeeder::class
         ]);
     }
 }

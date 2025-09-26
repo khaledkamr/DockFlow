@@ -70,36 +70,7 @@
     <div class="d-block text-center">
         <button type="button" class="btn btn-primary btn-sm px-3 rounded-5" id="add-row">+ إضافة سطر</button>
     </div>
-    @if (session('success'))
-        @push('scripts')
-            <script>
-                showToast("{{ session('success') }}", "success");
-            </script>
-        @endpush
-    @endif
-    @if (session('error'))
-        @push('scripts')
-            <script>
-                showToast("{{ session('error') }}", "danger");
-            </script>
-        @endpush
-    @endif
-    @if (session('errors'))
-        @push('scripts')
-            <script>
-                showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-            </script>
-        @endpush
-    @endif
-    @if ($errors->any())
-        @push('scripts')
-            <script>
-                @foreach ($errors->all() as $error)
-                    showToast("{{ $error }}", "danger");
-                @endforeach
-            </script>
-        @endpush
-    @endif
+
     <button type="submit" id="submit" class="btn btn-primary fw-bold">حفظ القيد</button>
 </form>
 

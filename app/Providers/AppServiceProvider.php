@@ -2,12 +2,19 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        // يمكنك إضافة Policies هنا إذا كنت تستخدمها
+    ];
+
     /**
      * Register any application services.
      */
@@ -19,9 +26,20 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-     public function boot(): void
+    public function boot(): void
     {
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
+
+        // $this->registerPolicies();
+
+        // تعريف Gate لكل Permission
+        $permissions = Permission::all()->pluck('name')->toArray();
+
+        foreach ($permissions as $permission) {
+            Gate::define($permission, function (User $user) use ($permission) {
+                return $user->hasPermission($permission);
+            });
+        }
     }
 }

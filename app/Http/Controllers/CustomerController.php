@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use App\Models\Account;
+use Illuminate\Support\Facades\Gate;
 
 class CustomerController extends Controller
 {
@@ -35,6 +36,9 @@ class CustomerController extends Controller
     }
 
     public function storeCustomer(CustomerRequest $request) {
+        if(Gate::allows('إنشاء عميل') == false) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء عميل');
+        }
         if(Account::where('name', 'عملاء التشغيل')->doesntExist()) {
             return redirect()->back()->with('error', 'يرجى إنشاء حساب عملاء التشغيل أولاً من شاشة الحسابات');
         }
@@ -69,12 +73,18 @@ class CustomerController extends Controller
     }
 
     public function updateCustomer(CustomerRequest $request, Customer $customer) {
+        if(Gate::allows('تعديل عميل') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل بيانات عميل');
+        }
         $validated = $request->validated();
         $customer->update($validated);
         return redirect()->back()->with('success', 'تم تحديث بيانات العميل بنجاح');
     }
 
     public function deleteCustomer(Customer $customer) {
+        if(Gate::allows('حذف عميل') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف عميل');
+        }
         if($customer->invoices()->exists() || $customer->contract()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا العميل لوجود تعاملات مرتبطة به');
         }

@@ -73,19 +73,4 @@
     </form>
 </div>
 
-@if (session('success'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('success') }}", "success");
-        </script>
-    @endpush
-@endif
-
-@if (session('errors'))
-    @push('scripts')
-        <script>
-            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-        </script>
-    @endpush
-@endif
 @endsection

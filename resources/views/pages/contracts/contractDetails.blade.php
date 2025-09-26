@@ -20,30 +20,6 @@
             </div>
         </div>
 
-        @if (session('success'))
-            @push('scripts')
-                <script>
-                    showToast("{{ session('success') }}", "success");
-                </script>
-            @endpush
-        @endif
-
-        @if (session('error'))
-            @push('scripts')
-                <script>
-                    showToast("{{ session('error') }}", "danger");
-                </script>
-            @endpush
-        @endif
-
-        @if (session('errors'))
-            @push('scripts')
-                <script>
-                    showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-                </script>
-            @endpush
-        @endif
-
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <h5 class="card-title mb-0">

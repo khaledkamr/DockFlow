@@ -14,6 +14,7 @@ use App\Models\Policy;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class PolicyController extends Controller
 {
@@ -45,6 +46,9 @@ class PolicyController extends Controller
     }
 
     public function storagePolicy(Request $request) {
+        if(Gate::denies('إنشاء اتفاقية')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
+        }
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
@@ -74,6 +78,9 @@ class PolicyController extends Controller
     }
     
     public function createReceivePolicy() {
+        if(Gate::denies('إنشاء اتفاقية')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
+        }
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         return view('pages.policies.receivePolicy', compact('company', 'customers'));

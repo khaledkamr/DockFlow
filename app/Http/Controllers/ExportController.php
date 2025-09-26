@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
+use Illuminate\Support\Facades\Gate;
 
 class ExportController extends Controller
 {
@@ -93,6 +94,10 @@ class ExportController extends Controller
     }
 
     public function printInvoice($code) {
+        if(Gate::denies('طباعة فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
+        }
+        
         $company = Company::first();
         $invoice = Invoice::with('containers')->where('code', $code)->first();
 

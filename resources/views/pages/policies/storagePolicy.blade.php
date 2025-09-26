@@ -9,36 +9,10 @@
 
 <h2 class="mb-4">إضافة إتفاقية تخزين</h2>
 
-@if (session('success'))
-    @push('scripts')
-        <script>
-            showToast(`{!! session('success') !!}`, "success");
-        </script>
-    @endpush
-@endif
-
 @if (session('yard'))
     @push('scripts')
         <script>
             showToast("{{ session('yard') }}", "success");
-        </script>
-    @endpush
-@endif
-
-@if (session('errors'))
-    @push('scripts')
-        <script>
-            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-        </script>
-    @endpush
-@endif
-
-@if ($errors->any())
-    @push('scripts')
-        <script>
-            @foreach ($errors->all() as $error)
-                showToast("{{ $error }}", "danger");
-            @endforeach
         </script>
     @endpush
 @endif

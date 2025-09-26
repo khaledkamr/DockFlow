@@ -11,6 +11,7 @@ use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ContractController extends Controller
@@ -36,6 +37,9 @@ class ContractController extends Controller
     }
 
     public function createContract() {
+        if(Gate::allows('إضافة عقد') == false) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول لهذه الصفحة');
+        }
         $company = Company::first();
         $customers = Customer::all();
         $services = Service::all();
@@ -74,6 +78,9 @@ class ContractController extends Controller
     }
 
     public function storeService(Request $request) {
+        if(Gate::allows('إضافة خدمة') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء خدمة');
+        }
         if(!$request->description) {
             return redirect()->back()->with('error', 'وصف الخدمة مطلوب');
         }
@@ -82,6 +89,9 @@ class ContractController extends Controller
     }
 
     public function updateService(Request $request, $id) {
+        if(Gate::allows('تعديل خدمة') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل الخدمة');
+        }
         if(!$request->description) {
             return redirect()->back()->with('error', 'وصف الخدمة مطلوب');
         }
@@ -92,6 +102,9 @@ class ContractController extends Controller
     }
 
     public function deleteService($id) {
+        if(Gate::allows('حذف خدمة') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف الخدمة');
+        }
         $service = Service::findOrFail($id);
         if($service->type == 'primary') {
             return redirect()->back()->with('error', 'لا يمكنك حذف هذه الخدمة');
@@ -101,6 +114,9 @@ class ContractController extends Controller
     }
 
     public function attachFile(Request $request, Contract $contract) {
+        if(Gate::allows('إرفاق مستند الى العقد') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإرفاق مستندات للعقد');
+        }
         if($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = time() . '_' . $file->getClientOriginalName();
@@ -118,6 +134,9 @@ class ContractController extends Controller
     }
 
     public function deleteAttachment($id) {
+        if(Gate::allows('حذف مستند من العقد') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف المرفقات');
+        }
         $attachment = Attachment::findOrFail($id);
         if (Storage::disk('public')->exists($attachment->file_path)) {
             Storage::disk('public')->delete($attachment->file_path);
