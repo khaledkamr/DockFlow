@@ -75,7 +75,7 @@
         </button>
     </div>
 
-    {{-- <script>
+    <script>
         function initPrint() {
             window.print();
 
@@ -83,6 +83,6 @@
                 window.close();
             };
         }
-    </script> --}}
+    </script>
 </body>
 </html>
