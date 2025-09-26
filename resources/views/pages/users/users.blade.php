@@ -28,12 +28,12 @@
                         <option value="all"
                             {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
                             جميع الموظفين</option>
-                        <option value="admin" {{ request()->query('role') === 'admin' ? 'selected' : '' }}>
-                            المدراء</option>
-                        <option value="user" {{ request()->query('role') === 'user' ? 'selected' : '' }}>
-                            الموظفين</option>
-                        <option value="manager" {{ request()->query('role') === 'manager' ? 'selected' : '' }}>
-                            المشرفين</option>
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->id }}"
+                                {{ request()->query('role') == $role->id ? 'selected' : '' }}>
+                                {{ $role->name }}
+                            </option>
+                        @endforeach
                     </select>
                     @if (request()->query('search'))
                         <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -45,7 +45,7 @@
             <button class="btn btn-primary w-100 fw-bold" type="button" data-bs-toggle="modal"
                 data-bs-target="#createUserModal">
                 <i class="fa-solid fa-user-plus pe-1"></i>
-                أضف مستخدم
+                أضف موظف
             </button>
         </div>
     </div>
@@ -134,7 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-start">
                         <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                         <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
                     </div>
@@ -142,40 +142,6 @@
             </div>
         </div>
     </div>
-
-    @if (session('success'))
-        @push('scripts')
-            <script>
-                showToast("{{ session('success') }}", "success");
-            </script>
-        @endpush
-    @endif
-
-    @if (session('error'))
-        @push('scripts')
-            <script>
-                showToast("{{ session('error') }}", "danger");
-            </script>
-        @endpush
-    @endif
-
-    @if (session('errors'))
-        @push('scripts')
-            <script>
-                showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-            </script>
-        @endpush
-    @endif
-
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            @push('scripts')
-                <script>
-                    showToast("{{ $error }}", "danger");
-                </script>
-            @endpush
-        @endforeach
-    @endif
 
     <div class="table-container">
         <table class="table table-hover">
@@ -209,18 +175,8 @@
                             <td class="text-center">{{ $user->email }}</td>
                             <td class="text-center">{{ $user->phone ?? '-' }}</td>
                             <td class="text-center">
-                                <span
-                                    class="badge 
-                                @if ($user->role === 'admin') bg-danger
-                                @elseif($user->role === 'manager') bg-warning
-                                @else bg-primary @endif">
-                                    @if ($user->role === 'admin')
-                                        مدير
-                                    @elseif($user->role === 'manager')
-                                        مشرف
-                                    @else
-                                        موظف
-                                    @endif
+                                <span class="badge bg-primary">
+                                    {{ $user->roles->first()->name }}
                                 </span>
                             </td>
                             <td class="text-center">{{ $user->created_at->format('Y/m/d') }}</td>
@@ -286,35 +242,19 @@
                                                     <label class="form-label">الصلاحية</label>
                                                     <select class="form-select border-primary"
                                                         name="role" required>
-                                                        <option value="admin"
-                                                            {{ $user->role === 'admin' ? 'selected' : '' }}>مدير</option>
-                                                        <option value="user"
-                                                            {{ $user->role === 'user' ? 'selected' : '' }}>مستخدم</option>
-                                                        <option value="manager"
-                                                            {{ $user->role === 'manager' ? 'selected' : '' }}>مشرف</option>
+                                                        @foreach ($roles as $role)
+                                                            <option value="{{ $role->id }}" {{ $user->roles->first()->id === $role->id ? 'selected' : '' }}>
+                                                                {{ $role->name }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                     @error('role')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="row mb-3">
-                                                <div class="col">
-                                                    <label class="form-label">كلمة المرور الجديدة (اتركها فارغة للاحتفاظ بالحالية)</label>
-                                                    <input type="password" class="form-control border-primary"
-                                                        name="password">
-                                                    @error('password')
-                                                        <div class="text-danger">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                                <div class="col">
-                                                    <label class="form-label">تأكيد كلمة المرور</label>
-                                                    <input type="password" class="form-control border-primary"
-                                                        name="password_confirmation">
-                                                </div>
-                                            </div>
                                         </div>
-                                        <div class="modal-footer">
+                                        <div class="modal-footer d-flex justify-content-start">
                                             <button type="button" class="btn btn-secondary fw-bold"
                                                 data-bs-dismiss="modal">إلغاء</button>
                                             <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>

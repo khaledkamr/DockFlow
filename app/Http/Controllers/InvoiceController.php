@@ -12,6 +12,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class InvoiceController extends Controller
 {
@@ -79,6 +80,10 @@ class InvoiceController extends Controller
     }
 
     public function storeInvoice(Request $request) {
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+        
         $containerIds = $request->input('container_ids', []);
         $invoice = Invoice::create([
             'customer_id' => $request->customer_id,
@@ -167,6 +172,9 @@ class InvoiceController extends Controller
     }
 
     public function updateInvoice(Request $request, Invoice $invoice) {
+        if(Gate::denies('تعديل فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل الفواتير');
+        }
         $invoice->payment = $request->payment;
         $invoice->save();
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');

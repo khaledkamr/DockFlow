@@ -215,24 +215,6 @@
     </div>
 </div>
 
-@if (session('success'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('success') }}", "success");
-        </script>
-    @endpush
-@endif
-
-@if ($errors->any())
-    @push('scripts')
-        <script>
-            @foreach ($errors->all() as $error)
-                showToast("{{ $error }}", "danger");
-            @endforeach
-        </script>
-    @endpush
-@endif
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const containersLineChart = document.getElementById('containersLineChart').getContext('2d');

@@ -10,6 +10,7 @@ use App\Http\Requests\ContainerRequest;
 use App\Http\Requests\ContainerTypesRequest;
 use App\Models\Customer;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class ContainerController extends Controller
 {
@@ -64,24 +65,6 @@ class ContainerController extends Controller
         ));
     }
 
-    public function createContainer(Request $request) {
-        $customers = Customer::orderBy('name', 'asc')->get();
-        $containerTypes = Container_type::all();
-        $clientId = $request->input('customer_id', null);
-        $client = [
-            'id' => '',  'name' => '',
-            'CR' => '',  'phone' => '',
-        ];
-        if($clientId) {
-            $customer = Customer::find($clientId);
-            $client = [
-                'id' => $customer->id,  'name' => $customer->name,
-                'CR' => $customer->CR,  'phone' => $customer->phone,
-            ];
-        }
-        return view('pages.containers.createContainer', compact('customers', 'containerTypes', 'client'));
-    }
-
     public function containerStore(Request $request) {
         foreach($request->containers as $container) {
             Container::create([
@@ -97,6 +80,9 @@ class ContainerController extends Controller
     }
 
     public function containerUpdate(Request $request, Container $container) {
+        if(Gate::denies('تعديل حاوية')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الحاوية');
+        }
         $name = $container->code;
         $container->location = $request->location;
       
@@ -111,12 +97,18 @@ class ContainerController extends Controller
     }
 
     public function containerTypeStore(ContainerTypesRequest $request) {
+        if(Gate::denies('إضافة نوع حاوية')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإضافة نوع حاوية');
+        }
         $validated = $request->validated();
         Container_type::create($validated);
         return redirect()->back()->with('success', 'تم إضافة نوع حاوية جديد بنجاح');
     }
 
     public function updateContainerType(ContainerTypesRequest $request, $id) {
+        if(Gate::denies('تعديل نوع حاوية')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل نوع حاوية');
+        }
         $containerType = Container_type::findOrFail($id);
         $validated = $request->validated();
         $containerType->update($validated);
@@ -124,6 +116,9 @@ class ContainerController extends Controller
     }
 
     public function deleteContainerType($id) {
+        if(Gate::denies('حذف نوع حاوية')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف نوع حاوية');
+        }
         $containerType = Container_type::findOrFail($id);
         if($containerType->containers()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا النوع لوجود حاويات مرتبطة به');

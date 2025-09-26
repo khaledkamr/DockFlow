@@ -64,11 +64,11 @@
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <label class="form-label fw-bold">الصلاحيات المتاحة</label>
                                             <div>
-                                                <button type="button" class="btn btn-outline-primary btn-sm me-1" onclick="selectAllPermissions()">
+                                                <button type="button" class="btn btn-outline-primary btn-sm me-1" onclick="selectAllPermissions({{ $role->id }})">
                                                     <i class="fa-solid fa-check-double me-1"></i>
                                                     تحديد الكل
                                                 </button>
-                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deselectAllPermissions()">
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deselectAllPermissions({{ $role->id }})">
                                                     <i class="fa-solid fa-times me-1"></i>
                                                     إلغاء الكل
                                                 </button>
@@ -80,7 +80,7 @@
                                                 @forelse($permissions ?? [] as $permission)
                                                     <div class="col-md-6 mb-2">
                                                         <div class="form-check">
-                                                            <input class="form-check-input permission-checkbox" 
+                                                            <input class="form-check-input permission-checkbox permission-checkbox-{{ $role->id }}" 
                                                                 type="checkbox" value="{{ $permission->id }}" 
                                                                 id="edit_permission_{{ $permission->id }}" name="permissions[]" 
                                                                 {{ in_array($permission->id, $role->permissions->pluck('id')->toArray()) ? 'checked' : '' }}>
@@ -97,11 +97,11 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="mt-2">
+                                        {{-- <div class="mt-2">
                                             <small class="text-muted">
                                                 <span id="selectedCount">0</span> من {{ count($permissions ?? []) }} صلاحية محددة
                                             </small>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                                 <div class="modal-footer d-flex justify-content-start">
@@ -202,69 +202,9 @@
     </div>
 </div>
 
-@if (session('success'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('success') }}", "success");
-        </script>
-    @endpush
-@endif
-
-@if (session('error'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('error') }}", "danger");
-        </script>
-    @endpush
-@endif
-
-@if (session('errors'))
-    @push('scripts')
-        <script>
-            showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-        </script>
-    @endpush
-@endif
-
-@if ($errors->any())
-    @foreach ($errors->all() as $error)
-        @push('scripts')
-            <script>
-                showToast("{{ $error }}", "danger");
-            </script>
-        @endpush
-    @endforeach
-@endif
-
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Update selected permissions count
-        function updateSelectedCount() {
-            const checkedBoxes = document.querySelectorAll('.permission-checkbox:checked').length;
-            document.getElementById('selectedCount').textContent = checkedBoxes;
-        }
-
-        // Add event listeners to permission checkboxes
-        document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', updateSelectedCount);
-        });
-    });
-
-    function selectAllPermissions() {
-        document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
-            checkbox.checked = true;
-        });
-        updateSelectedCount();
-    }
-
-    function deselectAllPermissions() {
-        document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        updateSelectedCount();
-    }
-
+    // Global function to update selected permissions count
     function updateSelectedCount() {
         const checkedBoxes = document.querySelectorAll('.permission-checkbox:checked').length;
         const countElement = document.getElementById('selectedCount');
@@ -272,6 +212,30 @@
             countElement.textContent = checkedBoxes;
         }
     }
+
+    function selectAllPermissions(roleId) {
+        document.querySelectorAll(`.permission-checkbox-${roleId}`).forEach(checkbox => {
+            checkbox.checked = true;
+        });
+        updateSelectedCount();
+    }
+
+    function deselectAllPermissions(roleId) {
+        document.querySelectorAll(`.permission-checkbox-${roleId}`).forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        updateSelectedCount();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners to permission checkboxes
+        document.querySelectorAll('.permission-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+        
+        // Initial count update
+        updateSelectedCount();
+    });
 </script>
 @endpush
 

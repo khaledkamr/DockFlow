@@ -13,6 +13,7 @@ use App\Http\Requests\VoucherRequest;
 use App\Models\Company;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class AccountingController extends Controller
 {
@@ -22,6 +23,9 @@ class AccountingController extends Controller
     }
 
     public function createRoot(RootRequest $request) {
+        if(Gate::denies('إنشاء مستوى حساب')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء مستويات حساب');
+        }
         $validated = $request->validated();
         $name = $validated['name'];
         Account::create($validated);
@@ -29,6 +33,10 @@ class AccountingController extends Controller
     }
 
     public function deleteRoot($id) {
+        if(Gate::denies('حذف مستوى حساب')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف مستويات حساب');
+        }
+
         $root = Account::findOrFail($id);
         if($root->children()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود مستويات فرعية مرتبطة به');
@@ -89,6 +97,10 @@ class AccountingController extends Controller
     }
 
     public function createJournal(JournalRequest $request) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء قيود');
+        }
+
         $totalDebit = 0;
         $totalCredit = 0;
 
@@ -139,6 +151,10 @@ class AccountingController extends Controller
     }
 
     public function createVoucher(VoucherRequest $request) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء سندات');
+        }
+
         $code = $request->account_code;
         $validated = $request->validated();
         $account = Account::where('code', $code)->first();
@@ -154,6 +170,10 @@ class AccountingController extends Controller
     }
 
     public function convertToJournal($id) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء قيود');
+        }
+
         $voucher = Voucher::findOrFail($id);
         if($voucher->type == 'سند صرف نقدي') {
             $debitAccount = Account::findOrFail($voucher->account_id);
@@ -196,6 +216,10 @@ class AccountingController extends Controller
     }   
 
     public function reports(Request $request) {
+        if(Gate::denies('تقارير القيود')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
+        }
+        
         $company = Company::first();
         $accounts = Account::where('level', 5)->get();
         $type = $request->input('type');

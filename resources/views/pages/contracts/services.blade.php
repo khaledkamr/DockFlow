@@ -130,32 +130,6 @@
     </div>
 </div>
 
-@if (session('success'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('success') }}", "success");
-        </script>
-    @endpush
-@endif
-
-@if (session('error'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('error') }}", "danger");
-        </script>
-    @endpush
-@endif
-
-@if ($errors->any())
-    @foreach ($errors->all() as $error)
-        @push('scripts')
-            <script>
-                showToast("{{ $error }}", "danger");
-            </script>
-        @endpush
-    @endforeach
-@endif
-
 @endsection
 
 

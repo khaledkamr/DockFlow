@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
 {
@@ -59,20 +60,38 @@ class AdminController extends Controller
     }
 
     public function updateCompany(CompanyRequest $request, Company $company) {
+        if(Gate::allows('تعديل بيانات الشركة') == false) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل بيانات الشركة');
+        }
         $validated = $request->validated();
         $company->update($validated);
         return redirect()->back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
     }
 
-    public function users() {
+    public function users(Request $request) {
         $users = User::all();
         $roles = Role::all();
+
+        $filter = $request->input('role', 'all');
+        if($filter != 'all') {
+            $users = $users->filter(function($user) use ($filter) {
+                return $user->roles->contains('id', $filter);
+            });
+        }
+
+        $search = $request->input('search', '');
+        if($search) {
+            $users = $users->filter(function($user) use ($search) {
+                return str_contains(strtolower($user->name), strtolower($search)) || str_contains(strtolower($user->email), strtolower($search));
+            });
+        }
+
         return view('pages.users.users', compact('users', 'roles'));
     }
 
     public function userProfile(User $user) {
-        // return $user;
-        return view('pages.users.userProfile', compact('user'));
+        $roles = Role::all();
+        return view('pages.users.userProfile', compact('user', 'roles'));
     }
 
     public function storeUser(Request $request) {
@@ -94,7 +113,7 @@ class AdminController extends Controller
             'NID' => $request->NID,
             'company_id' => Auth::user()->company_id,
         ]);
-        // $user->roles()->attach($request->role == 'admin' ? 1 : 2);
+        $user->roles()->attach($request->role);
         return redirect()->back()->with('success', 'تم إضافة مستخدم جديد بنجاح');
     }
 
@@ -116,8 +135,20 @@ class AdminController extends Controller
             $validated['password'] = Hash::make($request->password);
         }
         $user->update($validated);
-        // $user->roles()->sync($request->role == 'admin' ? 1 : 2);
+        $user->roles()->sync($request->role);
         return redirect()->back()->with('success', 'تم تحديث بيانات المستخدم بنجاح');
+    }
+
+    public function updatePassword(Request $request, User $user) {
+        $request->validate([
+            'password' => 'required|string|min:3|confirmed',
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->back()->with('success', 'تم تحديث كلمة المرور بنجاح');
     }
 
     public function deleteUser(User $user) {
