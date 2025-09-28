@@ -21,7 +21,7 @@ class AuthController extends Controller
         if($valid) {
             $user = Auth::user();
             session(['company_id' => $user->company_id]);
-            return redirect((route('admin.home')))->with('success', "$user->name, مربحاً بك من جديد");
+            return redirect((route('dashboard')))->with('success', "$user->name, مربحاً بك من جديد");
         } 
         else {
             return redirect(route('login.form'))->with('error', 'البريد الإلكتروني او كلمة السر غير صحيحة');
