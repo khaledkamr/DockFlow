@@ -111,7 +111,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                     <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
                 </div>
             </form>

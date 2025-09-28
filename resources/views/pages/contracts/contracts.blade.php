@@ -68,7 +68,7 @@
             @if ($contracts->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-danger fs-6">لم يتم العثور على اي إتفاقيات!</div>
+                        <div class="status-danger fs-6">لم يتم العثور على اي عقود!</div>
                     </td>
                 </tr>
             @else

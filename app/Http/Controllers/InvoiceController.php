@@ -161,8 +161,8 @@ class InvoiceController extends Controller
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
-            $invoice->customer->name,
-            $invoice->customer->CR,
+            $invoice->company->name,
+            $invoice->company->CR,
             $invoice->created_at->toIso8601String(),
             number_format($invoice->total, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')

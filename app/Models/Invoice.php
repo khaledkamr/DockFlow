@@ -36,6 +36,10 @@ class Invoice extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function company() {
+        return $this->belongsTo(Company::class);
+    }
+
     protected static function booted()
     {
         static::creating(function ($invoice) {
