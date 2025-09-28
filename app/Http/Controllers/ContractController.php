@@ -42,6 +42,9 @@ class ContractController extends Controller
         }
         $company = Company::first();
         $customers = Customer::all();
+        $customers = $customers->filter(function($customer) {
+            return !$customer->contract;
+        });
         $services = Service::all();
         return view('pages.contracts.createContract', compact('company', 'customers', 'services'));
     }

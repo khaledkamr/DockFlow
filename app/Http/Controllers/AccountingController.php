@@ -190,7 +190,7 @@ class AccountingController extends Controller
         }
 
         $journal = JournalEntry::create([
-            'date' => Carbon::now()->format('Y-m-d'),
+            'date' => Carbon::now(),
             'totalDebit' => $voucher->amount,
             'totalCredit' => $voucher->amount,
             'user_id' => Auth::user()->id,

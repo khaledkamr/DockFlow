@@ -15,7 +15,7 @@ class UserRoleSeeder extends Seeder
         $userRoles = [
             ['user_id' => 1, 'role_id' => $admin->id],
             ['user_id' => 2, 'role_id' => $admin->id],
-            ['user_id' => 3, 'role_id' => $admin->id],
+            // ['user_id' => 3, 'role_id' => $admin->id],
         ];
 
         foreach($userRoles as $userRole) {

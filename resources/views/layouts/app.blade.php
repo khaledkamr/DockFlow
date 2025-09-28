@@ -52,6 +52,11 @@
         .sidebar {
             width: 300px;
         }
+        .sidebar .nav-link:hover:not(.bg-primary){
+            background-color: rgba(0, 38, 255, 0.1);
+            color: #0b56a9 !important;
+            transition: 0.3s;
+        }
         .main-content {
             margin-right: 300px;
         }
@@ -208,8 +213,8 @@
 
         <ul class="nav flex-column">
             <li class="nav-item mb-1">
-                <a class="nav-link fw-bold rounded px-3 py-2 {{ request()->routeIs('admin.home') ? 'bg-primary text-white' : 'text-dark' }}" 
-                   href="{{ route('admin.home') }}">
+                <a class="nav-link fw-bold rounded px-3 py-2 {{ request()->routeIs('dashboard') ? 'bg-primary text-white' : 'text-dark' }}" 
+                   href="{{ route('dashboard') }}">
                     <i class="fa-solid fa-house ms-2 me-2"></i> الصفحة الرئيسيـــة
                 </a>
             </li>
@@ -233,7 +238,7 @@
                     aria-controls="admin-management">
                         <i class="fa-solid fa-users-gear ms-2 me-2"></i> إدارة المستخدمون
                     </a>
-                    <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['admin*']) ? 'show' : '' }}" id="admin-management">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['admin*']) ? 'show' : '' }}" id="admin-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.users') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.users') }}">
                             <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
@@ -256,7 +261,7 @@
                     aria-controls="contract-management">
                         <i class="fa-solid fa-file ms-2 me-2"></i> إدارة العقــــــــــــود
                     </a>
-                    <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['contracts*']) ? 'show' : '' }}" id="contract-management">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['contracts*']) ? 'show' : '' }}" id="contract-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('contracts') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('contracts') }}">
                             <i class="fa-solid fa-file-contract ms-2 me-2"></i> العقــــــود
@@ -283,7 +288,7 @@
                     aria-controls="yard-management">
                         <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحــــــــــــة
                     </a>
-                    <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('yard.containers') }}">
                             <i class="fa-solid fa-boxes-stacked ms-2 me-2"></i> الحــــــاويـــات
@@ -310,7 +315,7 @@
                     aria-controls="policy-management">
                         <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
                     </a>
-                    <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('policies') }}">
                             <i class="fa-solid fa-file-contract ms-2 me-2"></i> الإتفاقيـــــات
@@ -337,7 +342,7 @@
                     aria-controls="invoice-management">
                         <i class="fa-solid fa-receipt ms-2 me-2"></i> إدارة الفــــواتيــــــر
                     </a>
-                    <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['invoices*']) ? 'show' : '' }}" id="invoice-management">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['invoices*']) ? 'show' : '' }}" id="invoice-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('invoices') }}">
                             <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــواتيـــــر
@@ -360,7 +365,7 @@
                     aria-controls="money-management">
                         <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> الإدارة المـــاليــــة 
                     </a>
-                    <div class="collapse bg-light rounded mx-2 mt-1 {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.entries') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('admin.money.entries') }}">
                             <i class="fa-solid fa-money-bill-transfer ms-2 me-2"></i> القيود والسنـدات

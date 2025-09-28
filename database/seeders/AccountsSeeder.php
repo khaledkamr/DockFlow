@@ -19,6 +19,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 1,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 2,
@@ -28,6 +29,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 1,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 3,
@@ -37,6 +39,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 1,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 4,
@@ -46,6 +49,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 1,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 5,
@@ -55,6 +59,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 6,
@@ -64,6 +69,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 7,
@@ -73,6 +79,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 8,
@@ -82,6 +89,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 9,
@@ -91,6 +99,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 10,
@@ -100,6 +109,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 11,
@@ -109,6 +119,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 12,
@@ -118,6 +129,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 13,
@@ -127,6 +139,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 14,
@@ -136,6 +149,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 15,
@@ -145,6 +159,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 16,
@@ -154,6 +169,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 17,
@@ -163,6 +179,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 22,
@@ -172,6 +189,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 23,
@@ -181,6 +199,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 24,
@@ -190,6 +209,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 25,
@@ -199,6 +219,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 26,
@@ -208,6 +229,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 27,
@@ -217,6 +239,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 28,
@@ -226,6 +249,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 30,
@@ -235,6 +259,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 39,
@@ -244,6 +269,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 40,
@@ -253,6 +279,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 41,
@@ -262,6 +289,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 42,
@@ -271,6 +299,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 44,
@@ -280,6 +309,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 45,
@@ -289,6 +319,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 46,
@@ -298,6 +329,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 47,
@@ -307,6 +339,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 48,
@@ -316,6 +349,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 49,
@@ -325,6 +359,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 50,
@@ -334,6 +369,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 51,
@@ -343,6 +379,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 52,
@@ -352,6 +389,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 53,
@@ -361,6 +399,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 54,
@@ -370,6 +409,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 55,
@@ -379,6 +419,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 56,
@@ -388,6 +429,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 57,
@@ -397,6 +439,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 58,
@@ -406,6 +449,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 59,
@@ -415,6 +459,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 1,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 60,
@@ -424,6 +469,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 61,
@@ -433,6 +479,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 62,
@@ -442,6 +489,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 63,
@@ -451,6 +499,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 64,
@@ -460,6 +509,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 65,
@@ -469,6 +519,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 66,
@@ -478,6 +529,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 67,
@@ -487,6 +539,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 68,
@@ -496,6 +549,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 69,
@@ -505,6 +559,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 70,
@@ -514,6 +569,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 71,
@@ -523,6 +579,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 72,
@@ -532,6 +589,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 73,
@@ -541,6 +599,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 74,
@@ -550,6 +609,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 75,
@@ -559,6 +619,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 76,
@@ -568,6 +629,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 77,
@@ -577,6 +639,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 78,
@@ -586,6 +649,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 79,
@@ -595,6 +659,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 80,
@@ -604,6 +669,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 81,
@@ -613,6 +679,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 82,
@@ -622,6 +689,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 83,
@@ -631,6 +699,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 84,
@@ -640,6 +709,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 85,
@@ -649,6 +719,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 86,
@@ -658,6 +729,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 87,
@@ -667,6 +739,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 88,
@@ -676,6 +749,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 89,
@@ -685,6 +759,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 90,
@@ -694,6 +769,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 3,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 91,
@@ -703,6 +779,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 2,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 92,
@@ -712,6 +789,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 93,
@@ -721,6 +799,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 94,
@@ -730,6 +809,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 95,
@@ -739,6 +819,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 96,
@@ -748,6 +829,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 97,
@@ -757,6 +839,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 4,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 98,
@@ -766,6 +849,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 4,
                 "level" => 5,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 99,
@@ -775,6 +859,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ],
             [
                 "id" => 100,
@@ -784,6 +869,7 @@ class AccountsSeeder extends Seeder
                 "type_id" => 2,
                 "level" => 3,
                 "is_active" => 1,
+                "company_id" => 1,
             ]
         ];
 

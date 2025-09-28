@@ -21,7 +21,7 @@
             @else
                 @foreach ($vouchers as $voucher)
                     <tr>
-                        <td class="text-center">{{ $voucher->code }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $voucher->code }}</td>
                         <td class="text-center">{{ $voucher->account->name }}</td>
                         <td class="text-center">{{ $voucher->account->code }}</td>
                         <td class="text-center text-success fw-bold">{{ (int) $voucher->amount }} ريال</td>

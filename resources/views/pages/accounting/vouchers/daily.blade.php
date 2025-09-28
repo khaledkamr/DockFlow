@@ -21,7 +21,7 @@
             @else
                 @foreach ($journals as $journal)
                     <tr>
-                        <td class="text-center">{{ $journal->code }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $journal->code }}</td>
                         <td class="text-center fw-bold">{{ $journal->voucher->type ?? 'قيد يومي' }}</td>
                         <td class="text-center">{{ $journal->totalDebit }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</td>
