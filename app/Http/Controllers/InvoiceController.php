@@ -162,11 +162,16 @@ class InvoiceController extends Controller
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
-            $invoice->company->CR,
+            $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
             number_format($invoice->total, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
+        $numbers = [
+            [number_format($invoice->total, 2, '.', '')],
+            [number_format($invoice->tax, 2, '.', '')],
+        ];
+        return $numbers;
 
         return view('pages.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
     }

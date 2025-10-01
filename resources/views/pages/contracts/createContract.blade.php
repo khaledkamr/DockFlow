@@ -25,12 +25,12 @@
                     <input type="hidden" name="company_id" value="{{ $company->id }}">
                 </div>
                 <div class="col">
-                    <label class="form-label">رقم السجل الضريبي</label>
-                    <input type="text" class="form-control border-primary" value="{{ $company->CR }}" readonly>
+                    <label class="form-label">الرقم الضريبي</label>
+                    <input type="text" class="form-control border-primary" value="{{ $company->vatNumber }}" readonly>
                 </div>
                 <div class="col">
-                    <label class="form-label">رقم السجل التجاري</label>
-                    <input type="text" class="form-control border-primary" value="{{ $company->TIN }}" readonly>
+                    <label class="form-label">السجل التجاري</label>
+                    <input type="text" class="form-control border-primary" value="{{ $company->CR }}" readonly>
                 </div>
                 <div class="col">
                     <label class="form-label">العنوان الوطني</label>
@@ -77,7 +77,7 @@
                     <select id="customer_name" class="form-select border-primary" style="width:100%;">
                         <option value="">-- اختر الحساب --</option>
                         @foreach($customers as $customer)
-                            <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" data-cr="{{ $customer->CR }}" data-tin="{{ $customer->TIN }}" data-add="{{ $customer->national_address }}">
+                            <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" data-cr="{{ $customer->CR }}" data-vatnumber="{{ $customer->vatNumber }}" data-add="{{ $customer->national_address }}">
                                 {{ $customer->name }}
                             </option>
                         @endforeach
@@ -85,12 +85,12 @@
                 </div>
                 <input type="hidden" name="customer_id" id="customer_id" value="">
                 <div class="col">
-                    <label class="form-label">رقم السجل الضريبي</label>
-                    <input type="text" class="form-control border-primary" id="customer_CR" value="">
+                    <label class="form-label">الرقم الضريبي</label>
+                    <input type="text" class="form-control border-primary" id="customer_vatNumber" value="">
                 </div>
                 <div class="col">
-                    <label class="form-label">رقم السجل التجاري</label>
-                    <input type="text" class="form-control border-primary" id="customer_TIN" value="">
+                    <label class="form-label">السجل التجاري</label>
+                    <input type="text" class="form-control border-primary" id="customer_CR" value="">
                 </div>
                 <div class="col">
                     <label class="form-label">العنوان الوطني</label>
@@ -228,8 +228,8 @@
     $('#customer_name').on('change', function () {
         let cr = $(this).find(':selected').data('cr');
         $('#customer_CR').val(cr || '');
-        let tin = $(this).find(':selected').data('tin');
-        $('#customer_TIN').val(tin || '');
+        let vatNumber = $(this).find(':selected').data('vatnumber');
+        $('#customer_vatNumber').val(vatNumber || '');
         let add = $(this).find(':selected').data('add');
         $('#customer_national_address').val(add || '');
         let id = $(this).find(':selected').data('id');

@@ -63,6 +63,7 @@ class CustomerController extends Controller
             'name' => $request->name,
             'CR' => $request->CR,
             'TIN' => $request->TIN,
+            'vatNumber' => $request->vatNumber,
             'national_address' => $request->national_address,
             'phone' => $request->phone,
             'email' => $request->email,

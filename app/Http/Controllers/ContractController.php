@@ -64,7 +64,7 @@ class ContractController extends Controller
                 ]);
             }
         }
-        return redirect()->back()->with('success', 'تم إنشاء العقد بنجاح');
+        return redirect()->back()->with('success', 'تم إنشاء عقد جديد بنجاح, <a class="text-white fw-bold" href="'.route('contracts.details', $contract).'">عرض العقد؟</a>');
     }
 
     public function contractDetails(Contract $contract) {

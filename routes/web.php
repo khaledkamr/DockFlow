@@ -49,7 +49,7 @@ Route::controller(ContainerController::class)->middleware('auth')->group(functio
     Route::get('/yard/containers', 'containers')->name('yard.containers');
     Route::get('/yard/containers/create', 'createContainer')->name('yard.containers.create');
     Route::post('/yard/containers/store', 'containerStore')->name('yard.containers.store');
-    Route::put('/yard/containers/update/{container:uuid}', 'containerUpdate')->name('yard.containers.update');
+    Route::patch('/yard/containers/update/{container:uuid}', 'containerUpdate')->name('yard.containers.update');
     Route::get('/yard/containers/types', 'containersTypes')->name('yard.containers.types');
     Route::post('/yard/containers/types/store', 'containerTypeStore')->name('yard.containers.types.store');
     Route::put('/yard/containers/types/update/{id}', 'updateContainerType')->name('yard.containers.types.update');

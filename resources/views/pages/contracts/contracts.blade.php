@@ -55,9 +55,7 @@
             <tr>
                 <th class="text-center bg-dark text-white">رقم العقد</th>
                 <th class="text-center bg-dark text-white">الطرف الأول</th>
-                <th class="text-center bg-dark text-white">ممثل الطرف الأول</th>
                 <th class="text-center bg-dark text-white">الطرف الثاني</th>
-                <th class="text-center bg-dark text-white">ممثل الطرف الثاني</th>
                 <th class="text-center bg-dark text-white">تاريخ العقد</th>
                 <th class="text-center bg-dark text-white">تاريخ الإنتهاء</th>
                 <th class="text-center bg-dark text-white">تم بواسطة</th>
@@ -75,15 +73,13 @@
                 @foreach ($contracts as $contract)
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $contract->id }}</td>
-                        <td class="text-center">{{ $contract->company->name }}</td>
-                        <td class="text-center">{{ $contract->company_representative }}</td>
-                        <td class="text-center">
+                        <td class="text-center fw-bold">{{ $contract->company->name }}</td>
+                        <td class="text-center fw-bold">
                             <a href="{{ route('users.customer.profile', $contract->customer->id) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $contract->customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $contract->customer_representative }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($contract->end_date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $contract->made_by->name ?? "-" }}</td>

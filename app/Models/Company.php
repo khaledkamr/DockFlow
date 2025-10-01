@@ -15,6 +15,7 @@ class Company extends Model
         'logo',
         'CR',
         'TIN',
+        'vatNumber',
         'national_address',
         'phone',
         'email'

@@ -79,9 +79,9 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="TIN" class="form-label">الرقم الضريبي</label>
-                            <input type="text" class="form-control border-primary" id="TIN" name="TIN" value="{{ old('TIN') }}">
-                            @error('TIN')
+                            <label class="form-label">الرقم الضريبي</label>
+                            <input type="text" class="form-control border-primary" name="vatNumber" value="{{ old('vatNumber') }}">
+                            @error('vatNumber')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
@@ -102,7 +102,7 @@
                             @enderror
                         </div>
                         <div class="col">
-                            <label for="email" class="form-label">الإيميل</label>
+                            <label for="email" class="form-label">البريد الإلكتروني</label>
                             <input type="text" class="form-control border-primary" id="email" name="email" value="{{ old('email') }}">
                             @error('email')
                                 <div class="text-danger">{{ $message }}</div>
@@ -110,9 +110,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                <div class="modal-footer d-flex justify-content-start">
                     <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                 </div>
             </form>
         </div>
@@ -152,8 +152,8 @@
                         </td>
                         <td class="text-center">{{ $customer->CR }}</td>
                         <td class="text-center">{{ $customer->national_address }}</td>
-                        <td class="text-center">{{ $customer->phone }}</td>
-                        <td class="text-center">{{ $customer->email }}</td>
+                        <td class="text-center">{{ $customer->phone ?? '-' }}</td>
+                        <td class="text-center">{{ $customer->email ?? '-' }}</td>
                         <td class="text-center">{{ $customer->made_by->name ?? '-' }}</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
@@ -196,9 +196,9 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col">
-                                                <label for="TIN" class="form-label">الرقم الضريبي</label>
-                                                <input type="text" class="form-control border-primary" id="TIN" name="TIN" value="{{ $customer->TIN }}">
-                                                @error('TIN')
+                                                <label for="vatNumber" class="form-label">الرقم الضريبي</label>
+                                                <input type="text" class="form-control border-primary" id="vatNumber" name="vatNumber" value="{{ $customer->vatNumber }}">
+                                                @error('vatNumber')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -219,7 +219,7 @@
                                                 @enderror
                                             </div>
                                             <div class="col">
-                                                <label for="email" class="form-label">الإيميل</label>
+                                                <label for="email" class="form-label">البريد الإلكتروني</label>
                                                 <input type="text" class="form-control border-primary" id="email" name="email" value="{{ $customer->email }}">
                                                 @error('email')
                                                     <div class="text-danger">{{ $message }}</div>
@@ -227,9 +227,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                    <div class="modal-footer d-flex justify-content-start">
                                         <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     </div>
                                 </form>
                             </div>

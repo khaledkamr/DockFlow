@@ -21,6 +21,15 @@
         <div class="row g-3">
             <div class="col">
                 <div class="d-flex align-items-center">
+                    <i class="fas fa-receipt text-muted me-2"></i>
+                    <div>
+                        <small class="text-muted">الرقم الضريبي</small>
+                        <div class="fw-bold">{{ $customer['vatNumber'] }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="d-flex align-items-center">
                     <i class="fas fa-id-card text-muted me-2"></i>
                     <div>
                         <small class="text-muted">السجل التجاري</small>
@@ -30,19 +39,10 @@
             </div>
             <div class="col">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-receipt text-muted me-2"></i>
-                    <div>
-                        <small class="text-muted">الرقم الضريبي</small>
-                        <div class="fw-bold">{{ $customer['TIN'] }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="d-flex align-items-center">
                     <i class="fas fa-phone text-muted me-2"></i>
                     <div>
                         <small class="text-muted">رقم الهاتف</small>
-                        <div class="fw-bold">{{ $customer['phone'] }}</div>
+                        <div class="fw-bold">{{ $customer['phone'] ?? 'غير متوفر' }}</div>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                     <i class="fas fa-envelope text-muted me-2"></i>
                     <div>
                         <small class="text-muted">البريد الإلكتروني</small>
-                        <div class="fw-bold">{{ $customer['email'] }}</div>
+                        <div class="fw-bold">{{ $customer['email'] ?? 'غير متوفر' }}</div>
                     </div>
                 </div>
             </div>
@@ -61,15 +61,6 @@
                     <div>
                         <small class="text-muted">العنوان الوطني</small>
                         <div class="fw-bold">{{ $customer['national_address'] }}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-calendar-plus text-muted me-2"></i>
-                    <div>
-                        <small class="text-muted">تاريخ التسجيل</small>
-                        <div class="fw-bold">{{ \Carbon\Carbon::parse($customer['created_at'])->format('Y/m/d') }}</div>
                     </div>
                 </div>
             </div>
