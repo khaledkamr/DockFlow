@@ -83,12 +83,13 @@ class ContainerController extends Controller
         if(Gate::denies('تعديل حاوية')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الحاوية');
         }
-        $name = $container->code;
+
+        $container->code = $request->code;
         $container->location = $request->location;
-      
         $container->notes = $request->notes;
         $container->save();
-        return redirect()->back()->with('success', "تم تعديل بيانات الحاوية '$name' بنجاح");
+        
+        return redirect()->back()->with('success', "تم تعديل بيانات الحاوية بنجاح");
     }
 
     public function containersTypes() {

@@ -94,9 +94,8 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">مسلسل</th>
-                <th class="text-center bg-dark text-white">صاحــب الحاويــة</th>
                 <th class="text-center bg-dark text-white">رقم الحاوية</th>
+                <th class="text-center bg-dark text-white">العميل</th>
                 <th class="text-center bg-dark text-white">الفئـــة</th>
                 <th class="text-center bg-dark text-white">الموقــع</th>
                 <th class="text-center bg-dark text-white">الحالـــة</th>
@@ -116,16 +115,15 @@
             @else
                 @foreach ($containers as $container)
                     <tr>
-                        <td class="text-primary fw-bold">{{ $container->id }}</td>
-                        <td>
-                            <a href="{{ route('users.customer.profile', $container->customer->id) }}"
-                                class="text-dark text-decoration-none">
-                                {{ $container->customer->name }}
-                            </a>
-                        </td>
                         <td class="fw-bold">
                             <a href="{{ route('container.details', $container) }}" class="text-decoration-none">
                                 {{ $container->code }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ route('users.customer.profile', $container->customer->id) }}"
+                                class="text-dark text-decoration-none fw-bold">
+                                {{ $container->customer->name }}
                             </a>
                         </td>
                         <td>{{ $container->containerType->name }}</td>
@@ -160,52 +158,45 @@
                     </tr>
 
                     <div class="modal fade" id="editContainerModal{{ $container->id }}" tabindex="-1" aria-labelledby="editContainerModalLabel{{ $container->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="editContainerModalLabel{{ $container->id }}">تعديل بيانات العميل</h5>
+                                    <h5 class="modal-title text-dark fw-bold" id="editContainerModalLabel{{ $container->id }}">تعديل بيانات الجاوية</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <form action="{{ route('yard.containers.update', $container) }}" method="POST">
                                     @csrf
-                                    @method('PUT')
+                                    @method('PATCH')
                                     <div class="modal-body text-dark">
                                         <div class="row mb-3">
                                             <div class="col">
-                                                <label for="code" class="form-label">كـــود الحـــاوية</label>
-                                                <input type="text" class="form-control border-primary" name="code" value="{{ $container->code }}" readonly>
+                                                <label for="code" class="form-label">رقم الحـــاوية</label>
+                                                <input type="text" class="form-control border-primary" name="code" value="{{ $container->code }}">
                                                 @error('code')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                             <div class="col">
-                                                <label for="customer_name" class="form-label">صــاحب الحـــاوية</label>
-                                                <input type="text" class="form-control border-primary" name="customer_name" value="{{ $container->customer->name }}" readonly>
-                                                @error('customer_name')
+                                                <label for="location" class="form-label">المـــوقـــع</label>
+                                                <input type="text" class="form-control border-primary" name="location" value="{{ $container->location }}">
+                                                @error('location')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col">
-                                                <label for="location" class="form-label">المـــوقـــع</label>
-                                                <input type="text" class="form-control border-primary" name="location" value="{{ $container->location }}" required>
-                                                @error('location')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col">
                                                 <label class="form-label">ملاحظـــات</label>
-                                                <input type="text" class="form-control border-primary" name="notes" value="{{ $container->notes }}">
+                                                <textarea class="form-control border-primary" name="notes">{{ $container->notes }}</textarea>
                                                 @error('code')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                    <div class="modal-footer d-flex justify-content-start">
                                         <button type="submit" class="btn btn-primary fw-bold">حفظ التغيرات</button>
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     </div>
                                 </form>
                             </div>

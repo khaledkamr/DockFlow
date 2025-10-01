@@ -16,6 +16,7 @@ class Customer extends Model
         'name',
         'CR',
         'TIN',
+        'vatNumber',
         'national_address',
         'phone',
         'email',

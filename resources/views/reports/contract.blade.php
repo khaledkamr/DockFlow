@@ -7,12 +7,12 @@
 حرر هذا العقد بالتوافق والتراضي بين الأطراف الموضحة معلوماتهم أدناه:-
 <ul class="small">
     <li>
-        <span class="fw-bold">{{ $company->name }} - </span> سجل تجاري {{ $company->CR }} - عنوانها {{ $company->national_address }} - رقم ضريبي {{ $company->TIN }}
+        <span class="fw-bold">{{ $company->name }} - </span> سجل تجاري {{ $company->CR }} - عنوانها {{ $company->national_address }} - رقم ضريبي {{ $company->vatNumber }}
         ويمثلها بالتوقيع على العقد بصفته {{ $contract->company_representative_role }} {{ $contract->company_representative }} {{ $contract->company_representative_nationality }} الجنسية
         بموجب سجل مدني {{ $contract->company_representative_NID }} او من ينوب عنه ويشار اليه بالطرف الأول في هذا العقد.
     </li>
     <li>
-        <span class="fw-bold">{{ $contract->customer->name }} - </span> سجل تجاري {{ $contract->customer->CR }} - عنوانها {{ $contract->customer->national_address }} - رقم ضريبي {{ $contract->customer->TIN }}
+        <span class="fw-bold">{{ $contract->customer->name }} - </span> سجل تجاري {{ $contract->customer->CR }} - عنوانها {{ $contract->customer->national_address }} - رقم ضريبي {{ $contract->customer->vatNumber }}
         ويمثلها بالتوقيع على العقد بصفته {{ $contract->customer_representative_role }} {{ $contract->customer_representative }} {{ $contract->customer_representative_nationality }} الجنسية
         بموجب سجل مدني {{ $contract->customer_representative_NID }} او من ينوب عنه ويشار اليه بالطرف الثاني في هذا العقد.
     </li>

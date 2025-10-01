@@ -136,7 +136,7 @@
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->TIN }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->company->vatNumber }}</div>
                                 </div>
                             </div>
                             
@@ -155,7 +155,7 @@
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->TIN }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->customer->vatNumber }}</div>
                                 </div>
                             </div>
                         </div>

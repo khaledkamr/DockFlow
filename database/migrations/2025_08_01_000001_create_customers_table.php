@@ -12,9 +12,10 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name');            
-            $table->string('CR');                // السجل التجاري
-            $table->string('TIN');               // الرقم الضريبي
-            $table->string('national_address');  // العنوان الوطني
+            $table->string('CR');                   // السجل التجاري
+            $table->string('TIN')->nullable();      // الرقم الموحد او المميز
+            $table->string('vatNumber');            // الرقم الضريبي
+            $table->string('national_address');     // العنوان الوطني
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->unsignedBigInteger('account_id');

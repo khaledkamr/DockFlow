@@ -14,9 +14,9 @@
                 <a href="{{ route('print.contract', $contract->id) }}" class="btn btn-primary me-2" target="_blank">
                     <i class="fas fa-print me-1"></i> طباعة
                 </a>
-                <a class="btn btn-success">
+                {{-- <a class="btn btn-success">
                     <i class="fas fa-download me-1"></i> تحميل PDF
-                </a>
+                </a> --}}
             </div>
         </div>
 
@@ -78,7 +78,7 @@
                             </div>
                             <div class="col">
                                 <label class="form-label text-muted small">الرقم الضريبي</label>
-                                <div class="fw-bold">{{ $contract->company->TIN }}</div>
+                                <div class="fw-bold">{{ $contract->company->vatNumber }}</div>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -133,7 +133,7 @@
                             </div>
                             <div class="col">
                                 <label class="form-label text-muted small">الرقم الضريبي</label>
-                                <div class="fw-bold">{{ $contract->customer->TIN }}</div>
+                                <div class="fw-bold">{{ $contract->customer->vatNumber }}</div>
                             </div>
                         </div>
                         <div class="row mb-3">

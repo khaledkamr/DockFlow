@@ -14,8 +14,9 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('branch')->nullable();
             $table->string('logo')->nullable();
-            $table->string('CR')->nullable();
-            $table->string('TIN')->nullable();
+            $table->string('CR')->nullable();           //  السجل التجاري
+            $table->string('TIN')->nullable();          //  الرقم المميز او الموحد
+            $table->string('vatNumber')->nullable();    //  الرقم الضريبي
             $table->string('national_address')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();

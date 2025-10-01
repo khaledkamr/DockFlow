@@ -28,19 +28,28 @@
             </div>
             <div class="row mb-4">
                 <div class="col">
-                    <label class="form-label">رقم السجل الضريبي</label>
+                    <label class="form-label">السجل التجاري</label>
                     <input type="text" name="CR" class="form-control border-primary" value="{{ $company->CR }}">
                     @error('CR')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="col">
-                    <label class="form-label">رقم السجل التجاري</label>
+                    <label class="form-label">الرقم الموحد</label>
                     <input type="text" name="TIN" class="form-control border-primary" value="{{ $company->TIN }}">
                     @error('TIN')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="col">
+                    <label class="form-label">الرقم الضريبي</label>
+                    <input type="text" name="vatNumber" class="form-control border-primary" value="{{ $company->vatNumber }}">
+                    @error('vatNumber')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+           <div class="row mb-4">
                 <div class="col">
                     <label class="form-label">العنوان الوطني</label>
                     <input type="text" name="national_address" class="form-control border-primary" value="{{ $company->national_address }}">
@@ -48,8 +57,6 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-            </div>
-           <div class="row mb-4">
                 <div class="col">
                     <label class="form-label">البريد الإلكتروني</label>
                     <input type="text" name="email" class="form-control border-primary" value="{{ $company->email }}">

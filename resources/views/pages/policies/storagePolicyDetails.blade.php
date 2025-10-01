@@ -139,7 +139,7 @@
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->TIN }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->company->vatNumber }}</div>
                                 </div>
                             </div>
                             
@@ -158,7 +158,7 @@
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->TIN }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->customer->vatNumber }}</div>
                                 </div>
                             </div>
                         </div>
@@ -232,8 +232,9 @@
                                         </button> 
                                     </td>
                                 </tr>
+
                                 <div class="modal fade" id="addServiceModal-{{ $container->id }}" tabindex="-1">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <form action="{{ route('containers.add.service', $container->id) }}" method="POST">
                                             @csrf
                                             <div class="modal-content">
