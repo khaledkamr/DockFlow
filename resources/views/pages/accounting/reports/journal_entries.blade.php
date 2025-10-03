@@ -37,7 +37,10 @@
         <input type="date" name="to" class="form-control border-primary" value="{{ request('to') }}">
     </div>
     <div class="col-md-3 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary fw-bold w-100">عرض التقرير</button>
+        <button type="submit" class="btn btn-primary fw-bold w-100" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
+            عرض التقرير
+            <i class="fa-solid fa-eye ms-1"></i>
+        </button>
     </div>
 </form>
 

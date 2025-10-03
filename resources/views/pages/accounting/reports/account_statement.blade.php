@@ -4,7 +4,7 @@
         <label class="form-label">الحساب</label>
         <select name="account" class="form-select border-primary" required>
             <option value="">اختر الحساب</option>
-            @foreach($accounts as $account)
+            @foreach($accountsLevel5 as $account)
                 <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
                     {{ $account->name }}
                 </option>
@@ -20,7 +20,10 @@
         <input type="date" name="to" class="form-control border-primary" value="{{ request('to') }}">
     </div>
     <div class="col-md-2 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary fw-bold w-100">عرض التقرير</button>
+        <button type="submit" class="btn btn-primary fw-bold w-100" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
+            عرض التقرير
+            <i class="fa-solid fa-eye ms-1"></i>
+        </button>
     </div>
 </form>
 
