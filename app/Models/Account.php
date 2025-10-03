@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Account extends Model
 {
@@ -29,5 +30,46 @@ class Account extends Model
 
     public function children() {
         return $this->hasMany(Account::class, 'parent_id');
+    }
+
+    public function journalLines() {
+        return $this->hasMany(JournalEntryLine::class, 'account_id');
+    }
+
+    public function calculateBalance($from = null, $to = null) {
+        $ids = $this->getAllChildrenIds();
+        $ids[] = $this->id;
+
+        $query = DB::table('journal_entry_lines as l')
+            ->join('journal_entries as j', 'l.journal_entry_id', '=', 'j.id')
+            ->whereIn('l.account_id', $ids);
+
+        if ($from) {
+            $query->where('j.date', '>=', $from);
+        }
+
+        if ($to) {
+            $query->where('j.date', '<=', $to);
+        }
+
+        $result = $query->selectRaw("
+            COALESCE(SUM(l.debit),0) as total_debit,
+            COALESCE(SUM(l.credit),0) as total_credit
+        ")->first();
+
+        return (object)[
+            'debit'   => $result->total_debit,
+            'credit'  => $result->total_credit,
+            'balance' => $result->total_debit - $result->total_credit
+        ];
+    }
+
+    public function getAllChildrenIds() {
+        $ids = [];
+        foreach ($this->children as $child) {
+            $ids[] = $child->id;
+            $ids = array_merge($ids, $child->getAllChildrenIds());
+        }
+        return $ids;
     }
 }

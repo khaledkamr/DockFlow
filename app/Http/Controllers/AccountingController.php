@@ -220,33 +220,52 @@ class AccountingController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
         
-        $company = Company::first();
-        $accounts = Account::where('level', 5)->get();
-        $type = $request->input('type');
-        $from = $request->input('from');
-        $to = $request->input('to');
-        $entries = JournalEntry::all();
-        if($type && $type !== 'all') {
-            $entries = $entries->filter(function($entry) use($type) {
-                return ($entry->voucher->type ?? 'قيد يومي') == $type;
-            });
-        }
-        if($from && $to) {
-            $entries = $entries->whereBetween('date', [$from, $to]);
-        }
+        $accountsLevel5 = collect();
+        $accounts = collect();
+        $entries = collect();
+        $statement = collect();
+        $trialBalance = collect();
 
-        $account = $request->input('account', null);
-        $statement = JournalEntryLine::where('account_id', $account)->get();
-        if($from && $to) {
-            $statement = $statement->filter(function($line) use($from, $to) {
-                return $line->journal->date >= $from && $line->journal->date <= $to;
-            });
-        }
+        if($request->view == 'تقارير القيود') {
+            $type = $request->input('type');
+            $from = $request->input('from');
+            $to = $request->input('to');
+            $entries = JournalEntry::all();
+
+            if($type && $type !== 'all') {
+                $entries = $entries->filter(function($entry) use($type) {
+                    return ($entry->voucher->type ?? 'قيد يومي') == $type;
+                });
+            }
+
+            if($from && $to) {
+                $entries = $entries->whereBetween('date', [$from, $to]);
+            }
+        } elseif($request->view == 'كشف حساب') {
+            $accountsLevel5 = Account::where('level', 5)->get();
+            $type = $request->input('type');
+            $from = $request->input('from');
+            $to = $request->input('to');
+
+            $account = $request->input('account', null);
+            $statement = JournalEntryLine::where('account_id', $account)->get();
+            if($from && $to) {
+                $statement = $statement->filter(function($line) use($from, $to) {
+                    return $line->journal->date >= $from && $line->journal->date <= $to;
+                });
+            }
+        } elseif($request->view == 'ميزان مراجعة') {
+            $accounts = Account::all();
+            $trialBalance = Account::where('level', 1)->get();
+        } 
+        
         return view('pages.accounting.reports', compact(
-            'company', 
-            'accounts', 
+            'accountsLevel5', 
             'entries', 
-            'statement'
+            'statement',
+            'accounts',
+            'trialBalance'
         ));
     }
+
 }
