@@ -99,8 +99,8 @@ class ExportController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
         }
         
-        $company = Company::first();
         $invoice = Invoice::with('containers')->where('code', $code)->first();
+        $company = $invoice->company;
 
         $amountBeforeTax = 0;
 
@@ -134,14 +134,52 @@ class ExportController extends Controller
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
-            $invoice->customer->name,
-            $invoice->customer->CR,
+            $invoice->company->name,
+            $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
             number_format($invoice->total, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
         return view('reports.invoice', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
+    }
+    
+    public function printInvoiceServices($code) {
+        if(Gate::denies('طباعة فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
+        }
+        
+        $invoice = Invoice::with('containers')->where('code', $code)->first();
+        $company = $invoice->company;
+
+        $amountBeforeTax = 0;
+
+        foreach($invoice->containers as $container) {
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total = $services;
+            $amountBeforeTax += $container->total;  
+        }
+
+        $invoice->subtotal = $amountBeforeTax;
+        $invoice->tax = $amountBeforeTax * 0.15;
+        $invoice->total = $amountBeforeTax + $invoice->tax;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
+        $invoice->total -= $discountValue;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('reports.invoiceServices', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
     public function excel($reportType, Request $request) {

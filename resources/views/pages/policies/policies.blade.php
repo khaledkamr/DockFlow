@@ -31,6 +31,8 @@
                         إتفاقية تخزين</option>
                     <option value="تسليم" {{ request()->query('type') === 'تسليم' ? 'selected' : '' }}>
                         إتفاقية تسليم</option>
+                    <option value="خدمات" {{ request()->query('type') === 'خدمات' ? 'selected' : '' }}>
+                        إتفاقية خدمات</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -77,20 +79,33 @@
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $policy->code }}</td>
                         <td class="text-center">
-                            <a href="{{ route('users.customer.profile', $policy->customer->id) }}"
-                                class="text-dark text-decoration-none fw-bold">
-                                {{ $policy->customer->name }}
-                            </a>
+                            @if($policy->external_customer)
+                                <span class="text-dark fw-bold">{{ $policy->external_customer }}</span>
+                            @else
+                                <a href="{{ route('users.customer.profile', $policy->customer->id) }}"
+                                    class="text-dark text-decoration-none fw-bold">
+                                    {{ $policy->customer->name }}
+                                </a>
+                            @endif
                         </td>
                         <td class="text-center">{{ $policy->type }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
                         <td class="text-center">{{ $policy->made_by->name ?? "-" }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy) : route('policies.receive.details', $policy) }}" 
-                                class="btn btn-sm btn-primary">
-                                عرض
-                            </a>
+                            @if($policy->type == 'تخزين')
+                                <a href="{{ route('policies.storage.details', $policy) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @elseif($policy->type == 'تسليم')
+                                <a href="{{ route('policies.receive.details', $policy) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @elseif($policy->type == 'خدمات')
+                                <a href="{{ route('policies.services.details', $policy) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

@@ -11,6 +11,7 @@ class Invoice extends Model
     use BelongsToCompany, HasUuid;
     
     protected $fillable = [
+        'type',
         'customer_id', 
         'code',
         'amount',

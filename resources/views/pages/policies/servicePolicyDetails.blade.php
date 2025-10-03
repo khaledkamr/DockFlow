@@ -6,19 +6,21 @@
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
+            <div class="mb-4">
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية التسليم #{{ $policy->id }}
+                    تفاصيل إتفاقية الخدمات #{{ $policy->id }}
                 </h2>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $policy->contract_id) }}" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
-                    </ol>
-                </nav>
+                @if($policy->customer_id && $policy->customer && $policy->customer->contract)
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('contracts.details', $policy->customer->contract) }}" class="text-decoration-none">العقد #{{ $policy->customer->contract->id }}</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
+                        </ol>
+                    </nav>
+                @endif
             </div>
             <div class="d-flex gap-2">
                 <form action="{{ route('print', 'exit_permission') }}" method="POST" target="_blank">
@@ -28,17 +30,53 @@
                     @endforeach
                     <button type="submit" class="btn btn-primary me-2">
                         <i class="fas fa-print me-1"></i>
-                        طباعة اذن خروج
+                        طباعة اذن خدمة
                     </button>
                 </form>
-                {{-- <button class="btn btn-primary me-2">
-                    <i class="fas fa-print me-1"></i>
-                    طباعة الإتفاقية
-                </button>
-                <button class="btn btn-secondary">
-                    <i class="fas fa-download me-1"></i>
-                    تحميل PDF
-                </button> --}}
+                @if($policy->containers->first()->invoices->isEmpty())
+                    <button class="btn btn-outline-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#createInvoice">
+                        <i class="fas fa-scroll me-1"></i>
+                        إنشاء فاتورة
+                    </button>
+                @endif
+            </div>
+        </div>
+
+        <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إنشاء فاتورة جديدة</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('invoices.service.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="customer_id" value="{{ $policy->customer_id }}">
+                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                        <input type="hidden" name="container_ids[]" value="{{ $policy->containers->pluck('id')->join(',') }}">
+                        <div class="modal-body text-dark">
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <label class="form-label">طريقة الدفع</label>
+                                    <select class="form-select border-primary" name="payment_method" required>
+                                        <option value="آجل">آجل</option>
+                                        <option value="كاش">كاش</option>
+                                        <option value="تحويل بنكي">تحويل بنكي</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">نسبة الخصم(%)</label>
+                                    <input type="number" name="discount" id="discount" class="form-control border-primary" 
+                                        min="0" max="100" step="1" value="0" placeholder="0.00">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -128,15 +166,15 @@
                             <div class="row border-bottom pb-3">
                                 <div class="col">
                                     <label class="form-label text-muted small">الاسم</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->name }}</div>
+                                    <div class="fw-bold">{{ $policy->company->name }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">السجل التجاري</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->CR }}</div>
+                                    <div class="fw-bold">{{ $policy->company->CR }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->vatNumber }}</div>
+                                    <div class="fw-bold">{{ $policy->company->vatNumber }}</div>
                                 </div>
                             </div>
                             
@@ -147,15 +185,15 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <label class="form-label text-muted small">الاسم</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->name }}</div>
+                                    <div class="fw-bold">{{ $policy->customer ? $policy->customer->name : $policy->external_customer }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">السجل التجاري</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->CR }}</div>
+                                    <div class="fw-bold">{{ $policy->customer ? $policy->customer->CR : '-' }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->vatNumber }}</div>
+                                    <div class="fw-bold">{{ $policy->customer ? $policy->customer->vatNumber : '-' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -181,13 +219,11 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th class="border-0 text-center fw-bold">#</th>
-                                    <th class="border-0 text-center fw-bold">كود الحاوية</th>
+                                    <th class="border-0 text-center fw-bold">رقم الحاوية</th>
                                     <th class="border-0 text-center fw-bold">نوع الحاوية</th>
-                                    <th class="border-0 text-center fw-bold">تاريخ الدخول</th>
-                                    <th class="border-0 text-center fw-bold">تاريخ الخروج</th>
-                                    <th class="border-0 text-center fw-bold">تم الإستلام بواسطة</th>
-                                    <th class="border-0 text-center fw-bold">تم التسليم بواسطة</th>
-                                    <th class="border-0 text-center fw-bold">ملاحظات</th>
+                                    <th class="border-0 text-center fw-bold">الخدمة</th>
+                                    <th class="border-0 text-center fw-bold">السعر</th>
+                                    <th class="border-0 text-center fw-bold">التاريخ</th>
                                 </tr>
                             </thead>
                             <tbody class="text-center">
@@ -200,11 +236,9 @@
                                             </a>
                                         </td>
                                         <td class="fw-bold">{{ $container->containerType->name }}</td>
+                                        <td>{{ $container->services->first()->description ?? '-' }}</td>
+                                        <td class="fw-bold">{{ $container->services->first()->pivot->price ?? '-' }} ريال</td>
                                         <td>{{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
-                                        <td>{{ $container->received_by }}</td>
-                                        <td>{{ $container->delivered_by }}</td>
-                                        <td>{{ $container->notes ?? '---' }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

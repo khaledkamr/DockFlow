@@ -67,6 +67,9 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::post('/policies/receive/store', 'storeReceivePolicy')->name('policies.receive.store');
     Route::get('/policies/storage/details/{policy:uuid}', 'storagePolicyDetails')->name('policies.storage.details');
     Route::get('/policies/receive/details/{policy:uuid}', 'receivePolicyDetails')->name('policies.receive.details');
+    Route::get('/policies/services/create', 'servicePolicy')->name('policies.services.create');
+    Route::post('/policies/services/store', 'storeServicePolicy')->name('policies.services.store');
+    Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
@@ -89,6 +92,8 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
     Route::put('invoice/update/{invoice:uuid}', 'updateInvoice')->name('invoices.update');
     Route::get('/invoice/{invoice:uuid}', 'invoiceDetails')->name('invoices.details');
+    Route::post('/invoice/service/store', 'storeServiceInvoice')->name('invoices.service.store');
+    Route::get('invoice/services/{invoice:uuid}', 'invoiceServicesDetails')->name('invoices.services.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -108,5 +113,6 @@ Route::controller(ExportController::class)->group(function () {
     Route::post('/print/{reportType}', 'print')->name('print');
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');
     Route::get('/print/invoice/{code}', 'printInvoice')->name('print.invoice');
+    Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
 });

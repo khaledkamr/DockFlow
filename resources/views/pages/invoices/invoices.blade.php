@@ -86,9 +86,16 @@
                 @foreach ($invoices as $invoice)
                     <tr>
                         <td class="text-center text-primary fw-bold">
-                            <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
-                                {{ $invoice->code }}
-                            </a>
+                            @if($invoice->type == 'خدمات')
+                                <a href="{{ route('invoices.services.details', $invoice) }}" class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
+                            @else
+                                <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
+                            @endif
+                            
                         </td>
                         <td class="text-center">
                             <a href="{{ route('users.customer.profile', $invoice->customer->id) }}"
