@@ -13,6 +13,7 @@ class Policy extends Model
     protected $fillable = [
         'contract_id',
         'customer_id',
+        'external_customer',
         'driver_name',
         'driver_NID',
         'driver_number',
@@ -38,10 +39,6 @@ class Policy extends Model
         return $this->belongsToMany(Container::class, 'policy_container');
     }
 
-    public function invoice() {
-        return $this->hasOne(Invoice::class);
-    }
-
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -54,11 +51,15 @@ class Policy extends Model
     {
         static::creating(function ($policy) {
             $year = date('Y');
+
             if($policy->type == 'تخزين') {
                 $prefix = 'ST';
             } elseif($policy->type == 'تسليم') {
                 $prefix = 'RE';
+            } elseif($policy->type == 'خدمات') {
+                $prefix = 'SV';
             }
+
             $lastPolicy = self::where('type', $policy->type)->whereYear('date', $year)->latest('id')->first();
             if ($lastPolicy && $lastPolicy->code) {
                 $lastNumber = (int) substr($lastPolicy->code, -5);
@@ -66,6 +67,7 @@ class Policy extends Model
             } else {
                 $newNumber = 1;
             }
+
             $policy->code = $year . $prefix . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
         });
     }

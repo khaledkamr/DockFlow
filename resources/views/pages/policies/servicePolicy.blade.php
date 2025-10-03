@@ -1,44 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة إتفاقية تخزين')
+@section('title', 'إضافة إتفاقية خدمات')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h2 class="mb-4">إضافة إتفاقية تخزين</h2>
-
-@if (session('yard'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('yard') }}", "success");
-        </script>
-    @endpush
-@endif
+<h2 class="mb-4">إضافة إتفاقية خدمات</h2>
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
-    <form action="{{ route('policies.storage.store') }}" method="POST">
+    <form action="{{ route('policies.services.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
-        <input type="hidden" name="type" value="تخزين">
+        <input type="hidden" name="type" value="خدمات">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-
+        <input type="hidden" name="company_id" value="{{ $company->id }}">
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label">إســم الشركة</label>
-                <input type="text" name="company_name" class="form-control border-primary" value="{{ $company->name }}" readonly>
-            </div>
-            <div class="col">
-                <label class="form-label">رقــم الشركة</label>
-                <input type="text" class="form-control border-primary" id="company_id" name="company_id" value="{{ $company->id }}" readonly>
-                @error('company_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col">
                 <label class="form-label">إســم العميــل</label>
-                <select class="form-select border-primary" id="customer_name">
+                <select class="form-select border-primary" id="customer_name" name="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" 
@@ -56,8 +37,6 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-        </div>
-        <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم السائق</label>
                 <input type="text" name="driver_name" class="form-control border-primary">
@@ -69,6 +48,15 @@
                 <label class="form-label">رقــم هوية السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_NID">
                 @error('driver_NID')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col">
+                <label class="form-label">رقــم هاتف السائق</label>
+                <input type="text" class="form-control border-primary" name="driver_phone">
+                @error('driver_phone')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
@@ -86,8 +74,6 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-        </div>
-        <div class="row mb-3">
             <div class="col">
                 <label class="form-label">البيان الضريبي</label>
                 <input type="text" name="tax_statement" class="form-control border-primary">
@@ -95,9 +81,6 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
         </div>
 
         <div class="mb-4">
@@ -118,12 +101,12 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col">
+                        <div class="col-3">
                             <label class="form-label">رقم الحاويــة</label>
                             <input type="text" class="form-control border-primary" name="containers[0][code]" required>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col">
+                        <div class="col-3">
                             <label class="form-label">فئة الحاويــة</label>
                             <select class="form-select border-primary" name="containers[0][container_type_id]" required>
                                 <option value="">اختر فئة الحاوية...</option>
@@ -133,14 +116,18 @@
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col">
-                            <label class="form-label">الموقــع</label>
-                            <input type="text" class="form-control border-primary" name="containers[0][location]">
-                            <div class="invalid-feedback"></div>
+                        <div class="col-4">
+                            <label class="form-label">الخدمة</label>
+                            <select class="form-select border-primary" name="containers[0][service_id]" required>
+                                <option value="">اختر الخدمة...</option>
+                                @foreach ($services as $service)
+                                    <option value="{{ $service->id }}">{{ $service->description }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <div class="col">
-                            <label class="form-label">ملاحظات</label>
-                            <input type="text" class="form-control border-primary" name="containers[0][notes]">
+                        <div class="col-2">
+                            <label class="form-label">السعر</label>
+                            <input type="text" class="form-control border-primary" name="containers[0][price]">
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
@@ -158,7 +145,8 @@
 <script>
     $('#customer_name').select2({
         placeholder: "ابحث عن إسم العميل...",
-        allowClear: true
+        allowClear: true,
+        tags: true,
     });
 
     $('#customer_name').on('change', function () {
@@ -301,5 +289,4 @@
         line-height: 30px; 
     }
 </style>
-
 @endsection

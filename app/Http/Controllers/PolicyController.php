@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ContractRequest;
 use App\Http\Requests\PolicyRequest;
+use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
 use App\Models\Container_type;
@@ -14,6 +15,7 @@ use App\Models\Policy;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class PolicyController extends Controller
@@ -49,9 +51,11 @@ class PolicyController extends Controller
         if(Gate::denies('إنشاء اتفاقية')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
+
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
+
         return view('pages.policies.storagePolicy', compact('company', 'customers', 'containerTypes'));
     }
 
@@ -69,11 +73,14 @@ class PolicyController extends Controller
             ]);
             $policy_containers[] = $container;
         }
+
         $count = count($request->containers);
         session()->flash('yard', 'تم إضافة ' . $count . ' حاويات جديدة للساحة بنجاح');
+
         $validated = $request->validated();
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
+
         return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض الاتفاقية؟</a>');
     }
     
@@ -114,5 +121,93 @@ class PolicyController extends Controller
 
     public function receivePolicyDetails(Policy $policy) {
         return view('pages.policies.receivePolicyDetails', compact('policy'));
+    }
+
+    public function servicePolicy() {
+        if(Gate::denies('إنشاء اتفاقية')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
+        }
+
+        $company = Company::first();
+        $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
+        $containerTypes = Container_type::all();
+        $services = Service::all();
+
+        return view('pages.policies.servicePolicy', compact('company', 'customers', 'containerTypes', 'services'));
+    }
+
+    public function storeServicePolicy(Request $request) {
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'company_id' => 'required',
+            'user_id' => 'required',
+            'type' => 'required',
+            'driver_name' => 'required',
+            'driver_NID' => 'required',
+            'driver_car' => 'required',
+            'car_code' => 'required',
+            'driver_phone' => 'nullable|string',
+            'tax_statement' => 'nullable|string',
+        ]);
+
+        if(!$request->customer_id) {
+            $accountId = Account::where('name', 'عملاء التشغيل')->first()->id;
+            $lastCustomer = Account::where('parent_id', $accountId)->latest('id')->first();
+            if($lastCustomer) {
+                $code = $lastCustomer->code + 1;
+            } else {
+                $code = Account::where('id', $accountId)->latest('id')->first()->code;
+                $code = $code . '0001';
+            }
+            $account = Account::create([
+                'name' => $request->customer_name,
+                'code' => $code,
+                'parent_id' => $accountId,
+                'type_id' => 1,
+                'level' => 5
+            ]);
+
+            $customer = Customer::create([
+                'name' => $request->customer_name,
+                'CR' => 'N/A',
+                'TIN' => 'N/A',
+                'vatNumber' => 'N/A',
+                'national_address' => 'N/A',
+                'account_id' => $account->id,
+                'user_id' => Auth::user()->id,
+                'company_id' => $request->company_id,
+            ]);
+        }
+
+        $validated['customer_id'] = $request->customer_id ?? $customer->id;
+
+        $policy_containers = [];
+        foreach($request->containers as $container) {
+            $containerDb = Container::create([
+                'code' => $container['code'],
+                'container_type_id' => $container['container_type_id'],
+                'date' => Carbon::now(),
+                'exit_date' => Carbon::now(),
+                'status' => 'خدمات',
+                'customer_id' => $customer->id
+            ]);
+
+            $containerDb->services()->attach($container['service_id'], [
+                'price' => $container['price'],
+                'notes' => $container['notes'] ?? null,
+            ]);
+
+            $policy_containers[] = $containerDb;
+        }
+
+        $policy = Policy::create($validated);
+        $policy->containers()->attach($policy_containers);
+
+        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.services.details', $policy).'">عرض الاتفاقية؟</a>');
+    }
+
+    public function servicePolicyDetails(Policy $policy) {
+        // return $policy->containers->first()->services;
+        return view('pages.policies.servicePolicyDetails', compact('policy'));
     }
 }

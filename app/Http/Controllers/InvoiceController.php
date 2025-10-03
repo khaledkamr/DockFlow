@@ -79,13 +79,84 @@ class InvoiceController extends Controller
         return view('pages.invoices.createInvoice', compact('customers', 'containers'));
     }
 
+    public function storeServiceInvoice(Request $request) {
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        $invoice = Invoice::create([
+            'type' => 'خدمات',
+            'customer_id' => $request->customer_id,
+            'user_id' => $request->user_id,
+            'amount' => 0,
+            'payment_method' => $request->payment_method,
+            'discount' => $request->discount ?? 0,
+            'date' => Carbon::now(),
+            'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
+        ]);
+
+        $containerIds = $request->input('container_ids', []);
+        $containers = Container::whereIn('id', $containerIds)->get();
+        $amountBeforeTax = 0;
+
+        foreach($containers as $container) {
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $amountBeforeTax += $services;
+            $invoice->containers()->attach($container->id, ['amount' => $services]);
+        }
+
+        $tax = $amountBeforeTax * 0.15;
+        $amount = $amountBeforeTax + $tax;
+        $discountValue = ($request->discount ?? 0) / 100 * $amount;
+        $amount -= $discountValue;
+
+        $invoice->amount = $amount;
+        $invoice->save();
+
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
+    }
+
+    public function invoiceServicesDetails(Invoice $invoice) {
+        $amountBeforeTax = 0;
+
+        foreach($invoice->containers as $container) {
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total = $services;
+            $amountBeforeTax += $container->total;  
+        }
+
+        $invoice->subtotal = $amountBeforeTax;
+        $invoice->tax = $amountBeforeTax * 0.15;
+        $invoice->total = $amountBeforeTax + $invoice->tax;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
+        $invoice->total -= $discountValue;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('pages.invoices.invoiceServicesDetails', compact('invoice', 'discountValue', 'hatching_total', 'qrCode'));
+    }
+
     public function storeInvoice(Request $request) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
         
-        $containerIds = $request->input('container_ids', []);
         $invoice = Invoice::create([
+            'type' => 'تخزين',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
             'amount' => 0,
@@ -95,6 +166,7 @@ class InvoiceController extends Controller
             'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
         ]);
 
+        $containerIds = $request->input('container_ids', []);
         $containers = Container::whereIn('id', $containerIds)->get();
         $amountBeforeTax = 0;
 
@@ -167,11 +239,6 @@ class InvoiceController extends Controller
             number_format($invoice->total, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
-        $numbers = [
-            [number_format($invoice->total, 2, '.', '')],
-            [number_format($invoice->tax, 2, '.', '')],
-        ];
-        return $numbers;
 
         return view('pages.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
     }

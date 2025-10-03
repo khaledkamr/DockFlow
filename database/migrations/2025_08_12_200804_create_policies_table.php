@@ -11,17 +11,18 @@ return new class extends Migration
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
+            $table->string('code')->unique();
+            $table->foreignId('contract_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('customer_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('external_customer')->nullable();
             $table->string('driver_name');
             $table->string('driver_NID');
             $table->string('driver_number')->nullable();
             $table->string('driver_car');
             $table->string('car_code');
-            $table->date('date');
-            $table->string('code')->unique();
-            $table->enum('type', ['تخزين', 'تسليم'])->default('تخزين');
+            $table->enum('type', ['تخزين', 'تسليم', 'خدمات'])->default('تخزين');
             $table->string('tax_statement')->nullable();
+            $table->date('date');
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

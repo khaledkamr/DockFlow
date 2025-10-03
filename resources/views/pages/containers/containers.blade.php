@@ -121,23 +121,28 @@
                             </a>
                         </td>
                         <td>
-                            <a href="{{ route('users.customer.profile', $container->customer->id) }}"
-                                class="text-dark text-decoration-none fw-bold">
-                                {{ $container->customer->name }}
-                            </a>
+                            @if($container->customer)
+                                <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                    class="text-dark text-decoration-none fw-bold">
+                                    {{ $container->customer->name }}
+                                </a>
+                            @else
+                                <span class="text-dark fw-bold">{{ $container->policies->first()->external_customer }}</span>
+                            @endif
                         </td>
                         <td>{{ $container->containerType->name }}</td>
-                        <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد بعد' }}</td>
+                        <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'لم يحدد' }}</td>
                         <td>
                             @if($container->status == 'متوفر')
                                 <div class="status-available">{{ $container->status }}</div>
                             @elseif($container->status == 'تم التسليم')
                                 <div class="status-delivered">
-                                    {{ $container->status }}
-                                    <i class="fa-solid fa-check"></i>
+                                    {{ $container->status }} <i class="fa-solid fa-check"></i>
                                 </div>
                             @elseif($container->status == 'متأخر')
                                 <div class="status-danger">{{ $container->status }}</div>
+                            @elseif($container->status == 'خدمات')
+                                <div class="status-waiting">{{ $container->status }}</div>
                             @endif
                         </td>
                         <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">
@@ -151,9 +156,6 @@
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تحديث بيانات الحاوية"></i>
                             </button>
-                            {{-- <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $container->id }}">
-                                <i class="fa-solid fa-trash-can text-danger" title="حذف الحاوية"></i>
-                            </button> --}}
                         </td>
                     </tr>
 
