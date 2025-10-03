@@ -9,7 +9,7 @@ use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
 use App\Models\Contract;
-use App\Models\invoice;
+use App\Models\Invoice;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use Carbon\Carbon;
