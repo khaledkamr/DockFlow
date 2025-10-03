@@ -2,90 +2,111 @@
 
 @section('title', 'فاتورة ضريبية')
 
-@section('content') 
-<h5 class="fw-bold text-center mb-4">فاتورة ضريبية</h5>
+@section('content')
+<style>
+    .table thead { background-color: #2c3e50; color: white; }
+    .table tbody tr:nth-child(even) { background-color: #f8f9fa; }
+    .summary-total { border-top: 2px solid #2c3e50; }
+</style>
 
-<div class="d-flex justify-content-between mb-4">
-    <div class="border rounded p-3 w-50 me-2">
-        <h6 class="fw-bold mb-3">بيانات العميل</h6>
-        <div class="d-flex justify-content-between">
-            <div class="d-flex flex-column">
-                <p><strong>اسم العميل:</strong> {{ $invoice->customer->name ?? '---' }}</p>
-                <p><strong>رقم العميل:</strong> {{ $invoice->customer->account->code ?? '---' }}</p>
-            </div>
-            <div class="d-flex flex-column">
-                <p><strong>الرقم الضريبي:</strong> {{ $invoice->customer->CR ?? '---' }}</p>
-                <p><strong>العنوان الوطني:</strong> {{ $invoice->customer->national_address ?? '---' }}</p>
+<div class="border-bottom border-3 border-dark pb-3 mb-4">
+    <h5 class="fw-bold text-center mb-1 text-dark" style="font-size: 1.75rem;">فاتورة ضريبية</h5>
+    <p class="text-center text-muted mb-0 small">TAX INVOICE</p>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="border rounded-3 p-3 bg-light h-100">
+            <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات العميل</h6>
+            <div class="row">
+                <div class="col-6">
+                    <p class="mb-2 small"><strong class="text-secondary">اسم العميل:</strong><br>{{ $invoice->customer->name ?? '---' }}</p>
+                    <p class="mb-2 small"><strong class="text-secondary">رقم العميل:</strong><br>{{ $invoice->customer->account->code ?? '---' }}</p>
+                </div>
+                <div class="col-6">
+                    <p class="mb-2 small"><strong class="text-secondary">الرقم الضريبي:</strong><br>{{ $invoice->customer->CR ?? '---' }}</p>
+                    <p class="mb-2 small"><strong class="text-secondary">العنوان الوطني:</strong><br>{{ $invoice->customer->national_address ?? '---' }}</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-between border rounded p-3 w-50 ms-2">
-        <div>
-            <h6 class="fw-bold mb-3">بيانات الفاتورة</h6>
-            <p><strong>رقم الفاتورة:</strong> {{ $invoice->code ?? '---' }}</p>
-            <p><strong>التاريخ:</strong> {{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
-        </div>
-        
-        <div>
-            {!! $qrCode !!}
-            {{-- <img src="{{ asset('img/qrcode.png') }}" alt="QR Code" width="120"> --}}
+    <div class="col-md-6">
+        <div class="border rounded-3 p-3 bg-light h-100">
+            <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات الفاتورة</h6>
+            <div class="row">
+                <div class="col-7">
+                    <p class="mb-2 small"><strong class="text-secondary">رقم الفاتورة:</strong><br>{{ $invoice->code ?? '---' }}</p>
+                    <p class="mb-2 small"><strong class="text-secondary">التاريخ:</strong><br>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
+                </div>
+                <div class="col-5 d-flex align-items-center justify-content-center">
+                    <div class="border rounded p-2 bg-white">
+                        {!! $qrCode !!}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="table-container">
-    <table class="table table-bordered">
-        <thead class="table-primary">
-            <tr>
-                <th class="text-center">#</th>
-                <th class="text-center">رقم الإتفاقية</th>
-                <th class="text-center">رقم الحاوية</th>
-                <th class="text-center">تاريخ الدخول</th>
-                <th class="text-center">تاريخ الخروج</th>
-                <th class="text-center">أيام التخزين</th>
-                <th class="text-center">سعر التخزين</th>
-                <th class="text-center">أيام التأخير</th>
-                <th class="text-center">غرامة التأخير</th>
-                <th class="text-center">خدمات</th>
-                <th class="text-center">الإجمالي</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($invoice->containers as $index => $container)
-                <tr>
-                    <td class="text-center">{{ $index + 1 }}</td>
-                    <td class="text-center">{{ $container->policies->where('type', 'تسليم')->first()->code }}</td>
-                    <td class="text-center">{{ $container->code }}</td>
-                    <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
-                    <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
-                    <td class="text-center">{{ $container->period }}</td>
-                    <td class="text-center">{{ $container->storage_price }}</td>
-                    <td class="text-center">{{ $container->late_days }}</td>
-                    <td class="text-center">{{ $container->late_fee }}</td>
-                    <td class="text-center">{{ $services }}</td>
-                    <td class="text-center">{{ $container->total }}</td>
+<div class="my-4">
+    <div class="table-responsive">
+        <table class="table table-bordered mb-0">
+            <thead>
+                <tr class="table-primary">
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">#</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم الإتفاقية</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم الحاوية</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">تاريخ الدخول</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">تاريخ الخروج</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">أيام التخزين</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">سعر التخزين</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">أيام التأخير</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">غرامة التأخير</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">خدمات</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">الإجمالي</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($invoice->containers as $index => $container)
+                    <tr>
+                        <td class="text-center small">{{ $index + 1 }}</td>
+                        <td class="text-center small">{{ $container->policies->where('type', 'تسليم')->first()->code }}</td>
+                        <td class="text-center small">{{ $container->code }}</td>
+                        <td class="text-center small" style="white-space: nowrap;">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
+                        <td class="text-center small" style="white-space: nowrap;">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
+                        <td class="text-center small">{{ $container->period }}</td>
+                        <td class="text-center small">{{ number_format($container->storage_price, 2) }}</td>
+                        <td class="text-center small">{{ $container->late_days }}</td>
+                        <td class="text-center small">{{ number_format($container->late_fee, 2) }}</td>
+                        <td class="text-center small">{{ number_format($services, 2) }}</td>
+                        <td class="text-center small fw-semibold">{{ number_format($container->total, 2) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<div class="d-flex justify-content-start gap-5 border p-3 rounded-3">
-    <div class="d-flex flex-column me-5">
-        <h4>الإجمالي قبل الضريبه</h4>
-        <h4>الضريبة المضافة (15%)</h4>
-        <h4>الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }})</h4>
-        <hr>
-        <h3>الإجمالي بعد الضريبة</h3>
+<div class="border border-2 border-dark rounded-3 p-4 bg-light mt-4">
+    <div class="d-flex justify-content-between align-items-center py-2">
+        <span class="fw-semibold text-secondary">الإجمالي قبل الضريبة</span>
+        <span class="fw-bold text-dark">{{ number_format($invoice->subtotal, 2) }} ر.س</span>
     </div>
-    <div class="d-flex flex-column text-end ms-5">
-        <h4>{{ $invoice->subtotal }}</h4>
-        <h4>{{ $invoice->tax }}</h4>
-        <h4> - {{ number_format($discountValue, 2) }}</h4>
-        <hr>
-        <h3 class="fw-bold">{{ $invoice->total }}</h3>
+    <div class="d-flex justify-content-between align-items-center py-2">
+        <span class="fw-semibold text-secondary">الضريبة المضافة (15%)</span>
+        <span class="fw-bold text-dark">{{ number_format($invoice->tax, 2) }} ر.س</span>
     </div>
-    <h3 class="align-self-end fw-bold ms-5">{{ $hatching_total }}</h3>
+    <div class="d-flex justify-content-between align-items-center py-2">
+        <span class="fw-semibold text-secondary">الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }})</span>
+        <span class="fw-bold text-dark">- {{ number_format($discountValue, 2) }} ر.س</span>
+    </div>
+    <div class="d-flex justify-content-between align-items-center py-2 mt-3 pt-3 summary-total">
+        <span class="fw-bold fs-5 text-dark">الإجمالي بعد الضريبة</span>
+        <span class="fw-bold fs-4 text-dark">{{ number_format($invoice->total, 2) }} ر.س</span>
+    </div>
+    <div class="text-center mt-3 pt-3 border-top">
+        <span class="text-muted fst-italic">{{ $hatching_total }}</span>
+    </div>
 </div>
 @endsection
