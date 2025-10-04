@@ -64,11 +64,11 @@
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">السجل التجاري:</div>
-                <div class="col-7">{{ $policy->company->TIN }}</div>
+                <div class="col-7">{{ $policy->company->CR }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">الرقم الضريبي:</div>
-                <div class="col-7">{{ $policy->company->CR }}</div>
+                <div class="col-7">{{ $policy->company->vatNumber }}</div>
             </div>
         </div>
     </div>
@@ -83,11 +83,11 @@
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">السجل التجاري:</div>
-                <div class="col-7">{{ $policy->contract->customer->TIN ?? 'غير محدد' }}</div>
+                <div class="col-7">{{ $policy->contract->customer->CR ?? 'غير محدد' }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">الرقم الضريبي:</div>
-                <div class="col-7">{{ $policy->contract->customer->CR ?? 'غير محدد' }}</div>
+                <div class="col-7">{{ $policy->contract->customer->vatNumber ?? 'غير محدد' }}</div>
             </div>
         </div>
     </div>

@@ -23,14 +23,14 @@
                 @endif
             </div>
             <div class="d-flex gap-2">
-                <form action="{{ route('print', 'exit_permission') }}" method="POST" target="_blank">
+                <form action="{{ route('print', 'service_permission') }}" method="POST" target="_blank">
                     @csrf
                     @foreach($policy->containers as $container)
                         <input type="hidden" name="containers[]" value="{{ $container->id }}">
                     @endforeach
                     <button type="submit" class="btn btn-primary me-2">
                         <i class="fas fa-print me-1"></i>
-                        طباعة اذن خدمة
+                        طباعة اذن خدمات
                     </button>
                 </form>
                 @if($policy->containers->first()->invoices->isEmpty())
