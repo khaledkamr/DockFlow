@@ -3,7 +3,7 @@
 @section('content')
 <!-- Header -->
 <div class="text-center mb-4">
-    <h3 class="fw-bold text-dark mb-2">إذن دخول</h3>
+    <h3 class="fw-bold text-dark mb-2">إذن خدمات</h3>
 </div>
 
 <!-- بيانات الاتفاقية -->
@@ -19,7 +19,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 fw-bold text-end">إسم العميل:</div>
-                        <div class="col-7">{{ $policy->contract->customer->name }}</div>
+                        <div class="col-7">{{ $policy->customer->name }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 fw-bold text-end">تاريخ الإتفاقية:</div>
@@ -79,15 +79,15 @@
             <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">معلومات العميل</h6>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">اسم العميل:</div>
-                <div class="col-7">{{ $policy->contract->customer->name }}</div>
+                <div class="col-7">{{ $policy->customer->name }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">السجل التجاري:</div>
-                <div class="col-7">{{ $policy->contract->customer->CR ?? 'غير محدد' }}</div>
+                <div class="col-7">{{ $policy->customer->CR ?? 'غير محدد' }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">الرقم الضريبي:</div>
-                <div class="col-7">{{ $policy->contract->customer->vatNumber ?? 'غير محدد' }}</div>
+                <div class="col-7">{{ $policy->customer->vatNumber ?? 'غير محدد' }}</div>
             </div>
         </div>
     </div>
@@ -103,7 +103,7 @@
                     <th class="fw-bold">رقم الحاوية</th>
                     <th class="fw-bold">العميل</th>
                     <th class="fw-bold">نوع الحاوية</th>
-                    <th class="fw-bold">موقع الحاوية</th>
+                    <th class="fw-bold">الخدمة</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,7 +113,7 @@
                     <td class="fw-bold text-primary">{{ $container->code }}</td>
                     <td>{{ $container->customer->name }}</td>
                     <td>{{ $container->containerType->name }}</td>
-                    <td class="fw-bold">{{ $container->location }}</td>
+                    <td class="fw-bold">{{ $container->services->first()->description }}</td>
                 </tr>
                 @endforeach
             </tbody>

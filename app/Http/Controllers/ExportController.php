@@ -81,6 +81,13 @@ class ExportController extends Controller
             }
             $policy = $policyContainers[0]->policies->where('type', 'تسليم')->first();
             return view('reports.exit_permission', compact('company', 'policyContainers', 'policy'));
+        } elseif ($reportType == 'service_permission') {
+            $policyContainers = [];
+            foreach($request->containers as $container) {
+                $policyContainers[] = Container::findOrFail($container);
+            }
+            $policy = $policyContainers[0]->policies->where('type', 'خدمات')->first();
+            return view('reports.service_permission', compact('company', 'policyContainers', 'policy'));
         }
     }
 
