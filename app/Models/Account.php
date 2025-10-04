@@ -60,7 +60,10 @@ class Account extends Model
         return (object)[
             'debit'   => $result->total_debit,
             'credit'  => $result->total_credit,
-            'balance' => $result->total_debit - $result->total_credit
+            'balance' => [
+                'debit'  => max(0, $result->total_debit - $result->total_credit),
+                'credit' => max(0, $result->total_credit - $result->total_debit)
+            ]
         ];
     }
 

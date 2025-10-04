@@ -257,8 +257,22 @@ class AccountingController extends Controller
         } elseif($request->view == 'ميزان مراجعة') {
             $accounts = Account::all();
             $trialBalance = Account::where('level', 1)->get();
-        } 
+        }
+
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $totalBalance = [];
         
+        foreach($trialBalance as $account) {
+            $balance = $account->calculateBalance($from, $to);
+            $totalBalance[] = (object)[
+                'account' => $account->name,
+                'balance' => $balance->balance['credit']
+            ];
+        }
+
+        // return $totalBalance;
+
         return view('pages.accounting.reports', compact(
             'accountsLevel5', 
             'entries', 
