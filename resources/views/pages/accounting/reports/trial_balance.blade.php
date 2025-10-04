@@ -78,16 +78,17 @@
                 @foreach($trialBalance as $account)
                     <tr class="table-primary">
                         @php
-                            $balance = $account->calculateBalance(request()->query('from'), request()->query('to'))->balance;
+                            $from = request()->query('from');
+                            $to = request()->query('to');
                         @endphp
                         <td class="text-center">{{ $account->code }}</td>
                         <td class="fw-bold">{{ $account->name }} ({{ $account->level }})</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance(null, Carbon\Carbon::parse(request()->query('from'))->subDay())->debit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance(null, Carbon\Carbon::parse(request()->query('from'))->subDay())->credit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance(request()->query('from'), request()->query('to'))->debit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance(request()->query('from'), request()->query('to'))->credit }}</td>
-                        <td class="text-center fw-bold">{{ $balance > 0 ? $balance : '0.00' }}</td>
-                        <td class="text-center fw-bold">{{ $balance < 0 ? abs($balance) : '0.00' }}</td>
+                        <td class="text-center fw-bold">{{ $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->debit }}</td>
+                        <td class="text-center fw-bold">{{ $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->credit }}</td>
+                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->debit }}</td>
+                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->credit }}</td>
+                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->balance['debit'] }}</td>
+                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->balance['credit'] }}</td>
                     </tr>
                     @if($account->children->count())
                         @include('pages.accounting.reports.trial_balance_row', ['children' => $account->children])
@@ -95,12 +96,12 @@
                 @endforeach
                 <tr class="table-secondary">
                     <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(null, Carbon\Carbon::parse(request()->query('from'))->subDay())->debit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(null, Carbon\Carbon::parse(request()->query('from'))->subDay())->credit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(request()->query('from'), request()->query('to'))->debit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(request()->query('from'), request()->query('to'))->credit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(request()->query('from'), request()->query('to'))->balance) > 0 ? $trialBalance->sum(fn($account) => $account->calculateBalance(request()->query('from'), request()->query('to'))->balance) : '0.00' }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(request()->query('from'), request()->query('to'))->balance) < 0 ? abs($trialBalance->sum(fn($account) => $account->calculateBalance(request()->query('from'), request()->query('to'))->balance)) : '0.00' }}</td>
+                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->debit) }}</td>
+                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->credit) }}</td>
+                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->debit) }}</td>
+                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->credit) }}</td>
+                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->balance['debit']) }}</td>
+                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->balance['credit']) }}</td>
                 </tr>
             </tbody>
         </table>
