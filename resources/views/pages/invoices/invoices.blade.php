@@ -111,12 +111,15 @@
                             {{ $invoice->payment }}
                         </td>
                         <td class="d-flex justify-content-center align-items-center gap-2 text-center">
-                            <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice{{ $invoice->id }}">
-                                <i class="fa-solid fa-pen-to-square text-primary" title="تحديث"></i>
-                            </button>
-                            <a href="{{ route('print.invoice', $invoice->code) }}" target="_blank" class="text-decoration-none text-dark">
-                                <i class="fa-solid fa-print text-dark" title="طباعة"></i>
-                            </a>
+                            @if($invoice->type == 'خدمات')
+                                <a href="{{ route('invoices.services.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @else
+                                <a href="{{ route('invoices.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @endif
                         </td>
                     </tr>
                     <div class="modal fade" id="updateInvoice{{ $invoice->id }}" tabindex="-1" aria-labelledby="updateInvoiceLabel{{ $invoice->id }}" aria-hidden="true">
