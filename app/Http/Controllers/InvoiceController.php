@@ -6,12 +6,16 @@ use App\Helpers\ArabicNumberConverter;
 use App\Helpers\QrHelper;
 use App\Http\Requests\ClaimRequest;
 use App\Http\Requests\InvoiceRequest;
+use App\Models\Account;
 use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryLine;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class InvoiceController extends Controller
@@ -240,7 +244,21 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('pages.invoices.invoiceDetails', compact('invoice', 'services', 'discountValue', 'hatching_total', 'qrCode'));
+        $accounts = collect();
+        $moneyAccount = Account::where('name', 'النقدية')->first();
+        $bankAccount = Account::where('name', 'البنوك')->first();
+
+        $accounts = $accounts->merge($moneyAccount->children);
+        $accounts = $accounts->merge($bankAccount->children);
+
+        return view('pages.invoices.invoiceDetails', compact(
+            'invoice', 
+            'services', 
+            'discountValue', 
+            'hatching_total', 
+            'qrCode',
+            'accounts'
+        ));
     }
 
     public function updateInvoice(Request $request, Invoice $invoice) {
@@ -250,5 +268,41 @@ class InvoiceController extends Controller
         $invoice->payment = $request->payment;
         $invoice->save();
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
+    }
+
+    public function postInvoice(Request $request, Invoice $invoice) {
+        if($invoice->is_posted) {
+            return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
+        }
+
+        $debitAccount = Account::findOrFail($request->debit_account);
+        $creditAccount = $invoice->customer->account;
+
+        $journal = JournalEntry::create([
+            'date' => Carbon::now(),
+            'totalDebit' => $invoice->amount,
+            'totalCredit' => $invoice->amount,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $debitAccount->id,
+            'debit' => $invoice->amount,
+            'credit' => 0.00,
+            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+        ]);
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $creditAccount->id,
+            'debit' => 0.00,
+            'credit' => $invoice->amount,
+            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+        ]);
+
+        $invoice->is_posted = true;
+        $invoice->save();
+
+        return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
     }
 }

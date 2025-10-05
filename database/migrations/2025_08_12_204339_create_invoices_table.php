@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('date');
             $table->enum('payment', ['تم الدفع', 'لم يتم الدفع']);
             $table->string('notes')->nullable();
+            $table->boolean('is_posted')->default(false);
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
