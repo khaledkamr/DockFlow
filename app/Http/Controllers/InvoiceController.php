@@ -151,7 +151,20 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('pages.invoices.invoiceServicesDetails', compact('invoice', 'discountValue', 'hatching_total', 'qrCode'));
+        $accounts = collect();
+        $moneyAccount = Account::where('name', 'النقدية')->first();
+        $bankAccount = Account::where('name', 'البنوك')->first();
+
+        $accounts = $accounts->merge($moneyAccount->children);
+        $accounts = $accounts->merge($bankAccount->children);
+
+        return view('pages.invoices.invoiceServicesDetails', compact(
+            'invoice', 
+            'discountValue', 
+            'hatching_total', 
+            'qrCode',
+            'accounts'
+        ));
     }
 
     public function storeInvoice(Request $request) {

@@ -177,6 +177,8 @@ class PolicyController extends Controller
                 'user_id' => Auth::user()->id,
                 'company_id' => $request->company_id,
             ]);
+        } else {
+            $customer = Customer::findOrFail($request->customer_id);
         }
 
         $validated['customer_id'] = $request->customer_id ?? $customer->id;
