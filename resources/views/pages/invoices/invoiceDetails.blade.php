@@ -28,6 +28,11 @@
                         <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
                     </a>
                 @endcan
+                @if($invoice->payment == 'لم يتم الدفع')
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice">
+                        <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الفاتورة
+                    </button>
+                @endif
             </div>
         </div>
 
@@ -55,6 +60,37 @@
                         </div>
                         <div class="modal-footer d-flex justify-content-start">
                             <button type="submit" class="btn btn-primary fw-bold">ترحيل</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="updateInvoice" tabindex="-1" aria-labelledby="updateInvoiceLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="updateInvoiceLabel">تحديث بيانات الفاتورة</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('invoices.update', $invoice) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body text-dark">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="payment" class="form-label">عملية الدفع</label>
+                                    <select name="payment" class="form-select border-primary" required>
+                                        <option value="" selected disabled>اختر عملية الدفع</option>
+                                        <option value="تم الدفع">تم الدفع</option>
+                                        <option value="لم يتم الدفع">لم يتم الدفع</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary fw-bold">حفظ الفاتورة</button>
                             <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                         </div>
                     </form>

@@ -90,7 +90,7 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoices', 'invoices')->name('invoices');
     Route::get('invoice/create', 'createInvoice')->name('invoices.create');
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
-    Route::put('invoice/update/{invoice:uuid}', 'updateInvoice')->name('invoices.update');
+    Route::patch('invoice/update/{invoice:uuid}', 'updateInvoice')->name('invoices.update');
     Route::get('/invoice/{invoice:uuid}', 'invoiceDetails')->name('invoices.details');
     Route::post('/invoice/service/store', 'storeServiceInvoice')->name('invoices.service.store');
     Route::get('invoice/services/{invoice:uuid}', 'invoiceServicesDetails')->name('invoices.services.details');
