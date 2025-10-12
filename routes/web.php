@@ -9,6 +9,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -70,6 +71,13 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/services/create', 'servicePolicy')->name('policies.services.create');
     Route::post('/policies/services/store', 'storeServicePolicy')->name('policies.services.store');
     Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
+});
+
+Route::controller(TransactionController::class)->middleware('auth')->group(function () {
+    Route::get('/transactions', 'transactions')->name('transactions');
+    Route::get('/transactions/create', 'create')->name('transactions.create');
+    Route::post('/transactions/store', 'store')->name('transactions.store');
+    Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
