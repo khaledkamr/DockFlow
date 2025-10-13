@@ -34,7 +34,6 @@
                 <tr>
                     <th class="text-center bg-dark text-white">كود المعاملة</th>
                     <th class="text-center bg-dark text-white">إسم العميل</th>
-                    <th class="text-center bg-dark text-white">نوع المعاملة</th>
                     <th class="text-center bg-dark text-white">تاريخ المعاملة</th>
                     <th class="text-center bg-dark text-white">المبلغ</th>
                     <th class="text-center bg-dark text-white">تم بواسطة</th>
@@ -58,7 +57,6 @@
                                     {{ $transaction->customer->name }}
                                 </a>
                             </td>
-                            <td class="text-center">{{ $transaction->type }}</td>
                             <td class="text-center">
                                 {{ Carbon\Carbon::parse($transaction->date ?? $transaction->created_at)->format('Y/m/d') }}
                             </td>

@@ -77,7 +77,7 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::get('/transactions', 'transactions')->name('transactions');
     Route::get('/transactions/create', 'create')->name('transactions.create');
     Route::post('/transactions/store', 'store')->name('transactions.store');
-    Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
+    Route::get('/transactions/{transaction:uuid}', 'details')->name('transactions.details');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {

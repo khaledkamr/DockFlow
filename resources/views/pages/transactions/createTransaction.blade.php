@@ -43,6 +43,7 @@
             <div class="col">
                 <label class="form-label">البيان الضريبي</label>
                 <input type="text" name="tax_statement" class="form-control border-primary">
+                <input type="hidden" name="tax_statement_date" value="{{ Carbon\Carbon::now() }}">
                 @error('tax_statement')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
