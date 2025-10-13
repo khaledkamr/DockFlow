@@ -221,7 +221,7 @@
                             </div>
                             <p class="text-muted mb-0">
                                 تم إنشاء الحاوية برقم <strong>{{ $container->code }}</strong> من نوع <strong>{{ $container->containerType->name }}</strong> في النظام بواسطة 
-                                <strong>{{ $container->policies->where('type', 'تخزين')->first()->made_by->name }}</strong>
+                                <strong>{{ $container->made_by->name }}</strong>
                             </p>
                         </div>
                     </div>

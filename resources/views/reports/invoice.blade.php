@@ -1,6 +1,6 @@
 @extends('layouts.print')
 
-@section('title', 'فاتورة ضريبية')
+@section('title', "invoice-$invoice->code")
 
 @section('content')
 <style>

@@ -9,9 +9,9 @@ class TransactionItem extends Model
 {
     protected $fillable = [
         'transaction_id',
-        'item_id',
-        'quantity',
-        'price',
+        'description',
+        'amount',
+        'tax',
         'total',
     ];
 

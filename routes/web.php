@@ -78,6 +78,9 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::get('/transactions/create', 'create')->name('transactions.create');
     Route::post('/transactions/store', 'store')->name('transactions.store');
     Route::get('/transactions/{transaction:uuid}', 'details')->name('transactions.details');
+    Route::post('/transactions/item/store', 'storeItem')->name('transactions.item.store');
+    Route::put('/transactions/item/update/{item:id}', 'updateItem')->name('transactions.item.update');
+    Route::delete('/transactions/item/delete/{item:id}', 'deleteItem')->name('transactions.item.delete');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
