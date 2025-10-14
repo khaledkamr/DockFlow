@@ -239,6 +239,87 @@
         </div>
     </div>
 
+    <!-- Procedures Timeline Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-clock me-2"></i>
+                خط زمني للإجرائات
+            </h5>
+        </div>
+        <div class="card-body">
+            @if (count($transaction->procedures) > 0)
+                <div class="timeline">
+                    @foreach ($transaction->procedures as $procedure)
+                        <div class="timeline-item mb-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="timeline-content flex-grow-1 d-flex justify-content-between">
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <div class="timeline-dot bg-primary"></div>
+                                        <h6 class="mb-0 fw-bold">{{ $procedure->name }}</h6>
+                                        <small class="text-muted d-block ps-4">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            {{ Carbon\Carbon::parse($procedure->created_at)->format('Y/m/d') }}
+                                        </small>
+                                    </div>
+                                    <a href="#" class="text-danger small" type="button" data-bs-toggle="modal" data-bs-target="#deleteProcedureModal{{ $procedure->id }}">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delete Procedure Modal -->
+                        <div class="modal fade" id="deleteProcedureModal{{ $procedure->id }}" tabindex="-1" aria-labelledby="deleteProcedureModalLabel{{ $procedure->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-dark fw-bold" id="deleteProcedureModalLabel{{ $procedure->id }}">تأكيد الحذف</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center text-dark">
+                                        هل انت متأكد من الإجراء <strong>{{ $procedure->name }}</strong>؟
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                        <form action="{{ route('transactions.delete.procedure', $procedure) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <p class="text-muted">لا توجد إجرائات لهذه المعاملة حتى الآن</p>
+                </div>
+            @endif
+
+            <!-- Add Procedure Form -->
+            <div class="mt-4 pt-3 border-top">
+                <h6 class="fw-bold mb-3">إضافة إجراء جديد</h6>
+                <form action="{{ route('transactions.store.procedure', $transaction) }}" method="POST" id="addProcedureForm">
+                    @csrf
+                    <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-primary" name="name" placeholder="وصف الإجراء..." required>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-plus me-1"></i>
+                            إضافة
+                        </button>
+                    </div>
+                    @error('name')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Containers Section -->
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-header bg-dark text-white">
@@ -363,6 +444,36 @@
             تم إنشاء هذه المعاملة بواسطة: {{ $transaction->made_by->name }}
         </small>
     </div>
+
+    <style>
+        .timeline {
+            position: relative;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 10px;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 0.375rem;
+            border-right: 3px solid #0d6efd;
+        }
+        .timeline-content:hover {
+            background-color: #e5e6e6;
+            transition: all 0.3s ease;
+        }
+    </style>
     
     <script>
         function calculateTotal() {

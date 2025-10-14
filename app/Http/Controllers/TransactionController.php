@@ -7,6 +7,7 @@ use App\Http\Requests\TransactionRequest;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Customer;
+use App\Models\Procedure;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Carbon\Carbon;
@@ -30,7 +31,7 @@ class TransactionController extends Controller
         return view('pages.transactions.transactions', compact('transactions'));
     } 
 
-    public function create() {
+    public function createTransaction() {
         $company = Auth::user()->company;
         $customers = Customer::all();
         $containerTypes = Container_type::all();
@@ -42,7 +43,7 @@ class TransactionController extends Controller
         ));
     }
 
-    public function store(TransactionRequest $request) {
+    public function storeTransaction(TransactionRequest $request) {
         $transaction_containers = [];
         foreach($request->containers as $container) {
             $container = Container::create([
@@ -63,7 +64,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء معاملة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('transactions.details', $transaction).'">عرض المعاملة؟</a>');
     }
 
-    public function details(Transaction $transaction) {
+    public function transactionDetails(Transaction $transaction) {
         return view('pages.transactions.transactionDetails', compact('transaction'));
     }
 
@@ -84,5 +85,24 @@ class TransactionController extends Controller
     public function deleteItem(TransactionItem $item) {
         $item->delete();
         return redirect()->back()->with('success', 'تم حذف البند بنجاح');
+    }
+
+    public function addProcedure(Request $request, Transaction $transaction) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $transaction->procedures()->create([
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'تم إضافة إجراء جديد للمعاملة');
+    }
+
+    public function deleteProcedure($procedureId) {
+        $procedure = Procedure::findOrFail($procedureId);
+        $procedure->delete();
+
+        return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
     }
 }

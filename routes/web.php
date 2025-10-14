@@ -75,12 +75,14 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
 
 Route::controller(TransactionController::class)->middleware('auth')->group(function () {
     Route::get('/transactions', 'transactions')->name('transactions');
-    Route::get('/transactions/create', 'create')->name('transactions.create');
-    Route::post('/transactions/store', 'store')->name('transactions.store');
-    Route::get('/transactions/{transaction:uuid}', 'details')->name('transactions.details');
+    Route::get('/transactions/create', 'createTransaction')->name('transactions.create');
+    Route::post('/transactions/store', 'storeTransaction')->name('transactions.store');
+    Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
     Route::post('/transactions/item/store', 'storeItem')->name('transactions.item.store');
     Route::put('/transactions/item/update/{item:id}', 'updateItem')->name('transactions.item.update');
     Route::delete('/transactions/item/delete/{item:id}', 'deleteItem')->name('transactions.item.delete');
+    Route::post('/transactions/{transaction:uuid}/add/procedure', 'addProcedure')->name('transactions.store.procedure');
+    Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteProcedure')->name('transactions.delete.procedure');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
