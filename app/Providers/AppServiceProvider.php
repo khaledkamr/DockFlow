@@ -11,10 +11,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    protected $policies = [
-        // يمكنك إضافة Policies هنا إذا كنت تستخدمها
-    ];
-
     /**
      * Register any application services.
      */
@@ -30,8 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Paginator::useBootstrap();
-
-        // $this->registerPolicies();
 
         // تعريف Gate لكل Permission
         $permissions = Permission::all()->pluck('name')->toArray();

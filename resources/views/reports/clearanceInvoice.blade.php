@@ -49,29 +49,70 @@
     </div>
 </div>
 
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="border rounded-3 p-3 bg-light h-100">
+            <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات المعاملة</h6>
+            <div class="row">
+                <div class="col">
+                    <p class="mb-2 small"><strong class="text-secondary">رقم المعاملة:</strong><br>{{ $invoice->containers->first()->transactions->first()->code ?? '---' }}</p>
+                </div>
+                <div class="col">
+                    <p class="mb-2 small"><strong class="text-secondary">رقم البوليصة:</strong><br>{{ $invoice->containers->first()->transactions->first()->policy_number ?? '---' }}</p>
+                </div>
+                <div class="col">
+                    <p class="mb-2 small"><strong class="text-secondary">رقم البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration ?? '---' }}</p>
+                </div>
+                <div class="col">
+                    <p class="mb-2 small"><strong class="text-secondary">تاريخ البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration_date ?? '---' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="my-4">
     <table class="table table-bordered mb-0">
         <thead>
             <tr class="table-primary">
                 <th class="text-center fw-semibold">#</th>
-                <th class="text-center fw-semibold">رقم الإتفاقية</th>
                 <th class="text-center fw-semibold">رقم الحاوية</th>
-                <th class="text-center fw-semibold">تاريخ الدخول</th>
-                <th class="text-center fw-semibold">تاريخ الخروج</th>
-                <th class="text-center fw-semibold">الخدمة</th>
-                <th class="text-center fw-semibold">سعر الخدمة</th>
+                <th class="text-center fw-semibold">فئة الحاوية</th>
+                <th class="text-center fw-semibold">ملاحظات</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($invoice->containers as $index => $container)
                 <tr>
                     <td class="text-center small">{{ $index + 1 }}</td>
-                    <td class="text-center small">{{ $container->policies->where('type', 'خدمات')->first()->code }}</td>
                     <td class="text-center small">{{ $container->code }}</td>
-                    <td class="text-center small">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
-                    <td class="text-center small">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
-                    <td class="text-center small">{{ $container->services->first()->description }}</td>
-                    <td class="text-center small">{{ number_format($container->services->first()->pivot->price, 2) }}</td>
+                    <td class="text-center small">{{ $container->containerType->name }}</td>
+                    <td class="text-center small">{{ $container->notes ?? '---' }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+<div class="my-4">
+    <table class="table table-bordered mb-0">
+        <thead>
+            <tr class="table-primary">
+                <th class="text-center fw-semibold">#</th>
+                <th class="text-center fw-semibold">البند</th>
+                <th class="text-center fw-semibold">المبلغ</th>
+                <th class="text-center fw-semibold">الضريبة</th>
+                <th class="text-center fw-semibold">الإجمالي</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($invoice->containers->first()->transactions->first()->items as $index => $item)
+                <tr>
+                    <td class="text-center small">{{ $index + 1 }}</td>
+                    <td class="text-center small">{{ $item->description }}</td>
+                    <td class="text-center small">{{ number_format($item->amount, 2) }}</td>
+                    <td class="text-center small">{{ number_format($item->tax, 2) }}</td>
+                    <td class="text-center small">{{ number_format($item->total, 2) }} ر.س</td>
                 </tr>
             @endforeach
         </tbody>

@@ -67,6 +67,7 @@
             <tr>
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
                 <th class="text-center bg-dark text-white">العميــل</th>
+                <th class="text-center bg-dark text-white">نوع الفاتورة</th>
                 <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">المبلغ</th>
                 <th class="text-center bg-dark text-white">طريقــة الدفـــع</th>
@@ -103,6 +104,7 @@
                                 {{ $invoice->customer->name }}
                             </a>
                         </td>
+                        <td class="text-center">{{ $invoice->type ?? '-' }}</td>
                         <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
                         <td class="text-center fw-bold">{{ $invoice->amount }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
@@ -115,8 +117,12 @@
                                 <a href="{{ route('invoices.services.details', $invoice) }}" class="btn btn-sm btn-primary">
                                     عرض
                                 </a>
-                            @else
+                            @elseif($invoice->type == 'تخزين')
                                 <a href="{{ route('invoices.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @elseif($invoice->type == 'تخليص')
+                                <a href="{{ route('invoices.clearance.details', $invoice) }}" class="btn btn-sm btn-primary">
                                     عرض
                                 </a>
                             @endif

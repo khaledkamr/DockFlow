@@ -69,7 +69,8 @@ class PolicyController extends Controller
                 'location' => $container['location'],
                 'received_by' => $request->driver_name,
                 'date' => Carbon::now(),
-                'notes' => $container['notes']
+                'notes' => $container['notes'],
+                'user_id' => Auth::user()->id,
             ]);
             $policy_containers[] = $container;
         }
@@ -191,7 +192,8 @@ class PolicyController extends Controller
                 'date' => Carbon::now(),
                 'exit_date' => Carbon::now(),
                 'status' => 'خدمات',
-                'customer_id' => $customer->id
+                'customer_id' => $customer->id,
+                'user_id' => Auth::user()->id
             ]);
 
             $containerDb->services()->attach($container['service_id'], [

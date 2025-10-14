@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Gate;
 
 class ExportController extends Controller
@@ -73,6 +74,7 @@ class ExportController extends Controller
                 $policyContainers[] = Container::findOrFail($container);
             }
             $policy = $policyContainers[0]->policies->where('type', 'تخزين')->first();
+            
             return view('reports.entry_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'exit_permission') {
             $policyContainers = [];
@@ -80,6 +82,7 @@ class ExportController extends Controller
                 $policyContainers[] = Container::findOrFail($container);
             }
             $policy = $policyContainers[0]->policies->where('type', 'تسليم')->first();
+
             return view('reports.exit_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'service_permission') {
             $policyContainers = [];
@@ -87,6 +90,7 @@ class ExportController extends Controller
                 $policyContainers[] = Container::findOrFail($container);
             }
             $policy = $policyContainers[0]->policies->where('type', 'خدمات')->first();
+
             return view('reports.service_permission', compact('company', 'policyContainers', 'policy'));
         }
     }
@@ -187,6 +191,46 @@ class ExportController extends Controller
         );
 
         return view('reports.invoiceServices', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
+    }
+
+    public function printClearanceInvoice($code) {
+        if(Gate::denies('طباعة فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
+        }
+        
+        $invoice = Invoice::with('containers')->where('code', $code)->first();
+        $company = $invoice->company;
+
+        $transaction = Transaction::where('customer_id', $invoice->customer_id)
+            ->whereHas('containers', function ($query) use ($invoice) {
+                $containerIds = $invoice->containers->pluck('id')->toArray();
+                $query->whereIn('container_id', $containerIds);
+            })
+            ->first();
+
+        $amountBeforeTax = 0;
+
+        foreach($transaction->items as $item) {
+            $amountBeforeTax += $item->total;
+        }
+
+        $invoice->subtotal = $amountBeforeTax;
+        $invoice->tax = $amountBeforeTax * 0.15;
+        $invoice->total = $amountBeforeTax + $invoice->tax;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
+        $invoice->total -= $discountValue;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('reports.clearanceInvoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
     public function excel($reportType, Request $request) {

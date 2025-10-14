@@ -48,6 +48,11 @@
             background: #0a57ca;
         }
 
+        ::selection {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0056d8;
+        }
+
         /* Sidebar width */
         .sidebar {
             width: 300px;
@@ -331,6 +336,29 @@
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.services.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('policies.services.create') }}">
                             <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية خدمات
+                        </a>
+                    </div>
+                </li>
+            @endcan
+
+            @can('عرض الإتفاقيات')
+                <li class="nav-item mb-1">
+                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['transactions*']) ? '' : 'collapsed' }}" 
+                    data-bs-toggle="collapse" 
+                    href="#transaction-management" 
+                    role="button" 
+                    aria-expanded="{{ request()->routeIs(['transactions*']) ? 'true' : 'false' }}" 
+                    aria-controls="transaction-management">
+                        <i class="fa-solid fa-file ms-2 me-2"></i> إدارة المعامــــــلات
+                    </a>
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['transactions*']) ? 'show' : '' }}" id="transaction-management">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('transactions') }}">
+                            <i class="fa-solid fa-file-contract ms-2 me-2"></i> المعامـــــــــلات
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('transactions.create') }}">
+                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة معاملة
                         </a>
                     </div>
                 </li>

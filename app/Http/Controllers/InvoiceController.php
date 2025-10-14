@@ -13,6 +13,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,6 +161,90 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.invoiceServicesDetails', compact(
             'invoice', 
+            'discountValue', 
+            'hatching_total', 
+            'qrCode',
+            'accounts'
+        ));
+    }
+
+    public function storeClearanceInvoice(Request $request, Transaction $transaction) {
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        $invoice = Invoice::create([
+            'type' => 'تخليص',
+            'customer_id' => $request->customer_id,
+            'user_id' => $request->user_id,
+            'amount' => 0,
+            'payment_method' => $request->payment_method,
+            'discount' => $request->discount ?? 0,
+            'date' => Carbon::now(),
+            'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
+        ]);
+
+        foreach($transaction->containers as $container) {
+            $invoice->containers()->attach($container->id, ['amount' => 0]);
+        }
+
+        $amountBeforeTax = 0;
+
+        foreach($transaction->items as $item) {
+            $amountBeforeTax += $item->total;
+        }
+
+        $tax = $amountBeforeTax * 0.15;
+        $amount = $amountBeforeTax + $tax;
+        $discountValue = ($request->discount ?? 0) / 100 * $amount;
+        $amount -= $discountValue;
+
+        $invoice->amount = $amount;
+        $invoice->save();
+
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
+    }
+
+    public function clearanceInvoiceDetails(Invoice $invoice) {
+        $transaction = Transaction::where('customer_id', $invoice->customer_id)
+            ->whereHas('containers', function ($query) use ($invoice) {
+                $containerIds = $invoice->containers->pluck('id')->toArray();
+                $query->whereIn('container_id', $containerIds);
+            })
+            ->first();
+
+        $amountBeforeTax = 0;
+
+        foreach($transaction->items as $item) {
+            $amountBeforeTax += $item->total;
+        }
+
+        $invoice->subtotal = $amountBeforeTax;
+        $invoice->tax = $amountBeforeTax * 0.15;
+        $invoice->total = $amountBeforeTax + $invoice->tax;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
+        $invoice->total -= $discountValue;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        $accounts = collect();
+        $moneyAccount = Account::where('name', 'النقدية')->first();
+        $bankAccount = Account::where('name', 'البنوك')->first();
+
+        $accounts = $accounts->merge($moneyAccount->children);
+        $accounts = $accounts->merge($bankAccount->children);
+
+        return view('pages.invoices.clearanceInvoiceDetails', compact(
+            'invoice', 
+            'transaction',
             'discountValue', 
             'hatching_total', 
             'qrCode',

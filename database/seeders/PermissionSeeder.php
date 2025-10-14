@@ -43,6 +43,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'إنشاء مستوى حساب'],
             ['name' => 'حذف مستوى حساب'],
             ['name' => 'تقارير القيود'],
+            ['name' => 'عرض المعاملات'],
+            ['name' => 'إنشاء معاملة'],
         ];
 
         foreach($permissions as $permission) {

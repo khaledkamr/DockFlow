@@ -9,6 +9,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\TransactionController;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -72,6 +73,18 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
 });
 
+Route::controller(TransactionController::class)->middleware('auth')->group(function () {
+    Route::get('/transactions', 'transactions')->name('transactions');
+    Route::get('/transactions/create', 'createTransaction')->name('transactions.create');
+    Route::post('/transactions/store', 'storeTransaction')->name('transactions.store');
+    Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
+    Route::post('/transactions/item/store', 'storeItem')->name('transactions.item.store');
+    Route::put('/transactions/item/update/{item:id}', 'updateItem')->name('transactions.item.update');
+    Route::delete('/transactions/item/delete/{item:id}', 'deleteItem')->name('transactions.item.delete');
+    Route::post('/transactions/{transaction:uuid}/add/procedure', 'addProcedure')->name('transactions.store.procedure');
+    Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteProcedure')->name('transactions.delete.procedure');
+});
+
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
     Route::get('/contracts', 'contracts')->name('contracts');
     Route::get('/contracts/create', 'createContract')->name('contracts.create');
@@ -95,6 +108,8 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('/invoice/service/store', 'storeServiceInvoice')->name('invoices.service.store');
     Route::get('invoice/services/{invoice:uuid}', 'invoiceServicesDetails')->name('invoices.services.details');
     Route::post('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
+    Route::post('invoice/clearance/{transaction:uuid}', 'storeClearanceInvoice')->name('invoices.clearance.store');
+    Route::get('invoice/clearance/details/{invoice:uuid}', 'clearanceInvoiceDetails')->name('invoices.clearance.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -115,5 +130,6 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');
     Route::get('/print/invoice/{code}', 'printInvoice')->name('print.invoice');
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
+    Route::get('/print/invoice/clearance/{code}', 'printClearanceInvoice')->name('print.invoice.clearance');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
 });

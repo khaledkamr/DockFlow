@@ -14,7 +14,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $policy->contract_id) }}" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
+                            <a href="{{ route('contracts.details', $policy->customer->contract) }}" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
                     </ol>

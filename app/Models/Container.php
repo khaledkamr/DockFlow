@@ -22,6 +22,7 @@ class Container extends Model
         'date',
         'exit_date',
         'company_id',
+        'user_id',
     ];
 
     public function containerType() {
@@ -36,6 +37,10 @@ class Container extends Model
         return $this->belongsToMany(Policy::class, 'policy_container');
     }
 
+    public function transactions() {
+        return $this->belongsToMany(Transaction::class, 'transaction_containers');
+    }
+
     public function invoices() {
         return $this->belongsToMany(Invoice::class, 'invoice_containers')
             ->withPivot('amount')
@@ -46,5 +51,9 @@ class Container extends Model
         return $this->belongsToMany(Service::class, 'container_services')
             ->withPivot('price', 'notes')
             ->withTimestamps();
+    }
+
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
