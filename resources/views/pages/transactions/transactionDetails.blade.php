@@ -32,6 +32,46 @@
         </div>
     </div>
 
+    <!-- Create Invoice Modal -->
+    <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إنشاء فاتورة جديدة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('invoices.clearance.store', $transaction) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="customer_id" value="{{ $transaction->customer_id }}">
+                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                    <input type="hidden" name="container_ids[]" value="{{ $transaction->containers->pluck('id')->join(',') }}">
+                    <div class="modal-body text-dark">
+                        <div class="row mb-4">
+                            <div class="col">
+                                <label class="form-label">طريقة الدفع</label>
+                                <select class="form-select border-primary" name="payment_method" required>
+                                    <option value="آجل">آجل</option>
+                                    <option value="كاش">كاش</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">نسبة الخصم(%)</label>
+                                <input type="number" name="discount" id="discount" class="form-control border-primary" 
+                                    min="0" max="100" step="1" value="0" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Information Section -->
     <div class="row">
         <div class="col-lg-6 d-flex flex-column gap-3 mb-4">
             <div class="card border-0 shadow-sm h-100">
@@ -247,7 +287,7 @@
         <div class="card-header bg-dark text-white">
             <h5 class="card-title mb-0">
                 <i class="fas fa-clock me-2"></i>
-                خط زمني للإجرائات
+                الخط زمني للإجرائات
             </h5>
         </div>
         <div class="card-body">
@@ -353,7 +393,7 @@
                                 <tr class="text-center">
                                     <td class="text-center">{{ $container->id }}</td>
                                     <td>
-                                        <a href="{{ route('container.details', $container->id) }}"
+                                        <a href="{{ route('container.details', $container) }}"
                                             class="fw-bold text-decoration-none">
                                             {{ $container->code }}
                                         </a>
@@ -455,12 +495,10 @@
         .timeline {
             position: relative;
         }
-
         .timeline-item {
             position: relative;
             padding-left: 10px;
         }
-
         .timeline-dot {
             width: 12px;
             height: 12px;
@@ -468,7 +506,6 @@
             display: inline-block;
             flex-shrink: 0;
         }
-
         .timeline-content {
             background-color: #f8f9fa;
             padding: 12px 15px;

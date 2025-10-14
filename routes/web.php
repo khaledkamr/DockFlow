@@ -108,6 +108,8 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('/invoice/service/store', 'storeServiceInvoice')->name('invoices.service.store');
     Route::get('invoice/services/{invoice:uuid}', 'invoiceServicesDetails')->name('invoices.services.details');
     Route::post('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
+    Route::post('invoice/clearance/{transaction:uuid}', 'storeClearanceInvoice')->name('invoices.clearance.store');
+    Route::get('invoice/clearance/details/{invoice:uuid}', 'clearanceInvoiceDetails')->name('invoices.clearance.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -128,5 +130,6 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');
     Route::get('/print/invoice/{code}', 'printInvoice')->name('print.invoice');
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
+    Route::get('/print/invoice/clearance/{code}', 'printClearanceInvoice')->name('print.invoice.clearance');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
 });

@@ -37,6 +37,10 @@ class Container extends Model
         return $this->belongsToMany(Policy::class, 'policy_container');
     }
 
+    public function transactions() {
+        return $this->belongsToMany(Transaction::class, 'transaction_containers');
+    }
+
     public function invoices() {
         return $this->belongsToMany(Invoice::class, 'invoice_containers')
             ->withPivot('amount')

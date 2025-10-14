@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('code')->unique();
-            $table->enum('type', ['خدمات', 'تخزين'])->default('تخزين');
+            $table->enum('type', ['خدمات', 'تخزين', 'تخليص'])->default('تخزين');
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('amount', 10, 2);
             $table->decimal('discount', 5, 2)->default(0);
