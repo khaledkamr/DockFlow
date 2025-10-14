@@ -171,17 +171,20 @@
                                                     <div class="row">
                                                         <div class="col">
                                                             <label for="editAmount" class="form-label">المبلغ</label>
-                                                            <input type="number" class="form-control border-primary" name="amount" value="{{ $item->amount }}"
+                                                            <input type="number" class="form-control border-primary" name="amount" id="editAmount" value="{{ $item->amount }}"
                                                                 step="1" required onchange="calculateEditTotal()">
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTax" class="form-label">الضريبة</label>
-                                                            <input type="number" class="form-control border-primary" name="tax" value="{{ $item->tax }}"
-                                                                step="1" onchange="calculateEditTotal()">
+                                                            <select name="tax" class="form-select border-primary" id="editTax" onchange="calculateEditTotal()">
+                                                                <option disabled selected>نوع الضريبة</option>
+                                                                <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
+                                                                <option value="0" data-rate="0">ضريبية صفرية (0%)</option>
+                                                            </select>
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTotal" class="form-label">الإجمالي</label>
-                                                            <input type="number" class="form-control border-primary" name="total" value="{{ $item->total }}"
+                                                            <input type="number" class="form-control border-primary" name="total" id="editTotal" value="{{ $item->total }}"
                                                                 step="1" readonly>
                                                         </div>
                                                     </div>
@@ -258,7 +261,7 @@
                                         <div class="timeline-dot bg-primary"></div>
                                         <h6 class="mb-0 fw-bold">{{ $procedure->name }}</h6>
                                         <small class="text-muted d-block ps-4">
-                                            <i class="fas fa-calendar me-1"></i>
+                                            <i class="fas fa-calendar-days me-1"></i>
                                             {{ Carbon\Carbon::parse($procedure->created_at)->format('Y/m/d') }}
                                         </small>
                                     </div>
@@ -420,8 +423,11 @@
                             </div>
                             <div class="col">
                                 <label for="tax" class="form-label">الضريبة</label>
-                                <input type="number" class="form-control border-primary" id="tax" name="tax"
-                                    step="0.01" value="0" onchange="calculateTotal()">
+                                <select name="tax" class="form-select border-primary" id="tax" onchange="calculateTotal()">
+                                    <option disabled selected>نوع الضريبة</option>
+                                    <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
+                                    <option value="0" data-rate="0">ضريبية صفرية (0%)</option>
+                                </select>
                             </div>
                             <div class="col">
                                 <label for="total" class="form-label">الإجمالي</label>
@@ -478,14 +484,16 @@
     <script>
         function calculateTotal() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const tax = parseFloat(document.getElementById('tax').value) || 0;
+            const taxPercent = parseFloat(document.getElementById('tax').value) || 0;
+            const tax = (amount * taxPercent) / 100;
             const total = amount + tax;
             document.getElementById('total').value = total.toFixed(2);
         }
 
         function calculateEditTotal() {
             const amount = parseFloat(document.getElementById('editAmount').value) || 0;
-            const tax = parseFloat(document.getElementById('editTax').value) || 0;
+            const taxPercent = parseFloat(document.getElementById('editTax').value) || 0;
+            const tax = (amount * taxPercent) / 100;
             const total = amount + tax;
             document.getElementById('editTotal').value = total.toFixed(2);
         }
