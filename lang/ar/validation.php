@@ -30,7 +30,8 @@ return [
         'location' => 'الموقع',
         'notes' => 'ملاحظات',
         'national_address' => 'العنوان الوطني',
-        'TIN' => 'الرقم الضريبي',
+        'TIN' => 'الرقم المميز',
+        'vatNumber' => 'الرقم الضريبي',
         'company_representative' => 'اسم ممثل الشركة',
         'company_representative_nationality' => 'جنسية ممثل الشركة',
         'company_representative_NID' => 'الهوية الوطنية لممثل الشركة', 
@@ -45,6 +46,10 @@ return [
         'price' => 'السعر',
         'amount' => 'المبلغ',
         'hatching' => 'الفقيط',
-        'role' => 'الوظيفة'
+        'role' => 'الوظيفة',
+        'policy_number' => 'رقم البوليصة',
+        'customs_declaration' => 'البيان الجمركي',
+        'customs_declaration_date' => 'تاريخ البيان الجمركي',
+        'customer_id' => 'رقم العميل',
     ],
 ];

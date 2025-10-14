@@ -12,8 +12,9 @@ class Transaction extends Model
 
     protected $fillable = [
         'date',
-        'tax_statement',
-        'tax_statement_date',
+        'policy_number',
+        'customs_declaration',
+        'customs_declaration_date',
         'code',
         'contract_id',
         'customer_id',

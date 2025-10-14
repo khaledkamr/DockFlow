@@ -11,10 +11,12 @@
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('contracts.details', $transaction->customer->contract) }}"
-                            class="text-decoration-none">العقد #{{ $transaction->contract_id }}</a>
-                    </li>
+                    @if($transaction->contract_id)
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('contracts.details', $transaction->customer->contract) }}"
+                                class="text-decoration-none">العقد #{{ $transaction->contract_id }}</a>
+                        </li>
+                    @endif
                     <li class="breadcrumb-item active" aria-current="page">المعاملة #{{ $transaction->id }}</li>
                 </ol>
             </nav>
@@ -33,11 +35,12 @@
     <div class="row">
         <div class="col-lg-6 d-flex flex-column gap-3 mb-4">
             <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
                         معلومات المعاملة
                     </h5>
+                    <span class="small">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}</span>
                 </div>
                 <div class="card-body">
                     <div class="row g-4">
@@ -45,17 +48,16 @@
                             <div>
                                 <div class="row">
                                     <div class="col">
-                                        <label class="form-label text-muted small">تاريخ المعاملة</label>
-                                        <div class="fw-bold fs-5">
-                                            {{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}</div>
+                                        <label class="form-label text-muted small">رقم البوليصة</label>
+                                        <div class="fw-bold fs-5">{{ $transaction->policy_number }}</div>
                                     </div>
                                     <div class="col">
-                                        <label class="form-label text-muted small">البيان الضريبي</label>
-                                        <div class="fw-bold fs-5">{{ $transaction->tax_statement }}</div>
+                                        <label class="form-label text-muted small">البيان الجمركي</label>
+                                        <div class="fw-bold fs-5">{{ $transaction->customs_declaration }}</div>
                                     </div>
                                     <div class="col">
-                                        <label class="form-label text-muted small">تم الإنشاء بواسطة</label>
-                                        <div class="fw-bold">{{ $transaction->made_by->name }}</div>
+                                        <label class="form-label text-muted small">تاريخ البيان الجمركي</label>
+                                        <div class="fw-bold fs-5">{{ Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y/m/d') }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +83,7 @@
                                 الطرف الأول
                             </h6>
                             <div class="">
-                                <div class="fw-bold">{{ $transaction->contract->company->name }}</div>
+                                <div class="fw-bold">{{ $transaction->made_by->company->name }}</div>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -90,7 +92,7 @@
                                 الطرف الثاني
                             </h6>
                             <div class="">
-                                <div class="fw-bold">{{ $transaction->contract->customer->name }}</div>
+                                <div class="fw-bold">{{ $transaction->customer->name }}</div>
                             </div>
                         </div>
                     </div>
@@ -120,7 +122,7 @@
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center fw-bold">#</th>
-                                <th class="text-center fw-bold">البيان</th>
+                                <th class="text-center fw-bold">البند</th>
                                 <th class="text-center fw-bold">المبلغ</th>
                                 <th class="text-center fw-bold">الضريبة</th>
                                 <th class="text-center fw-bold">الإجمالي</th>
@@ -231,7 +233,6 @@
                 </div>
             @else
                 <div class="text-center py-5">
-                    <i class="fas fa-list fa-3x text-muted mb-3"></i>
                     <h5 class="text-muted">لا توجد بنود مرتبطة بهذه المعاملة</h5>
                 </div>
             @endif
@@ -355,6 +356,12 @@
                 </form>
             </div>
         </div>
+    </div>
+
+    <div class="text-center mt-4 mb-3">
+        <small class="text-muted">
+            تم إنشاء هذه المعاملة بواسطة: {{ $transaction->made_by->name }}
+        </small>
     </div>
     
     <script>

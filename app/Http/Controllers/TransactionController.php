@@ -21,7 +21,7 @@ class TransactionController extends Controller
         $search = $request->input('search', null);
         if($search) {
             $transactions = $transactions->filter(function($transaction) use($search) {
-                return stripos($transaction->id, $search) !== false 
+                return stripos($transaction->code, $search) !== false 
                     || stripos($transaction->customer->name, $search) !== false
                     || stripos($transaction->date, $search) !== false;
             });

@@ -25,7 +25,7 @@
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" 
+                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" data-account="{{ $customer->account->code }}"
                             data-contract="{{ $customer->contract ? $customer->contract->id : null }}">
                             {{ $customer->name }}
                         </option>
@@ -33,18 +33,35 @@
                 </select>
             </div>
             <input type="hidden" id="contract_id" name="contract_id">
+            <input type="hidden" name="customer_id" id="customer_id">
             <div class="col">
                 <label class="form-label">رقــم العميــل</label>
-                <input type="text" class="form-control border-primary" id="customer_id" name="customer_id" value="" readonly>
+                <input type="text" class="form-control border-primary" id="customer_account" value="" readonly>
                 @error('customer_id')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
+        </div>
+
+        <div class="row mb-3">
             <div class="col">
-                <label class="form-label">البيان الضريبي</label>
-                <input type="text" name="tax_statement" class="form-control border-primary">
-                <input type="hidden" name="tax_statement_date" value="{{ Carbon\Carbon::now() }}">
-                @error('tax_statement')
+                <label class="form-label">رقم البوليصة</label>
+                <input type="text" name="policy_number" class="form-control border-primary">
+                @error('policy_number')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col">
+                <label class="form-label">البيان الجمركي</label>
+                <input type="text" name="customs_declaration" class="form-control border-primary">
+                @error('customs_declaration')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col">
+                <label class="form-label">تاريخ البيان الجمركي</label>
+                <input type="date" name="customs_declaration_date" class="form-control border-primary" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                @error('customs_declaration_date')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
@@ -109,6 +126,8 @@
     $('#customer_name').on('change', function () {
         let id = $(this).find(':selected').data('id');
         $('#customer_id').val(id || '');
+        let account = $(this).find(':selected').data('account');
+        $('#customer_account').val(account || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
     });

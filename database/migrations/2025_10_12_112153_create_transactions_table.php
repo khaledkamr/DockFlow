@@ -13,8 +13,9 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('code');
             $table->date('date');
-            $table->string('tax_statement');
-            $table->date('tax_statement_date');
+            $table->string('policy_number');
+            $table->string('customs_declaration');
+            $table->date('customs_declaration_date');
             $table->foreignId('contract_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();

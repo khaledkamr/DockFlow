@@ -14,12 +14,13 @@ class TransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contract_id' => 'required',
+            'contract_id' => 'nullable|exists:contracts,id',
             'customer_id' => 'required',
             'user_id' => 'required',
             'date' => 'required',
-            'tax_statement' => 'nullable|string',
-            'tax_statement_date' => 'nullable|date',
+            'policy_number' => 'required|string',
+            'customs_declaration' => 'required|string',
+            'customs_declaration_date' => 'required|date',
         ];
     }
 }
