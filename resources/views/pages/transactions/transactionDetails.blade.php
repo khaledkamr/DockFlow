@@ -210,21 +210,22 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col">
-                                                            <label for="editAmount" class="form-label">المبلغ</label>
-                                                            <input type="number" class="form-control border-primary" name="amount" id="editAmount" value="{{ $item->amount }}"
-                                                                step="1" required onchange="calculateEditTotal()">
+                                                            <label class="form-label">المبلغ</label>
+                                                            <input type="number" class="form-control border-primary" name="amount" id="editAmount{{ $loop->index }}" value="{{ $item->amount }}"
+                                                                step="1" required onchange="calculateEditTotal({{ $loop->index }})">
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTax" class="form-label">الضريبة</label>
-                                                            <select name="tax" class="form-select border-primary" id="editTax" onchange="calculateEditTotal()">
+                                                            <select class="form-select border-primary" id="editTaxPercentage{{ $loop->index }}" onchange="calculateEditTotal({{ $loop->index }})">
                                                                 <option disabled selected>نوع الضريبة</option>
                                                                 <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
-                                                                <option value="0" data-rate="0">ضريبية صفرية (0%)</option>
+                                                                <option value="0" data-rate="0">غير خاضع للضريبة</option>
                                                             </select>
+                                                            <input type="hidden" id="editTax{{ $loop->index }}" name="tax" value="{{ $item->tax }}">
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTotal" class="form-label">الإجمالي</label>
-                                                            <input type="number" class="form-control border-primary" name="total" id="editTotal" value="{{ $item->total }}"
+                                                            <input type="number" class="form-control border-primary" name="total" id="editTotal{{ $loop->index }}" value="{{ $item->total }}"
                                                                 step="1" readonly>
                                                         </div>
                                                     </div>
@@ -463,11 +464,12 @@
                             </div>
                             <div class="col">
                                 <label for="tax" class="form-label">الضريبة</label>
-                                <select name="tax" class="form-select border-primary" id="tax" onchange="calculateTotal()">
+                                <select class="form-select border-primary" id="tax_percentage" onchange="calculateTotal()">
                                     <option disabled selected>نوع الضريبة</option>
                                     <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
-                                    <option value="0" data-rate="0">ضريبية صفرية (0%)</option>
+                                    <option value="0" data-rate="0">غير خاضع للضريبة</option>
                                 </select>
+                                <input type="hidden" id="tax" name="tax" value="0">
                             </div>
                             <div class="col">
                                 <label for="total" class="form-label">الإجمالي</label>
@@ -521,18 +523,20 @@
     <script>
         function calculateTotal() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;
-            const taxPercent = parseFloat(document.getElementById('tax').value) || 0;
+            const taxPercent = parseFloat(document.getElementById('tax_percentage').value) || 0;
             const tax = (amount * taxPercent) / 100;
             const total = amount + tax;
+            document.getElementById('tax').value = tax.toFixed(2);
             document.getElementById('total').value = total.toFixed(2);
         }
 
-        function calculateEditTotal() {
-            const amount = parseFloat(document.getElementById('editAmount').value) || 0;
-            const taxPercent = parseFloat(document.getElementById('editTax').value) || 0;
+        function calculateEditTotal(index) {
+            const amount = parseFloat(document.getElementById('editAmount' + index).value) || 0;
+            const taxPercent = parseFloat(document.getElementById('editTaxPercentage' + index).value) || 0;
             const tax = (amount * taxPercent) / 100;
             const total = amount + tax;
-            document.getElementById('editTotal').value = total.toFixed(2);
+            document.getElementById('editTax' + index).value = tax.toFixed(2);
+            document.getElementById('editTotal' + index).value = total.toFixed(2);
         }
     </script>
 @endsection
