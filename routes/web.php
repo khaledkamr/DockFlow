@@ -10,11 +10,13 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransportController;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\invoice;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Mailer\Transport;
 
 Route::controller(AdminController::class)->middleware('auth')->group(function() {
     Route::get('/', 'dashboard')->name('dashboard');
@@ -83,6 +85,13 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::delete('/transactions/item/delete/{item:id}', 'deleteItem')->name('transactions.item.delete');
     Route::post('/transactions/{transaction:uuid}/add/procedure', 'addProcedure')->name('transactions.store.procedure');
     Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteProcedure')->name('transactions.delete.procedure');
+});
+
+Route::controller(TransportController::class)->middleware('auth')->group(function () {
+    Route::get('/transport/orders', 'transportOrders')->name('transactions.transportOrders');
+    Route::get('/transport/orders/create', 'createTransportOrder')->name('transactions.transportOrders.create');
+    Route::post('/transport/orders/store', 'storeTransportOrder')->name('transportOrders.store');
+    Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {

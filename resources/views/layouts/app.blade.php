@@ -349,7 +349,7 @@
                     role="button" 
                     aria-expanded="{{ request()->routeIs(['transactions*']) ? 'true' : 'false' }}" 
                     aria-controls="transaction-management">
-                        <i class="fa-solid fa-file ms-2 me-2"></i> إدارة المعامــــــلات
+                        <i class="fa-solid fa-file ms-2 me-2"></i> معاملات التخليـــص
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['transactions*']) ? 'show' : '' }}" id="transaction-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions') ? 'bg-primary text-white' : 'text-dark' }}" 
@@ -359,6 +359,14 @@
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('transactions.create') }}">
                             <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة معاملة
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('transactions.transportOrders') }}">
+                            <i class="fa-solid fa-copy ms-2 me-2"></i> إشعارات النقل
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('transactions.transportOrders.create') }}">
+                            <i class="fa-solid fa-truck ms-2 me-2"></i> إضافة إشعار نقل
                         </a>
                     </div>
                 </li>
