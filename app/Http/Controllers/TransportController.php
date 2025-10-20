@@ -20,11 +20,12 @@ class TransportController extends Controller
     }
 
     public function createTransportOrder() {
-        $transactions = Transaction::all();
+        $transactions = Transaction::with('containers.transportOrders')->get();
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
 
-        // return $transactions[1]->containers;
+        $result = $transactions[1]->containers[1]->transportOrders;
+        // return $result->isEmpty() ? 'false' : 'true';
 
         return view('pages.transportOrders.createTransportOrder', compact('transactions', 'drivers', 'vehicles'));
     }

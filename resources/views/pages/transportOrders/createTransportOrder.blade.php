@@ -171,7 +171,7 @@
         let customer = $(this).find(':selected').data('customer');
         $('#customer_id').val(customer || '');
 
-        let containers = $(this).find(':selected').data('containers');
+        const containers = $(this).find(':selected').data('containers');
         
         // Show/hide container selection section
         if (containers && containers.length > 0) {
@@ -246,10 +246,9 @@
 
         // Filter containers that are available for receiving (status: 'متوفر')
         const availableContainers = containers.filter(container => {
-            console.log(container.transportOrders);
-            return container.status === 'متوفر';
+            const hasTransportOrders = container.transport_orders && container.transport_orders.length > 0;
+            return !hasTransportOrders;
         });
-
 
         if (availableContainers.length === 0) {
             containersList.html(`
