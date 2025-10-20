@@ -17,8 +17,19 @@
                                 class="text-decoration-none">العقد #{{ $transaction->contract_id }}</a>
                         </li>
                     @endif
-                    <li class="breadcrumb-item active" aria-current="page">المعاملة #{{ $transaction->id }}</li>
-                </ol>
+                    <li class="breadcrumb-item">
+                        <a href="" class="text-decoration-none">
+                            المعاملات
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        المعاملة #{{ $transaction->id }}
+                        @if($transaction->status == 'معلقة')
+                            <span class="badge bg-warning text-dark ms-2">معلقة</span>
+                        @elseif($transaction->status == 'مغلقة')
+                            <span class="badge bg-success ms-2">مغلقة</span>
+                        @endif
+                    </li>
             </nav>
         </div>
         <div class="d-flex gap-2">

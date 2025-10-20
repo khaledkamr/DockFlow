@@ -51,7 +51,11 @@
                     @foreach ($transportOrders as $order)
                         <tr>
                             <td class="text-center text-primary fw-bold">{{ $order->code }}</td>
-                            <td class="text-center text-primary fw-bold">{{ $order->transaction->code }}</td>
+                            <td class="text-center text-primary fw-bold">
+                                <a href="{{ route('transactions.details', $order->transaction->id) }}" class="text-decoration-none">
+                                    {{ $order->transaction->code }}
+                                </a>
+                            </td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $order->customer->id) }}"
                                     class="text-dark text-decoration-none fw-bold">

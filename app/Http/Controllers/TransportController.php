@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TransportRequest;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Customer;
@@ -23,28 +24,38 @@ class TransportController extends Controller
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
 
+        // return $transactions[1]->containers;
+
         return view('pages.transportOrders.createTransportOrder', compact('transactions', 'drivers', 'vehicles'));
     }
 
-    public function storeTransportOrder(Request $request) {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'driver_id' => 'nullable|exists:drivers,id',
-            'vehicle_id' => 'nullable|exists:vehicles,id',
-            'code' => 'required|unique:transport_orders,code',
-            'date' => 'required|date',
-            'notes' => 'nullable|string',
-            'diesel_cost' => 'nullable|numeric|min:0',
-            'driver_wage' => 'nullable|numeric|min:0',
-            'other_expenses' => 'nullable|numeric|min:0',
-        ]);
+    public function storeTransportOrder(TransportRequest $request) {
+        if($request->driver_id == null) {
+            $driver = Driver::create([
+                'name' => $request->driver_name,
+                'NID' => $request->driver_NID,
+            ]);
+            $validated['driver_id'] = $driver->id;
+        }
+        if($request->vehicle_id == null) {
+            $vehicle = Vehicle::create([
+                'plate_number' => $request->vehicle_plate_number,
+                'type' => $request->vehicle_type,
+            ]);
+            $validated['vehicle_id'] = $vehicle->id;
+        }
 
+        $validated = $request->validated();
         $transportOrder = TransportOrder::create($validated);
 
-        return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
+        $containers = Container::whereIn('id', $request->selected_containers)->get();
+        $transportOrder->containers()->attach($containers);
+
+        return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
     }
 
     public function transportOrderDetails(TransportOrder $transportOrder) {
+        $transportOrder->load('driver', 'vehicle', 'containers.containerType');
         return view('pages.transportOrders.transportOrderDetails', compact('transportOrder'));
     }
 }

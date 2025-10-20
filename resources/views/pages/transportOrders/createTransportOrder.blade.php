@@ -10,31 +10,39 @@
 <h2 class="mb-4">إضافة إشعار نقل</h2>
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
-    <form action="{{ route('policies.receive.store') }}" method="POST">
+    <form action="{{ route('transportOrders.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
-        <input type="hidden" name="type" value="تسليم">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-        
+        <input type="hidden" name="customer_id" id="customer_id">
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">رقم المعاملة</label>
                 <select class="form-select border-primary" id="transaction_id" name="transaction_id">
                     <option value="">اختر رقم المعاملة...</option>
                     @foreach ($transactions as $transaction)
-                        <option value="{{ $transaction->id }}" data-containers="{{ $transaction->containers }}">
+                        <option value="{{ $transaction->id }}" data-containers="{{ $transaction->containers }}" data-customer="{{ $transaction->customer->id }}" data-id="{{ $transaction->id }}" data-contract="{{ $transaction->contract_id }}" data-invoices='@json($transaction->invoices)'>
                             {{ $transaction->code }} - {{ $transaction->customer->name }}
                         </option>
                     @endforeach
                 </select>
+                @error('transaction_id')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <div class="col">
                 <label class="form-label">من</label>
-                <input type="text" class="form-control border-primary" id="from" name="from" value="" readonly>
+                <input type="text" class="form-control border-primary" id="from" name="from" value="الدمام" readonly>
+                @error('from')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <div class="col">
                 <label class="form-label">إلى</label>
                 <input type="text" class="form-control border-primary" id="to" name="to" value="">
+                @error('to')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <div class="col">
                 <label class="form-label">مدة النقل (بالأيام)</label>
@@ -44,14 +52,15 @@
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم السائق</label>
-                <select name="driver_id" id="driver_id" class="form-select border-primary">
+                <select name="driver_name" id="driver_name" class="form-select border-primary">
                     <option value="">اختر السائق...</option>
                     @foreach ($drivers as $driver)
-                        <option value="{{ $driver->id }}" data-nid="{{ $driver->NID }}">
+                        <option value="{{ $driver->name }}" data-nid="{{ $driver->NID }}" data-id="{{ $driver->id }}">
                             {{ $driver->name }}
                         </option>
                     @endforeach
                 </select>
+                <input type="hidden" name="driver_id" id="driver_id">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
@@ -64,25 +73,56 @@
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">نوع السيارة</label>
-                <select name="vehicle_id" id="vehicle_id" class="form-select border-primary">
-                    <option value="">اختر نوع السيارة...</option>
+                <label class="form-label">لوحة السيارة</label>
+                <select name="plate_number" id="plate_number" class="form-select border-primary">
+                    <option value="">اختر لوحة السيارة...</option>
                     @foreach ($vehicles as $vehicle)
-                        <option value="{{ $vehicle->id }}" data-plate="{{ $vehicle->plate_number }}">
-                            {{ $vehicle->type }}
+                        <option value="{{ $vehicle->plate_number }}" data-type="{{ $vehicle->type }}" data-id="{{ $vehicle->id }}">
+                            {{ $vehicle->plate_number }}
                         </option>
                     @endforeach
                 </select>
-                @error('driver_car')
+                <input type="hidden" name="vehicle_id" id="vehicle_id">
+                @error('plate_number')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">لوحة السيارة</label>
-                <input type="text" class="form-control border-primary" name="plate_number" id="plate_number">
-                @error('plate_number')
+                <label class="form-label">نوع السيارة</label>
+                <input type="text" class="form-control border-primary" name="vehicle_type" id="vehicle_type">
+                @error('vehicle_type')
                     <div class="text-danger">{{ $message }}</div>
-                @endif
+                @enderror
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col">
+                <label class="form-label">مصاريف الديزل</label>
+                <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost" value=0>
+                @error('diesel_cost')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col">
+                <label class="form-label">عمولة السائق</label>
+                <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage" value=0>
+                @error('driver_wage')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror 
+            </div>
+            <div class="col">
+                <label class="form-label">مصاريف أخرى</label>
+                <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses" value=0>
+                @error('other_expenses')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col">
+                <label class="form-label">ملاحظات</label>
+                <input type="text" class="form-control border-primary" name="notes" id="notes">
+                @error('notes')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
         </div>
         
@@ -98,7 +138,7 @@
                                 <div class="input-group input-group-sm w-auto">
                                     <input class="form-control border-primary" type="search" id="container-search" placeholder="إبحث عن حاوية بالكود..." aria-label="Search">
                                     <button class="btn btn-outline-primary" type="button" id="clear-search">
-                                        <i class="fas fa-times"></i>
+                                        <i class="fa-solid fa-magnifying-glass"></i>
                                     </button>
                                 </div>
                             </div>
@@ -128,14 +168,10 @@
         $('#customer_id').val(id || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
+        let customer = $(this).find(':selected').data('customer');
+        $('#customer_id').val(customer || '');
+
         let containers = $(this).find(':selected').data('containers');
-        let invoices = $(this).find(':selected').data('invoices');
-        
-        // Check for unpaid invoices
-        hasUnpaidInvoices = false;
-        if (invoices && Array.isArray(invoices)) {
-            hasUnpaidInvoices = invoices.some(invoice => invoice.payment === 'لم يتم الدفع');
-        }
         
         // Show/hide container selection section
         if (containers && containers.length > 0) {
@@ -154,24 +190,30 @@
         $('#container-search').val('');
     });
 
-    $('#driver_id').select2({
+    $('#driver_name').select2({
         placeholder: "ابحث عن إسم السائق...",
-        allowClear: true
+        allowClear: true,
+        tags: true,
     });
 
-    $('#driver_id').on('change', function () {
+    $('#driver_name').on('change', function () {
         let nid = $(this).find(':selected').data('nid');
         $('#driver_NID').val(nid || '');
+        let id = $(this).find(':selected').data('id');
+        $('#driver_id').val(id || '');
     });
 
-    $('#vehicle_id').select2({
-        placeholder: "اختر نوع السيارة...",
-        allowClear: true
+    $('#plate_number').select2({
+        placeholder: "اختر لوحة السيارة...",
+        allowClear: true,
+        tags: true,
     });
 
-    $('#vehicle_id').on('change', function () {
-        let plate = $(this).find(':selected').data('plate');
-        $('#plate_number').val(plate || '');
+    $('#plate_number').on('change', function () {
+        let type = $(this).find(':selected').data('type');
+        $('#vehicle_type').val(type || '');
+        let id = $(this).find(':selected').data('id');
+        $('#vehicle_id').val(id || '');
     });
 
     // Container search functionality
@@ -203,15 +245,17 @@
         containersList.empty();
 
         // Filter containers that are available for receiving (status: 'متوفر')
-        const availableContainers = containers.filter(container => 
-            container.status === 'متوفر'
-        );
+        const availableContainers = containers.filter(container => {
+            console.log(container.transportOrders);
+            return container.status === 'متوفر';
+        });
+
 
         if (availableContainers.length === 0) {
             containersList.html(`
                 <div class="col-12">
                     <div class="alert alert-danger text-center">
-                        لا توجد حاويات متاحة للتسليم لهذا العميل
+                        لا توجد حاويات متاحة في هذه المعاملة.
                     </div>
                 </div>
             `);
@@ -243,6 +287,34 @@
                 </div>
             `;
             containersList.append(containerCard);
+        });
+
+        // Add click event to container cards
+        $('.container-card').on('click', function() {
+            const checkbox = $(this).find('.container-checkbox');
+            const isCurrentlyChecked = checkbox.prop('checked');
+
+            if(!isCurrentlyChecked) {
+                // شيّل أي checkboxes تانية متعلمة
+                $('.container-checkbox').prop('checked', false);
+                // شيّل الستايل من كل الكروت
+                $('.container-card').removeClass('border-primary bg-primary-subtle');
+            }
+
+            checkbox.prop('checked', !isCurrentlyChecked);
+            updateContainerCardStyle($(this), checkbox.prop('checked'));
+        });
+
+        // Style checkboxes when clicked directly
+        $('.container-checkbox').on('change', function() {
+            const isChecked = $(this).prop('checked');
+
+            if (isChecked) {
+                $('.container-checkbox').not(this).prop('checked', false);
+                $('.container-card').not($(this).closest('.container-card')).removeClass('border-primary bg-primary-subtle');
+            }
+            
+            updateContainerCardStyle($(this).closest('.container-card'), isChecked);
         });
     }
 

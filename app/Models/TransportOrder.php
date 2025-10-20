@@ -16,11 +16,14 @@ class TransportOrder extends Model
         'driver_id',
         'vehicle_id',
         'code',
+        'from',
+        'to',
         'date',
         'notes',
         'diesel_cost',
         'driver_wage',
         'other_expenses',
+        'user_id',
     ];
 
     public function transaction()
@@ -41,6 +44,16 @@ class TransportOrder extends Model
     public function vehicle()
     {
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function containers()
+    {
+        return $this->belongsToMany(Container::class, 'transport_orders_containers');
+    }
+
+    public function made_by()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected static function booted()
