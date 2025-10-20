@@ -24,9 +24,6 @@ class TransportController extends Controller
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
 
-        $result = $transactions[1]->containers[1]->transportOrders;
-        // return $result->isEmpty() ? 'false' : 'true';
-
         return view('pages.transportOrders.createTransportOrder', compact('transactions', 'drivers', 'vehicles'));
     }
 
@@ -51,6 +48,20 @@ class TransportController extends Controller
 
         $containers = Container::whereIn('id', $request->selected_containers)->get();
         $transportOrder->containers()->attach($containers);
+
+        $transaction = Transaction::find($transportOrder->transaction_id);
+        $isFullyTransported = true;
+        foreach($transaction->containers as $container) {
+            if($container->transportOrders->isEmpty()) {
+                $isFullyTransported = false;
+                break;
+            }
+        }
+
+        if($isFullyTransported) {
+            $transaction->status = 'مغلقة';
+            $transaction->save();
+        }
 
         return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
     }

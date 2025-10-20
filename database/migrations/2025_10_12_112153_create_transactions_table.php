@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('code');
             $table->date('date');
-            $table->enum('status', ['معلقة', 'مغلفة'])->default('معلقة');
+            $table->enum('status', ['معلقة', 'مغلقة'])->default('معلقة');
             $table->string('policy_number');
             $table->string('customs_declaration');
             $table->date('customs_declaration_date');

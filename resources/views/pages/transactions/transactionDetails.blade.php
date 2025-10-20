@@ -417,15 +417,10 @@
                                         <div>{{ $container->customer->name }}</div>
                                     </td>
                                     <td>
-                                        @if ($container->status == 'متوفر')
-                                            <div class="status-available">{{ $container->status }}</div>
-                                        @elseif($container->status == 'تم التسليم')
-                                            <div class="status-delivered">
-                                                {{ $container->status }}
-                                                <i class="fa-solid fa-check"></i>
-                                            </div>
-                                        @elseif($container->status == 'متأخر')
-                                            <div class="status-danger">{{ $container->status }}</div>
+                                        @if($container->transportOrders->isNotEmpty())
+                                            <div class="status-available">تم اشعار نقل</div>
+                                        @else
+                                            <div class="status-danger">في الميناء</div>
                                         @endif
                                     </td>
                                     <td>
