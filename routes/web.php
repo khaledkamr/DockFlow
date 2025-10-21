@@ -32,6 +32,13 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::post('roles/store', 'storeRole')->name('admin.roles.store');
     Route::put('roles/update/{role:id}', 'updateRole')->name('admin.roles.update');
     Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
+    Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('admin.drivers.vehicles');
+    Route::post('drivers/store', 'storeDriver')->name('admin.driver.store');
+    Route::put('drivers/update/{driver:id}', 'updateDriver')->name('admin.driver.update');
+    Route::delete('drivers/delete/{driver:id}', 'deleteDriver')->name('admin.driver.delete');
+    Route::post('vehicles/store', 'storeVehicle')->name('admin.vehicle.store');
+    Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('admin.vehicle.update');
+    Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('admin.vehicle.delete');
 });
 
 Route::controller(AuthController::class)->group(function () {

@@ -18,8 +18,6 @@ class TransportRequest extends FormRequest
             'customer_id' => 'required|exists:customers,id',
             'driver_id' => 'nullable|exists:drivers,id',
             'vehicle_id' => 'nullable|exists:vehicles,id',
-            'driver_name' => 'required|string|max:255',
-            'plate_number' => 'required|string|max:50',
             'date' => 'required|date',
             'from' => 'required|string',
             'to' => 'required|string',

@@ -180,6 +180,17 @@
             border-color: #dee2e6;
         }
 
+        /* nav link styles */
+        .nav-tabs .nav-link {
+            color: #495057;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #ffffff;
+            border-color: #48a0ff #48a0ff #ffffff;
+            color: #007bff;
+            font-weight: bold;
+        }
+
         /* Go to top button */
         .go-to-top {
             position: fixed;
@@ -247,6 +258,10 @@
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.users') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.users') }}">
                             <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.drivers.vehicles') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('admin.drivers.vehicles') }}">
+                            <i class="fa-solid fa-truck ms-1 me-2"></i> السائقين والشاحنات
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.roles') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.roles') }}">

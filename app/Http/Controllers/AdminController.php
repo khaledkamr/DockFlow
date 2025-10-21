@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CompanyRequest;
+use App\Http\Requests\DriverRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\VehicleRequest;
 use App\Models\Company;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
+use App\Models\Driver;
 use App\Models\Invoice;
 use App\Models\Permission;
 use App\Models\Policy;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -181,5 +185,69 @@ class AdminController extends Controller
     public function deleteRole(Role $role) {
         $role->delete();
         return redirect()->back()->with('success', 'تم حذف الوظيفة بنجاح');
+    }
+
+    public function driversAndVehicles(Request $request) {
+        $view = $request->query('view', 'السائقين');
+        $drivers = Driver::with('vehicle')->get();
+        $vehicles = Vehicle::with('driver')->get();
+
+        $vehiclesWithoutDriver = $vehicles->filter(function($vehicle) {
+            return $vehicle->driver == null;
+        });
+
+        if($view == 'السائقين' && $search = request()->query('search', '')) {
+            $drivers = $drivers->filter(function($driver) use ($search) {
+                return str_contains(strtolower($driver->name), strtolower($search)) 
+                    || str_contains(strtolower($driver->NID), strtolower($search)) 
+                    || ($driver->vehicle && str_contains(strtolower($driver->vehicle->plate_number), strtolower($search)));
+            });
+        } elseif($view == 'الشاحنات' && $search = request()->query('search', '')) {
+            $vehicles = $vehicles->filter(function($vehicle) use ($search) {
+                return str_contains(strtolower($vehicle->plate_number), strtolower($search)) 
+                    || str_contains(strtolower($vehicle->type), strtolower($search)) 
+                    || ($vehicle->driver && str_contains(strtolower($vehicle->driver->name), strtolower($search)));
+            });
+        }
+
+        return view('pages.users.driversAndVehicles', compact(
+            'view', 
+            'drivers', 
+            'vehicles', 
+            'vehiclesWithoutDriver'
+        ));
+    }
+
+    public function storeDriver(DriverRequest $request) {
+        $validated = $request->validated();
+        Driver::create($validated);
+
+        return redirect()->back()->with('success', 'تم إضافة سائق جديد بنجاح');
+    }
+
+    public function updateDriver(DriverRequest $request, Driver $driver) {
+        $validated = $request->validated();
+        $driver->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات السائق بنجاح');
+    }
+
+    public function deleteDriver(Driver $driver) {
+
+    }
+
+    public function storeVehicle(VehicleRequest $request) {
+        $validated = $request->validated();
+        Vehicle::create($validated);
+
+        return redirect()->back()->with('success', 'تم إضافة شاحنة جديدة بنجاح');
+    }
+
+    public function updateVehicle(Request $request, Vehicle $vehicle) {
+
+    }
+
+    public function deleteVehicle(Vehicle $vehicle) {
+
     }
 }

@@ -60,6 +60,7 @@
                         <option value="{{ $driver->name }}" data-nid="{{ $driver->NID }}" data-id="{{ $driver->id }}"
                             data-vehicle-plate="{{ $driver->vehicle ? $driver->vehicle->plate_number : '' }}"
                             data-vehicle-type="{{ $driver->vehicle ? $driver->vehicle->type : '' }}"
+                            data-vehicle-id="{{ $driver->vehicle ? $driver->vehicle->id : '' }}"
                             {{ old('driver_name') == $driver->name ? 'selected' : '' }}>
                             {{ $driver->name }}
                         </option>
@@ -72,14 +73,14 @@
             </div>
             <div class="col">
                 <label class="form-label">هوية السائق</label>
-                <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID" value="{{ old('driver_NID') }}">
+                <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID" value="{{ old('driver_NID') }}" readonly>
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">لوحة السيارة</label>
-                <input type="text" class="form-control border-primary" name="plate_number" id="plate_number" value="{{ old('plate_number') }}">
+                <input type="text" class="form-control border-primary" name="plate_number" id="plate_number" value="{{ old('plate_number') }}" readonly>
                 <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
                 @error('plate_number')
                     <div class="text-danger">{{ $message }}</div>
@@ -87,7 +88,7 @@
             </div>
             <div class="col">
                 <label class="form-label">نوع السيارة</label>
-                <input type="text" class="form-control border-primary" name="vehicle_type" id="vehicle_type" value="{{ old('vehicle_type') }}">
+                <input type="text" class="form-control border-primary" name="vehicle_type" id="vehicle_type" value="{{ old('vehicle_type') }}" readonly>
                 @error('vehicle_type')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -189,7 +190,6 @@
     $('#driver_name').select2({
         placeholder: "ابحث عن إسم السائق...",
         allowClear: true,
-        tags: true,
     });
 
     $('#driver_name').on('change', function () {
@@ -201,6 +201,8 @@
         $('#plate_number').val(vehiclePlate || '');
         let vehicleType = $(this).find(':selected').data('vehicle-type');
         $('#vehicle_type').val(vehicleType || '');
+        let vehicleId = $(this).find(':selected').data('vehicle-id');
+        $('#vehicle_id').val(vehicleId || '');
     });
 
     // Container search functionality
