@@ -11,6 +11,7 @@ use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use App\Models\Transaction;
@@ -402,5 +403,27 @@ class InvoiceController extends Controller
         $invoice->save();
 
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
+    }
+
+    public function invoiceStatements() {
+        $invoiceStatements = InvoiceStatement::orderBy('id', 'desc')->get();
+        return view('pages.invoices.statements', compact('invoiceStatements'));
+    }
+
+    public function createInvoiceStatement(Request $request) {
+        $customers = Customer::all();
+        $customer_id = $request->input('customer_id');
+        $invoices = Invoice::where('customer_id', $customer_id)->where('payment', 'لم يتم الدفع')->get();
+
+        return view('pages.invoices.createStatement', compact('customers', 'invoices'));
+    }
+
+    public function storeInvoiceStatement(Request $request) {
+        InvoiceStatement::create($request->validated());
+        return redirect()->back()->with('success', 'تم إنشاء بيان فاتورة جديدة بنجاح');
+    }
+
+    public function invoiceStatementDetails(InvoiceStatement $invoiceStatement) {
+        return view('pages.invoices.statementDetails', compact('invoiceStatement'));
     }
 }

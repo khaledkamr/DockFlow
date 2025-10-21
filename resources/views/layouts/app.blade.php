@@ -390,21 +390,29 @@
             @can('عرض الفواتير')
                 <li class="nav-item mb-1">
                     <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['invoices*']) ? '' : 'collapsed' }}" 
-                    data-bs-toggle="collapse" 
-                    href="#invoice-management" 
-                    role="button" 
-                    aria-expanded="{{ request()->routeIs(['invoices*']) ? 'true' : 'false' }}" 
-                    aria-controls="invoice-management">
+                        data-bs-toggle="collapse" 
+                        href="#invoice-management" 
+                        role="button" 
+                        aria-expanded="{{ request()->routeIs(['invoices*']) ? 'true' : 'false' }}" 
+                        aria-controls="invoice-management">
                         <i class="fa-solid fa-receipt ms-2 me-2"></i> إدارة الفــــواتيــــــر
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['invoices*']) ? 'show' : '' }}" id="invoice-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('invoices') }}">
+                            href="{{ route('invoices') }}">
                             <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــواتيـــــر
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('invoices.create') }}">
-                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إضافة فاتورة
+                            href="{{ route('invoices.create') }}">
+                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء فاتورة
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.statements') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('invoices.statements') }}">
+                            <i class="fa-solid fa-layer-group ms-2 me-2"></i> المطالبــــــات
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.statements.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('invoices.statements.create') }}">
+                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء مطالبة
                         </a>
                     </div>
                 </li>
