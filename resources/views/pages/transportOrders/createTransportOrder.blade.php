@@ -21,7 +21,9 @@
                 <select class="form-select border-primary" id="transaction_id" name="transaction_id">
                     <option value="">اختر رقم المعاملة...</option>
                     @foreach ($transactions as $transaction)
-                        <option value="{{ $transaction->id }}" data-containers="{{ $transaction->containers }}" data-customer="{{ $transaction->customer->id }}" data-id="{{ $transaction->id }}" data-contract="{{ $transaction->contract_id }}" data-invoices='@json($transaction->invoices)'>
+                        <option value="{{ $transaction->id }}" data-containers="{{ $transaction->containers }}" data-customer="{{ $transaction->customer->id }}" 
+                            data-contract="{{ $transaction->contract_id }}" data-invoices='@json($transaction->invoices)'
+                            {{ old('transaction_id') == $transaction->id ? 'selected' : '' }}>
                             {{ $transaction->code }} - {{ $transaction->customer->name }}
                         </option>
                     @endforeach
@@ -32,21 +34,21 @@
             </div>
             <div class="col">
                 <label class="form-label">من</label>
-                <input type="text" class="form-control border-primary" id="from" name="from" value="الدمام" readonly>
+                <input type="text" class="form-control border-primary" id="from" name="from" value="{{ old('from') }}">
                 @error('from')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">إلى</label>
-                <input type="text" class="form-control border-primary" id="to" name="to" value="">
+                <input type="text" class="form-control border-primary" id="to" name="to" value="{{ old('to') }}">
                 @error('to')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">مدة النقل (بالأيام)</label>
-                <input type="number" class="form-control border-primary" id="duration" name="duration" value="">
+                <input type="number" class="form-control border-primary" id="duration" name="duration" value="{{ old('duration') }}">
             </div>
         </div>
         <div class="row mb-3">
@@ -55,41 +57,37 @@
                 <select name="driver_name" id="driver_name" class="form-select border-primary">
                     <option value="">اختر السائق...</option>
                     @foreach ($drivers as $driver)
-                        <option value="{{ $driver->name }}" data-nid="{{ $driver->NID }}" data-id="{{ $driver->id }}">
+                        <option value="{{ $driver->name }}" data-nid="{{ $driver->NID }}" data-id="{{ $driver->id }}"
+                            data-vehicle-plate="{{ $driver->vehicle ? $driver->vehicle->plate_number : '' }}"
+                            data-vehicle-type="{{ $driver->vehicle ? $driver->vehicle->type : '' }}"
+                            {{ old('driver_name') == $driver->name ? 'selected' : '' }}>
                             {{ $driver->name }}
                         </option>
                     @endforeach
                 </select>
-                <input type="hidden" name="driver_id" id="driver_id">
+                <input type="hidden" name="driver_id" id="driver_id" value="{{ old('driver_id') }}">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">هوية السائق</label>
-                <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID">
+                <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID" value="{{ old('driver_NID') }}">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
-                @endif
+                @enderror
             </div>
             <div class="col">
                 <label class="form-label">لوحة السيارة</label>
-                <select name="plate_number" id="plate_number" class="form-select border-primary">
-                    <option value="">اختر لوحة السيارة...</option>
-                    @foreach ($vehicles as $vehicle)
-                        <option value="{{ $vehicle->plate_number }}" data-type="{{ $vehicle->type }}" data-id="{{ $vehicle->id }}">
-                            {{ $vehicle->plate_number }}
-                        </option>
-                    @endforeach
-                </select>
-                <input type="hidden" name="vehicle_id" id="vehicle_id">
+                <input type="text" class="form-control border-primary" name="plate_number" id="plate_number" value="{{ old('plate_number') }}">
+                <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
                 @error('plate_number')
                     <div class="text-danger">{{ $message }}</div>
-                @endif
+                @enderror
             </div>
             <div class="col">
                 <label class="form-label">نوع السيارة</label>
-                <input type="text" class="form-control border-primary" name="vehicle_type" id="vehicle_type">
+                <input type="text" class="form-control border-primary" name="vehicle_type" id="vehicle_type" value="{{ old('vehicle_type') }}">
                 @error('vehicle_type')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -98,28 +96,28 @@
         <div class="row mb-4">
             <div class="col">
                 <label class="form-label">مصاريف الديزل</label>
-                <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost" value=0>
+                <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost" value="{{ old('diesel_cost') ?? 0}}">
                 @error('diesel_cost')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">عمولة السائق</label>
-                <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage" value=0>
+                <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage" value="{{ old('driver_wage') ?? 0 }}">
                 @error('driver_wage')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror 
             </div>
             <div class="col">
                 <label class="form-label">مصاريف أخرى</label>
-                <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses" value=0>
+                <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses" value="{{ old('other_expenses') ?? 0 }}">
                 @error('other_expenses')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">ملاحظات</label>
-                <input type="text" class="form-control border-primary" name="notes" id="notes">
+                <input type="text" class="form-control border-primary" name="notes" id="notes" value="{{ old('notes') }}">
                 @error('notes')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -164,8 +162,6 @@
     });
 
     $('#transaction_id').on('change', function () {
-        let id = $(this).find(':selected').data('id');
-        $('#customer_id').val(id || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
         let customer = $(this).find(':selected').data('customer');
@@ -201,19 +197,10 @@
         $('#driver_NID').val(nid || '');
         let id = $(this).find(':selected').data('id');
         $('#driver_id').val(id || '');
-    });
-
-    $('#plate_number').select2({
-        placeholder: "اختر لوحة السيارة...",
-        allowClear: true,
-        tags: true,
-    });
-
-    $('#plate_number').on('change', function () {
-        let type = $(this).find(':selected').data('type');
-        $('#vehicle_type').val(type || '');
-        let id = $(this).find(':selected').data('id');
-        $('#vehicle_id').val(id || '');
+        let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
+        $('#plate_number').val(vehiclePlate || '');
+        let vehicleType = $(this).find(':selected').data('vehicle-type');
+        $('#vehicle_type').val(vehicleType || '');
     });
 
     // Container search functionality

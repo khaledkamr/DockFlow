@@ -13,6 +13,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('NID')->nullable()->unique();
             $table->string('phone')->nullable()->unique();
+            $table->foreignId('vehicle_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('account_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

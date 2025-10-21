@@ -141,4 +141,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
     Route::get('/print/invoice/clearance/{code}', 'printClearanceInvoice')->name('print.invoice.clearance');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
+    Route::get('/export/transport/order/{transportOrder:id}', 'printTransportOrder')->name('export.transport.order');
 });

@@ -24,6 +24,7 @@ class TransportOrder extends Model
         'driver_wage',
         'other_expenses',
         'user_id',
+        'company_id',
     ];
 
     public function transaction()
@@ -54,6 +55,11 @@ class TransportOrder extends Model
     public function made_by()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 
     protected static function booted()

@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserRoleSeeder::class,
             RolePermissionsSeeder::class,
-            DriverSeeder::class,
-            VehicleSeeder::class,
+            // DriverSeeder::class,
+            // VehicleSeeder::class,
         ]);
     }
 }

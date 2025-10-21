@@ -3,9 +3,14 @@
 @section('title', 'تفاصيل إشعار النقل')
 
 @section('content')
-<h1 class="mb-4">
-    <i class="fa-solid fa-truck-fast"></i> تفاصيل إشعار النقل
-</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>
+        <i class="fa-solid fa-truck-fast"></i> تفاصيل إشعار النقل
+    </h1>
+    <a href="{{ route('export.transport.order', $transportOrder) }}" target="_blank" class="btn btn-outline-primary">
+        <i class="fa-solid fa-print"></i> طباعة الإشعار
+    </a>
+</div>
 
 <!-- المعلومات الأساسية -->
 <div class="row">

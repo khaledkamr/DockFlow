@@ -37,7 +37,7 @@ class TransportController extends Controller
     }
 
     public function createTransportOrder() {
-        $transactions = Transaction::with('containers.transportOrders')->get();
+        $transactions = Transaction::where('status', 'معلقة')->with('containers.transportOrders')->get();
         $drivers = Driver::all();
         $vehicles = Vehicle::all();
 
@@ -46,20 +46,20 @@ class TransportController extends Controller
 
     public function storeTransportOrder(TransportRequest $request) {
         if($request->driver_id == null) {
-            $driver = Driver::create([
-                'name' => $request->driver_name,
-                'NID' => $request->driver_NID,
-            ]);
-            $validated['driver_id'] = $driver->id;
-        }
-        if($request->vehicle_id == null) {
             $vehicle = Vehicle::create([
-                'plate_number' => $request->vehicle_plate_number,
+                'plate_number' => $request->plate_number,
                 'type' => $request->vehicle_type,
             ]);
             $validated['vehicle_id'] = $vehicle->id;
-        }
 
+            $driver = Driver::create([
+                'name' => $request->driver_name,
+                'NID' => $request->driver_NID,
+                'vehicle_id' => $vehicle->id,
+            ]);
+            $validated['driver_id'] = $driver->id;
+        }
+        
         $validated = $request->validated();
         $transportOrder = TransportOrder::create($validated);
 

@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('type')->nullable();
             $table->string('plate_number')->unique();
+            $table->foreignId('account_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }
