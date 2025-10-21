@@ -11,11 +11,28 @@ use App\Models\Transaction;
 use App\Models\TransportOrder;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class TransportController extends Controller
 {
-    public function transportOrders() {
+    public function transportOrders(Request $request) {
         $transportOrders = TransportOrder::all();
+
+        $search = $request->input('search', null);
+        if ($search) {
+            $transportOrders = $transportOrders->filter(function ($order) use ($search) {
+                $matchCode = stripos($order->code, $search) !== false;
+                $matchTransaction = stripos($order->transaction->code, $search) !== false;
+                $matchCustomer = stripos($order->customer->name, $search) !== false;
+                $matchDate = stripos($order->date, $search) !== false;
+                $matchContainer = $order->containers->contains(function ($container) use ($search) {
+                    return stripos($container->code, $search) !== false;
+                });
+
+                return $matchCode || $matchTransaction || $matchCustomer || $matchDate || $matchContainer;
+            });
+        }
+
         return view('pages.transportOrders.transportOrders', compact('transportOrders'));
     }
 
