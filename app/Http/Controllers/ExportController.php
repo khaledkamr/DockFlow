@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
 use App\Models\Transaction;
+use App\Models\TransportOrder;
 use Illuminate\Support\Facades\Gate;
 
 class ExportController extends Controller
@@ -231,6 +232,11 @@ class ExportController extends Controller
         );
 
         return view('reports.clearanceInvoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
+    }
+
+    public function printTransportOrder(TransportOrder $transportOrder) {
+        $company = $transportOrder->company;
+        return view('reports.transportOrder', compact('company', 'transportOrder'));
     }
 
     public function excel($reportType, Request $request) {

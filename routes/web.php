@@ -10,11 +10,13 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransportController;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\invoice;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Mailer\Transport;
 
 Route::controller(AdminController::class)->middleware('auth')->group(function() {
     Route::get('/', 'dashboard')->name('dashboard');
@@ -30,6 +32,13 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::post('roles/store', 'storeRole')->name('admin.roles.store');
     Route::put('roles/update/{role:id}', 'updateRole')->name('admin.roles.update');
     Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
+    Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('admin.drivers.vehicles');
+    Route::post('drivers/store', 'storeDriver')->name('admin.driver.store');
+    Route::put('drivers/update/{driver:id}', 'updateDriver')->name('admin.driver.update');
+    Route::delete('drivers/delete/{driver:id}', 'deleteDriver')->name('admin.driver.delete');
+    Route::post('vehicles/store', 'storeVehicle')->name('admin.vehicle.store');
+    Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('admin.vehicle.update');
+    Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('admin.vehicle.delete');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -85,6 +94,13 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteProcedure')->name('transactions.delete.procedure');
 });
 
+Route::controller(TransportController::class)->middleware('auth')->group(function () {
+    Route::get('/transport/orders', 'transportOrders')->name('transactions.transportOrders');
+    Route::get('/transport/orders/create', 'createTransportOrder')->name('transactions.transportOrders.create');
+    Route::post('/transport/orders/store', 'storeTransportOrder')->name('transportOrders.store');
+    Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
+});
+
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
     Route::get('/contracts', 'contracts')->name('contracts');
     Route::get('/contracts/create', 'createContract')->name('contracts.create');
@@ -132,4 +148,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
     Route::get('/print/invoice/clearance/{code}', 'printClearanceInvoice')->name('print.invoice.clearance');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
+    Route::get('/export/transport/order/{transportOrder:id}', 'printTransportOrder')->name('export.transport.order');
 });

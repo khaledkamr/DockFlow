@@ -51,5 +51,9 @@ return [
         'customs_declaration' => 'البيان الجمركي',
         'customs_declaration_date' => 'تاريخ البيان الجمركي',
         'customer_id' => 'رقم العميل',
+        'transaction_id' => 'رقم المعاملة',
+        'to' => 'إلى',
+        'driver_name' => 'اسم السائق',
+        'plate_number' => 'رقم اللوحة',
     ],
 ];

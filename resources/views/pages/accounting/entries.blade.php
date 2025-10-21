@@ -3,18 +3,6 @@
 @section('title', 'القيود')
 
 @section('content')
-<style>
-    .nav-tabs .nav-link {
-        color: #495057;
-    }
-    .nav-tabs .nav-link.active {
-        background-color: #ffffff;
-        border-color: #48a0ff #48a0ff #ffffff;
-        color: #007bff;
-        font-weight: bold;
-    }
-</style>
-
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

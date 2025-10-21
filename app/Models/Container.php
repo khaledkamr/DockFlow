@@ -53,6 +53,10 @@ class Container extends Model
             ->withTimestamps();
     }
 
+    public function transportOrders() {
+        return $this->belongsToMany(TransportOrder::class, 'transport_orders_containers');
+    }
+
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }

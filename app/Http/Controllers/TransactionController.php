@@ -20,11 +20,16 @@ class TransactionController extends Controller
         $transactions = Transaction::all();
 
         $search = $request->input('search', null);
-        if($search) {
-            $transactions = $transactions->filter(function($transaction) use($search) {
-                return stripos($transaction->code, $search) !== false 
-                    || stripos($transaction->customer->name, $search) !== false
-                    || stripos($transaction->date, $search) !== false;
+        if ($search) {
+            $transactions = $transactions->filter(function ($transaction) use ($search) {
+                $matchCode = stripos($transaction->code, $search) !== false;
+                $matchCustomer = stripos($transaction->customer->name, $search) !== false;
+                $matchDate = stripos($transaction->date, $search) !== false;
+                $matchContainer = $transaction->containers->contains(function ($container) use ($search) {
+                    return stripos($container->code, $search) !== false;
+                });
+
+                return $matchCode || $matchCustomer || $matchDate || $matchContainer;
             });
         }
 

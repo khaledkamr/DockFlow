@@ -180,6 +180,17 @@
             border-color: #dee2e6;
         }
 
+        /* nav link styles */
+        .nav-tabs .nav-link {
+            color: #495057;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #ffffff;
+            border-color: #48a0ff #48a0ff #ffffff;
+            color: #007bff;
+            font-weight: bold;
+        }
+
         /* Go to top button */
         .go-to-top {
             position: fixed;
@@ -247,6 +258,10 @@
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.users') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.users') }}">
                             <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.drivers.vehicles') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('admin.drivers.vehicles') }}">
+                            <i class="fa-solid fa-truck ms-1 me-2"></i> السائقين والشاحنات
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.roles') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.roles') }}">
@@ -349,7 +364,7 @@
                     role="button" 
                     aria-expanded="{{ request()->routeIs(['transactions*']) ? 'true' : 'false' }}" 
                     aria-controls="transaction-management">
-                        <i class="fa-solid fa-file ms-2 me-2"></i> إدارة المعامــــــلات
+                        <i class="fa-solid fa-file ms-2 me-2"></i> معاملات التخليـــص
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['transactions*']) ? 'show' : '' }}" id="transaction-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions') ? 'bg-primary text-white' : 'text-dark' }}" 
@@ -359,6 +374,14 @@
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('transactions.create') }}">
                             <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة معاملة
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('transactions.transportOrders') }}">
+                            <i class="fa-solid fa-copy ms-2 me-2"></i> إشعارات النقل
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('transactions.transportOrders.create') }}">
+                            <i class="fa-solid fa-truck ms-2 me-2"></i> إضافة إشعار نقل
                         </a>
                     </div>
                 </li>
@@ -468,7 +491,11 @@
                         
                         <div class="d-flex align-items-center text-dark me-5">
                             <img src="{{ Auth::user()->avatar ?? asset('img/user-profile.jpg') }}" alt="Profile Photo" class="rounded-circle me-2" style="width: 40px; height: 40px;">
-                            {{ Auth::user()->name }}
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold" style="font-size: 14px;">{{ Auth::user()->name }}</span>
+                                <span class="text-secondary" style="font-size: 12px;">{{ Auth::user()->roles->first()->name }}</span>
+
+                            </div>
                         </div>
                     </div>
                 </div>
