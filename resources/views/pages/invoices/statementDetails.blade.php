@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">عرض المطالبة</h2>
     <div class="d-flex gap-2">
-        <a href="{{ route('print.invoice', $invoiceStatement->code) }}" target="_blank" class="btn btn-outline-primary">
+        <a href="{{ route('print.invoice.statement', $invoiceStatement->code) }}" target="_blank" class="btn btn-outline-primary">
             <i class="fas fa-print me-2"></i>طباعة المطالبة
         </a>
     </div>

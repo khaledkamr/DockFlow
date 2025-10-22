@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
+use App\Models\InvoiceStatement;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use Illuminate\Support\Facades\Gate;
@@ -232,6 +233,18 @@ class ExportController extends Controller
         );
 
         return view('reports.clearanceInvoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
+    }
+
+    public function printInvoiceStatement($code) {
+        // if(Gate::denies('طباعة فاتورة')) {
+        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
+        // }
+        
+        $invoiceStatement = InvoiceStatement::where('code', $code)->first();
+        $company = $invoiceStatement->company;
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
+
+        return view('reports.invoiceStatement', compact('company', 'invoiceStatement', 'hatching_total'));
     }
 
     public function printTransportOrder(TransportOrder $transportOrder) {
