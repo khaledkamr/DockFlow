@@ -14,7 +14,11 @@ class InvoiceStatement extends Model
         'uuid',
         'code',
         'customer_id',
+        'subtotal',
+        'tax',
         'amount',
+        'payment_method',
+        'date',
         'notes',
         'company_id',
         'user_id',
@@ -28,8 +32,8 @@ class InvoiceStatement extends Model
         return $this->belongsToMany(Invoice::class, 'invoice_statement_invoices');
     }
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function company() {

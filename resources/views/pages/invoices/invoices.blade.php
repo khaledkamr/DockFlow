@@ -68,11 +68,11 @@
                 <th class="text-center bg-dark text-white">رقم الفاتــورة</th>
                 <th class="text-center bg-dark text-white">العميــل</th>
                 <th class="text-center bg-dark text-white">نوع الفاتورة</th>
-                <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">المبلغ</th>
                 <th class="text-center bg-dark text-white">طريقــة الدفـــع</th>
                 <th class="text-center bg-dark text-white">تاريــخ الفــاتورة</th>
                 <th class="text-center bg-dark text-white">عملية الدفع</th>
+                <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">الإجرائات</th>
             </tr>
         </thead>
@@ -91,12 +91,15 @@
                                 <a href="{{ route('invoices.services.details', $invoice) }}" class="text-decoration-none">
                                     {{ $invoice->code }}
                                 </a>
-                            @else
+                            @elseif($invoice->type == 'تخزين')
                                 <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
                                     {{ $invoice->code }}
                                 </a>
+                            @elseif($invoice->type == 'تخليص')
+                                <a href="{{ route('invoices.clearance.details', $invoice) }}" class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
                             @endif
-                            
                         </td>
                         <td class="text-center">
                             <a href="{{ route('users.customer.profile', $invoice->customer->id) }}"
@@ -105,13 +108,13 @@
                             </a>
                         </td>
                         <td class="text-center">{{ $invoice->type ?? '-' }}</td>
-                        <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
-                        <td class="text-center fw-bold">{{ $invoice->amount }}</td>
+                        <td class="text-center fw-bold">{{ $invoice->total_amount }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                         <td class="text-center fw-bold {{ $invoice->payment == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
                             {{ $invoice->payment }}
                         </td>
+                        <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
                         <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                             @if($invoice->type == 'خدمات')
                                 <a href="{{ route('invoices.services.details', $invoice) }}" class="btn btn-sm btn-primary">
@@ -128,40 +131,6 @@
                             @endif
                         </td>
                     </tr>
-                    <div class="modal fade" id="updateInvoice{{ $invoice->id }}" tabindex="-1" aria-labelledby="updateInvoiceLabel{{ $invoice->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="updateInvoiceLabel{{ $invoice->id }}">تحديث بيانات الفاتورة</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="{{ route('invoices.update', $invoice) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="modal-body text-dark">
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <label for="amount" class="form-label">المبلغ</label>
-                                                <input type="text" class="form-control border-primary" name="amount" value="{{ $invoice->amount }}" readonly>
-                                            </div>
-                                            <div class="col">
-                                                <label for="payment" class="form-label">عملية الدفع</label>
-                                                <select name="payment" class="form-select border-primary" required>
-                                                    <option value="" selected disabled>اختر عملية الدفع</option>
-                                                    <option value="تم الدفع">تم الدفع</option>
-                                                    <option value="لم يتم الدفع">لم يتم الدفع</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                        <button type="submit" class="btn btn-primary fw-bold">حفظ الفاتورة</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                 @endforeach
             @endif
         </tbody>

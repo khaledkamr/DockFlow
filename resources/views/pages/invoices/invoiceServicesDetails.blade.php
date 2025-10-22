@@ -7,8 +7,6 @@
     <h2 class="mb-0">عرض الفاتورة الضريبية</h2>
 </div>
 
-
-
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -159,11 +157,17 @@
                                 </div>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
+                                        <strong class="text-muted">نوع الفاتورة:</strong>
+                                        <span class="fw-bold">{{ $invoice->type ?? '---' }}</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">التاريخ:</strong>
                                         <span class="fw-bold">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</span>
                                     </div>
                                 </div>
-                                <div class="mb-3">
+                                <div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">أعدت بواسطة:</strong>
                                         <span class="text-muted fw-bold">{{ $invoice->made_by->name ?? '---' }}</span>

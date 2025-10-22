@@ -39,7 +39,7 @@ class InvoiceController extends Controller
         $search = $request->input('search', null);
         if($search) {
             $invoices = $invoices->filter(function($invoice) use($search) {
-                return stripos($invoice->id, $search) !== false 
+                return stripos($invoice->code, $search) !== false 
                     || stripos($invoice->customer->name, $search) !== false
                     || stripos($invoice->date, $search) !== false;
             });
@@ -401,8 +401,25 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
     }
 
-    public function invoiceStatements() {
+    public function invoiceStatements(Request $request) {
         $invoiceStatements = InvoiceStatement::orderBy('id', 'desc')->get();
+
+        $methodFilter = request()->query('paymentMethod');
+        if ($methodFilter && $methodFilter !== 'all') {
+            $invoiceStatements = $invoiceStatements->filter(function ($statement) use ($methodFilter) {
+                return $statement->payment_method === $methodFilter;
+            });
+        }
+
+        $search = $request->input('search', null);
+        if($search) {
+            $invoiceStatements = $invoiceStatements->filter(function($statement) use($search) {
+                return stripos($statement->code, $search) !== false 
+                    || stripos($statement->customer->name, $search) !== false
+                    || stripos($statement->date, $search) !== false;
+            });
+        }
+
         return view('pages.invoices.statements', compact('invoiceStatements'));
     }
 
@@ -415,12 +432,35 @@ class InvoiceController extends Controller
     }
 
     public function storeInvoiceStatement(Request $request) {
-        return $request;
-        InvoiceStatement::create($request->validated());
-        return redirect()->back()->with('success', 'تم إنشاء بيان فاتورة جديدة بنجاح');
+        $invoices = [];
+        foreach($request->input('invoice_ids', []) as $invoiceId) {
+            $invoices[] = Invoice::findOrFail($invoiceId);
+        }
+        
+        $subtotal = array_sum(array_map(fn($invoice) => $invoice->amount_after_discount, $invoices));
+        $tax = array_sum(array_map(fn($invoice) => $invoice->tax, $invoices));
+        $amount = array_sum(array_map(fn($invoice) => $invoice->total_amount, $invoices));
+
+        $request->merge([
+            'subtotal' => number_format($subtotal, 2, '.', ''),
+            'tax' => number_format($tax, 2, '.', ''),
+            'amount' => number_format($amount, 2, '.', ''),
+        ]);
+        
+        $invoiceStatement = InvoiceStatement::create($request->all());
+
+        $invoiceStatement->invoices()->attach(array_map(fn($invoice) => $invoice->id, $invoices));
+
+        foreach($invoices as $invoice) {
+            $invoice->payment = 'تم الدفع';
+            $invoice->save();
+        }
+
+        return redirect()->back()->with('success', 'تم إنشاء مطالبة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.statements.details', $invoiceStatement).'">عرض المطالبة</a>');
     }
 
     public function invoiceStatementDetails(InvoiceStatement $invoiceStatement) {
-        return view('pages.invoices.statementDetails', compact('invoiceStatement'));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
+        return view('pages.invoices.statementDetails', compact('invoiceStatement', 'hatching_total'));
     }
 }

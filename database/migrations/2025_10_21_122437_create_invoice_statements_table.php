@@ -19,7 +19,6 @@ return new class extends Migration
             $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
             $table->text('notes')->nullable();
             $table->date('date');
-            $table->boolean('is_posted')->default(false);
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();

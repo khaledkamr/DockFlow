@@ -90,7 +90,7 @@
                                 <div class="form-check d-flex justify-content-center">
                                     <input type="checkbox" name="invoice_ids[]" value="{{ $invoice->id }}"
                                             class="form-check-input invoice-checkbox"
-                                            data-amount="{{ $invoice->amount }}"
+                                            data-amount="{{ $invoice->total_amount }}"
                                             style="transform: scale(1.2);">
                                 </div>
                             </td>
@@ -108,7 +108,7 @@
                                 </a>
                             </td>
                             <td>{{ Carbon\Carbon::parse($invoice->created_at)->format('Y/m/d') }}</td>
-                            <td class="fw-bold">{{ number_format($invoice->amount, 2) }}</td>
+                            <td class="fw-bold">{{ number_format($invoice->total_amount, 2) }}</td>
                             <td><span class="badge bg-danger">غير مدفوعة <i class="fa-solid fa-clock"></i></span></td>
                         </tr>
                     @endforeach
@@ -138,9 +138,9 @@
                             طريقة الدفع
                         </label>
                         <select name="payment_method" id="payment_method" class="form-select border-primary" required>
-                            <option value="آجل">آجل</option>
                             <option value="تحويل بنكي">تحويل بنكي</option>
                             <option value="كاش">كاش</option>
+                            <option value="آجل">آجل</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -148,7 +148,7 @@
                             <i class="fas fa-calendar me-1"></i>
                             تاريخ الدفع
                         </label>
-                        <input type="date" name="payment_date" id="payment_date" class="form-control border-primary" 
+                        <input type="date" name="date" id="payment_date" class="form-control border-primary" 
                                value="{{ date('Y-m-d') }}" required>
                     </div>
                     <div class="col-md-4">
