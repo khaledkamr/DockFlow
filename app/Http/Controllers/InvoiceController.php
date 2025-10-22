@@ -11,6 +11,7 @@ use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use App\Models\Transaction;
@@ -38,7 +39,7 @@ class InvoiceController extends Controller
         $search = $request->input('search', null);
         if($search) {
             $invoices = $invoices->filter(function($invoice) use($search) {
-                return stripos($invoice->id, $search) !== false 
+                return stripos($invoice->code, $search) !== false 
                     || stripos($invoice->customer->name, $search) !== false
                     || stripos($invoice->date, $search) !== false;
             });
@@ -93,7 +94,6 @@ class InvoiceController extends Controller
             'type' => 'خدمات',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'amount' => 0,
             'payment_method' => $request->payment_method,
             'discount' => $request->discount ?? 0,
             'date' => Carbon::now(),
@@ -113,12 +113,15 @@ class InvoiceController extends Controller
             $invoice->containers()->attach($container->id, ['amount' => $services]);
         }
 
-        $tax = $amountBeforeTax * 0.15;
-        $amount = $amountBeforeTax + $tax;
-        $discountValue = ($request->discount ?? 0) / 100 * $amount;
-        $amount -= $discountValue;
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax = $amountAfterDiscount * 0.15;
+        $amount = $amountAfterDiscount + $tax;
 
-        $invoice->amount = $amount;
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
@@ -136,19 +139,15 @@ class InvoiceController extends Controller
             $amountBeforeTax += $container->total;  
         }
 
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -177,7 +176,6 @@ class InvoiceController extends Controller
             'type' => 'تخليص',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'amount' => 0,
             'payment_method' => $request->payment_method,
             'discount' => $request->discount ?? 0,
             'date' => Carbon::now(),
@@ -189,17 +187,22 @@ class InvoiceController extends Controller
         }
 
         $amountBeforeTax = 0;
+        $tax = 0;
+        $totalAmount = 0;
 
         foreach($transaction->items as $item) {
-            $amountBeforeTax += $item->total;
+            $amountBeforeTax += $item->amount;
+            $tax += $item->tax;
+            $totalAmount += $item->total;
         }
 
-        $tax = $amountBeforeTax * 0.15;
-        $amount = $amountBeforeTax + $tax;
-        $discountValue = ($request->discount ?? 0) / 100 * $amount;
-        $amount -= $discountValue;
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
 
-        $invoice->amount = $amount;
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $totalAmount;
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
@@ -219,19 +222,15 @@ class InvoiceController extends Controller
             $amountBeforeTax += $item->total;
         }
 
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -261,7 +260,6 @@ class InvoiceController extends Controller
             'type' => 'تخزين',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'amount' => 0,
             'discount' => $request->discount ?? 0,
             'payment_method' => $request->payment_method,
             'date' => Carbon::now(),
@@ -291,12 +289,15 @@ class InvoiceController extends Controller
             $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee + $services]);
         }
 
-        $tax = $amountBeforeTax * 0.15;
-        $amount = $amountBeforeTax + $tax;
-        $discountValue = ($request->discount ?? 0) / 100 * $amount;
-        $amount -= $discountValue;
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax = $amountAfterDiscount * 0.15;
+        $amount = $amountAfterDiscount + $tax;
 
-        $invoice->amount = $amount;
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
@@ -326,19 +327,15 @@ class InvoiceController extends Controller
             $amountBeforeTax += $container->total;  
         }
 
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -402,5 +399,68 @@ class InvoiceController extends Controller
         $invoice->save();
 
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
+    }
+
+    public function invoiceStatements(Request $request) {
+        $invoiceStatements = InvoiceStatement::orderBy('id', 'desc')->get();
+
+        $methodFilter = request()->query('paymentMethod');
+        if ($methodFilter && $methodFilter !== 'all') {
+            $invoiceStatements = $invoiceStatements->filter(function ($statement) use ($methodFilter) {
+                return $statement->payment_method === $methodFilter;
+            });
+        }
+
+        $search = $request->input('search', null);
+        if($search) {
+            $invoiceStatements = $invoiceStatements->filter(function($statement) use($search) {
+                return stripos($statement->code, $search) !== false 
+                    || stripos($statement->customer->name, $search) !== false
+                    || stripos($statement->date, $search) !== false;
+            });
+        }
+
+        return view('pages.invoices.statements', compact('invoiceStatements'));
+    }
+
+    public function createInvoiceStatement(Request $request) {
+        $customers = Customer::all();
+        $customer_id = $request->input('customer_id');
+        $invoices = Invoice::where('customer_id', $customer_id)->where('payment', 'لم يتم الدفع')->get();
+
+        return view('pages.invoices.createStatement', compact('customers', 'invoices'));
+    }
+
+    public function storeInvoiceStatement(Request $request) {
+        $invoices = [];
+        foreach($request->input('invoice_ids', []) as $invoiceId) {
+            $invoices[] = Invoice::findOrFail($invoiceId);
+        }
+        
+        $subtotal = array_sum(array_map(fn($invoice) => $invoice->amount_after_discount, $invoices));
+        $tax = array_sum(array_map(fn($invoice) => $invoice->tax, $invoices));
+        $amount = array_sum(array_map(fn($invoice) => $invoice->total_amount, $invoices));
+
+        $request->merge([
+            'subtotal' => number_format($subtotal, 2, '.', ''),
+            'tax' => number_format($tax, 2, '.', ''),
+            'amount' => number_format($amount, 2, '.', ''),
+        ]);
+        
+        $invoiceStatement = InvoiceStatement::create($request->all());
+
+        $invoiceStatement->invoices()->attach(array_map(fn($invoice) => $invoice->id, $invoices));
+
+        foreach($invoices as $invoice) {
+            $invoice->payment = 'تم الدفع';
+            $invoice->save();
+        }
+
+        return redirect()->back()->with('success', 'تم إنشاء مطالبة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.statements.details', $invoiceStatement).'">عرض المطالبة</a>');
+    }
+
+    public function invoiceStatementDetails(InvoiceStatement $invoiceStatement) {
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
+        return view('pages.invoices.statementDetails', compact('invoiceStatement', 'hatching_total'));
     }
 }

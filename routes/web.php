@@ -126,6 +126,11 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
     Route::post('invoice/clearance/{transaction:uuid}', 'storeClearanceInvoice')->name('invoices.clearance.store');
     Route::get('invoice/clearance/details/{invoice:uuid}', 'clearanceInvoiceDetails')->name('invoices.clearance.details');
+
+    Route::get('/invoices/statements', 'invoiceStatements')->name('invoices.statements');
+    Route::get('/invoices/statements/create', 'createInvoiceStatement')->name('invoices.statements.create');
+    Route::post('/invoices/statements/store', 'storeInvoiceStatement')->name('invoices.statements.store');
+    Route::get('/invoices/statements/{invoiceStatement:uuid}', 'invoiceStatementDetails')->name('invoices.statements.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -147,6 +152,7 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoice/{code}', 'printInvoice')->name('print.invoice');
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
     Route::get('/print/invoice/clearance/{code}', 'printClearanceInvoice')->name('print.invoice.clearance');
+    Route::get('/print/invoice/statement/{code}', 'printInvoiceStatement')->name('print.invoice.statement');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
     Route::get('/export/transport/order/{transportOrder:id}', 'printTransportOrder')->name('export.transport.order');
 });

@@ -157,11 +157,17 @@
                                 </div>
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
+                                        <strong class="text-muted">نوع الفاتورة:</strong>
+                                        <span class="fw-bold">{{ $invoice->type ?? '---' }}</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">التاريخ:</strong>
                                         <span class="fw-bold">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</span>
                                     </div>
                                 </div>
-                                <div class="mb-3">
+                                <div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">أعدت بواسطة:</strong>
                                         <span class="text-muted fw-bold">{{ $invoice->made_by->name ?? '---' }}</span>
@@ -270,9 +276,9 @@
                         @endforeach
                         <tr class="table-secondary">
                             <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                            <td class="text-center fw-bold">{{ number_format($invoice->subtotal, 2) }}</td>
+                            <td class="text-center fw-bold">{{ number_format($invoice->amount_before_tax, 2) }}</td>
                             <td class="text-center fw-bold">{{ number_format($invoice->tax, 2) }}</td>
-                            <td class="text-center fw-bold">{{ number_format($invoice->total, 2) }}</td>
+                            <td class="text-center fw-bold">{{ number_format($invoice->total_amount, 2) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -291,24 +297,24 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">الإجمالي قبل الضريبة:</span>
-                            <span class="fw-bold fs-5">{{ number_format($invoice->subtotal, 2) }} ريال</span>
+                            <span class="fw-bold fs-5">{{ number_format($invoice->amount_before_tax, 2) }} ريال</span>
                         </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">الضريبة المضافة (15%):</span>
-                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} ريال</span>
-                        </div>
-                        
+                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }}):</span>
-                            <span class="fw-bold fs-5 text-danger"> - {{ number_format($discountValue, 2) }} ريال</span>
+                            <span class="fw-bold fs-5">{{ number_format($discountValue, 2) }} ريال</span>
                         </div>
-                        
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">إجمالي الضريبة المضافة:</span>
+                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} ريال</span>
+                        </div>
+                       
                         <hr class="my-3">
                         
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold fs-4 text-success">الإجمالي النهائي:</span>
-                            <span class="fw-bold fs-3 text-success">{{ number_format($invoice->total, 2) }} ريال</span>
+                            <span class="fw-bold fs-3 text-success">{{ number_format($invoice->total_amount, 2) }} ريال</span>
                         </div>
                     </div>
                 </div>

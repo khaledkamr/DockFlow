@@ -105,6 +105,7 @@ class ArabicNumberConverter
         $amountStr = (string) $amount;
         $parts = explode('.', $amountStr);
         
+        $parts[0] = str_replace(',', '', $parts[0]);
         $riyals = intval($parts[0]) ?: 0;
         $halalas = 0;
         
