@@ -13,10 +13,15 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->string('code')->unique();
             $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
+            $table->decimal('subtotal', 15, 2);
+            $table->decimal('tax', 15, 2);
             $table->decimal('amount', 15, 2);
+            $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
             $table->text('notes')->nullable();
+            $table->date('date');
+            $table->boolean('is_posted')->default(false);
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

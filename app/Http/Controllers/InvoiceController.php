@@ -94,7 +94,6 @@ class InvoiceController extends Controller
             'type' => 'خدمات',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'amount' => 0,
             'payment_method' => $request->payment_method,
             'discount' => $request->discount ?? 0,
             'date' => Carbon::now(),
@@ -114,12 +113,15 @@ class InvoiceController extends Controller
             $invoice->containers()->attach($container->id, ['amount' => $services]);
         }
 
-        $tax = $amountBeforeTax * 0.15;
-        $amount = $amountBeforeTax + $tax;
-        $discountValue = ($request->discount ?? 0) / 100 * $amount;
-        $amount -= $discountValue;
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax = $amountAfterDiscount * 0.15;
+        $amount = $amountAfterDiscount + $tax;
 
-        $invoice->amount = $amount;
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
@@ -137,19 +139,15 @@ class InvoiceController extends Controller
             $amountBeforeTax += $container->total;  
         }
 
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -178,7 +176,6 @@ class InvoiceController extends Controller
             'type' => 'تخليص',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'amount' => 0,
             'payment_method' => $request->payment_method,
             'discount' => $request->discount ?? 0,
             'date' => Carbon::now(),
@@ -190,17 +187,22 @@ class InvoiceController extends Controller
         }
 
         $amountBeforeTax = 0;
+        $tax = 0;
+        $totalAmount = 0;
 
         foreach($transaction->items as $item) {
-            $amountBeforeTax += $item->total;
+            $amountBeforeTax += $item->amount;
+            $tax += $item->tax;
+            $totalAmount += $item->total;
         }
 
-        $tax = $amountBeforeTax * 0.15;
-        $amount = $amountBeforeTax + $tax;
-        $discountValue = ($request->discount ?? 0) / 100 * $amount;
-        $amount -= $discountValue;
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
 
-        $invoice->amount = $amount;
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $totalAmount;
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
@@ -220,19 +222,15 @@ class InvoiceController extends Controller
             $amountBeforeTax += $item->total;
         }
 
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -262,7 +260,6 @@ class InvoiceController extends Controller
             'type' => 'تخزين',
             'customer_id' => $request->customer_id,
             'user_id' => $request->user_id,
-            'amount' => 0,
             'discount' => $request->discount ?? 0,
             'payment_method' => $request->payment_method,
             'date' => Carbon::now(),
@@ -292,12 +289,15 @@ class InvoiceController extends Controller
             $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee + $services]);
         }
 
-        $tax = $amountBeforeTax * 0.15;
-        $amount = $amountBeforeTax + $tax;
-        $discountValue = ($request->discount ?? 0) / 100 * $amount;
-        $amount -= $discountValue;
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax = $amountAfterDiscount * 0.15;
+        $amount = $amountAfterDiscount + $tax;
 
-        $invoice->amount = $amount;
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
@@ -327,19 +327,15 @@ class InvoiceController extends Controller
             $amountBeforeTax += $container->total;  
         }
 
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -419,6 +415,7 @@ class InvoiceController extends Controller
     }
 
     public function storeInvoiceStatement(Request $request) {
+        return $request;
         InvoiceStatement::create($request->validated());
         return redirect()->back()->with('success', 'تم إنشاء بيان فاتورة جديدة بنجاح');
     }

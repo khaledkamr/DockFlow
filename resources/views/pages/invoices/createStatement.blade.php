@@ -138,9 +138,9 @@
                             طريقة الدفع
                         </label>
                         <select name="payment_method" id="payment_method" class="form-select border-primary" required>
-                            <option value="كاش">كاش</option>
+                            <option value="آجل">آجل</option>
                             <option value="تحويل بنكي">تحويل بنكي</option>
-                            <option value="شيك">شيك</option>
+                            <option value="كاش">كاش</option>
                         </select>
                     </div>
                     <div class="col-md-4">
