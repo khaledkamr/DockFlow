@@ -11,6 +11,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransportController;
+use App\Http\Controllers\SupplierController;
 use App\Models\Container;
 use App\Models\Contract;
 use App\Models\Customer;
@@ -32,13 +33,6 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::post('roles/store', 'storeRole')->name('admin.roles.store');
     Route::put('roles/update/{role:id}', 'updateRole')->name('admin.roles.update');
     Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
-    Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('admin.drivers.vehicles');
-    Route::post('drivers/store', 'storeDriver')->name('admin.driver.store');
-    Route::put('drivers/update/{driver:id}', 'updateDriver')->name('admin.driver.update');
-    Route::delete('drivers/delete/{driver:id}', 'deleteDriver')->name('admin.driver.delete');
-    Route::post('vehicles/store', 'storeVehicle')->name('admin.vehicle.store');
-    Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('admin.vehicle.update');
-    Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('admin.vehicle.delete');
 });
 
 Route::controller(AuthController::class)->group(function () {
@@ -48,11 +42,19 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::controller(CustomerController::class)->middleware('auth')->group(function () {
-    Route::get('/customers', 'customers')->name('users.customers');
+    Route::get('/customers', 'customers')->name('relation.customers');
     Route::get('/customer/{customer:uuid}', 'customerProfile')->name('users.customer.profile');
     Route::post('/customer/store', 'storeCustomer')->name('users.customer.store');
     Route::put('/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
     Route::delete('/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
+});
+
+Route::controller(SupplierController::class)->middleware('auth')->group(function () {
+    Route::get('/suppliers', 'suppliers')->name('relation.suppliers');
+    Route::get('/supplier/{supplier:uuid}', 'supplierProfile')->name('users.supplier.profile');
+    Route::post('/supplier/store', 'storeSupplier')->name('users.supplier.store');
+    Route::put('/supplier/update/{supplier:uuid}', 'updateSupplier')->name('users.supplier.update');
+    Route::delete('/supplier/delete/{supplier:uuid}', 'deleteSupplier')->name('users.supplier.delete');
 });
 
 Route::controller(ContainerController::class)->middleware('auth')->group(function () {
@@ -99,6 +101,13 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::get('/transport/orders/create', 'createTransportOrder')->name('transactions.transportOrders.create');
     Route::post('/transport/orders/store', 'storeTransportOrder')->name('transportOrders.store');
     Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
+    Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('relation.drivers.vehicles');
+    Route::post('drivers/store', 'storeDriver')->name('relation.driver.store');
+    Route::put('drivers/update/{driver:id}', 'updateDriver')->name('relation.driver.update');
+    Route::delete('drivers/delete/{driver:id}', 'deleteDriver')->name('relation.driver.delete');
+    Route::post('vehicles/store', 'storeVehicle')->name('relation.vehicle.store');
+    Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('relation.vehicle.update');
+    Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('relation.vehicle.delete');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {

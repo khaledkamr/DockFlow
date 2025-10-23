@@ -235,12 +235,30 @@
                 </a>
             </li>
 
-            @can('عرض العملاء')
+            @can('إدارة المستخدمين')
                 <li class="nav-item mb-1">
-                    <a class="nav-link fw-bold rounded px-3 py-2 {{ request()->routeIs('users.customers') ? 'bg-primary text-white' : 'text-dark' }}" 
-                    href="{{ route('users.customers') }}">
-                        <i class="fa-solid fa-users ms-2 me-2"></i> العـــــمــــــــــــــلاء
+                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['relation*']) ? '' : 'collapsed' }}" 
+                    data-bs-toggle="collapse" 
+                    href="#relation-management" 
+                    role="button" 
+                    aria-expanded="{{ request()->routeIs(['relation*']) ? 'true' : 'false' }}" 
+                    aria-controls="relation-management">
+                        <i class="fa-solid fa-handshake ms-2 me-2"></i> إدارة العلاقــــــــات
                     </a>
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['relation*']) ? 'show' : '' }}" id="relation-management">
+                        <a class="nav-link fw-bold rounded m-1 px-3 py-2 {{ request()->routeIs('relation.customers') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('relation.customers') }}">
+                            <i class="fa-solid fa-users ms-2 me-2"></i> العمــلاء
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-3 py-2 {{ request()->routeIs('relation.suppliers') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('relation.suppliers') }}">
+                            <i class="fa-solid fa-truck-loading ms-2 me-2"></i> الموردين
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('relation.drivers.vehicles') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('relation.drivers.vehicles') }}">
+                            <i class="fa-solid fa-truck me-2"></i> النقــــل
+                        </a>
+                    </div>
                 </li>
             @endcan
 
@@ -252,16 +270,12 @@
                     role="button" 
                     aria-expanded="{{ request()->routeIs(['admin*']) ? 'true' : 'false' }}" 
                     aria-controls="admin-management">
-                        <i class="fa-solid fa-users-gear ms-2 me-2"></i> إدارة المستخدمون
+                        <i class="fa-solid fa-users-gear ms-2 me-2"></i> إدارة المستخدمين
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['admin*']) ? 'show' : '' }}" id="admin-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.users') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.users') }}">
                             <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
-                        </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.drivers.vehicles') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('admin.drivers.vehicles') }}">
-                            <i class="fa-solid fa-truck ms-1 me-2"></i> السائقين والشاحنات
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.roles') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.roles') }}">

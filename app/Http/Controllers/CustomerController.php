@@ -59,17 +59,11 @@ class CustomerController extends Controller
             'level' => 5
         ]);
 
-        Customer::create([
-            'name' => $request->name,
-            'CR' => $request->CR,
-            'TIN' => $request->TIN,
-            'vatNumber' => $request->vatNumber,
-            'national_address' => $request->national_address,
-            'phone' => $request->phone,
-            'email' => $request->email,
-            'account_id' => $account->id,
-            'user_id' => $request->user_id
-        ]);
+        $validated = $request->validated();
+        $validated['account_id'] = $account->id;
+
+        Customer::create($validated);
+        
         return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
     }
 
@@ -86,7 +80,7 @@ class CustomerController extends Controller
         if(Gate::allows('حذف عميل') == false) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف عميل');
         }
-        if($customer->invoices()->exists() || $customer->contract()->exists()) {
+        if($customer->invoices()->exists() || $customer->contract()->exists() || $customer->containers()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا العميل لوجود تعاملات مرتبطة به');
         }
         $name = $customer->name;

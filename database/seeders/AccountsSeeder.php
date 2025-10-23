@@ -870,6 +870,16 @@ class AccountsSeeder extends Seeder
                 "level" => 3,
                 "is_active" => 1,
                 "company_id" => 1,
+            ],
+            [
+                "id" => 101,
+                "name" => "موردين نقليات",
+                "code" => "2010105",
+                "parent_id" => 74,
+                "type_id" => 2,
+                "level" => 4,
+                "is_active" => 1,
+                "company_id" => 1,
             ]
         ];
 
