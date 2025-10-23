@@ -29,7 +29,7 @@
                 <h5 class="modal-title text-dark fw-bold" id="createVehicleModalLabel">إنشاء شاحنة جديدة</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.vehicle.store') }}" method="POST">
+            <form action="{{ route('relation.vehicle.store') }}" method="POST">
                 @csrf
                 <div class="modal-body text-dark">
                     <div class="row mb-3">
@@ -108,7 +108,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('admin.vehicle.update', $vehicle) }}" method="POST">
+                                <form action="{{ route('relation.vehicle.update', $vehicle) }}" method="POST">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-body text-dark">
@@ -157,7 +157,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold"
                                         data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('admin.vehicle.delete', $vehicle) }}" method="POST">
+                                    <form action="{{ route('relation.vehicle.delete', $vehicle) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger fw-bold">حذف</button>

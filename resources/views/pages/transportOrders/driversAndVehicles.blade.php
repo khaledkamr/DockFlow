@@ -15,9 +15,9 @@
 </ul>
 
 @if(request()->query('view', 'السائقين') == 'السائقين')
-    @include('pages.users.drivers')
+    @include('pages.transportOrders.drivers')
 @elseif(request()->query('view') == 'الشاحنات')
-    @include('pages.users.vehicles')
+    @include('pages.transportOrders.vehicles')
 @endif
 
 @endsection
