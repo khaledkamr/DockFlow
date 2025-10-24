@@ -132,7 +132,7 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoice/{invoice:uuid}', 'invoiceDetails')->name('invoices.details');
     Route::post('/invoice/service/store', 'storeServiceInvoice')->name('invoices.service.store');
     Route::get('invoice/services/{invoice:uuid}', 'invoiceServicesDetails')->name('invoices.services.details');
-    Route::post('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
+    Route::get('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
     Route::post('invoice/clearance/{transaction:uuid}', 'storeClearanceInvoice')->name('invoices.clearance.store');
     Route::get('invoice/clearance/details/{invoice:uuid}', 'clearanceInvoiceDetails')->name('invoices.clearance.details');
 

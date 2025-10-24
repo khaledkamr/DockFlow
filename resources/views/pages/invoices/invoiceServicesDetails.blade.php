@@ -24,46 +24,15 @@
                     <i class="fas fa-print me-2"></i>طباعة الفاتورة
                 </a>
                 @can('ترحيل فاتورة')
-                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#postInvoice">
+                    <a href="{{ route('invoices.post', $invoice) }}" class="btn btn-outline-primary">
                         <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
-                    </button>
+                    </a>
                 @endcan
                 @if($invoice->payment == 'لم يتم الدفع')
                     <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice">
                         <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الفاتورة
                     </button>
                 @endif
-            </div>
-        </div>
-
-        <div class="modal fade" id="postInvoice" tabindex="-1" aria-labelledby="postInvoiceLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="postInvoiceLabel">ترحيل الفاتورة رقم {{ $invoice->code }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form action="{{ route('invoices.post', $invoice) }}" method="POST">
-                        @csrf
-                        <div class="modal-body text-dark">
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <label class="form-label">الحساب الدائن</label>
-                                    <select class="form-select border-primary" name="debit_account" required>
-                                        <option value="" selected disabled>اختر الحساب الدائن</option>
-                                        @foreach ($accounts as $account)
-                                            <option value="{{ $account->id }}">{{ $account->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-start">
-                            <button type="submit" class="btn btn-primary fw-bold">ترحيل</button>
-                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                        </div>
-                    </form>
-                </div>
             </div>
         </div>
 

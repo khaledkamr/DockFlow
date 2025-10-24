@@ -44,7 +44,7 @@
                     @foreach ($journal->lines as $line)
                         <tr class="text-center">
                             <td>{{ $line->account->code }}</td>
-                            <td>{{ $line->account->name }}</td>
+                            <td class="fw-bold">{{ $line->account->name }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>
                             <td>{{ $line->description ?? '-' }}</td>
