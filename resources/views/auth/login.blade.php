@@ -75,6 +75,38 @@
         .animate-input:focus-within {
             transform: scale(1.02);
         }
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .password-toggle-btn:hover {
+            color: #0d6efd;
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+        .password-toggle-btn:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper .form-control {
+            padding-left: 48px;
+        }
     </style>
 </head>
 <body>
@@ -97,9 +129,12 @@
                             </div>
                         </div>
                         <div class="mb-3 animate-input">
-                            <div class="form-floating">
+                            <div class="form-floating password-wrapper">
                                 <input type="password" class="form-control" id="password" name="password" placeholder="">
                                 <label for="password"><i class="fa-solid fa-lock me-2"></i>كلمة السر</label>
+                                <button type="button" class="password-toggle-btn" id="togglePassword" aria-label="Toggle password visibility">
+                                    <i class="fa-solid fa-eye" id="toggleIcon"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="row mb-4">
@@ -130,6 +165,26 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Password toggle functionality
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        togglePassword.addEventListener('click', function() {
+            // Toggle password visibility
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle icon
+            if (type === 'password') {
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        });
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -147,7 +202,7 @@
             // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                showToast('بالله عليك دا منظر ايميل', 'danger');
+                showToast('البريد الإلكتروني غير صالح', 'danger');
                 return;
             }
             
