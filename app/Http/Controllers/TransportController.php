@@ -12,6 +12,7 @@ use App\Models\Driver;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use App\Models\Vehicle;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
@@ -41,9 +42,13 @@ class TransportController extends Controller
     public function createTransportOrder() {
         $transactions = Transaction::where('status', 'معلقة')->with('containers.transportOrders')->get();
         $drivers = Driver::all();
-        $vehicles = Vehicle::all();
+        $suppliers = Supplier::all();
 
-        return view('pages.transportOrders.createTransportOrder', compact('transactions', 'drivers', 'vehicles'));
+        return view('pages.transportOrders.createTransportOrder', compact(
+            'transactions', 
+            'drivers', 
+            'suppliers'
+        ));
     }
 
     public function storeTransportOrder(TransportRequest $request) {

@@ -16,8 +16,10 @@ class TransportRequest extends FormRequest
         return [
             'transaction_id' => 'required|exists:transactions,id',
             'customer_id' => 'required|exists:customers,id',
-            'driver_id' => 'nullable|exists:drivers,id',
-            'vehicle_id' => 'nullable|exists:vehicles,id',
+            'type' => 'required|string',
+            'driver_id' => 'required_if:type,ناقل داخلي|nullable|exists:drivers,id',
+            'vehicle_id' => 'required_if:type,ناقل داخلي|nullable|exists:vehicles,id',
+            'supplier_id' => 'required_if:type,ناقل خارجي|nullable|exists:suppliers,id',
             'date' => 'required|date',
             'from' => 'required|string',
             'to' => 'required|string',

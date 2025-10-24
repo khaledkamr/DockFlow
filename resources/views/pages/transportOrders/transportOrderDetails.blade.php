@@ -51,32 +51,43 @@
         </div>
     </div>
 
-    <!-- معلومات السائق والمركبة -->
+    <!-- معلومات الناقل -->
     <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="bi bi-truck-front-fill"></i> معلومات السائق والمركبة</h5>
+                <h5 class="mb-0"><i class="bi bi-truck-front-fill"></i> معلومات الناقل</h5>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col">
-                        <label class="text-muted small">الاسم</label>
-                        <p class="fw-bold mb-0">{{ $transportOrder->driver->name }}</p>
+                        <label class="text-muted small">نوع الناقل</label>
+                        <p class="fw-bold mb-0">{{ $transportOrder->type }}</p>
                     </div>
                     <div class="col">
-                        <label class="text-muted small">رقم اللوحة</label>
-                        <p class="fw-bold mb-0">{{ $transportOrder->vehicle->plate_number }}</p>
+                        <label class="text-muted small">الاسم</label>
+                        <p class="fw-bold mb-0">{{ $transportOrder->driver->name ?? $transportOrder->supplier->name ?? '--' }}</p>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
-                        <label class="text-muted small">الرقم القومي</label>
-                        <p class="fw-semibold mb-0">{{ $transportOrder->driver->NID }}</p>
-                    </div>
-                    <div class="col">
-                        <label class="text-muted small">نوع الشاحنة</label>
-                        <p class="fw-semibold mb-0">{{ $transportOrder->vehicle->type }}</p>
-                    </div>
+                    @if($transportOrder->type == 'ناقل داخلي')
+                        <div class="col">
+                            <label class="text-muted small">الرقم القومي</label>
+                            <p class="fw-semibold mb-0">{{ $transportOrder->driver->NID ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col">
+                            <label class="text-muted small">الشاحنة</label>
+                            <p class="fw-semibold mb-0">{{ $transportOrder->vehicle->plate_number . ' - ' . $transportOrder->vehicle->type ?? '' }}</p>
+                        </div>
+                    @elseif($transportOrder->type == 'ناقل خارجي')
+                        <div class="col">
+                            <label class="text-muted small">السجل التجاري</label>
+                            <p class="fw-semibold mb-0">{{ $transportOrder->supplier->CR ?? 'N/A' }}</p>
+                        </div>
+                        <div class="col">
+                            <label class="text-muted small">رقم التواصل</label>
+                            <p class="fw-semibold mb-0">{{ $transportOrder->supplier->contact_number ?? 'N/A' }}</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

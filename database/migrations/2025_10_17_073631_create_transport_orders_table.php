@@ -15,7 +15,9 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('vehicle_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
             $table->string('code')->unique();
+            $table->enum('type', ['ناقل داخلي', 'ناقل خارجي'])->default('ناقل داخلي');
             $table->date('date')->default(now());
             $table->string('from')->nullable();
             $table->string('to')->nullable();
