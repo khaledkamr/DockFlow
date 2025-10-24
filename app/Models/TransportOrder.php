@@ -15,7 +15,9 @@ class TransportOrder extends Model
         'customer_id',
         'driver_id',
         'vehicle_id',
+        'supplier_id',
         'code',
+        'type',
         'from',
         'to',
         'date',
@@ -27,38 +29,35 @@ class TransportOrder extends Model
         'company_id',
     ];
 
-    public function transaction()
-    {
+    public function transaction() {
         return $this->belongsTo(Transaction::class);
     }
 
-    public function customer()
-    {
+    public function customer() {
         return $this->belongsTo(Customer::class);
     }
 
-    public function driver()
-    {
+    public function driver() {
         return $this->belongsTo(Driver::class);
     }
 
-    public function vehicle()
-    {
+    public function vehicle() {
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function containers()
-    {
+    public function supplier() {
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function containers() {
         return $this->belongsToMany(Container::class, 'transport_orders_containers');
     }
 
-    public function made_by()
-    {
+    public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function company()
-    {
+    public function company() {
         return $this->belongsTo(Company::class);
     }
 

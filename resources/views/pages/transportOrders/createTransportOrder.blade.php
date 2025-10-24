@@ -53,47 +53,63 @@
         </div>
         <div class="row mb-3">
             <div class="col">
+                <label class="form-label">نوع الناقل</label>
+                <select name="type" id="type" class="form-select border-primary">
+                    <option value="ناقل داخلي" {{ old('type') == 'ناقل داخلي' ? 'selected' : '' }}>ناقل داخلي</option>
+                    <option value="ناقل خارجي" {{ old('type') == 'ناقل خارجي' ? 'selected' : '' }}>ناقل خارجي</option>
+                </select>
+            </div>
+
+            <div class="col internal-field">
                 <label class="form-label">إســم السائق</label>
-                <select name="driver_name" id="driver_name" class="form-select border-primary">
+                <select name="driver_id" id="driver_id" class="form-select border-primary">
                     <option value="">اختر السائق...</option>
                     @foreach ($drivers as $driver)
-                        <option value="{{ $driver->name }}" data-nid="{{ $driver->NID }}" data-id="{{ $driver->id }}"
+                        <option value="{{ $driver->id }}" data-nid="{{ $driver->NID }}"
                             data-vehicle-plate="{{ $driver->vehicle ? $driver->vehicle->plate_number : '' }}"
                             data-vehicle-type="{{ $driver->vehicle ? $driver->vehicle->type : '' }}"
                             data-vehicle-id="{{ $driver->vehicle ? $driver->vehicle->id : '' }}"
-                            {{ old('driver_name') == $driver->name ? 'selected' : '' }}>
+                            {{ old('driver_id') == $driver->id ? 'selected' : '' }}>
                             {{ $driver->name }}
                         </option>
                     @endforeach
                 </select>
-                <input type="hidden" name="driver_id" id="driver_id" value="{{ old('driver_id') }}">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col internal-field">
                 <label class="form-label">هوية السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID" value="{{ old('driver_NID') }}" readonly>
-                @error('driver_NID')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
             </div>
-            <div class="col">
+            <div class="col internal-field">
                 <label class="form-label">لوحة السيارة</label>
                 <input type="text" class="form-control border-primary" name="plate_number" id="plate_number" value="{{ old('plate_number') }}" readonly>
                 <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
-                @error('plate_number')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
             </div>
-            <div class="col">
-                <label class="form-label">نوع السيارة</label>
-                <input type="text" class="form-control border-primary" name="vehicle_type" id="vehicle_type" value="{{ old('vehicle_type') }}" readonly>
-                @error('vehicle_type')
-                    <div class="text-danger">{{ $message }}</div>
-                @enderror
+
+            <div class="col external-field" style="display: none">
+                <label class="form-label d-block">إســم المورد</label>
+                <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
+                    <option value="">اختر المورد...</option>
+                    @foreach ($suppliers as $supplier)
+                        <option value="{{ $supplier->id }}" data-cr="{{ $supplier->CR }}" data-phone="{{ $supplier->phone }}"
+                            {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                            {{ $supplier->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col external-field" style="display: none">
+                <label class="form-label">السجل التجاري</label>
+                <input type="text" class="form-control border-primary" name="cr" id="cr" readonly>
+            </div>
+            <div class="col external-field" style="display: none">
+                <label class="form-label">رقم الهاتف</label>
+                <input type="text" class="form-control border-primary" name="supplier_phone" id="supplier_phone" readonly>
             </div>
         </div>
+
         <div class="row mb-4">
             <div class="col">
                 <label class="form-label">مصاريف الديزل</label>
@@ -187,22 +203,52 @@
         $('#container-search').val('');
     });
 
-    $('#driver_name').select2({
+    $(document).ready(function() {
+        function toggleFields() {
+            const selected = $('#type').val();
+            $('.internal-field, .external-field').hide();
+
+            if (selected === "ناقل داخلي") {
+                $('.internal-field').show(); 
+                $('#supplier_id').val(null).trigger('change');
+            } else if (selected === "ناقل خارجي") {
+                $('.external-field').show();
+                $('#driver_id').val(null).trigger('change');
+            }
+
+        }
+        $('#type').on('change', toggleFields);
+        toggleFields();
+    })
+
+    $('#driver_id').select2({
         placeholder: "ابحث عن إسم السائق...",
         allowClear: true,
     });
 
-    $('#driver_name').on('change', function () {
+    $('#driver_id').on('change', function () {
         let nid = $(this).find(':selected').data('nid');
         $('#driver_NID').val(nid || '');
-        let id = $(this).find(':selected').data('id');
-        $('#driver_id').val(id || '');
         let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
         $('#plate_number').val(vehiclePlate || '');
-        let vehicleType = $(this).find(':selected').data('vehicle-type');
-        $('#vehicle_type').val(vehicleType || '');
         let vehicleId = $(this).find(':selected').data('vehicle-id');
         $('#vehicle_id').val(vehicleId || '');
+        
+        
+    });
+
+    $('#supplier_id').select2({
+        placeholder: "ابحث عن إسم المورد...",
+        allowClear: true,
+    });
+
+    $('#supplier_id').on('change', function () {
+        let cr = $(this).find(':selected').data('cr');
+        $('#cr').val(cr || '');
+        let phone = $(this).find(':selected').data('phone');
+        $('#supplier_phone').val(phone || '');
+
+        
     });
 
     // Container search functionality
