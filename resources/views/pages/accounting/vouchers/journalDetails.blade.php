@@ -20,6 +20,10 @@
             <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
                 <i class="fa-solid fa-print"></i>
             </button>
+
+            <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </a>
         </div>
     </div>
     <div class="table-container">
