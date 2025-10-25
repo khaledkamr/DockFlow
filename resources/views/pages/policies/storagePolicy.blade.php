@@ -103,9 +103,9 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">بيانات الحاويات</h5>
-                <button type="button" class="btn btn-primary btn-sm" id="addContainerBtn">
+                {{-- <button type="button" class="btn btn-primary btn-sm" id="addContainerBtn">
                     <i class="fas fa-plus me-1"></i> إضافة حاوية جديدة
-                </button>
+                </button> --}}
             </div>
             
             <div id="containersSection">

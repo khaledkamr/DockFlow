@@ -144,6 +144,38 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
     }
 
+    public function editJournal(JournalEntry $journal) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل القيود');
+        }
+
+        $accounts = Account::where('level', 5)->get();
+
+        return view('pages.accounting.vouchers.editJournal', compact('journal', 'accounts'));
+    }
+
+    public function updateJournal(Request $request, JournalEntry $journal) {
+        $journal->lines()->delete();
+
+        $journal->update([
+            'date' => $request->date,
+            'totalDebit' => $request->debitSum,
+            'totalCredit' => $request->creditSum,
+        ]);
+
+        foreach ($request->account_id as $index => $accountId) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id'       => $accountId,
+                'debit'            => $request->debit[$index] ?? 0,
+                'credit'           => $request->credit[$index] ?? 0,
+                'description'      => $request->description[$index],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'تم تعديل القيد بنجاح');
+    }
+
     public function journalDetails(JournalEntry $journal) {
         return view('pages.accounting.vouchers.journalDetails', compact(
             'journal'
@@ -281,5 +313,4 @@ class AccountingController extends Controller
             'trialBalance'
         ));
     }
-
 }

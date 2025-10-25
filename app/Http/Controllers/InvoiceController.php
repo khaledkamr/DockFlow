@@ -365,34 +365,51 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
     }
 
-    public function postInvoice(Request $request, Invoice $invoice) {
+    public function postInvoice(Invoice $invoice) {
         if($invoice->is_posted) {
             return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
         }
 
-        $debitAccount = Account::findOrFail($request->debit_account);
-        $creditAccount = $invoice->customer->account;
+        $creditAccount = $invoice->customer->account; // مدين
+        if($invoice->type == 'تخزين') {
+            $incomeAccount = Account::where('name', 'ايرادات التخزين')->where('level', 5)->first();
+        } elseif($invoice->type == 'تخليص') {
+            $incomeAccount = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
+        } else {
+            $incomeAccount = Account::where('name', 'ايرادات متنوعة')->where('level', 5)->first();
+        }
+        $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+        
 
         $journal = JournalEntry::create([
             'date' => Carbon::now(),
-            'totalDebit' => $invoice->amount,
-            'totalCredit' => $invoice->amount,
+            'totalDebit' => $invoice->total_amount,
+            'totalCredit' => $invoice->total_amount,
             'user_id' => Auth::user()->id,
         ]);
 
         JournalEntryLine::create([
             'journal_entry_id' => $journal->id,
-            'account_id' => $debitAccount->id,
-            'debit' => $invoice->amount,
-            'credit' => 0.00,
-            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+            'account_id' => $incomeAccount->id,
+            'debit' => 0.00,
+            'credit' => $invoice->amount_after_discount,
+            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
         ]);
+
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $taxAccount->id,
+            'debit' => 0.00,
+            'credit' => $invoice->tax,
+            'description' => 'قيمة مضافة فاتورة ' . $invoice->type . ' رقم ' . $invoice->code
+        ]);
+
         JournalEntryLine::create([
             'journal_entry_id' => $journal->id,
             'account_id' => $creditAccount->id,
-            'debit' => 0.00,
-            'credit' => $invoice->amount,
-            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+            'debit' => $invoice->total_amount,
+            'credit' => 0.00,
+            'description' => 'استحقاق فاتورة ' . $invoice->type . ' رقم ' . $invoice->code
         ]);
 
         $invoice->is_posted = true;

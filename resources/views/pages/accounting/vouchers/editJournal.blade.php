@@ -1,3 +1,13 @@
+@extends('layouts.app')
+
+@section('title', 'تعديل القيد')
+
+@section('content')
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <style>
     .bg-unbalanced {
         background-color: rgb(250, 203, 203);
@@ -5,9 +15,8 @@
     .bg-balanced {
         background-color: rgb(203, 250, 203);
     }
-
     .select2-container .select2-selection {
-        height: 38px;       
+        height: 38px;
         border-radius: 8px; 
         border: 1px solid #dddddd;
         padding: 5px;
@@ -16,16 +25,20 @@
         line-height: 30px; 
     }
 </style>
-<form action="{{ route('admin.create.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
+
+<h1 class="mb-4">تعديل القيد</h1>
+
+<form action="{{ route('journal.update', $journal) }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
     @csrf
+    @method('PUT')
     <div class="row mb-3">
         <div class="col">
             <label class="form-label">الشركة</label>
-            <input type="text" class="form-control" value="{{ $company->name }}" disabled>
+            <input type="text" class="form-control" value="{{ auth()->user()->company->name }}" disabled>
         </div>
         <div class="col">
             <label class="form-label">الفرع</label>
-            <input type="text" class="form-control" value="{{ $company->branch }}" disabled>
+            <input type="text" class="form-control" value="{{ auth()->user()->company->branch }}" disabled>
         </div>
         <div class="col">
             <label class="form-label">تاريخ القيد</label>
@@ -45,27 +58,28 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 2; $i++)
+                @foreach($journal->lines as $line)
                     <tr>
                         <td>
-                            <select name="account_id[]" class="form-select account_name journal" style="width: 100%;">
+                            <select name="account_id[]" class="form-select account_name" style="width: 100%;">
                                 <option value="">-- اختر الحساب --</option>
                                 @foreach($accounts as $account)
-                                    <option value="{{ $account->id }}" data-code="{{ $account->code }}">
+                                    <option value="{{ $account->id }}" data-code="{{ $account->code }}"
+                                        {{ $line->account_id == $account->id ? 'selected' : '' }}>
                                         {{ $account->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </td>
-                        <td><input type="text" name="account_code[]" class="form-control account_code"></td>
-                        <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center"></td>
-                        <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center"></td>
-                        <td><input type="text" name="description[]" class="form-control"></td>
+                        <td><input type="text" name="account_code[]" class="form-control account_code" value="{{ $line->account->code }}"></td>
+                        <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center" value="{{ $line->debit }}"></td>
+                        <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center" value="{{ $line->credit }}"></td>
+                        <td><input type="text" name="description[]" class="form-control" value="{{ $line->description }}"></td>
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm remove-row">حذف</button>
                         </td>
                     </tr>
-                @endfor
+                @endforeach
                 <tr class="table-secondary">
                     <td colspan="2" class="text-center fw-bold fs-5">الفــارق</td>
                     <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center" value="0.00" readonly></td>
@@ -181,3 +195,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+@endsection
