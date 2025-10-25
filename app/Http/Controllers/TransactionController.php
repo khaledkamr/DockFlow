@@ -54,8 +54,8 @@ class TransactionController extends Controller
             $container = Container::create([
                 'customer_id' => $request->customer_id,
                 'code' => $container['code'],
+                'status' => 'في الميناء',
                 'container_type_id' => $container['container_type_id'],
-                'date' => Carbon::now(),
                 'notes' => $container['notes'],
                 'user_id' => Auth::user()->id,
             ]);

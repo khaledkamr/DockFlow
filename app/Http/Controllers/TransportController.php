@@ -56,6 +56,10 @@ class TransportController extends Controller
         $transportOrder = TransportOrder::create($validated);
 
         $containers = Container::whereIn('id', $request->selected_containers)->get();
+        foreach($containers as $container) {
+            $container->status = 'قيد النقل';
+            $container->save();
+        }
         $transportOrder->containers()->attach($containers);
 
         $transaction = Transaction::find($transportOrder->transaction_id);

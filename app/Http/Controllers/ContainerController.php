@@ -17,7 +17,7 @@ class ContainerController extends Controller
     public function containers(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
         foreach($containers as $container) {
-            if($container->status == 'متوفر') {
+            if($container->status == 'في الساحة') {
                 $storagePolicy = $container->policies->where('type', 'تخزين')->first();
                 if($storagePolicy) {
                     $dueDays = $storagePolicy->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit;
@@ -29,9 +29,6 @@ class ContainerController extends Controller
                 }
             }
         }
-
-        $availableContainer = $containers->where('status', 'متوفر')->count();
-        $lateContainers = $containers->where('status', 'متأخر')->count();
 
         $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
@@ -58,11 +55,7 @@ class ContainerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('pages.containers.containers', compact(
-            'containers',
-            'availableContainer',
-            'lateContainers',
-        ));
+        return view('pages.containers.containers', compact('containers'));
     }
 
     public function containerStore(Request $request) {
@@ -132,7 +125,7 @@ class ContainerController extends Controller
     public function reports(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
         foreach($containers as $container) {
-            if($container->status == 'متوفر') {
+            if($container->status == 'في الساحة') {
                 $storagePolicy = $container->policies->where('type', 'تخزين')->first();
                 if($storagePolicy) {
                     $dueDays = $storagePolicy->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit;

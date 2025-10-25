@@ -65,6 +65,7 @@ class PolicyController extends Controller
             $container = Container::create([
                 'customer_id' => $request->customer_id,
                 'code' => $container['code'],
+                'status' => 'في الساحة',
                 'container_type_id' => $container['container_type_id'],
                 'location' => $container['location'],
                 'received_by' => $request->driver_name,
@@ -74,9 +75,6 @@ class PolicyController extends Controller
             ]);
             $policy_containers[] = $container;
         }
-
-        $count = count($request->containers);
-        session()->flash('yard', 'تم إضافة ' . $count . ' حاويات جديدة للساحة بنجاح');
 
         $validated = $request->validated();
         $policy = Policy::create($validated);
@@ -89,6 +87,7 @@ class PolicyController extends Controller
         if(Gate::denies('إنشاء اتفاقية')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
+
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         return view('pages.policies.receivePolicy', compact('company', 'customers'));
@@ -105,10 +104,11 @@ class PolicyController extends Controller
             $container->save();
             $containers[] = $container;
         }
-        $validated = $request->validated();
 
+        $validated = $request->validated();
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
+
         return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض الاتفاقية؟</a>');
     }
 
@@ -211,7 +211,6 @@ class PolicyController extends Controller
     }
 
     public function servicePolicyDetails(Policy $policy) {
-        // return $policy->containers->first()->services;
         return view('pages.policies.servicePolicyDetails', compact('policy'));
     }
 }

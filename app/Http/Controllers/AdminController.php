@@ -33,7 +33,7 @@ class AdminController extends Controller
         $containers = Container::all();
 
         $date = $request->input('date', Carbon::now()->format('Y-m-d'));
-        $availableContainers = $containers->where('date', '<=', $date)->where('status', 'متوفر')->count();
+        $availableContainers = $containers->where('date', '<=', $date)->where('status', 'في الساحة')->count();
         if($date == Carbon::now()->format('Y-m-d')) {
             $waitingContainers = $containers->where('status', 'في الإنتظار')->count();
         } else {

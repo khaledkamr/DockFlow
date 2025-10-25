@@ -187,7 +187,7 @@
 
         // Filter containers that are available for receiving (status: 'متوفر')
         const availableContainers = containers.filter(container => 
-            container.status === 'متوفر'
+            container.status === 'في الساحة'
         );
 
         if (availableContainers.length === 0) {

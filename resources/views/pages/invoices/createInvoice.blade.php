@@ -3,12 +3,18 @@
 @section('title', 'إضافة فاتورة')
 
 @section('content')
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <h1 class="mb-4">إضافة فاتورة</h1>
 
 <form method="GET" action="" class="mb-4">
     <div class="row g-2">
         <div class="col-md-6">
-            <select name="customer_id" class="form-select border-primary" required>
+            <select name="customer_id" id="customer_id" class="form-select border-primary" required>
                 <option value="">-- اختر العميل --</option>
                 @foreach ($customers as $customer)
                     <option value="{{ $customer->id }}"
@@ -177,6 +183,12 @@
 
 @push('scripts')
 <script>
+    $("#customer_id").select2({
+        placeholder: "ابحث عن العميل...",
+        allowClear: true,
+        width: '100%'
+    });
+
     document.addEventListener('DOMContentLoaded', function() {
         const selectAllBtn = document.getElementById('select-all-btn');
         const clearSelectionBtn = document.getElementById('clear-selection-btn');
@@ -567,4 +579,15 @@
 </style>
 @endpush
 
+<style>
+    .select2-container .select2-selection {
+        height: 38px;       
+        border-radius: 8px; 
+        border: 1px solid #0d6efd;
+        padding: 5px;
+    }
+    .select2-container .select2-selection__rendered {
+        line-height: 30px; 
+    }
+</style>
 @endsection

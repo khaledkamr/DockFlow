@@ -15,8 +15,6 @@
                 <th>الفئـــة</th>
                 <th>الموقــع</th>
                 <th>الحالـــة</th>
-                <th>تم الإستلام بواسطة</th>
-                <th>تم التسليم بواسطة</th>
                 <th>تاريخ الدخول</th>
                 <th>تاريخ الخروج</th>
             </tr>
@@ -37,24 +35,19 @@
                         <td class="text-center">{{ $container->containerType->name }}</td>
                         <td class="text-center">{{ $container->location ?? '-' }}</td>
                         <td class="text-center">
-                            @if($container->status == 'متوفر')
+                            @if($container->status == 'في الساحة')
                                 <div class="status-available">{{ $container->status }}</div>
-                            @elseif($container->status == 'مُسلم')
-                                <div class="status-delivered">
-                                    {{ $container->status }}
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
+                            @elseif($container->status == 'تم التسليم')
+                                <div class="status-delivered">{{ $container->status }}</div>
                             @elseif($container->status == 'متأخر')
                                 <div class="status-danger">{{ $container->status }}</div>
-                            @elseif($container->status == 'في الإنتظار')
+                            @elseif($container->status == 'خدمات')
                                 <div class="status-waiting">{{ $container->status }}</div>
+                            @elseif($container->status == 'في الميناء')
+                                <div class="status-info">{{ $container->status }}</div>
+                            @elseif($container->status == 'قيد النقل')
+                                <div class="status-purple">{{ $container->status }}</div>
                             @endif
-                        </td>
-                        <td class="text-center {{ $container->received_by ? 'text-dark' : 'text-muted' }}">
-                            {{ $container->received_by ?? 'لم يتم الإستلام بعد' }}
-                        </td>
-                        <td class="text-center {{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
-                            {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
                         </td>
                         <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') ?? '-' }}</td>

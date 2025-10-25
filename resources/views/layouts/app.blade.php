@@ -153,6 +153,22 @@
             font-size: 12px;
             display: inline-block;
         }
+        .table .status-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .table .status-purple {
+            background-color: #e7d6f7;
+            color: #5a2d7a;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
         
         /* paginator styling */
         .pagination {
