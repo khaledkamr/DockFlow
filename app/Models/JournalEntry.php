@@ -18,7 +18,7 @@ class JournalEntry extends Model
         'totalDebit',
         'totalCredit',
         'user_id',
-        'modified_by',
+        'modifier_id',
         'voucher_id',
         'company_id',
     ];
@@ -33,6 +33,10 @@ class JournalEntry extends Model
 
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function modified_by() {
+        return $this->belongsTo(User::class, 'modifier_id');
     }
 
     protected static function booted()

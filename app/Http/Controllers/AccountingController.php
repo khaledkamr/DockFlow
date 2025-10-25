@@ -161,6 +161,7 @@ class AccountingController extends Controller
             'date' => $request->date,
             'totalDebit' => $request->debitSum,
             'totalCredit' => $request->creditSum,
+            'modifier_id' => Auth::user()->id,
         ]);
 
         foreach ($request->account_id as $index => $accountId) {

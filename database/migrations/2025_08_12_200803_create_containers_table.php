@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('code');
-            $table->enum('status', ['متوفر', 'تم التسليم', 'متأخر', 'خدمات'])->default('متوفر');
+            $table->string('status');    // e.g., في الساحة, في الإنتظار, متأخر
+            $table->string('condition')->nullable();
             $table->string('received_by')->nullable();
             $table->string('delivered_by')->nullable();
             $table->string('location')->nullable();

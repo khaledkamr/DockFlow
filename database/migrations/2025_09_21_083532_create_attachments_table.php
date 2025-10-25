@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('contract_id')->constrained()->cascadeOnDelete();
+            $table->morphs('attachable');  // attachable_type and attachable_id
             $table->string('file_path');
             $table->string('file_name');
             $table->string('file_type');

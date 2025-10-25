@@ -51,8 +51,10 @@
                     </div>
                     <form action="{{ route('invoices.service.store') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="type" value="خدمات">
                         <input type="hidden" name="customer_id" value="{{ $policy->customer_id }}">
                         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                        <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
                         <input type="hidden" name="container_ids[]" value="{{ $policy->containers->pluck('id')->join(',') }}">
                         <div class="modal-body text-dark">
                             <div class="row mb-4">
@@ -67,7 +69,7 @@
                                 <div class="col">
                                     <label class="form-label">نسبة الخصم(%)</label>
                                     <input type="number" name="discount" id="discount" class="form-control border-primary" 
-                                        min="0" max="100" step="1" value="0" placeholder="0.00">
+                                        min="0" max="100" step="1" value="0" placeholder="0.00" required>
                                 </div>
                             </div>
                         </div>

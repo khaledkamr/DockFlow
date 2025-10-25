@@ -11,10 +11,10 @@
     <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <span class="badge bg-{{ $invoice->payment == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
-                    @if($invoice->payment == 'تم الدفع')
+                <span class="badge bg-{{ $invoice->isPaid == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
+                    @if($invoice->isPaid == 'تم الدفع')
                         <i class="fas fa-check-circle me-1"></i>مدفوعة
-                    @elseif($invoice->payment == 'لم يتم الدفع')
+                    @elseif($invoice->isPaid == 'لم يتم الدفع')
                         <i class="fas fa-clock me-1"></i>معلقة
                     @endif
                 </span>
@@ -28,7 +28,7 @@
                         <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
                     </a>
                 @endcan
-                @if($invoice->payment == 'لم يتم الدفع')
+                @if($invoice->isPaid == 'لم يتم الدفع')
                     <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice">
                         <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الفاتورة
                     </button>
@@ -49,8 +49,8 @@
                         <div class="modal-body text-dark">
                             <div class="row mb-3">
                                 <div class="col">
-                                    <label for="payment" class="form-label">عملية الدفع</label>
-                                    <select name="payment" class="form-select border-primary" required>
+                                    <label for="isPaid" class="form-label">عملية الدفع</label>
+                                    <select name="isPaid" class="form-select border-primary" required>
                                         <option value="" selected disabled>اختر عملية الدفع</option>
                                         <option value="تم الدفع">تم الدفع</option>
                                         <option value="لم يتم الدفع">لم يتم الدفع</option>

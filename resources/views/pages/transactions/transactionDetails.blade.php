@@ -53,8 +53,10 @@
                 </div>
                 <form action="{{ route('invoices.clearance.store', $transaction) }}" method="POST">
                     @csrf
+                    <input type="hidden" name="type" value="تخليص">
                     <input type="hidden" name="customer_id" value="{{ $transaction->customer_id }}">
                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                    <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
                     <input type="hidden" name="container_ids[]" value="{{ $transaction->containers->pluck('id')->join(',') }}">
                     <div class="modal-body text-dark">
                         <div class="row mb-4">

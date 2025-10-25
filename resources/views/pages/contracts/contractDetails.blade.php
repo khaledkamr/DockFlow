@@ -241,7 +241,7 @@
                         @foreach($contract->attachments as $attachment)
                             <div class="col-md-6 col-lg-4">
                                 <div class="attachment-card bg-light border rounded p-3 h-100 position-relative">
-                                    <form action="{{ route('contracts.delete.attachment', $attachment->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('contracts.delete.attachment', $attachment) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2" 

@@ -24,18 +24,21 @@ class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
         $invoices = Invoice::orderBy('id', 'desc')->get();
+
         $methodFilter = request()->query('paymentMethod');
         if ($methodFilter && $methodFilter !== 'all') {
             $invoices = $invoices->filter(function ($invoice) use ($methodFilter) {
                 return $invoice->payment_method === $methodFilter;
             });
         }
-        $paymentFilter = request()->query('payment');
+
+        $paymentFilter = request()->query('isPaid');
         if ($paymentFilter && $paymentFilter !== 'all') {
             $invoices = $invoices->filter(function ($invoice) use ($paymentFilter) {
-                return $invoice->payment === $paymentFilter;
+                return $invoice->isPaid === $paymentFilter;
             });
         }
+
         $search = $request->input('search', null);
         if($search) {
             $invoices = $invoices->filter(function($invoice) use($search) {
@@ -44,6 +47,7 @@ class InvoiceController extends Controller
                     || stripos($invoice->date, $search) !== false;
             });
         }
+
         $invoices = new \Illuminate\Pagination\LengthAwarePaginator(
             $invoices->forPage(request()->get('page', 1), 50),
             $invoices->count(),
@@ -51,6 +55,7 @@ class InvoiceController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
+
         return view('pages.invoices.invoices', compact('invoices'));
     }
 
@@ -85,20 +90,14 @@ class InvoiceController extends Controller
         return view('pages.invoices.createInvoice', compact('customers', 'containers'));
     }
 
-    public function storeServiceInvoice(Request $request) {
+    public function storeServiceInvoice(InvoiceRequest $request) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
-        $invoice = Invoice::create([
-            'type' => 'خدمات',
-            'customer_id' => $request->customer_id,
-            'user_id' => $request->user_id,
-            'payment_method' => $request->payment_method,
-            'discount' => $request->discount ?? 0,
-            'date' => Carbon::now(),
-            'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
-        ]);
+        $validated = $request->validated();
+        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+        $invoice = Invoice::create($validated);
 
         $containerIds = $request->input('container_ids', []);
         $containers = Container::whereIn('id', $containerIds)->get();
@@ -151,36 +150,22 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        $accounts = collect();
-        $moneyAccount = Account::where('name', 'النقدية')->first();
-        $bankAccount = Account::where('name', 'البنوك')->first();
-
-        $accounts = $accounts->merge($moneyAccount->children);
-        $accounts = $accounts->merge($bankAccount->children);
-
         return view('pages.invoices.invoiceServicesDetails', compact(
             'invoice', 
             'discountValue', 
             'hatching_total', 
             'qrCode',
-            'accounts'
         ));
     }
 
-    public function storeClearanceInvoice(Request $request, Transaction $transaction) {
+    public function storeClearanceInvoice(InvoiceRequest $request, Transaction $transaction) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
-        $invoice = Invoice::create([
-            'type' => 'تخليص',
-            'customer_id' => $request->customer_id,
-            'user_id' => $request->user_id,
-            'payment_method' => $request->payment_method,
-            'discount' => $request->discount ?? 0,
-            'date' => Carbon::now(),
-            'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
-        ]);
+        $validated = $request->validated();
+        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+        $invoice = Invoice::create($validated);
 
         foreach($transaction->containers as $container) {
             $invoice->containers()->attach($container->id, ['amount' => 0]);
@@ -234,37 +219,23 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        $accounts = collect();
-        $moneyAccount = Account::where('name', 'النقدية')->first();
-        $bankAccount = Account::where('name', 'البنوك')->first();
-
-        $accounts = $accounts->merge($moneyAccount->children);
-        $accounts = $accounts->merge($bankAccount->children);
-
         return view('pages.invoices.clearanceInvoiceDetails', compact(
             'invoice', 
             'transaction',
             'discountValue', 
             'hatching_total', 
             'qrCode',
-            'accounts'
         ));
     }
 
-    public function storeInvoice(Request $request) {
+    public function storeInvoice(InvoiceRequest $request) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
-        
-        $invoice = Invoice::create([
-            'type' => 'تخزين',
-            'customer_id' => $request->customer_id,
-            'user_id' => $request->user_id,
-            'discount' => $request->discount ?? 0,
-            'payment_method' => $request->payment_method,
-            'date' => Carbon::now(),
-            'payment' => $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع',
-        ]);
+
+        $validated = $request->validated();
+        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+        $invoice = Invoice::create($validated);
 
         $containerIds = $request->input('container_ids', []);
         $containers = Container::whereIn('id', $containerIds)->get();
@@ -339,20 +310,12 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        $accounts = collect();
-        $moneyAccount = Account::where('name', 'النقدية')->first();
-        $bankAccount = Account::where('name', 'البنوك')->first();
-
-        $accounts = $accounts->merge($moneyAccount->children);
-        $accounts = $accounts->merge($bankAccount->children);
-
         return view('pages.invoices.invoiceDetails', compact(
             'invoice', 
             'services', 
             'discountValue', 
             'hatching_total', 
             'qrCode',
-            'accounts'
         ));
     }
 
@@ -360,7 +323,7 @@ class InvoiceController extends Controller
         if(Gate::denies('تعديل فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل الفواتير');
         }
-        $invoice->payment = $request->payment;
+        $invoice->isPaid = $request->isPaid;
         $invoice->save();
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
     }
@@ -443,7 +406,7 @@ class InvoiceController extends Controller
     public function createInvoiceStatement(Request $request) {
         $customers = Customer::all();
         $customer_id = $request->input('customer_id');
-        $invoices = Invoice::where('customer_id', $customer_id)->where('payment', 'لم يتم الدفع')->get();
+        $invoices = Invoice::where('customer_id', $customer_id)->where('isPaid', 'لم يتم الدفع')->get();
 
         return view('pages.invoices.createStatement', compact('customers', 'invoices'));
     }
@@ -469,7 +432,7 @@ class InvoiceController extends Controller
         $invoiceStatement->invoices()->attach(array_map(fn($invoice) => $invoice->id, $invoices));
 
         foreach($invoices as $invoice) {
-            $invoice->payment = 'تم الدفع';
+            $invoice->isPaid = 'تم الدفع';
             $invoice->save();
         }
 

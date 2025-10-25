@@ -132,7 +132,7 @@
         // Check for unpaid invoices
         hasUnpaidInvoices = false;
         if (invoices && Array.isArray(invoices)) {
-            hasUnpaidInvoices = invoices.some(invoice => invoice.payment === 'لم يتم الدفع');
+            hasUnpaidInvoices = invoices.some(invoice => invoice.isPaid === 'لم يتم الدفع');
         }
         
         // Show/hide container selection section
@@ -187,7 +187,7 @@
 
         // Filter containers that are available for receiving (status: 'متوفر')
         const availableContainers = containers.filter(container => 
-            container.status === 'متوفر'
+            container.status === 'في الساحة'
         );
 
         if (availableContainers.length === 0) {

@@ -120,31 +120,40 @@ class ContractController extends Controller
         if(Gate::allows('إرفاق مستند الى العقد') == false) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإرفاق مستندات للعقد');
         }
+
+        $request->validate([
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
+        ]);
+
         if($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('attachments', $fileName, 'public');
-            Attachment::create([
-                'contract_id' => $contract->id,
+            $filePath = $file->storeAs('attachments/contracts', $fileName, 'public');
+
+            $contract->attachments()->create([
                 'file_path' => $filePath,
                 'file_name' => $fileName,
                 'file_type' => $file->getClientMimeType(),
                 'user_id' => Auth::user()->id,
             ]);
+            
             return redirect()->back()->with('success', 'تم إرفاق الملف بنجاح');
         }
+
         return redirect()->back()->with('error', 'لم يتم إرفاق أي ملف');
     }
 
-    public function deleteAttachment($id) {
+    public function deleteAttachment(Attachment $attachment) {
         if(Gate::allows('حذف مستند من العقد') == false) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف المرفقات');
         }
-        $attachment = Attachment::findOrFail($id);
+
         if (Storage::disk('public')->exists($attachment->file_path)) {
             Storage::disk('public')->delete($attachment->file_path);
         }
+
         $attachment->delete();
+
         return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
 }

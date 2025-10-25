@@ -121,7 +121,7 @@ Route::controller(ContractController::class)->middleware('auth')->group(function
     Route::put('/service/update/{contract:uuid}', 'updateService')->name('contracts.service.update');
     Route::delete('/contracts/service/delete/{contract:uuid}', 'deleteService')->name('contracts.service.delete');
     Route::post('/contracts/{contract:uuid}/add/attachment', 'attachFile')->name('contracts.add.attachment');
-    Route::delete('/contracts/attachment/delete/{contract:uuid}', 'deleteAttachment')->name('contracts.delete.attachment');
+    Route::delete('/contracts/attachment/delete/{attachment:id}', 'deleteAttachment')->name('contracts.delete.attachment');
 });
 
 Route::controller(InvoiceController::class)->middleware('auth')->group(function () {

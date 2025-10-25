@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Invoice extends Model
 {
     use BelongsToCompany, HasUuid;
+
+    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص',];
+    public const PAYMENT_METHODS = [ 'كاش', 'آجل', 'تحويل بنكي',];
+    public const PAYMENT_STATUS = [ 'تم الدفع', 'لم يتم الدفع',];
     
     protected $fillable = [
         'type',
@@ -21,7 +25,7 @@ class Invoice extends Model
         'total_amount',
         'payment_method',
         'date',
-        'payment',
+        'isPaid',
         'user_id',
         'company_id',
     ];

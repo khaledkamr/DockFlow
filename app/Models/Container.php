@@ -13,6 +13,7 @@ class Container extends Model
     protected $fillable = [
         'code', 
         'status', 
+        'condition',
         'received_by',
         'delivered_by',
         'container_type_id', 

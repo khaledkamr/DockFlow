@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('transport_orders', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('transaction_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('transaction_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('vehicle_id')->nullable()->constrained()->nullOnDelete();

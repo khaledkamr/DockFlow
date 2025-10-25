@@ -19,9 +19,11 @@
             <label class="form-label">الحالة</label>
             <select name="status" class="form-select border-primary">
                 <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
-                <option value="متوفر" {{ request('status') == 'متوفر' ? 'selected' : '' }}>متوفر</option>
+                <option value="في الساحة" {{ request('status') == 'في الساحة' ? 'selected' : '' }}>في الساحة</option>
                 <option value="تم التسليم" {{ request('status') == 'تم التسليم' ? 'selected' : '' }}>تم التسليم</option>
                 <option value="متأخر" {{ request('status') == 'متأخر' ? 'selected' : '' }}>متأخر</option>
+                <option value="قيد النقل" {{ request('status') == 'قيد النقل' ? 'selected' : '' }}>قيد النقل</option>
+                <option value="في الميناء" {{ request('status') == 'في الميناء' ? 'selected' : '' }}>في الميناء</option>
             </select>
         </div>
         <div class="col">
@@ -65,7 +67,7 @@
     <div class="col">
         <div class="card border-0 shadow-sm rounded-3 p-3">
             <h6>في الساحة</h6>
-            <h3 class="text-primary fw-bold mb-0">{{ $containers->where('status', 'متوفر')->count() }}</h3>
+            <h3 class="text-primary fw-bold mb-0">{{ $containers->where('status', 'في الساحة')->count() }}</h3>
         </div>
     </div>
     <div class="col">
@@ -134,8 +136,6 @@
                     <th class="text-center bg-dark text-white">الفئـــة</th>
                     <th class="text-center bg-dark text-white">الموقــع</th>
                     <th class="text-center bg-dark text-white">الحالـــة</th>
-                    <th class="text-center bg-dark text-white">تم الإستلام بواسطة</th>
-                    <th class="text-center bg-dark text-white">تم التسليم بواسطة</th>
                     <th class="text-center bg-dark text-white">تاريخ الدخول</th>
                     <th class="text-center bg-dark text-white">تاريخ الخروج</th>
                 </tr>
@@ -160,7 +160,7 @@
                             <td class="text-center">{{ $container->containerType->name }}</td>
                             <td class="text-center">{{ $container->location ?? '-' }}</td>
                             <td class="text-center">
-                                @if($container->status == 'متوفر')
+                                @if($container->status == 'في الساحة')
                                     <div class="status-available">{{ $container->status }}</div>
                                 @elseif($container->status == 'تم التسليم')
                                     <div class="status-delivered">
@@ -169,13 +169,11 @@
                                     </div>
                                 @elseif($container->status == 'متأخر')
                                     <div class="status-danger">{{ $container->status }}</div>
+                                @elseif($container->status == 'في الميناء')
+                                    <div class="status-info">{{ $container->status }}</div>
+                                @elseif($container->status == 'قيد النقل')
+                                    <div class="status-purple">{{ $container->status }}</div>
                                 @endif
-                            </td>
-                            <td class="text-center {{ $container->received_by ? 'text-dark' : 'text-muted' }}">
-                                {{ $container->received_by ?? 'لم يتم الإستلام بعد' }}
-                            </td>
-                            <td class="text-center {{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
-                                {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
                             </td>
                             <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') ?? '-' }}</td>
