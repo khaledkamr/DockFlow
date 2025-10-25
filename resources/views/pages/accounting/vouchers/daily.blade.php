@@ -26,8 +26,8 @@
                         <td class="text-center">{{ $journal->totalDebit }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $journal->made_by->name ?? '-' }}</td>
-                        <td class="text-center {{ $journal->modified_by ? 'text-dark' : 'text-muted' }}">
-                            {{ $journal->modified_by ?? 'لم يتم التعديل' }}
+                        <td class="text-center {{ $journal->modifier_id ? 'text-dark' : 'text-muted' }}">
+                            {{ $journal->modified_by->name ?? 'لم يتم التعديل' }}
                         </td>
                         <td class="action-icons text-center">
                             <a href="{{ route('admin.journal.details', $journal) }}" 
@@ -37,7 +37,7 @@
                             <a class="btn btn-sm btn-secondary">
                                 طباعة
                             </a>
-                            <a class="btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $journal->id }}">
+                            <a href="{{ route('journal.edit', $journal) }}" class="btn btn-sm btn-success" type="button">
                                 تعديل
                             </a>
                         </td>

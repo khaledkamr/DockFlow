@@ -14,7 +14,7 @@
         <tbody>
             @if ($vouchers->isEmpty())
                 <tr>
-                    <td colspan="6" class="text-center">
+                    <td colspan="7" class="text-center">
                         <div class="status-danger fs-6">لم يتم العثور على اي سند قبض نقدي!</div>
                     </td>
                 </tr>
