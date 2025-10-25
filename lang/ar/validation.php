@@ -16,6 +16,9 @@ return [
     ],
     'confirmed' => 'كلمة المرور غير متطابقة.',
     'unique' => ':attribute مُستخدم بالفعل.',
+    'mimes' => ':attribute يجب أن يكون ملف من نوع :values.',
+    'file' => ':attribute يجب أن يكون ملفًا.',
+    'max.file' => ':attribute لا يجب أن يتجاوز :max كيلوبايت.',
     
     'attributes' => [
         'name' => 'الاسم',
@@ -55,5 +58,6 @@ return [
         'to' => 'إلى',
         'driver_name' => 'اسم السائق',
         'plate_number' => 'رقم اللوحة',
+        'attachment' => 'المرفق',
     ],
 ];
