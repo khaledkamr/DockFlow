@@ -393,7 +393,7 @@ class InvoiceController extends Controller
             'account_id' => $incomeAccount->id,
             'debit' => 0.00,
             'credit' => $invoice->amount_after_discount,
-            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
         ]);
 
         JournalEntryLine::create([
@@ -401,7 +401,7 @@ class InvoiceController extends Controller
             'account_id' => $taxAccount->id,
             'debit' => 0.00,
             'credit' => $invoice->tax,
-            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+            'description' => 'قيمة مضافة فاتورة ' . $invoice->type . ' رقم ' . $invoice->code
         ]);
 
         JournalEntryLine::create([
@@ -409,7 +409,7 @@ class InvoiceController extends Controller
             'account_id' => $creditAccount->id,
             'debit' => $invoice->total_amount,
             'credit' => 0.00,
-            'description' => 'ترحيل فاتورة رقم ' . $invoice->code
+            'description' => 'استحقاق فاتورة ' . $invoice->type . ' رقم ' . $invoice->code
         ]);
 
         $invoice->is_posted = true;
