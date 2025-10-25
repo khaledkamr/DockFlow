@@ -104,9 +104,6 @@
         .password-wrapper {
             position: relative;
         }
-        .password-wrapper .form-control {
-            padding-left: 48px;
-        }
     </style>
 </head>
 <body>
