@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('national_address');     // العنوان الوطني
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->unsignedBigInteger('account_id');
+            $table->foreignId('account_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
