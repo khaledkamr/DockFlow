@@ -13,15 +13,15 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('code')->unique();
-            $table->enum('type', ['خدمات', 'تخزين', 'تخليص'])->default('تخزين');
+            $table->string('type')->default('تخزين');      // 'خدمات', 'تخزين', 'تخليص'
             $table->decimal('amount_before_tax', 10, 2)->default(0);
             $table->decimal('tax', 5, 2)->default(0);
             $table->decimal('discount', 5, 2)->default(0);
             $table->decimal('amount_after_discount', 10, 2)->default(0);
             $table->decimal('total_amount', 10, 2)->default(0);
-            $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
+            $table->string('payment_method')->default('آجل'); // 'كاش', 'آجل', 'تحويل بنكي'
             $table->timestamp('date')->default(now());
-            $table->enum('payment', ['تم الدفع', 'لم يتم الدفع']);
+            $table->string('isPaid');     // 'تم الدفع', 'لم يتم الدفع'
             $table->string('notes')->nullable();
             $table->boolean('is_posted')->default(false);
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();

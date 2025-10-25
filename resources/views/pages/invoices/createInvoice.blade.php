@@ -39,8 +39,10 @@
 @if (isset($containers) && $containers->count() > 0)
     <form method="POST" action="{{ route('invoices.store') }}" class="mb-5">
         @csrf
+        <input type="hidden" name="type" value="تخزين">
         <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+        <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
 
         <!-- Search results info -->
         <div class="alert alert-secondary mb-3" id="search-info" style="display: none;">
@@ -142,7 +144,7 @@
                             نسبة الخصم (%)
                         </label>
                         <input type="number" name="discount" id="discount" class="form-control border-primary" 
-                               min="0" max="100" step="0.01" value="0" placeholder="0.00">
+                               min="0" max="100" step="0.01" value="0" placeholder="0.00" required>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn" disabled>

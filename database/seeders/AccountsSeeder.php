@@ -980,6 +980,26 @@ class AccountsSeeder extends Seeder
                 "level" => 5,
                 "is_active" => 1,
                 "company_id" => 1,
+            ], 
+            [
+                "id" => 112,
+                "name" => "ايرادات تخليص جمركي",
+                "code" => "4010102",
+                "parent_id" => 92,
+                "type_id" => 4,
+                "level" => 4,
+                "is_active" => 1,
+                "company_id" => 1,
+            ],
+            [
+                "id" => 113,
+                "name" => "ايرادات تخليص جمركي",
+                "code" => "40101020001",
+                "parent_id" => 112,
+                "type_id" => 4,
+                "level" => 5,
+                "is_active" => 1,
+                "company_id" => 1,
             ]
         ];
 

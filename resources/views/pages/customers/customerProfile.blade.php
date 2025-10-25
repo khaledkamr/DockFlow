@@ -205,10 +205,10 @@
         </h5>
         <div>
             <span class="badge bg-success me-1">
-                مدفوع: {{ collect($customer->invoices)->where('payment', 'تم الدفع')->count() }}
+                مدفوع: {{ collect($customer->invoices)->where('isPaid', 'تم الدفع')->count() }}
             </span>
             <span class="badge bg-danger">
-                غير مدفوع: {{ collect($customer->invoices)->where('payment', 'لم يتم الدفع')->count() }}
+                غير مدفوع: {{ collect($customer->invoices)->where('isPaid', 'لم يتم الدفع')->count() }}
             </span>
         </div>
     </div>
@@ -237,10 +237,10 @@
                         <td class="fw-bold">{{ $invoice->amount }} ر.س</td>
                         <td>{{ $invoice->payment_method }}</td>
                         <td>
-                            @if($invoice->payment === 'تم الدفع')
-                                <span class="status-available">{{ $invoice->payment }}</span>
+                            @if($invoice->isPaid === 'تم الدفع')
+                                <span class="status-available">{{ $invoice->isPaid }}</span>
                             @else
-                                <span class="status-danger">{{ $invoice->payment }}</span>
+                                <span class="status-danger">{{ $invoice->isPaid }}</span>
                             @endif
                         </td>
                         <td>{{ $invoice->date }}</td>
@@ -254,13 +254,13 @@
                 <div class="card text-center px-5 py-2 border-success">
                     <small class="text-muted">إجمالي المدفوع</small>
                     <div class="fw-bold text-success">
-                        {{ collect($customer->invoices)->where('payment', 'تم الدفع')->sum('amount') }} ر.س
+                        {{ collect($customer->invoices)->where('isPaid', 'تم الدفع')->sum('amount') }} ر.س
                     </div>
                 </div>
                 <div class="card text-center px-5 py-2 border-danger">
                     <small class="text-muted">إجمالي المستحق</small>
                     <div class="fw-bold text-danger">
-                        {{ collect($customer->invoices)->where('payment', 'لم يتم الدفع')->sum('amount') }} ر.س
+                        {{ collect($customer->invoices)->where('isPaid', 'لم يتم الدفع')->sum('amount') }} ر.س
                     </div>
                 </div>
                 <div class="card text-center px-5 py-2 border-primary">

@@ -44,13 +44,13 @@
         <form method="GET" action="" class="d-flex flex-column">
             <label class="form-label text-dark fw-bold">تصفية حسب الدفــع:</label>
             <div class="d-flex">
-                <select name="payment" class="form-select border-primary" onchange="this.form.submit()">
+                <select name="isPaid" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
-                        {{ request()->query('payment') === 'all' || !request()->query('payment') ? 'selected' : '' }}>
+                        {{ request()->query('isPaid') === 'all' || !request()->query('isPaid') ? 'selected' : '' }}>
                         جميع الفواتير</option>
-                    <option value="تم الدفع" {{ request()->query('payment') === 'كريدت' ? 'selected' : '' }}>
+                    <option value="تم الدفع" {{ request()->query('isPaid') === 'تم الدفع' ? 'selected' : '' }}>
                         تم الدفع</option>
-                    <option value="لم يتم الدفع" {{ request()->query('payment') === 'كاش' ? 'selected' : '' }}>
+                    <option value="لم يتم الدفع" {{ request()->query('isPaid') === 'لم يتم الدفع' ? 'selected' : '' }}>
                         لم يتم الدفع</option>
                 </select>
                 @if (request()->query('search'))
@@ -111,8 +111,8 @@
                         <td class="text-center fw-bold">{{ $invoice->total_amount }}</td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
-                        <td class="text-center fw-bold {{ $invoice->payment == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
-                            {{ $invoice->payment }}
+                        <td class="text-center fw-bold {{ $invoice->isPaid == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
+                            {{ $invoice->isPaid }}
                         </td>
                         <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
                         <td class="d-flex justify-content-center align-items-center gap-2 text-center">
