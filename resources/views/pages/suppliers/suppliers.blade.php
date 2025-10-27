@@ -157,7 +157,7 @@
                 @if ($suppliers->isEmpty())
                     <tr>
                         <td colspan="8" class="text-center">
-                            <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
+                            <div class="status-danger fs-6">لم يتم العثور على اي موردين!</div>
                         </td>
                     </tr>
                 @else

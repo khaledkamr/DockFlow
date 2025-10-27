@@ -16,7 +16,7 @@ return new class extends Migration
             $table->decimal('subtotal', 15, 2);
             $table->decimal('tax', 15, 2);
             $table->decimal('amount', 15, 2);
-            $table->enum('payment_method', ['كاش', 'آجل', 'تحويل بنكي'])->default('آجل');
+            $table->string('payment_method');
             $table->text('notes')->nullable();
             $table->date('date');
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();

@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->enum('type', ['primary', 'additional'])->default('additional');
+            $table->string('type')->default('additional');
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

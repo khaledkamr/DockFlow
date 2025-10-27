@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('driver_number')->nullable();
             $table->string('driver_car');
             $table->string('car_code');
-            $table->enum('type', ['تخزين', 'تسليم', 'خدمات'])->default('تخزين');
+            $table->string('type');
             $table->string('tax_statement')->nullable();
             $table->date('date');
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
