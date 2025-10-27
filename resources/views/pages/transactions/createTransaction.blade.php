@@ -60,7 +60,7 @@
             </div>
             <div class="col">
                 <label class="form-label">تاريخ البيان الجمركي</label>
-                <input type="date" name="customs_declaration_date" class="form-control border-primary" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                <input type="date" name="customs_declaration_date" class="form-control border-primary">
                 @error('customs_declaration_date')
                     <div class="text-danger">{{ $message }}</div>
                 @endif

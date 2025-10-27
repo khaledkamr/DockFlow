@@ -13,6 +13,7 @@ use App\Models\TransactionItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TransactionController extends Controller
 {
@@ -74,6 +75,10 @@ class TransactionController extends Controller
     }
 
     public function storeItem(ItemRequest $request) {
+        if(Gate::denies('إضافة بند الى المعاملة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء بند في المعاملة');
+        }
+
         $validated = $request->validated();
         TransactionItem::create($validated);
 
@@ -81,6 +86,10 @@ class TransactionController extends Controller
     }
 
     public function updateItem(ItemRequest $request, TransactionItem $item) {
+        if(Gate::denies('تعديل بند في المعاملة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بند في المعاملة');
+        }
+
         $validated = $request->validated();
         $item->update($validated);
 
@@ -88,11 +97,19 @@ class TransactionController extends Controller
     }
 
     public function deleteItem(TransactionItem $item) {
+        if(Gate::denies('حذف بند من المعاملة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية حذف بند من المعاملة');
+        }
+
         $item->delete();
         return redirect()->back()->with('success', 'تم حذف البند بنجاح');
     }
 
     public function addProcedure(Request $request, Transaction $transaction) {
+        if(Gate::denies('إضافة إجراء للمعاملة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية إضافة إجراء إلى المعاملة');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -105,6 +122,10 @@ class TransactionController extends Controller
     }
 
     public function deleteProcedure($procedureId) {
+        if(Gate::denies('حذف إجراء من المعاملة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية حذف إجراء من المعاملة');
+        }
+
         $procedure = Procedure::findOrFail($procedureId);
         $procedure->delete();
 

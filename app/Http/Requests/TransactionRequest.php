@@ -19,8 +19,8 @@ class TransactionRequest extends FormRequest
             'user_id' => 'required',
             'date' => 'required',
             'policy_number' => 'required|string',
-            'customs_declaration' => 'required|string',
-            'customs_declaration_date' => 'required|date',
+            'customs_declaration' => 'nullable|string',
+            'customs_declaration_date' => 'nullable|date',
         ];
     }
 }
