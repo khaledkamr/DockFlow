@@ -33,7 +33,7 @@
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" 
+                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}" data-account="{{ $customer->account ? $customer->account->code : null }}"
                             data-contract="{{ $customer->contract ? $customer->contract->id : null }}"
                             data-containers="{{ $customer->containers }}"
                             data-invoices="{{ $customer->invoices }}" >
@@ -43,12 +43,10 @@
                 </select>
             </div>
             <input type="hidden" id="contract_id" name="contract_id">
+            <input type="hidden" id="customer_id" name="customer_id">
             <div class="col">
                 <label class="form-label">رقــم العميــل</label>
-                <input type="text" class="form-control border-primary" id="customer_id" name="customer_id" value="" readonly>
-                @error('customer_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
+                <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
             </div>
         </div>
         <div class="row mb-3">
@@ -126,6 +124,9 @@
         $('#customer_id').val(id || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
+        let account = $(this).find(':selected').data('account');
+        $('#customer_account').val(account || '');
+
         let containers = $(this).find(':selected').data('containers');
         let invoices = $(this).find(':selected').data('invoices');
         
