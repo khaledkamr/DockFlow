@@ -146,8 +146,8 @@
                                 <div class="status-purple">{{ $container->status }}</div>
                             @endif
                         </td>
-                        <td>{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
-                        <td>{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') ?? '-' }}</td>
+                        <td>{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
+                        <td>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>
                         <td class="action-icons">
                             <button class="btn btn-link p-0 pb-1 m-0 me-3" type="button" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تحديث بيانات الحاوية"></i>
