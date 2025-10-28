@@ -220,7 +220,7 @@
                                                         <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
                                                         <div class="mb-3">
                                                             <label for="editDescription" class="form-label">البند</label>
-                                                            <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required>{{ $item->description }}</textarea>
+                                                            <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required readonly>{{ $item->description }}</textarea>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col">
@@ -366,7 +366,12 @@
                         @csrf
                         <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
                         <div class="input-group">
-                            <input type="text" class="form-control border-primary" name="name" placeholder="وصف الإجراء..." required>
+                            <select class="form-select border-primary" name="name" required>
+                                <option disabled selected>اختر الإجراء...</option>
+                                @foreach($procedures as $procedure)
+                                    <option value="{{ $procedure['name'] }}">{{ $procedure['name'] }}</option>
+                                @endforeach
+                            </select>
                             <button class="btn btn-primary" type="submit">
                                 <i class="fas fa-plus me-1"></i>
                                 إضافة
@@ -466,7 +471,12 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="description" class="form-label">البند</label>
-                            <textarea class="form-control border-primary" id="description" name="description" rows="1" required></textarea>
+                            <select class="form-select border-primary" id="description" name="description" required>
+                                <option disabled selected>اختر البند...</option>
+                                @foreach($items as $item)
+                                    <option value="{{ $item['name'] }}">{{ $item['name'] }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="row">
                             <div class="col">

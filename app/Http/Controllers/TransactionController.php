@@ -71,7 +71,35 @@ class TransactionController extends Controller
     }
 
     public function transactionDetails(Transaction $transaction) {
-        return view('pages.transactions.transactionDetails', compact('transaction'));
+        $items = [
+            ['name' => 'رسوم اذن التسليم - DELIVERY ORDER'],
+            ['name' => 'رسوم مواني - PORT CHARGE'],
+            ['name' => 'رسوم الشركه السعوديه للمواني - SAUDI GLOBAL PORT FEES'],
+            ['name' => 'اجور السكه الحديد - DRY PORT FEES'],
+            ['name' => 'رسوم موعد فسح - APPOINTMENT FASAH'],
+            ['name' => 'رسوم سابر - SABER FEES'],
+            ['name' => 'رسوم جمركية - CUSTOMS FEES'],
+            ['name' => 'ارضيات - DEMURRAGE CHARGE'],
+            ['name' => 'اجور تخليص - CLEARANCE FEES'],
+            ['name' => 'اجور نقل - TRANSPORT FEES'],
+            ['name' => 'اجور عمال - LABOUR'],
+            ['name' => 'خدمات سابر - SABER FEES'],
+        ];
+
+        $procedures = [
+            ['name' => 'تم فتح معامله - Open Transaction'],
+            ['name' => 'تم استلام اذن التسليم - The delivery order has been received'],
+            ['name' => 'تم طباعة البيان - The import declaration has been received'],
+            ['name' => 'تم السداد على معامله - Payment is made'],
+            ['name' => 'لم تصل الباخرة - The steamer did not arrive'],
+            ['name' => 'مطلوب تفويض - Authorization required'],
+            ['name' => 'مطلوب فسح للمواد المقيدة - Approval Required'],
+            ['name' => 'تم عمل اشعار نقل - Create transport notification'],
+            ['name' => 'تم عمل فاتورة - Create invoice'],
+            ['name' => 'لم تفرغ الحاوية فى الايداع - The container was not emptied at the deposit'],
+        ];
+
+        return view('pages.transactions.transactionDetails', compact('transaction', 'items', 'procedures'));
     }
 
     public function storeItem(ItemRequest $request) {
