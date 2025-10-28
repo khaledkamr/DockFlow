@@ -9,14 +9,6 @@
 
 <h2 class="mb-4">إضافة إتفاقية تخزين</h2>
 
-@if (session('yard'))
-    @push('scripts')
-        <script>
-            showToast("{{ session('yard') }}", "success");
-        </script>
-    @endpush
-@endif
-
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
     <form action="{{ route('policies.storage.store') }}" method="POST">
         @csrf
@@ -120,7 +112,17 @@
                     <div class="row">
                         <div class="col">
                             <label class="form-label">رقم الحاويــة</label>
-                            <input type="text" class="form-control border-primary" name="containers[0][code]" required>
+                            <input type="hidden" name="containers[0][id]">
+                            {{-- <input type="text" class="form-control border-primary" name="containers[0][code]" required> --}}
+                            <select name="containers[0][code]" id="container_code" class="form-select border-primary" required>
+                                <option value="">اختر رقم الحاوية...</option>
+                                @foreach ($containers as $container)
+                                    <option value="{{ $container->code }}" data-id="{{ $container->id }}">
+                                        {{ $container->code }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col">
@@ -156,6 +158,17 @@
 </div>
 
 <script>
+    $('#container_code').select2({
+        placeholder: "ابحث عن رقم الحاوية...",
+        allowClear: true,
+        tags: true
+    });
+
+    $('#container_code').on('change', function () {
+        let id = $(this).find(':selected').data('id');
+        $(this).closest('.container-row').find('input[name^="containers"][name$="[id]"]').val(id || '');
+    });
+
     $('#customer_name').select2({
         placeholder: "ابحث عن إسم العميل...",
         allowClear: true

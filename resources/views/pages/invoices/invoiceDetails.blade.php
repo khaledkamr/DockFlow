@@ -197,10 +197,10 @@
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <small>{{ \Carbon\Carbon::parse($container->date)->format('d/m/Y') }}</small>
+                                    <small>{{ $container->date ? Carbon\Carbon::parse($container->date)->format('d/m/Y') : '---' }}</small>
                                 </td>
                                 <td class="text-center">
-                                    <small>{{ $container->exit_date ? \Carbon\Carbon::parse($container->exit_date)->format('d/m/Y') : '---' }}</small>
+                                    <small>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('d/m/Y') : '---' }}</small>
                                 </td>
                                 <td class="text-center fw-bold">{{ $container->period }}</td>
                                 <td class="text-center fw-bold">{{ number_format($container->storage_price, 2) }}</td>

@@ -175,8 +175,8 @@
                                     <div class="status-purple">{{ $container->status }}</div>
                                 @endif
                             </td>
-                            <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
-                            <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') ?? '-' }}</td>
+                            <td class="text-center">{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
+                            <td class="text-center">{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>
                         </tr>
                     @endforeach
                 @endif

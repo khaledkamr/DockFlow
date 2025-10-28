@@ -154,7 +154,11 @@
                         <td class="text-center">{{ $customer->national_address }}</td>
                         <td class="text-center">{{ $customer->phone ?? '-' }}</td>
                         <td class="text-center">{{ $customer->email ?? '-' }}</td>
-                        <td class="text-center">{{ $customer->made_by->name ?? '-' }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.user.profile', $customer->made_by) }}" class="text-dark text-decoration-none">
+                                {{ $customer->made_by->name ?? '-' }}
+                            </a>
+                        </td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>

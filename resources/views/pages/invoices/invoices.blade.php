@@ -114,7 +114,11 @@
                         <td class="text-center fw-bold {{ $invoice->isPaid == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
                             {{ $invoice->isPaid }}
                         </td>
-                        <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.user.profile', $invoice->made_by) }}" class="text-dark text-decoration-none">
+                                {{ $invoice->made_by->name ?? '-' }}
+                            </a>
+                        </td>
                         <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                             @if($invoice->type == 'خدمات')
                                 <a href="{{ route('invoices.services.details', $invoice) }}" class="btn btn-sm btn-primary">

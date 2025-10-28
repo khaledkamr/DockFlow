@@ -55,13 +55,29 @@ class PolicyController extends Controller
         $company = Company::first();
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
+        $containers = Container::where('date', null)->get();
 
-        return view('pages.policies.storagePolicy', compact('company', 'customers', 'containerTypes'));
+        return view('pages.policies.storagePolicy', compact(
+            'company', 
+            'customers', 
+            'containerTypes', 
+            'containers'
+        ));
     }
 
     public function storeStoragePolicy(PolicyRequest $request) {
         $policy_containers = [];
         foreach($request->containers as $container) {
+            if(isset($container['id']) && $container['id'] != '') {
+                $existingContainer = Container::findOrFail($container['id']);
+                $existingContainer->status = 'في الساحة';
+                $existingContainer->location = $container['location'];
+                $existingContainer->received_by = $request->driver_name;
+                $existingContainer->date = Carbon::now();
+                $existingContainer->save();
+                $policy_containers[] = $existingContainer;
+                continue;
+            }
             $container = Container::create([
                 'customer_id' => $request->customer_id,
                 'code' => $container['code'],

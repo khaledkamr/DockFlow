@@ -207,7 +207,7 @@
                                     </div>
                                     <form action="{{ route('admin.users.update', $user) }}" method="POST">
                                         @csrf
-                                        @method('PUT')
+                                        @method('PATCH')
                                         <div class="modal-body text-dark">
                                             <div class="row mb-3">
                                                 <div class="col">
