@@ -95,7 +95,8 @@ class AdminController extends Controller
 
     public function userProfile(User $user) {
         $roles = Role::all();
-        return view('pages.users.userProfile', compact('user', 'roles'));
+        $permissions = Permission::all();
+        return view('pages.users.userProfile', compact('user', 'roles', 'permissions'));
     }
 
     public function storeUser(Request $request) {
@@ -140,6 +141,26 @@ class AdminController extends Controller
         }
         $user->update($validated);
         $user->roles()->sync($request->role);
+        return redirect()->back()->with('success', 'تم تحديث بيانات المستخدم بنجاح');
+    }
+
+    public function updateMyUser(Request $request, User $user) {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'nationality' => 'nullable|string|max:255',
+            'NID' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+        ]);
+        if($request->password) {
+            if($request->password != $request->password_confirmation) {
+                return redirect()->back()->withErrors(['password' => 'كلمة المرور غير متطابقة']);
+            } elseif(strlen($request->password) < 3) {
+                return redirect()->back()->withErrors(['password' => 'كلمة المرور يجب أن تكون على الأقل 3 أحرف']);
+            }
+            $validated['password'] = Hash::make($request->password);
+        }
+        $user->update($validated);
         return redirect()->back()->with('success', 'تم تحديث بيانات المستخدم بنجاح');
     }
 

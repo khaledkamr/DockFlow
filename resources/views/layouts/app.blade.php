@@ -528,11 +528,12 @@
                         </div>
                         
                         <div class="d-flex align-items-center text-dark me-5">
-                            <img src="{{ Auth::user()->avatar ?? asset('img/user-profile.jpg') }}" alt="Profile Photo" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                            <a href="{{ route('admin.user.profile', Auth::user()) }}">
+                                <img src="{{ Auth::user()->avatar ?? asset('img/user-profile.jpg') }}" alt="Profile Photo" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                            </a>
                             <div class="d-flex flex-column">
                                 <span class="fw-bold" style="font-size: 14px;">{{ Auth::user()->name }}</span>
                                 <span class="text-secondary" style="font-size: 12px;">{{ Auth::user()->roles->first()->name }}</span>
-
                             </div>
                         </div>
                     </div>
