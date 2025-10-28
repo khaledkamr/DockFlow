@@ -91,7 +91,11 @@
                         <td class="text-center">{{ $policy->type }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
-                        <td class="text-center">{{ $policy->made_by->name ?? "-" }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.user.profile', $policy->made_by) }}" class="text-dark text-decoration-none">
+                                {{ $policy->made_by->name ?? "-" }}
+                            </a>
+                        </td>
                         <td class="action-icons text-center">
                             @if($policy->type == 'تخزين')
                                 <a href="{{ route('policies.storage.details', $policy) }}" class="btn btn-sm btn-primary">

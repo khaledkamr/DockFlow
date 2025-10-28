@@ -513,7 +513,7 @@
                                 @can('عرض بيانات الشركة')
                                     <li><a class="dropdown-item" href="{{ route('company', auth()->user()->company) }}">بيانات الشركة</a></li>
                                 @endcan 
-                                <li><a class="dropdown-item" href="{{ route('admin.user.profile', auth()->user()) }}">الملف الشخصي</a></li>
+                                <li><a class="dropdown-item" href="{{ route('user.profile', auth()->user()) }}">الملف الشخصي</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" class="m-0">
@@ -528,7 +528,7 @@
                         </div>
                         
                         <div class="d-flex align-items-center text-dark me-5">
-                            <a href="{{ route('admin.user.profile', Auth::user()) }}">
+                            <a href="{{ route('user.profile', Auth::user()) }}">
                                 <img src="{{ Auth::user()->avatar ?? asset('img/user-profile.jpg') }}" alt="Profile Photo" class="rounded-circle me-2" style="width: 40px; height: 40px;">
                             </a>
                             <div class="d-flex flex-column">

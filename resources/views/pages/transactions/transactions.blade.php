@@ -59,7 +59,11 @@
                             <td class="text-center">
                                 {{ Carbon\Carbon::parse($transaction->date ?? $transaction->created_at)->format('Y/m/d') }}
                             </td>
-                            <td class="text-center">{{ $transaction->made_by->name ?? '-' }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('admin.user.profile', $transaction->made_by) }}" class="text-dark text-decoration-none">
+                                    {{ $transaction->made_by->name ?? "-" }}
+                                </a>
+                            </td>
                             <td class="action-icons text-center">
                                 <a href="{{ route('transactions.details', $transaction) }}" class="btn btn-sm btn-primary">
                                     عرض

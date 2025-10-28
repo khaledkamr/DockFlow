@@ -26,6 +26,7 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::get('users', 'users')->name('admin.users');
     Route::post('users/store', 'storeUser')->name('admin.users.store');
     Route::get('users/{user:uuid}', 'userProfile')->name('admin.user.profile');
+    Route::get('user/{user:uuid}', 'myProfile')->name('user.profile');
     Route::patch('users/update/{user:uuid}', 'updateUser')->name('admin.users.update');
     Route::patch('user/update/{user:uuid}', 'updateMyUser')->name('admin.user.update');
     Route::patch('users/update/password/{user:uuid}', 'updatePassword')->name('admin.users.update.password');

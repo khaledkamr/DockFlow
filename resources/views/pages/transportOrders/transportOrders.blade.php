@@ -65,7 +65,11 @@
                             <td class="text-center">
                                 {{ Carbon\Carbon::parse($order->date ?? $order->created_at)->format('Y/m/d') }}
                             </td>
-                            <td class="text-center">{{ $order->made_by->name ?? '-' }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('admin.user.profile', $order->made_by) }}" class="text-dark text-decoration-none">
+                                    {{ $order->made_by->name ?? "-" }}
+                                </a>
+                            </td>
                             <td class="action-icons text-center">
                                 <a href="{{ route('transactions.transportOrders.details', $order) }}" class="btn btn-sm btn-primary">
                                     عرض

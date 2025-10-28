@@ -79,7 +79,11 @@
                         <td class="text-center fw-bold">{{ $statement->amount }}</td>
                         <td class="text-center">{{ $statement->payment_method }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($statement->date)->format('Y/m/d') }}</td>
-                        <td class="text-center">{{ $statement->made_by->name ?? '-' }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.user.profile', $statement->made_by) }}" class="text-dark text-decoration-none">
+                                {{ $statement->made_by->name ?? '-' }}
+                            </a>
+                        </td>
                         <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                             <a href="{{ route('invoices.statements.details', $statement) }}" class="btn btn-sm btn-primary">
                                 عرض
