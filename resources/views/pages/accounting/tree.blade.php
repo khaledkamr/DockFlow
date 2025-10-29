@@ -152,9 +152,9 @@
         </div>
         <ul class="tree-list">
             @foreach($accounts as $account)
-                <li class="relative m-0 p-0 mb-3">
+                <li class="relative m-0 p-0 mb-3" data-account-id="{{ $account->id }}">
                     <div class="account-node {{ $account->children->count() ? 'has-children' : '' }} bg-level-{{$account->level}}" 
-                         onclick="toggleNode(this)">
+                         onclick="toggleNode(this, event)">
                         @if($account->children->count())
                             <button class="toggle-btn">
                                 <i class="fa-solid fa-angle-down"></i>
@@ -168,7 +168,8 @@
                             </div>
                             <div>
                                 <button class="z-3 badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
-                                    type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $account->id }}">
+                                    type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $account->id }}"
+                                    onclick="event.stopPropagation()">
                                     <i class="fa-solid fa-plus fa-xs"></i>
                                 </button>
                             </div>
@@ -188,7 +189,7 @@
                                 <h5 class="modal-title text-dark fw-bold" id="addRootLabel{{ $account->id }}">إنشاء فرع جديد من {{ $account->name }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="{{ route('admin.create.root') }}" method="POST">
+                            <form action="{{ route('admin.create.root') }}" method="POST" onsubmit="saveTreeState()">
                                 @csrf
                                 <div class="modal-body text-dark">
                                     <div class="mb-3">
@@ -223,7 +224,12 @@
 </div>
 
 <script>
-    function toggleNode(node) {
+    function toggleNode(node, event) {
+        // Prevent toggle if clicking on buttons or their children
+        if (event && (event.target.tagName === 'BUTTON' || event.target.closest('button'))) {
+            return;
+        }
+        
         if (!node.classList.contains('has-children')) return;
         
         const toggleBtn = node.querySelector('.toggle-btn');
@@ -232,6 +238,7 @@
         if (childrenContainer) {
             childrenContainer.classList.toggle('collapsed');
             toggleBtn.classList.toggle('collapsed');
+            saveTreeState();
         }
     }
     
@@ -242,6 +249,7 @@
         document.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.classList.remove('collapsed');
         });
+        saveTreeState();
     }
     
     function collapseAll() {
@@ -251,10 +259,54 @@
         document.querySelectorAll('.toggle-btn').forEach(btn => {
             btn.classList.add('collapsed');
         });
+        saveTreeState();
+    }
+
+    function saveTreeState() {
+        const expandedNodes = [];
+        document.querySelectorAll('.children-container:not(.collapsed)').forEach(container => {
+            const accountNode = container.closest('li[data-account-id]');
+            if (accountNode) {
+                expandedNodes.push(accountNode.getAttribute('data-account-id'));
+            }
+        });
+        sessionStorage.setItem('expandedNodes', JSON.stringify(expandedNodes));
+    }
+
+    function restoreTreeState() {
+        const expandedNodes = JSON.parse(sessionStorage.getItem('expandedNodes') || '[]');
+        
+        if (expandedNodes.length === 0) {
+            collapseAll();
+            return;
+        }
+
+        // First collapse all
+        document.querySelectorAll('.children-container').forEach(container => {
+            container.classList.add('collapsed');
+        });
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.classList.add('collapsed');
+        });
+
+        // Then expand the saved nodes
+        expandedNodes.forEach(accountId => {
+            const accountNode = document.querySelector(`li[data-account-id="${accountId}"]`);
+            if (accountNode) {
+                const childrenContainer = accountNode.querySelector('.children-container');
+                const toggleBtn = accountNode.querySelector('.toggle-btn');
+                if (childrenContainer) {
+                    childrenContainer.classList.remove('collapsed');
+                }
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('collapsed');
+                }
+            }
+        });
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        collapseAll();
+        restoreTreeState();
     });
 </script>
 @endsection

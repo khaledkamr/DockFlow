@@ -1,8 +1,8 @@
 <ul class="tree-list">
     @foreach($children as $child)
-        <li class="relative m-0 p-0">
+        <li class="relative m-0 p-0" data-account-id="{{ $child->id }}">
             <div class="account-node {{ $child->children->count() ? 'has-children' : '' }} bg-level-{{$child->level}}" 
-                 onclick="toggleNode(this)">
+                 onclick="toggleNode(this, event)">
                 @if($child->children->count())
                     <button class="toggle-btn">
                         <i class="fa-solid fa-angle-down"></i>
@@ -17,11 +17,13 @@
                     <div>
                         @if($child->level < 5)
                             <button class="badge bg-danger text-white fs-6 rounded-1 border-0 "
-                                type="button" data-bs-toggle="modal" data-bs-target="#deleteRoot{{ $child->id }}">
+                                type="button" data-bs-toggle="modal" data-bs-target="#deleteRoot{{ $child->id }}"
+                                onclick="event.stopPropagation()">
                                 -
                             </button>
                             <button class="z-3 badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
-                                type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $child->id }}">
+                                type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $child->id }}"
+                                onclick="event.stopPropagation()">
                                 <i class="fa-solid fa-plus fa-xs"></i>
                             </button>
                         @endif
@@ -47,14 +49,14 @@
                         <div class="modal-body text-dark">
                             <div class="mb-3">
                                 <label for="name" class="form-label">إسم الفرع</label>
-                                <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                                <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}" required>
                                 @error('name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="code" class="form-label">الرقم الفرع</label>
-                                <input type="text" class="form-control" id="code" name="code" value="{{ $child->children->count() ? $child->children->last()->code + 1 : (int) ($child->code . '00') + 1 }}" required>
+                                <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $child->children->count() ? $child->children->last()->code + 1 : (int) ($child->code . '00') + 1 }}" required>
                                 @error('code')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
