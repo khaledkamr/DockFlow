@@ -21,6 +21,7 @@ use App\Helpers\ArabicNumberConverter;
 use App\Models\InvoiceStatement;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ExportController extends Controller
@@ -30,8 +31,8 @@ class ExportController extends Controller
         $type = $request->input('type');
         $from = $request->input('from');
         $to = $request->input('to');
-
-        $company = Company::first();
+        $company = Auth::user()->company;
+        
         if ($reportType == 'account_statement') {
             $statement = JournalEntryLine::where('account_id', $id)->get();
             if($from && $to) {
@@ -94,12 +95,15 @@ class ExportController extends Controller
             $policy = $policyContainers[0]->policies->where('type', 'خدمات')->first();
 
             return view('reports.service_permission', compact('company', 'policyContainers', 'policy'));
+        } elseif ($reportType == 'journal_entry') {
+            $journal = JournalEntry::findOrFail($request->journal_id);
+            return view('reports.journal_entry', compact('company', 'journal'));
         }
     }
 
     public function printContract($id) {
-        $company = Company::first();
         $contract = Contract::findOrFail($id);
+        $company = $contract->company;
         $start = Carbon::parse($contract->start_date);
         $end = Carbon::parse($contract->end_date);
         $months = $start->diffInMonths($end);

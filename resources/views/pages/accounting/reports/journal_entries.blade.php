@@ -17,6 +17,7 @@
 </style>
 
 <form method="GET" action="" class="row g-3 bg-white p-3 rounded-3 shadow-sm border-0 mb-4">
+    <input type="hidden" name="view" value="تقارير القيود">
     <div class="col-md-3">
         <label class="form-label">نوع القيد</label>
         <select name="type" class="form-select border-primary">
