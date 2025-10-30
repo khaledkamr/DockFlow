@@ -8,7 +8,7 @@
 <div class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h5 class="fw-bold">تقرير قيد - {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h5>
-        <div>
+        <div class="export-buttons d-flex gap-2 align-items-center">
             <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                 <i class="fa-solid fa-file-excel"></i>
             </button>
@@ -17,9 +17,14 @@
                 <i class="fa-solid fa-file-pdf"></i>
             </button>
 
-            <button class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
-                <i class="fa-solid fa-print"></i>
-            </button>
+            <form action="{{ route('print', 'journal_entry') }}" method="POST" target="_blank">
+                @csrf
+                <input type="hidden" name="journal_id" value="{{ $journal->id }}">
+                <button type="submit" class="btn btn-outline-primary" target="top" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
+                    <i class="fa-solid fa-print"></i>
+                </button>
+            </form>
+            
 
             <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
                 <i class="fa-solid fa-pen-to-square"></i>
