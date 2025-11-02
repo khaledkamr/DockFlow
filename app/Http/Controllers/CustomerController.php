@@ -73,6 +73,11 @@ class CustomerController extends Controller
         }
         $validated = $request->validated();
         $customer->update($validated);
+
+        $customer->account()->update([
+            'name' => $request->name,
+        ]);
+
         return redirect()->back()->with('success', 'تم تحديث بيانات العميل بنجاح');
     }
 

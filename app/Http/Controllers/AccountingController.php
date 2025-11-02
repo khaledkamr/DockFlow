@@ -32,6 +32,18 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', "تم إنشاء الفرع '$name' بنجاح");
     }
 
+    public function updateRoot(Request $request, $id) {
+        // if(Gate::denies('تعديل مستوى حساب')) {
+        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل مستويات حساب');
+        // }
+
+        $root = Account::findOrFail($id);
+        $name = $request->input('name');
+        $root->update($request->all());
+
+        return redirect()->back()->with('success', "تم تعديل المستوى '$name' بنجاح");
+    }
+
     public function deleteRoot($id) {
         if(Gate::denies('حذف مستوى حساب')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف مستويات حساب');
@@ -41,8 +53,13 @@ class AccountingController extends Controller
         if($root->children()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود مستويات فرعية مرتبطة به');
         }
+        if($root->journalLines()->exists()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود قيود مرتبطة به');
+        }
+
         $name = $root->name;
         $root->delete();
+
         return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");
     }
 
