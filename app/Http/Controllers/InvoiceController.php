@@ -64,7 +64,9 @@ class InvoiceController extends Controller
         $customer_id = $request->input('customer_id');
         $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
         $containers = $containers->filter(function($container) {
-            return $container->invoices->count() == 0;
+            return $container->invoices->filter(function($invoice) {
+                return $invoice->type == 'تخزين';
+            })->isEmpty();
         });
 
         foreach($containers as $container) {
