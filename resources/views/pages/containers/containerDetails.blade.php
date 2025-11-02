@@ -77,56 +77,8 @@
     </div>
 
     <div class="row mb-4">
-        <!-- Policies -->
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-dark text-white">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-file-contract me-2"></i>
-                        إتفاقيات الحاوية ({{ count($container->policies) }})
-                    </h5>
-                </div>
-                <div class="card-body">
-                    @if(count($container->policies) > 0)
-                        <div class="list-group list-group-flush">
-                            @foreach($container->policies as $policy)
-                            <div class="list-group-item px-0">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1">
-                                            <a href="{{ $policy->type == 'تخزين' ? route('policies.storage.details', $policy) : route('policies.receive.details', $policy) }}" 
-                                                class="badge bg-primary text-decoration-none me-2">{{ $policy->code }}</a>
-                                            {{ $policy->type }}
-                                        </h6>
-                                        <p class="mb-1 text-muted small">
-                                            <i class="fas fa-user me-1"></i>
-                                            السائق: {{ $policy->driver_name }} ({{ $policy->driver_NID }})
-                                        </p>
-                                        <p class="mb-0 text-muted small">
-                                            <i class="fas fa-car me-1"></i>
-                                            {{ $policy->driver_car }} - {{ $policy->car_code }}
-                                        </p>
-                                    </div>
-                                    <small class="text-muted">
-                                        {{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }} 
-                                        <i class="fas fa-calendar-alt ms-1"></i> 
-                                    </small>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center text-muted py-3">
-                            <i class="fas fa-inbox fa-2x mb-2"></i>
-                            <p>لا توجد إتفاقيات مرتبطة بهذه الحاوية</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
         <!-- Services -->
-        <div class="col-md-6">
+        <div class="col-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-dark text-white">
                     <h5 class="card-title mb-0">
@@ -150,7 +102,7 @@
                                         @endif
                                     </div>
                                     <div class="text-end">
-                                        <span class="badge bg-success">
+                                        <span class="badge bg-primary">
                                             {{ number_format($service->pivot->price, 2) }} ريال
                                         </span>
                                     </div>
@@ -161,7 +113,7 @@
                         <div class="mt-3 pt-2 border-top">
                             <div class="d-flex justify-content-between fs-4">
                                 <strong>إجمالي الخدمات:</strong>
-                                <strong class="text-success">
+                                <strong class="text-primary">
                                     {{ number_format($container->services->sum('pivot.price'), 2) }} ريال
                                 </strong>
                             </div>
@@ -170,6 +122,28 @@
                         <div class="text-center text-secondary">
                             <i class="fas fa-tools fa-2x mb-2"></i>
                             <p class="fw-bold">لا توجد خدمات مضافة لهذه الحاوية</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- notes -->
+        <div class="col-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-sticky-note me-2"></i>
+                        ملاحظات الحاوية
+                    </h5>
+                </div>
+                <div class="card-body">
+                    @if($container->notes)
+                       <p>{{ $container->notes }}</p>
+                    @else
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>لا توجد ملاحظات على هذه الحاوية</p>
                         </div>
                     @endif
                 </div>
@@ -220,11 +194,106 @@
                                 </small>
                             </div>
                             <p class="text-muted mb-0">
-                                تم إنشاء الحاوية برقم <strong>{{ $container->code }}</strong> من نوع <strong>{{ $container->containerType->name }}</strong> في النظام بواسطة 
+                                تم إنشاء الحاوية في النظام برقم <strong>{{ $container->code }}</strong> من نوع <strong>{{ $container->containerType->name ?? 'N/A' }}</strong> في النظام بواسطة 
                                 <strong>{{ $container->made_by->name }}</strong>
                             </p>
                         </div>
                     </div>
+
+                    @if($serviceInvoice)
+                        <div class="timeline-state completed invoice-state">
+                            <div class="state-connector"></div>
+                            <div class="relative z-3">
+                                <div class="d-flex align-items-center justify-content-center relative rounded-circle text-white fs-5 bg-primary" style="width: 48px; height: 48px;">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="state-pulse"></div>
+                            </div>
+                            <div class="flex-grow-1 p-3 rounded-3 shadow-sm border-start border-4 border-primary">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5>إنشاء فاتورة تخليص جمركي</h5>
+                                    <small class="d-flex align-items-center text-secondary">
+                                        <i class="far fa-calendar-alt me-1"></i>
+                                        {{ \Carbon\Carbon::parse($serviceInvoice->created_at)->format('d M Y') }}
+                                        <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
+                                            {{ \Carbon\Carbon::parse($serviceInvoice->created_at)->format('h:i A') }}
+                                        </span>
+                                    </small>
+                                </div>
+                                <p class="text-muted">
+                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.services.details', $serviceInvoice) }}" class="text-decoration-none fw-bold">{{ $serviceInvoice->code }}</a> بواسطة <strong>{{ $storageInvoice->made_by->name }}</strong>
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($transaction)
+                        <div class="timeline-state">
+                            <div class="state-connector"></div>
+                            <div class="relative z-3">
+                                <div class="d-flex align-items-center justify-content-center relative rounded-circle text-white fs-5 bg-primary" style="width: 48px; height: 48px;">
+                                    <i class="fas fa-file-contract"></i>
+                                </div>
+                                <div class="state-pulse"></div>
+                            </div>
+                            <div class="flex-grow-1 p-3 rounded-3 shadow-sm border-start border-4 border-primary">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5>معاملة تخليص</h5>
+                                    <small class="d-flex align-items-center text-secondary">
+                                        <i class="far fa-calendar-alt me-1"></i>
+                                        {{ \Carbon\Carbon::parse($transaction->created_at)->format('d M Y') }}
+                                        <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
+                                            {{ \Carbon\Carbon::parse($transaction->created_at)->format('h:i A') }}
+                                        </span>
+                                    </small>
+                                </div>
+                                <div class="text-muted">
+                                    تم إنشاء معاملة تخليص جمركي بموجب معاملة رقم <a class="fw-bold text-decoration-none" href="{{ route('transactions.details', $transaction) }}">{{ $transaction->code }}</a> بواسطة <strong>{{ $transaction->made_by->name }}</strong>
+                                </div>
+                                <small class="bg-light p-3 rounded-3 mt-3 d-flex gap-5">
+                                    <div>
+                                        <i class="fas fa-file text-muted me-1"></i>
+                                        <span>رقم البوليصة: <strong>{{ $transaction->policy_number }}</strong></span>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-file-alt text-muted me-1"></i>
+                                        <span>البيان الجمركي: {{ $transaction->customs_declaration ?? 'N/A' }}</span>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-calendar text-muted me-1"></i>
+                                        <span>تاريخ البيان الجمركي: {{ $transaction->customs_declaration_date ?? 'N/A' }}</span>
+                                    </div>
+                                </small>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($clearanceInvoice)
+                        <div class="timeline-state completed invoice-state">
+                            <div class="state-connector"></div>
+                            <div class="relative z-3">
+                                <div class="d-flex align-items-center justify-content-center relative rounded-circle text-white fs-5 bg-primary" style="width: 48px; height: 48px;">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="state-pulse"></div>
+                            </div>
+                            <div class="flex-grow-1 p-3 rounded-3 shadow-sm border-start border-4 border-primary">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5>إنشاء فاتورة تخليص جمركي</h5>
+                                    <small class="d-flex align-items-center text-secondary">
+                                        <i class="far fa-calendar-alt me-1"></i>
+                                        {{ \Carbon\Carbon::parse($clearanceInvoice->created_at)->format('d M Y') }}
+                                        <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
+                                            {{ \Carbon\Carbon::parse($clearanceInvoice->created_at)->format('h:i A') }}
+                                        </span>
+                                    </small>
+                                </div>
+                                <p class="text-muted">
+                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.clearance.details', $clearanceInvoice) }}" class="text-decoration-none fw-bold">{{ $clearanceInvoice->code }}</a> بواسطة <strong>{{ $storageInvoice->made_by->name }}</strong>
+                                </p>
+                            </div>
+                        </div>
+                    @endif
 
                     @if($storagePolicy)
                         <div class="timeline-state">
@@ -308,7 +377,7 @@
                         </div>
                     @endif
 
-                    @if($invoice)
+                    @if($storageInvoice)
                         <div class="timeline-state completed invoice-state">
                             <div class="state-connector"></div>
                             <div class="relative z-3">
@@ -319,17 +388,17 @@
                             </div>
                             <div class="flex-grow-1 p-3 rounded-3 shadow-sm border-start border-4 border-primary">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5>إنشاء فاتورة</h5>
+                                    <h5>إنشاء فاتورة تخزين</h5>
                                     <small class="d-flex align-items-center text-secondary">
                                         <i class="far fa-calendar-alt me-1"></i>
-                                        {{ \Carbon\Carbon::parse($invoice->created_at)->format('d M Y') }}
+                                        {{ \Carbon\Carbon::parse($storageInvoice->created_at)->format('d M Y') }}
                                         <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                            {{ \Carbon\Carbon::parse($invoice->created_at)->format('h:i A') }}
+                                            {{ \Carbon\Carbon::parse($storageInvoice->created_at)->format('h:i A') }}
                                         </span>
                                     </small>
                                 </div>
                                 <p class="text-muted">
-                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none fw-bold">{{ $invoice->code }}</a> بواسطة <strong>{{ $invoice->made_by->name }}</strong>
+                                    تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.details', $storageInvoice) }}" class="text-decoration-none fw-bold">{{ $storageInvoice->code }}</a> بواسطة <strong>{{ $storageInvoice->made_by->name }}</strong>
                                 </p>
                             </div>
                         </div>
