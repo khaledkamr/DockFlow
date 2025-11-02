@@ -79,8 +79,8 @@
                 @endphp
                     <tr class="text-center">
                         <td>{{ $line->account->name }}</td>
-                        <td>{{ $line->journal->date }}</td>
-                        <td>{{ $line->journal_entry_id }}</td>
+                        <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
+                        <td>{{ $line->journal->code }}</td>
                         <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
                         <td>{{ $line->description }}</td>
                         <td>{{ $line->debit }}</td>

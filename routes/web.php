@@ -147,6 +147,7 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
     Route::get('accounting/tree', 'tree')->name('admin.money.tree');
     Route::post('accounting/tree/create/root', 'createRoot')->name('admin.create.root');
+    Route::patch('accounting/tree/update/{id}', 'updateRoot')->name('admin.update.root');
     Route::delete('accounting/tree/delete/{id}', 'deleteRoot')->name('admin.delete.root');
     Route::get('accounting/entries', 'entries')->name('admin.money.entries');
     Route::post('accounting/entries/create/voucher', 'createVoucher')->name('admin.create.voucher');

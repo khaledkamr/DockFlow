@@ -15,13 +15,18 @@
                         <div class="ms-2">({{ $child->level }})</div>
                     </div>
                     <div>
+                        <button class="badge bg-danger text-white fs-6 rounded-1 border-0 "
+                            type="button" data-bs-toggle="modal" data-bs-target="#deleteRoot{{ $child->id }}"
+                            onclick="event.stopPropagation()">
+                            -
+                        </button>
+                        <button class="badge bg-secondary text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
+                            type="button" data-bs-toggle="modal" data-bs-target="#editRoot{{ $child->id }}"
+                            onclick="event.stopPropagation()">
+                            <i class="fa-solid fa-pen fa-xs"></i>
+                        </button>
                         @if($child->level < 5)
-                            <button class="badge bg-danger text-white fs-6 rounded-1 border-0 "
-                                type="button" data-bs-toggle="modal" data-bs-target="#deleteRoot{{ $child->id }}"
-                                onclick="event.stopPropagation()">
-                                -
-                            </button>
-                            <button class="z-3 badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
+                            <button class="badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
                                 type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $child->id }}"
                                 onclick="event.stopPropagation()">
                                 <i class="fa-solid fa-plus fa-xs"></i>
@@ -90,6 +95,41 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                             <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editRoot{{ $child->id }}" tabindex="-1" aria-labelledby="editRootLabel{{ $child->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="editRootLabel{{ $child->id }}">تعديل مستوى {{ $child->name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('admin.update.root', $child->id) }}" method="POST" onsubmit="saveTreeState()">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body text-dark">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">إسم المستوى</label>
+                                <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $child->name }}" required>
+                                @error('name')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="code" class="form-label">رقم المستوى</label>
+                                <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $child->code }}" required>
+                                @error('code')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                            <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
                         </div>
                     </form>
                 </div>

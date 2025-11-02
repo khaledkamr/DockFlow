@@ -167,7 +167,12 @@
                                 <div class="ms-2">({{ $account->level }})</div>
                             </div>
                             <div>
-                                <button class="z-3 badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
+                                <button class="badge bg-secondary text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
+                                    type="button" data-bs-toggle="modal" data-bs-target="#editRoot{{ $account->id }}"
+                                    onclick="event.stopPropagation()">
+                                    <i class="fa-solid fa-pen fa-xs"></i>
+                                </button>
+                                <button class="badge bg-dark text-white fs-6 rounded-1 px-2 border-0" style="z-index: 1000;" 
                                     type="button" data-bs-toggle="modal" data-bs-target="#addRoot{{ $account->id }}"
                                     onclick="event.stopPropagation()">
                                     <i class="fa-solid fa-plus fa-xs"></i>
@@ -213,6 +218,41 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
                                     <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="editRoot{{ $account->id }}" tabindex="-1" aria-labelledby="editRootLabel{{ $account->id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-dark fw-bold" id="editRootLabel{{ $account->id }}">تعديل مستوى {{ $account->name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('admin.update.root', $account->id) }}" method="POST" onsubmit="saveTreeState()">
+                                @csrf
+                                @method('PATCH')
+                                <div class="modal-body text-dark">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">إسم المستوى</label>
+                                        <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $account->name }}" required>
+                                        @error('name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="code" class="form-label">رقم المستوى</label>
+                                        <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $account->code }}" required>
+                                        @error('code')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                                    <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
                                 </div>
                             </form>
                         </div>
