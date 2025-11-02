@@ -30,7 +30,7 @@
                 @endcan
                 @if($invoice->isPaid == 'لم يتم الدفع')
                     <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice">
-                        <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الفاتورة
+                        <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الحالة
                     </button>
                 @endif
             </div>

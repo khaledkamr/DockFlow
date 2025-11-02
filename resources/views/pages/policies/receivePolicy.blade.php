@@ -143,7 +143,7 @@
             $('#containers-list').show();
             
             // Calculate max selectable containers
-            const availableContainers = containers.filter(container => container.status === 'متوفر');
+            const availableContainers = containers.filter(container => container.status === 'في الساحة');
             maxSelectableContainers = hasUnpaidInvoices ? Math.max(0, availableContainers.length - 1) : availableContainers.length;
             
         } else if (containers) {
@@ -237,6 +237,8 @@
             if (!isCurrentlyChecked) {
                 // Trying to check a container
                 const currentSelectedCount = $('.container-checkbox:checked').length;
+
+                console.log(currentSelectedCount, maxSelectableContainers, hasUnpaidInvoices);
                 
                 if (hasUnpaidInvoices && currentSelectedCount >= maxSelectableContainers) {
                     showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');

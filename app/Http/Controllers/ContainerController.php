@@ -195,9 +195,24 @@ class ContainerController extends Controller
     }
 
     public function containerDetails(Container $container) {
+        $transaction = $container->transactions->first();
+        $transportOrder = $container->transportOrders->first();
         $storagePolicy = $container->policies->where('type', 'تخزين')->first();
         $receivePolicy = $container->policies->where('type', 'تسليم')->first();
-        $invoice = $container->invoices->first();
-        return view('pages.containers.containerDetails', compact('container', 'storagePolicy', 'receivePolicy', 'invoice'));
+
+        $clearanceInvoice = $container->invoices->where('type', 'تخليص')->first();
+        $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
+        $serviceInvoice = $container->invoices->where('type', 'خدمات')->first();
+
+        return view('pages.containers.containerDetails', compact(
+            'container', 
+            'transportOrder', 
+            'transaction', 
+            'storagePolicy', 
+            'receivePolicy', 
+            'clearanceInvoice',
+            'storageInvoice',
+            'serviceInvoice'
+        ));
     }
 }
