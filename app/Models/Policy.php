@@ -23,6 +23,9 @@ class Policy extends Model
         'code',
         'type',
         'tax_statement',
+        'storage_price',
+        'storage_duration',
+        'late_fee',
         'user_id',
         'company_id',
     ];

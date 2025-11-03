@@ -14,7 +14,7 @@ class PolicyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'contract_id' => 'required',
+            'contract_id' => 'nullable',
             'customer_id' => 'required',
             'user_id' => 'required',
             'date' => 'required',
@@ -24,6 +24,9 @@ class PolicyRequest extends FormRequest
             'driver_car' => 'required',
             'car_code' => 'required',
             'tax_statement' => 'nullable|string',
+            'storage_price' => 'nullable|numeric',
+            'storage_duration' => 'nullable|numeric',
+            'late_fee' => 'nullable|numeric',
         ];
     }
 }

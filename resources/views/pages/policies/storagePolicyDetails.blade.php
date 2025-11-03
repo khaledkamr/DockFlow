@@ -13,9 +13,9 @@
                 </h2>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
+                        {{-- <li class="breadcrumb-item">
                             <a href="{{ route('contracts.details', $policy->customer->contract) }}" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
-                        </li>
+                        </li> --}}
                         <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
                     </ol>
                 </nav>
@@ -131,15 +131,15 @@
                             <div class="row border-bottom pb-3">
                                 <div class="col">
                                     <label class="form-label text-muted small">الاسم</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->name }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->company->name ?? 'N/A' }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">السجل التجاري</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->CR }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->company->CR ?? 'N/A' }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->vatNumber }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->company->vatNumber ?? 'N/A' }}</div>
                                 </div>
                             </div>
                             
@@ -150,15 +150,15 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <label class="form-label text-muted small">الاسم</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->name }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->customer->name ?? 'N/A' }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">السجل التجاري</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->CR }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->customer->CR ?? 'N/A' }}</div>
                                 </div>
                                 <div class="col">
                                     <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->vatNumber }}</div>
+                                    <div class="fw-bold">{{ $policy->contract->customer->vatNumber ?? 'N/A' }}</div>
                                 </div>
                             </div>
                         </div>

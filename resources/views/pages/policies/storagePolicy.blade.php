@@ -18,17 +18,6 @@
 
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label">إســم الشركة</label>
-                <input type="text" name="company_name" class="form-control border-primary" value="{{ $company->name }}" readonly>
-            </div>
-            <div class="col">
-                <label class="form-label">رقــم الشركة</label>
-                <input type="text" class="form-control border-primary" id="company_id" name="company_id" value="{{ $company->id }}" readonly>
-                @error('company_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col">
                 <label class="form-label">إســم العميــل</label>
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
@@ -46,8 +35,6 @@
                 <label class="form-label">رقــم العميــل</label>
                 <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
             </div>
-        </div>
-        <div class="row mb-3">
             <div class="col">
                 <label class="form-label">إســم السائق</label>
                 <input type="text" name="driver_name" class="form-control border-primary">
@@ -62,6 +49,8 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
+        </div>
+        <div class="row mb-3">
             <div class="col">
                 <label class="form-label">نوع السيارة</label>
                 <input type="text" class="form-control border-primary" name="driver_car">
@@ -76,8 +65,6 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-        </div>
-        <div class="row mb-3">
             <div class="col">
                 <label class="form-label">البيان الضريبي</label>
                 <input type="text" name="tax_statement" class="form-control border-primary">
@@ -85,9 +72,33 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
+            <div class="col">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <h5 class="mb-3">سعر التخزين</h5>
+            <div class="col">
+                <label class="form-label">سعر التخزين</label>
+                <input type="number" name="storage_price" class="form-control border-primary">
+                @error('storage_price')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col">
+                <label class="form-label">مدة التخزين</label>
+                <input type="number" name="storage_duration" class="form-control border-primary">
+                @error('storage_duration')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col">
+                <label class="form-label">غرامة التأخير (لليوم)</label>
+                <input type="number" name="late_fee" class="form-control border-primary">
+                @error('late_fee')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
         </div>
 
         <div class="mb-4">
