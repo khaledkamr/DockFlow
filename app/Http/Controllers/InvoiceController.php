@@ -71,13 +71,13 @@ class InvoiceController extends Controller
 
         foreach($containers as $container) {
             $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $container->storage_price = $container->policies->first()->contract->services[0]->pivot->price;
-            if($container->period > $container->policies->first()->contract->services[0]->pivot->unit) {
+            $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+            if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
                 $days = (int) Carbon::parse($container->date)
-                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->addDays($container->policies->where('type', 'تخزين')->first()->storage_duration)
                     ->diffInDays(Carbon::parse($container->exit_date));
                 $container->late_days = $days;
-                $container->late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
+                $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
             } else {
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;
@@ -245,12 +245,12 @@ class InvoiceController extends Controller
 
         foreach($containers as $container) {
             $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $storage_price = $container->policies->first()->contract->services[0]->pivot->price;
-            if($period > $container->policies->first()->contract->services[0]->pivot->unit) {
+            $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+            if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
                 $days = (int) Carbon::parse($container->date)
-                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->addDays($container->policies->where('type', 'تخزين')->first()->storage_duration)
                     ->diffInDays(Carbon::parse($container->exit_date));
-                $late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
+                $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
             } else {
                 $late_fee = 0;
             }
@@ -281,13 +281,13 @@ class InvoiceController extends Controller
 
         foreach($invoice->containers as $container) {
             $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $container->storage_price = $container->policies->first()->contract->services[0]->pivot->price;
-            if($container->period > $container->policies->first()->contract->services[0]->pivot->unit) {
+            $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+            if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
                 $days = (int) Carbon::parse($container->date)
-                    ->addDays($container->policies->first()->contract->services[0]->pivot->unit)
+                    ->addDays($container->policies->where('type', 'تخزين')->first()->storage_duration)
                     ->diffInDays(Carbon::parse($container->exit_date));
                 $container->late_days = $days;
-                $container->late_fee = $days * $container->policies->first()->contract->services[1]->pivot->price;
+                $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
             } else {
                 $container->late_days = 'لا يوجد';
                 $container->late_fee = 0;

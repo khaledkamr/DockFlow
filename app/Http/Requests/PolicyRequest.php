@@ -21,6 +21,7 @@ class PolicyRequest extends FormRequest
             'type' => 'required',
             'driver_name' => 'required',
             'driver_NID' => 'required',
+            'driver_number' => 'nullable|string',
             'driver_car' => 'required',
             'car_code' => 'required',
             'tax_statement' => 'nullable|string',
