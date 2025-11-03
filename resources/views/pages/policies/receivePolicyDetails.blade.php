@@ -5,20 +5,12 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
                     تفاصيل إتفاقية التسليم #{{ $policy->id }}
                 </h2>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $policy->contract_id) }}" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
-                    </ol>
-                </nav>
             </div>
             <div class="d-flex gap-2">
                 <form action="{{ route('print', 'exit_permission') }}" method="POST" target="_blank">
@@ -31,14 +23,6 @@
                         طباعة اذن خروج
                     </button>
                 </form>
-                {{-- <button class="btn btn-primary me-2">
-                    <i class="fas fa-print me-1"></i>
-                    طباعة الإتفاقية
-                </button>
-                <button class="btn btn-secondary">
-                    <i class="fas fa-download me-1"></i>
-                    تحميل PDF
-                </button> --}}
             </div>
         </div>
 
@@ -54,55 +38,14 @@
                     <div class="card-body">
                         <div class="row g-4">
                             <div class="col-12">
-                                <div>
-                                    
-                                    <div class="row">
-                                        <div class="col">
-                                            <label class="form-label text-muted small">تاريخ الإتفاقية</label>
-                                            <div class="fw-bold fs-5">{{ $policy->created_at->format('Y/m/d') }}</div>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label text-muted small">تم الإنشاء بواسطة</label>
-                                            <div class="fw-bold">{{ $policy->made_by->name }}</div>
-                                        </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label text-muted small">تاريخ الإتفاقية</label>
+                                        <div class="fw-bold">{{ $policy->created_at->format('Y/m/d') }}</div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-user me-2"></i>
-                            معلومات السائق والمركبة
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-4">
-                            <div class="col-12">
-                                <div>
-                                    <h6 class="text-muted mb-2">
-                                        <i class="fas fa-truck me-2"></i>
-                                        بيانات السائق والمركبة
-                                    </h6>
-                                    <div class="row">
-                                        <div class="col">
-                                            <label class="form-label text-muted small">اسم السائق</label>
-                                            <div class="fw-bold fs-5">{{ $policy->driver_name }}</div>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label text-muted small">الرقم القومي</label>
-                                            <div class="fw-bold">{{ $policy->driver_NID }}</div>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label text-muted small">نوع المركبة</label>
-                                            <div class="fw-bold fs-5">{{ $policy->driver_car }}</div>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label text-muted small">رقم اللوحة</label>
-                                            <div class="fw-bold">{{ $policy->car_code }}</div>
-                                        </div>
+                                    <div class="col">
+                                        <label class="form-label text-muted small">تم الإنشاء بواسطة</label>
+                                        <div class="fw-bold">{{ $policy->made_by->name }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -115,47 +58,30 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-money-bill-wave me-2"></i>
-                            اطراف الإتفاقية
+                            <i class="fas fa-user me-2"></i>
+                            معلومات السائق والمركبة
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
-                            <h6 class="text-muted mb-2">
-                                <i class="fas fa-building me-2"></i>
-                                الطرف الأول
-                            </h6>
-                            <div class="row border-bottom pb-3">
-                                <div class="col">
-                                    <label class="form-label text-muted small">الاسم</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->name }}</div>
-                                </div>
-                                <div class="col">
-                                    <label class="form-label text-muted small">السجل التجاري</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->CR }}</div>
-                                </div>
-                                <div class="col">
-                                    <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->company->vatNumber }}</div>
-                                </div>
-                            </div>
-                            
-                            <h6 class="text-muted mb-2">
-                                <i class="fas fa-user-tie me-2"></i>
-                                الطرف الثاني
-                            </h6>
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <label class="form-label text-muted small">الاسم</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->name }}</div>
-                                </div>
-                                <div class="col">
-                                    <label class="form-label text-muted small">السجل التجاري</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->CR }}</div>
-                                </div>
-                                <div class="col">
-                                    <label class="form-label text-muted small">الرقم الضريبي</label>
-                                    <div class="fw-bold">{{ $policy->contract->customer->vatNumber }}</div>
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label text-muted small">اسم السائق</label>
+                                        <div class="fw-bold">{{ $policy->driver_name }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label text-muted small">الرقم القومي</label>
+                                        <div class="fw-bold">{{ $policy->driver_NID }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label text-muted small">نوع المركبة</label>
+                                        <div class="fw-bold">{{ $policy->driver_car }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label text-muted small">رقم اللوحة</label>
+                                        <div class="fw-bold">{{ $policy->car_code }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

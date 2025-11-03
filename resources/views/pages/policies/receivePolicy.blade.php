@@ -18,18 +18,7 @@
         
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label">إســم الشركة</label>
-                <input type="text" name="company_name" class="form-control border-primary" value="{{ $company->name }}">
-            </div>
-            <div class="col">
-                <label class="form-label">رقــم الشركة</label>
-                <input type="text" class="form-control border-primary" id="company_id" name="company_id" value="{{ $company->id }}" readonly>
-                @error('company_id')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col">
-                <label class="form-label">إســم العميــل</label>
+                <label class="form-label">إســم العميــل <span class="text-danger">*</span></label>
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
@@ -48,36 +37,44 @@
                 <label class="form-label">رقــم العميــل</label>
                 <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
             </div>
-        </div>
-        <div class="row mb-3">
             <div class="col">
-                <label class="form-label">إســم السائق</label>
+                <label class="form-label">إســم السائق <span class="text-danger">*</span></label>
                 <input type="text" name="driver_name" class="form-control border-primary">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">رقــم هوية السائق</label>
+                <label class="form-label">رقــم هوية السائق <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_NID">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
+        </div>
+        <div class="row mb-3">
             <div class="col">
-                <label class="form-label">نوع السيارة</label>
+                <label class="form-label">رقــم السائق</label>
+                <input type="text" class="form-control border-primary" name="driver_number">
+                @error('driver_number')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col">
+                <label class="form-label">نوع السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_car">
                 @error('driver_car')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">لوحة السيارة</label>
+                <label class="form-label">لوحة السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="car_code">
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
+            <div class="col"></div>
         </div>
         
         <!-- Container Selection Section -->

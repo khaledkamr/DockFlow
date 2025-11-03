@@ -18,12 +18,15 @@
 
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label">إســم العميــل</label>
+                <label class="form-label">إســم العميــل <span class="text-danger">*</span></label>
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}"
-                            data-contract="{{ $customer->contract ? $customer->contract->id : null }}">
+                            data-contract="{{ $customer->contract ? $customer->contract->id : null }}"
+                            data-storage_price="{{ $customer->contract ? $customer->contract->services[0]->pivot->price : null }}"
+                            data-storage_duration="{{ $customer->contract ? $customer->contract->services[0]->pivot->unit : null }}"
+                            data-late_fee="{{ $customer->contract ? $customer->contract->services[1]->pivot->price : null }}">
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -36,30 +39,38 @@
                 <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
             </div>
             <div class="col">
-                <label class="form-label">إســم السائق</label>
+                <label class="form-label">إســم السائق <span class="text-danger">*</span></label>
                 <input type="text" name="driver_name" class="form-control border-primary">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">رقــم هوية السائق</label>
+                <label class="form-label">رقــم هوية السائق <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_NID">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
         </div>
+
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label">نوع السيارة</label>
+                <label class="form-label">رقم السائق</label>
+                <input type="text" class="form-control border-primary" name="driver_number">
+                @error('driver_number')
+                    <div class="text-danger">{{ $message }}</div>
+                @endif
+            </div>
+            <div class="col">
+                <label class="form-label">نوع السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_car">
                 @error('driver_car')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">لوحة السيارة</label>
+                <label class="form-label">لوحة السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="car_code">
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
@@ -72,29 +83,27 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
-            </div>
         </div>
 
         <div class="row mb-3">
             <h5 class="mb-3">سعر التخزين</h5>
             <div class="col">
-                <label class="form-label">سعر التخزين</label>
-                <input type="number" name="storage_price" class="form-control border-primary">
+                <label class="form-label">سعر التخزين <span class="text-danger">*</span></label>
+                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0">
                 @error('storage_price')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">مدة التخزين</label>
-                <input type="number" name="storage_duration" class="form-control border-primary">
+                <label class="form-label">مدة التخزين <span class="text-danger">*</span></label>
+                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0">
                 @error('storage_duration')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
-                <label class="form-label">غرامة التأخير (لليوم)</label>
-                <input type="number" name="late_fee" class="form-control border-primary">
+                <label class="form-label">غرامة التأخير (لليوم) <span class="text-danger">*</span></label>
+                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0">
                 @error('late_fee')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
@@ -120,7 +129,7 @@
                     
                     <div class="row">
                         <div class="col">
-                            <label class="form-label">رقم الحاويــة</label>
+                            <label class="form-label">رقم الحاويــة <span class="text-danger">*</span></label>
                             <input type="hidden" name="containers[0][id]">
                             {{-- <input type="text" class="form-control border-primary" name="containers[0][code]" required> --}}
                             <select name="containers[0][code]" id="container_code" class="form-select border-primary" required>
@@ -135,7 +144,7 @@
                             <div class="invalid-feedback"></div>
                         </div>
                         <div class="col">
-                            <label class="form-label">فئة الحاويــة</label>
+                            <label class="form-label">فئة الحاويــة <span class="text-danger">*</span></label>
                             <select class="form-select border-primary" name="containers[0][container_type_id]" required>
                                 <option value="">اختر فئة الحاوية...</option>
                                 @foreach ($containerTypes as $type)
@@ -190,6 +199,12 @@
         $('#contract_id').val(contract || '');
         let account = $(this).find(':selected').data('account');
         $('#customer_account').val(account || '');
+        let contract_storage_price = $(this).find(':selected').data('storage_price');
+        $('#storage_price').val(contract_storage_price || 0);
+        let contract_storage_duration = $(this).find(':selected').data('storage_duration');
+        $('#storage_duration').val(contract_storage_duration || 0);
+        let contract_late_fee = $(this).find(':selected').data('late_fee');
+        $('#late_fee').val(contract_late_fee || 0);
     });
     
     document.addEventListener('DOMContentLoaded', function() {

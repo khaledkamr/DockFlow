@@ -53,7 +53,7 @@ class PolicyController extends Controller
         }
 
         $company = Company::first();
-        $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
+        $customers = Customer::with('contract.services')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
         $containers = Container::where('date', null)->get();
 
@@ -104,8 +104,9 @@ class PolicyController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
 
-        $company = Company::first();
+        $company = Auth::user()->company;
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
+        
         return view('pages.policies.receivePolicy', compact('company', 'customers'));
     }
 
@@ -116,7 +117,7 @@ class PolicyController extends Controller
             $container = Container::findOrFail($id);
             $container->status = 'تم التسليم';
             $container->delivered_by = $request->driver_name;
-            $container->exit_date = Carbon::now()->format('Y-m-d');
+            $container->exit_date = Carbon::now();
             $container->save();
             $containers[] = $container;
         }
