@@ -19,7 +19,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 fw-bold text-end">إسم العميل:</div>
-                        <div class="col-7">{{ $policy->contract->customer->name }}</div>
+                        <div class="col-7">{{ $policy->customer->name }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 fw-bold text-end">تاريخ الإتفاقية:</div>
@@ -79,15 +79,15 @@
             <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">معلومات العميل</h6>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">اسم العميل:</div>
-                <div class="col-7">{{ $policy->contract->customer->name }}</div>
+                <div class="col-7">{{ $policy->customer->name }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">السجل التجاري:</div>
-                <div class="col-7">{{ $policy->contract->customer->CR ?? 'غير محدد' }}</div>
+                <div class="col-7">{{ $policy->customer->CR ?? 'غير محدد' }}</div>
             </div>
             <div class="row mb-2">
                 <div class="col-5 fw-bold text-end">الرقم الضريبي:</div>
-                <div class="col-7">{{ $policy->contract->customer->vatNumber ?? 'غير محدد' }}</div>
+                <div class="col-7">{{ $policy->customer->vatNumber ?? 'غير محدد' }}</div>
             </div>
         </div>
     </div>
