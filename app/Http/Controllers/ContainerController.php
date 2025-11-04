@@ -20,7 +20,7 @@ class ContainerController extends Controller
             if($container->status == 'في الساحة') {
                 $storagePolicy = $container->policies->where('type', 'تخزين')->first();
                 if($storagePolicy) {
-                    $dueDays = $storagePolicy->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit;
+                    $dueDays = $storagePolicy->storage_duration;
                     $containerDays = Carbon::parse($container->date)->diffInDays(Carbon::now());
                     if($containerDays > $dueDays) {
                         $container->status = 'متأخر';
