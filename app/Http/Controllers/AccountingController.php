@@ -33,9 +33,9 @@ class AccountingController extends Controller
     }
 
     public function updateRoot(Request $request, $id) {
-        // if(Gate::denies('تعديل مستوى حساب')) {
-        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل مستويات حساب');
-        // }
+        if(Gate::denies('تعديل او حذف مستوى حساب')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل مستويات حساب');
+        }
 
         $root = Account::findOrFail($id);
         $name = $request->input('name');
@@ -45,7 +45,7 @@ class AccountingController extends Controller
     }
 
     public function deleteRoot($id) {
-        if(Gate::denies('حذف مستوى حساب')) {
+        if(Gate::denies('تعديل او حذف مستوى حساب')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف مستويات حساب');
         }
 
