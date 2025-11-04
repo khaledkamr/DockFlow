@@ -44,9 +44,11 @@ class CustomerController extends Controller
         }
         
         $accountId = Account::where('name', 'عملاء التشغيل')->first()->id;
-        $lastCustomer = Account::where('parent_id', $accountId)->latest('id')->first();
+        $lastCustomer = Account::where('parent_id', $accountId)->latest('code')->first();
+        return $lastCustomer;
+
         if($lastCustomer) {
-            $code = $lastCustomer->code + 1;
+            $code = (string)((int)($lastCustomer->code) + 1);
         } else {
             $code = Account::where('id', $accountId)->latest('id')->first()->code;
             $code = $code . '0001';
