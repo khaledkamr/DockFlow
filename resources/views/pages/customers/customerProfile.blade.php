@@ -141,11 +141,8 @@
             الحاويات ({{ count($customer['containers']) }})
         </h5>
         <div>
-            <span class="badge bg-success me-1">
-                متوفر: {{ collect($customer['containers'])->where('status', 'متوفر')->count() }}
-            </span>
-            <span class="badge bg-warning">
-                في الانتظار: {{ collect($customer['containers'])->where('status', 'في الإنتظار')->count() }}
+            <span class="badge bg-primary me-1">
+                في الساحة: {{ collect($customer['containers'])->where('status', 'في الساحة')->count() }}
             </span>
         </div>
     </div>
