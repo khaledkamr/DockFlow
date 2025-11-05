@@ -155,19 +155,19 @@
                 <thead class="table-primary text-center">
                     <tr>
                         <th class="text-center fw-bold">#</th>
-                        <th class="text-center fw-bold">كود الحاوية</th>
+                        <th class="text-center fw-bold">رقم الحاوية</th>
+                        <th class="text-center fw-bold">نوع الحاوية</th>
                         <th class="text-center fw-bold">الحالة</th>
                         <th class="text-center fw-bold">الموقع</th>
                         <th class="text-center fw-bold">تاريخ الدخول</th>
                         <th class="text-center fw-bold">تاريخ الخروج</th>
-                        <th class="text-center fw-bold">نوع الحاوية</th>
                         <th class="text-center fw-bold">ملاحظات</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
-                    @foreach($customer['containers'] as $container)
+                    @foreach($customer['containers'] as $index => $container)
                     <tr>
-                        <td class="fw-bold text-primary">{{ $container->id }}</td>
+                        <td class="fw-bold text-primary">{{ $index + 1 }}</td>
                         <td class="fw-bold">{{ $container->code }}</td>
                         <td><span class="badge bg-outline-primary">{{ $container->containerType->name }}</span></td>
                         <td>
