@@ -207,7 +207,7 @@
                                 <td class="text-center fw-bold">{{ $container->late_days }}</td>
                                 <td class="text-center fw-bold">{{ number_format($container->late_fee, 2) }}</td>
                                 <td class="text-center fw-bold">{{ number_format($services, 2) }}</td>
-                                <td class="text-center text-primary fw-bold">{{ number_format($container->total, 2) }}</td>
+                                <td class="text-center text-primary fw-bold">{{ number_format($container->total, 2) }} <i data-lucide="saudi-riyal"></i></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -227,24 +227,24 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">الإجمالي قبل الضريبة:</span>
-                            <span class="fw-bold fs-5">{{ number_format($invoice->amount_before_tax, 2) }} ريال</span>
+                            <span class="fw-bold fs-5">{{ number_format($invoice->amount_before_tax, 2) }} <i data-lucide="saudi-riyal"></i></span>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">الخصم ({{ $invoice->discount }}):</span>
-                            <span class="fw-bold fs-5">{{ number_format($invoice->amount_before_tax * ($invoice->discount ?? 0) / 100, 2) }} ريال</span>
+                            <span class="fw-bold fs-5">{{ number_format($invoice->amount_before_tax * ($invoice->discount ?? 0) / 100, 2) }} <i data-lucide="saudi-riyal"></i></span>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">الضريبة المضافة (15%):</span>
-                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} ريال</span>
+                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} <i data-lucide="saudi-riyal"></i></span>
                         </div>
                         
                         <hr class="my-3">
                         
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold fs-4 text-success">الإجمالي النهائي:</span>
-                            <span class="fw-bold fs-3 text-success">{{ number_format($invoice->total_amount, 2) }} ريال</span>
+                            <span class="fw-bold fs-3 text-success">{{ number_format($invoice->total_amount, 2) }} <i data-lucide="saudi-riyal" style="width: 32px; height: 32px;"></i></span>
                         </div>
                     </div>
                 </div>

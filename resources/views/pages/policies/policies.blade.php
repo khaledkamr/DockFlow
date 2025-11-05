@@ -82,7 +82,7 @@
                             @if($policy->external_customer)
                                 <span class="text-dark fw-bold">{{ $policy->external_customer }}</span>
                             @else
-                                <a href="{{ route('users.customer.profile', $policy->customer->id) }}"
+                                <a href="{{ route('users.customer.profile', $policy->customer) }}"
                                     class="text-dark text-decoration-none fw-bold">
                                     {{ $policy->customer->name }}
                                 </a>

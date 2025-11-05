@@ -64,7 +64,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم الشاحنة</th>
+                <th class="text-center bg-dark text-white">رقم حساب الشاحنة</th>
                 <th class="text-center bg-dark text-white">رقم اللوحة</th>
                 <th class="text-center bg-dark text-white">النوع</th>
                 <th class="text-center bg-dark text-white">السائق</th>

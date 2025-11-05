@@ -138,15 +138,15 @@
                         <div class="row g-4">
                             <div class="col">
                                 <label class="form-label text-muted small">سعر التخزين</label>
-                                <div class="fw-bold">{{ $policy->storage_price . ' ريال' }}</div>
+                                <div class="fw-bold">{{ $policy->storage_price }} <i data-lucide="saudi-riyal"></i></div>
                             </div>
                             <div class="col">
                                 <label class="form-label text-muted small">مدة التخزين</label>
-                                <div class="fw-bold">{{ $policy->storage_duration . ' يوم' }}</div>
+                                <div class="fw-bold">{{ $policy->storage_duration }} يوم</div>
                             </div>
                             <div class="col">
                                 <label class="form-label text-muted small">غرامة التأخير (لليوم)</label>
-                                <div class="fw-bold">{{ $policy->late_fee . ' ريال' }}</div>
+                                <div class="fw-bold">{{ $policy->late_fee }} <i data-lucide="saudi-riyal"></i></div>
                             </div>
                         </div>
                     </div>

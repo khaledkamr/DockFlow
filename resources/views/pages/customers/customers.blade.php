@@ -123,7 +123,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم العميل</th>
+                <th class="text-center bg-dark text-white">رقم حساب العميل</th>
                 <th class="text-center bg-dark text-white">إسم العميل</th>
                 <th class="text-center bg-dark text-white">رقم السجل التجاري</th>
                 <th class="text-center bg-dark text-white">العنوان الوطني</th>

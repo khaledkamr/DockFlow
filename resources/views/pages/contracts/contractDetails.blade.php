@@ -192,7 +192,7 @@
                                     <div class="col-6">
                                         <small class="text-muted">السعر</small>
                                         <div class="fw-bold text-success">
-                                            {{ $service->pivot->price != 0 ? $service->pivot->price . ' ريال' : 'مجاناً' }} 
+                                            {{ $service->pivot->price }} <i data-lucide="saudi-riyal"></i>
                                         </div>
                                     </div>
                                     <div class="col-6">

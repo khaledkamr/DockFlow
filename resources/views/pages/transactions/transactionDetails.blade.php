@@ -190,7 +190,7 @@
                                         <td class="text-center fw-bold">{{ $item->description }}</td>
                                         <td class="text-center">{{ number_format($item->amount, 2) }}</td>
                                         <td class="text-center">{{ number_format($item->tax, 2) }}</td>
-                                        <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }}</td>
+                                        <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i data-lucide="saudi-riyal"></i></td>
                                         <td class="text-center">
                                             <a href="#" class="text-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#editItemModal{{ $item->id }}">
                                                 <i class="fas fa-edit"></i>

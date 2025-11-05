@@ -117,7 +117,7 @@
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex gap-3">
                                         <span>السعر:</span>
-                                        <strong>{{ $service->pivot->price }} ر.س</strong>
+                                        <strong>{{ $service->pivot->price }} <i data-lucide="saudi-riyal"></i></strong>
                                     </div>
                                     <div class="d-flex gap-3">
                                         <span>المدة:</span>
@@ -232,7 +232,7 @@
                                 {{ $invoice->code }}
                             </a>
                         </td>
-                        <td class="fw-bold">{{ $invoice->total_amount }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg></td>
+                        <td class="fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i></td>
                         <td>{{ $invoice->payment_method }}</td>
                         <td>
                             @if($invoice->isPaid === 'تم الدفع')
@@ -252,19 +252,22 @@
                 <div class="card text-center px-5 py-2 border-success">
                     <small class="text-success fw-bold">إجمالي المدفوع</small>
                     <div class="fw-bold text-success">
-                        {{ collect($customer->invoices)->where('isPaid', 'تم الدفع')->sum('total_amount') }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg>
+                        {{ collect($customer->invoices)->where('isPaid', 'تم الدفع')->sum('total_amount') }} 
+                        <i data-lucide="saudi-riyal"></i>
                     </div>
                 </div>
                 <div class="card text-center px-5 py-2 border-danger">
                     <small class="text-danger fw-bold">إجمالي المستحق</small>
                     <div class="fw-bold text-danger">
-                        {{ collect($customer->invoices)->where('isPaid', 'لم يتم الدفع')->sum('total_amount') }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg>
+                        {{ collect($customer->invoices)->where('isPaid', 'لم يتم الدفع')->sum('total_amount') }} 
+                        <i data-lucide="saudi-riyal"></i>
                     </div>
                 </div>
                 <div class="card text-center px-5 py-2 border-primary">
                     <small class="text-primary fw-bold">إجمالي الفواتير</small>
                     <div class="fw-bold text-primary">
-                        {{ collect($customer->invoices)->sum('total_amount') }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg>
+                        {{ collect($customer->invoices)->sum('total_amount') }} 
+                        <i data-lucide="saudi-riyal"></i>
                     </div>
                 </div>
             </div>

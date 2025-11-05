@@ -143,7 +143,7 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th class="text-center bg-dark text-white">رقم المورد</th>
+                    <th class="text-center bg-dark text-white">رقم حساب المورد</th>
                     <th class="text-center bg-dark text-white">إسم المورد</th>
                     <th class="text-center bg-dark text-white">رقم السجل التجاري</th>
                     <th class="text-center bg-dark text-white">العنوان الوطني</th>

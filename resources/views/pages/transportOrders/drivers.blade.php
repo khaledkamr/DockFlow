@@ -83,7 +83,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم السائق</th>
+                <th class="text-center bg-dark text-white">رقم حساب السائق</th>
                 <th class="text-center bg-dark text-white">إسم السائق</th>
                 <th class="text-center bg-dark text-white">رقم الهوية</th>
                 <th class="text-center bg-dark text-white">رقم الهاتف</th>

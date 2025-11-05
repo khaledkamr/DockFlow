@@ -139,7 +139,7 @@
                                 </td>
                                 <td class="text-center">{{ $invoice->type ?? '-' }}</td>
                                 <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
-                                <td class="text-center fw-bold">{{ $invoice->total_amount }}</td>
+                                <td class="text-center fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i></td>
                                 <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
                                 <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                                     @if($invoice->type == 'خدمات')
@@ -175,19 +175,19 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">الإجمالي قبل الضريبة:</span>
-                            <span class="fw-bold fs-5">{{ number_format($invoiceStatement->subtotal, 2) }} ريال</span>
+                            <span class="fw-bold fs-5">{{ number_format($invoiceStatement->subtotal, 2) }} <i data-lucide="saudi-riyal"></i></span>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">إجمالي الضريبة المضافة:</span>
-                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoiceStatement->tax, 2) }} ريال</span>
+                            <span class="fw-bold fs-5 text-dark"> {{ number_format($invoiceStatement->tax, 2) }} <i data-lucide="saudi-riyal"></i></span>
                         </div>
                         
                         <hr class="my-3">
                         
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold fs-4 text-success">الإجمالي النهائي:</span>
-                            <span class="fw-bold fs-3 text-success">{{ number_format($invoiceStatement->amount, 2) }} ريال</span>
+                            <span class="fw-bold fs-3 text-success">{{ number_format($invoiceStatement->amount, 2) }} <i data-lucide="saudi-riyal" style="width: 32px; height: 32px;"></i></span>
                         </div>
                     </div>
                 </div>
