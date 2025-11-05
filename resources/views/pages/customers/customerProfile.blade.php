@@ -161,8 +161,7 @@
                         <th class="text-center fw-bold">تاريخ الدخول</th>
                         <th class="text-center fw-bold">تاريخ الخروج</th>
                         <th class="text-center fw-bold">نوع الحاوية</th>
-                        <th class="text-center fw-bold">تم الإستلام بواسطة</th>
-                        <th class="text-center fw-bold">تم التسليم بواسطة</th>
+                        <th class="text-center fw-bold">ملاحظات</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
@@ -172,22 +171,24 @@
                         <td class="fw-bold">{{ $container->code }}</td>
                         <td><span class="badge bg-outline-primary">{{ $container->containerType->name }}</span></td>
                         <td>
-                            @if($container->status == 'متوفر')
+                            @if($container->status == 'في الساحة')
                                 <div class="status-available">{{ $container->status }}</div>
                             @elseif($container->status == 'تم التسليم')
-                                <div class="status-delivered">
-                                    {{ $container->status }}
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
+                                <div class="status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
                             @elseif($container->status == 'متأخر')
                                 <div class="status-danger">{{ $container->status }}</div>
+                            @elseif($container->status == 'خدمات')
+                                <div class="status-waiting">{{ $container->status }}</div>
+                            @elseif($container->status == 'في الميناء')
+                                <div class="status-info">{{ $container->status }}</div>
+                            @elseif($container->status == 'قيد النقل')
+                                <div class="status-purple">{{ $container->status }}</div>
                             @endif
                         </td>
                         <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'غير محدد' }}</td>
-                        <td class="{{ $container->date ? 'fw-bold' : 'text-muted' }}">{{ $container->date ?? 'غير محدد' }}</td>
-                        <td class="{{ $container->exit_date ? 'fw-bold' : 'text-muted' }}">{{ $container->exit_date ?? 'غير محدد' }}</td>
-                        <td>{{ $container->received_by }}</td>
-                        <td>{{ $container->delivered_by }}</td>
+                        <td>{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
+                        <td>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>
+                        <td>{{ $container->noted }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -220,7 +221,7 @@
                         <th class="text-center fw-bold">#</th>
                         <th class="text-center fw-bold">رقم الفاتورة</th>
                         <th class="text-center fw-bold">المبلغ</th>
-                        <th class="text-center fw-bold">الدفع</th>
+                        <th class="text-center fw-bold">طريقة الدفع</th>
                         <th class="text-center fw-bold">الحالة</th>
                         <th class="text-center fw-bold">التاريخ</th>
                     </tr>
@@ -230,7 +231,7 @@
                     <tr>
                         <td class="fw-bold text-primary">{{ $loop->iteration }}</td>
                         <td class="fw-bold text-primary">
-                            <a href="{{ route('invoices.details', $invoice->code) }}" class="text-decoration-none">
+                            <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
                                 {{ $invoice->code }}
                             </a>
                         </td>
@@ -243,7 +244,7 @@
                                 <span class="status-danger">{{ $invoice->isPaid }}</span>
                             @endif
                         </td>
-                        <td>{{ $invoice->date }}</td>
+                        <td>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -252,21 +253,21 @@
         <div class="card-footer bg-light">
             <div class="d-flex justify-content-center gap-3">
                 <div class="card text-center px-5 py-2 border-success">
-                    <small class="text-muted">إجمالي المدفوع</small>
+                    <small class="text-success fw-bold">إجمالي المدفوع</small>
                     <div class="fw-bold text-success">
-                        {{ collect($customer->invoices)->where('isPaid', 'تم الدفع')->sum('total_amount') }} ر.س
+                        {{ collect($customer->invoices)->where('isPaid', 'تم الدفع')->sum('total_amount') }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg>
                     </div>
                 </div>
                 <div class="card text-center px-5 py-2 border-danger">
-                    <small class="text-muted">إجمالي المستحق</small>
+                    <small class="text-danger fw-bold">إجمالي المستحق</small>
                     <div class="fw-bold text-danger">
-                        {{ collect($customer->invoices)->where('isPaid', 'لم يتم الدفع')->sum('total_amount') }} ر.س
+                        {{ collect($customer->invoices)->where('isPaid', 'لم يتم الدفع')->sum('total_amount') }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg>
                     </div>
                 </div>
                 <div class="card text-center px-5 py-2 border-primary">
-                    <small class="text-muted">إجمالي الفواتير</small>
+                    <small class="text-primary fw-bold">إجمالي الفواتير</small>
                     <div class="fw-bold text-primary">
-                        {{ collect($customer->invoices)->sum('total_amount') }} ر.س
+                        {{ collect($customer->invoices)->sum('total_amount') }} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-saudi-riyal-icon lucide-saudi-riyal"><path d="m20 19.5-5.5 1.2"/><path d="M14.5 4v11.22a1 1 0 0 0 1.242.97L20 15.2"/><path d="m2.978 19.351 5.549-1.363A2 2 0 0 0 10 16V2"/><path d="M20 10 4 13.5"/></svg>
                     </div>
                 </div>
             </div>
