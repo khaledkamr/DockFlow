@@ -9,7 +9,7 @@
             <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية التخزين #{{ $policy->id }}
+                    تفاصيل إتفاقية التخزين #{{ $policy->code }}
                 </h2>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">

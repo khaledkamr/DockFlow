@@ -8,7 +8,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="h3 text-primary">
                 <i class="fas fa-file-contract me-2"></i>
-                تفاصيل العقد #{{ $contract->id }}
+                تفاصيل العقد #{{ $contract->code }}
             </h2>
             <div>
                 <a href="{{ route('print.contract', $contract->id) }}" class="btn btn-primary me-2" target="_blank">

@@ -9,7 +9,7 @@
             <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية التسليم #{{ $policy->id }}
+                    تفاصيل إتفاقية التسليم #{{ $policy->code }}
                 </h2>
             </div>
             <div class="d-flex gap-2">
