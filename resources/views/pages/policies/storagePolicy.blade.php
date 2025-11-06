@@ -89,21 +89,21 @@
             <h5 class="mb-3">سعر التخزين</h5>
             <div class="col">
                 <label class="form-label">سعر التخزين <span class="text-danger">*</span></label>
-                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0">
+                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0" min="0" step="1">
                 @error('storage_price')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">مدة التخزين <span class="text-danger">*</span></label>
-                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0">
+                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0" min="0" step="1">
                 @error('storage_duration')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">غرامة التأخير (لليوم) <span class="text-danger">*</span></label>
-                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0">
+                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0" min="0" step="1">
                 @error('late_fee')
                     <div class="text-danger">{{ $message }}</div>
                 @endif

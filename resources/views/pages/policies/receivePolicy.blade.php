@@ -183,7 +183,7 @@
         const containersList = $('#containers-list');
         containersList.empty();
 
-        // Filter containers that are available for receiving (status: 'متوفر')
+        // Filter containers that are available for receiving (status: 'في الساحة')
         const availableContainers = containers.filter(container => 
             container.status === 'في الساحة'
         );

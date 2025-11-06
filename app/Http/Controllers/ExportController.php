@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
 use App\Models\InvoiceStatement;
+use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use Illuminate\Support\Facades\Auth;
@@ -254,6 +255,12 @@ class ExportController extends Controller
     public function printTransportOrder(TransportOrder $transportOrder) {
         $company = $transportOrder->company;
         return view('reports.transportOrder', compact('company', 'transportOrder'));
+    }
+
+    public function printShippingPolicy($policyId) {
+        $policy = ShippingPolicy::with('goods')->findOrFail($policyId);
+        $company = $policy->company;
+        return view('reports.shipping_policy', compact('company', 'policy'));
     }
 
     public function excel($reportType, Request $request) {
