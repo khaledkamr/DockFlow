@@ -10,13 +10,12 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $company_id = 1;
+        $company_id = 2;
         $roles = [
             ['name' => 'مشرف', 'company_id' => $company_id],
             ['name' => 'محاسب', 'company_id' => $company_id],
             ['name' => 'مدير مالي', 'company_id' => $company_id],
             ['name' => 'موظف تشغيل', 'company_id' => $company_id],
-            ['name' => 'موظف تخليص', 'company_id' => $company_id],
         ];
 
         foreach($roles as $role) {

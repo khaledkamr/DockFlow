@@ -11,24 +11,24 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $users = [
+            // [
+            //     'name' => 'خالد قمر',
+            //     'email' => 'kk@gmail.com',
+            //     'password' => Hash::make('111'),
+            //     'company_id' => 1
+            // ],
+            // [
+            //     'name' => 'أدمن',
+            //     'email' => 'admin@gmail.com',
+            //     'password' => Hash::make('123456789'),
+            //     'company_id' => 1
+            // ],
             [
                 'name' => 'خالد قمر',
-                'email' => 'kk@gmail.com',
+                'email' => 'kkm@gmail.com',
                 'password' => Hash::make('111'),
-                'company_id' => 1
+                'company_id' => 2
             ],
-            [
-                'name' => 'أدمن',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('123456789'),
-                'company_id' => 1
-            ],
-            // [
-            //     'name' => 'محمد',
-            //     'email' => 'mo@gmail.com',
-            //     'password' => Hash::make('111'),
-            //     'company_id' => 2
-            // ],
         ];
 
         foreach ($users as $user) {
