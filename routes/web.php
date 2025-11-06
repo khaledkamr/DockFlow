@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
@@ -110,6 +111,12 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::post('vehicles/store', 'storeVehicle')->name('relation.vehicle.store');
     Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('relation.vehicle.update');
     Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('relation.vehicle.delete');
+});
+
+Route::controller(CompanyController::class)->middleware('auth')->group(function () {
+    Route::get('/companies', 'companies')->name('companies');
+    Route::post('/companies/{company:uuid}/add-modules', 'addModuleToCompany')->name('companies.add.modules');
+    Route::patch('/companies/{company:uuid}/toggle-module/{moduleId}', 'toggleCompanyModule')->name('companies.toggle.module');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
