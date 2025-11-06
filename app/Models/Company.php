@@ -20,4 +20,18 @@ class Company extends Model
         'phone',
         'email'
     ];
+
+    public function modules() {
+        return $this->belongsToMany(Module::class, 'company_modules')
+                    ->withPivot('is_active')
+                    ->withTimestamps();
+    }
+
+    public function activeModules() {
+        return $this->modules()->wherePivot('is_active', true);
+    }
+
+    public function hasModule($moduleSlug) {
+        return $this->modules()->where('slug', $moduleSlug)->wherePivot('is_active', true)->exists();
+    }
 }

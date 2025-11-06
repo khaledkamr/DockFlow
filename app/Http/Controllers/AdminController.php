@@ -13,6 +13,7 @@ use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\Invoice;
+use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Policy;
 use App\Models\Role;
@@ -60,7 +61,8 @@ class AdminController extends Controller
     }
 
     public function company(Company $company) {
-        return view('pages.company', compact('company'));
+        $modules = Module::all();
+        return view('pages.company', compact('company', 'modules'));
     }
 
     public function updateCompany(CompanyRequest $request, Company $company) {
