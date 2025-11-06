@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة فاتورة')
+@section('title', 'إنشاء فاتورة شحن')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h1 class="mb-4">إضافة فاتورة</h1>
+<h1 class="mb-4">إنشاء فاتورة شحن</h1>
 
 <form method="GET" action="" class="mb-4">
     <div class="row g-2">
@@ -17,20 +17,20 @@
                 @foreach ($customers as $customer)
                     <option value="{{ $customer->id }}"
                         {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                        {{ $customer->name }}
+                        {{ $customer->code }} - {{ $customer->name }}
                     </option>
                 @endforeach
             </select>
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary fw-bold" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
-                عرض الحاويات <i class="fa-solid fa-boxes ms-1"></i>
+                عرض البوليصات <i class="fa-solid fa-file-invoice ms-1"></i>
             </button>
         </div>
         <div class="col-md-4">
             <div class="input-group">
                 <input id="search-input" class="form-control border-primary" type="search" 
-                        placeholder="إبحث عن حاوية بالكود..." 
+                        placeholder="إبحث عن بوليصة بالكود..." 
                         aria-label="Search">
                 <button class="btn btn-outline-primary" type="button" id="clear-search">
                     <i class="fas fa-magnifying-glass"></i>
@@ -40,10 +40,10 @@
     </div>
 </form>
 
-@if (isset($containers) && $containers->count() > 0)
+@if (isset($shippingPolicies) && $shippingPolicies->count() > 0)
     <form method="POST" action="{{ route('invoices.store') }}" class="mb-5">
         @csrf
-        <input type="hidden" name="type" value="تخزين">
+        <input type="hidden" name="type" value="نقل">
         <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
@@ -57,10 +57,14 @@
             </button>
         </div>
 
-        <!-- Selected containers counter -->
+        <!-- Selected policies counter -->
         <div class="alert alert-info mb-3" id="selection-counter" style="display: none;">
             <i class="fas fa-info-circle"></i>
-            تم تحديد <span id="selected-count">0</span> حاوية من أصل <span id="visible-count">{{ $containers->count() }}</span> حاوية
+            تم تحديد <span id="selected-count">0</span> بوليصة من أصل <span id="visible-count">{{ $shippingPolicies->count() }}</span> بوليصة
+            <span class="ms-3">
+                <i class="fas fa-dollar-sign text-success"></i>
+                إجمالي التكلفة: <strong id="total-cost">0.00</strong> ر.س
+            </span>
         </div>
 
         <div class="table-container">
@@ -74,41 +78,56 @@
                             </button>
                         </th>
                         <th class="text-center fw-bold bg-dark text-white">#</th>
-                        <th class="text-center fw-bold bg-dark text-white">رقم الحاوية</th>
-                        <th class="text-center fw-bold bg-dark text-white">إسم العميل</th>
-                        <th class="text-center fw-bold bg-dark text-white">تاريخ التسليم</th>
-                        <th class="text-center fw-bold bg-dark text-white">المبلغ</th>
+                        <th class="text-center fw-bold bg-dark text-white">رقم البوليصة</th>
+                        <th class="text-center fw-bold bg-dark text-white">نوع الناقل</th>
+                        <th class="text-center fw-bold bg-dark text-white">من</th>
+                        <th class="text-center fw-bold bg-dark text-white">إلى</th>
+                        <th class="text-center fw-bold bg-dark text-white">التاريخ</th>
+                        <th class="text-center fw-bold bg-dark text-white">التكلفة الإجمالية</th>
                         <th class="text-center fw-bold bg-dark text-white">الحالة</th>
                     </tr>
                 </thead>
-                <tbody id="containers-table-body">
-                    @foreach ($containers as $container)
-                        <tr class="text-center container-row" 
-                            data-container-id="{{ $container->id }}"
-                            data-container-code="{{ strtolower($container->code) }}"
-                            data-customer-name="{{ strtolower($container->customer->name) }}">
+                <tbody id="policies-table-body">
+                    @foreach ($shippingPolicies as $policy)
+                        <tr class="text-center policy-row" 
+                            data-policy-id="{{ $policy->id }}"
+                            data-policy-code="{{ strtolower($policy->code) }}"
+                            data-policy-cost="{{ $policy->total_cost }}"
+                            data-from="{{ strtolower($policy->from) }}"
+                            data-to="{{ strtolower($policy->to) }}">
                             <td class="checkbox-cell" style="cursor: pointer;">
                                 <div class="form-check d-flex justify-content-center">
-                                    <input type="checkbox" name="container_ids[]" value="{{ $container->id }}"
-                                            class="form-check-input container-checkbox"
+                                    <input type="checkbox" name="shipping_policy_ids[]" value="{{ $policy->id }}"
+                                            class="form-check-input policy-checkbox"
                                             style="transform: scale(1.2);">
                                 </div>
                             </td>
                             <td class="fw-bold row-number">{{ $loop->iteration }}</td>
                             <td class="text-primary fw-bold">
-                                <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none container-code">
-                                    {{ $container->code }}
+                                <a href="" class="text-decoration-none policy-code">
+                                    {{ $policy->code }}
                                 </a>
                             </td>
-                            <td class="fw-bold">
-                                <a href="{{ route('users.customer.profile', $container->customer->id) }}"
-                                    class="text-decoration-none text-dark">
-                                    {{ $container->customer->name }}
-                                </a>
+                            <td>
+                                <span class="badge {{ $policy->type == 'ناقل داخلي' ? 'status-available' : 'status-danger' }}">
+                                    {{ $policy->type }}
+                                </span>
                             </td>
-                            <td>{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
-                            <td class="fw-bold">{{ number_format($container->total, 2) }}</td>
-                            <td><span class="badge bg-success">تم التسليم <i class="fa-solid fa-check"></i></span></td>
+                            <td>
+                                <i class="fas fa-map-marker-alt text-danger"></i>
+                                {{ $policy->from }}
+                            </td>
+                            <td>
+                                <i class="fas fa-map-marker-alt text-danger"></i>
+                                {{ $policy->to }}
+                            </td>
+                            <td>{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
+                            <td class="fw-bold text-success">{{ number_format($policy->total_cost, 2) }} <i data-lucide="saudi-riyal"></i></td>
+                            <td>
+                                <span class="badge status-delivered">
+                                    تم الاستلام <i class="fa-solid fa-check"></i>
+                                </span>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -118,11 +137,11 @@
         <!-- No results message -->
         <div class="alert alert-danger text-center" id="no-results" style="display: none;">
             <i class="fas fa-search me-2"></i>
-            لم يتم العثور على حاويات تطابق البحث <span id="search-term"></span>
+            لم يتم العثور على بوليصات تطابق البحث <span id="search-term"></span>
         </div>
 
         <!-- Payment Details Section -->
-        <div class="card border-dark mb-3 mt-4" id="payment-details" style="">
+        <div class="card border-dark mb-3 mt-4" id="payment-details">
             <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-credit-card me-2"></i>
@@ -157,14 +176,49 @@
                         </button>
                     </div>
                 </div>
+                
+                <!-- Summary Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-4">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">إجمالي التكلفة</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-primary mb-0" id="summary-total">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-primary ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">قيمة الخصم</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-danger mb-0" id="summary-discount">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-danger ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">المبلغ النهائي</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-success mb-0" id="summary-final">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-success ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4">
-            {{-- <button type="submit" class="btn btn-primary fw-bold" id="create-invoice-btn" disabled>
-                <i class="fas fa-plus me-1"></i>
-                إنشاء فاتورة
-            </button> --}}
             <button type="button" class="btn btn-outline-danger fw-bold" id="clear-selection-btn"
                 style="display: none;">
                 <i class="fas fa-times me-1"></i>
@@ -175,7 +229,7 @@
 @elseif(request('customer_id'))
     <div class="alert alert-info text-center">
         <i class="fas fa-info-circle me-2"></i> 
-        لا توجد حاويات مُسلمة غير مفوترة لهذا العميل.
+        لا توجد بوليصات شحن مُستلمة غير مفوترة لهذا العميل.
     </div>
 @endif
 
@@ -194,6 +248,7 @@
         const selectionCounter = document.getElementById('selection-counter');
         const selectedCountSpan = document.getElementById('selected-count');
         const visibleCountSpan = document.getElementById('visible-count');
+        const totalCostSpan = document.getElementById('total-cost');
         const searchInput = document.getElementById('search-input');
         const clearSearchBtn = document.getElementById('clear-search');
         const clearSearchBtnAlt = document.getElementById('clear-search-btn');
@@ -201,8 +256,12 @@
         const searchResultsText = document.getElementById('search-results-text');
         const noResults = document.getElementById('no-results');
         const searchTerm = document.getElementById('search-term');
+        const discountInput = document.getElementById('discount');
+        const summaryTotal = document.getElementById('summary-total');
+        const summaryDiscount = document.getElementById('summary-discount');
+        const summaryFinal = document.getElementById('summary-final');
         
-        const rows = document.querySelectorAll('.container-row');
+        const rows = document.querySelectorAll('.policy-row');
         const checkboxCells = document.querySelectorAll('.checkbox-cell');
         
         let allSelected = false;
@@ -210,18 +269,42 @@
 
         // Get visible checkboxes and rows
         function getVisibleElements() {
-            const visibleRows = document.querySelectorAll('.container-row:not([style*="display: none"])');
+            const visibleRows = document.querySelectorAll('.policy-row:not([style*="display: none"])');
             const visibleCheckboxes = [];
             visibleRows.forEach(row => {
-                const checkbox = row.querySelector('.container-checkbox');
+                const checkbox = row.querySelector('.policy-checkbox');
                 if (checkbox) visibleCheckboxes.push(checkbox);
             });
             return { visibleRows, visibleCheckboxes };
         }
 
+        // Calculate total cost
+        function calculateTotalCost() {
+            let total = 0;
+            const selectedCheckboxes = document.querySelectorAll('.policy-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const row = checkbox.closest('.policy-row');
+                const cost = parseFloat(row.getAttribute('data-policy-cost')) || 0;
+                total += cost;
+            });
+            return total;
+        }
+
+        // Update summary
+        function updateSummary() {
+            const total = calculateTotalCost();
+            const discountPercent = parseFloat(discountInput.value) || 0;
+            const discountAmount = (total * discountPercent) / 100;
+            const finalAmount = total - discountAmount;
+
+            if (summaryTotal) summaryTotal.textContent = total.toFixed(2);
+            if (summaryDiscount) summaryDiscount.textContent = discountAmount.toFixed(2);
+            if (summaryFinal) summaryFinal.textContent = finalAmount.toFixed(2);
+        }
+
         // Update row numbers for visible rows
         function updateRowNumbers() {
-            const visibleRows = document.querySelectorAll('.container-row:not([style*="display: none"])');
+            const visibleRows = document.querySelectorAll('.policy-row:not([style*="display: none"])');
             visibleRows.forEach((row, index) => {
                 const numberCell = row.querySelector('.row-number');
                 if (numberCell) {
@@ -230,7 +313,7 @@
             });
         }
 
-        // Highlight search term in container code
+        // Highlight search term
         function highlightSearchTerm(text, term) {
             if (!term) return text;
             const regex = new RegExp(`(${term})`, 'gi');
@@ -244,18 +327,20 @@
             let hasResults = false;
 
             rows.forEach(row => {
-                const containerCode = row.getAttribute('data-container-code') || '';
-                const customerName = row.getAttribute('data-customer-name') || '';
-                const codeCell = row.querySelector('.container-code');
+                const policyCode = row.getAttribute('data-policy-code') || '';
+                const from = row.getAttribute('data-from') || '';
+                const to = row.getAttribute('data-to') || '';
+                const codeCell = row.querySelector('.policy-code');
                 
                 if (currentSearchTerm === '' || 
-                    containerCode.includes(currentSearchTerm) || 
-                    customerName.includes(currentSearchTerm)) {
+                    policyCode.includes(currentSearchTerm) || 
+                    from.includes(currentSearchTerm) ||
+                    to.includes(currentSearchTerm)) {
                     row.style.display = '';
                     visibleCount++;
                     hasResults = true;
                     
-                    // Highlight search term in container code
+                    // Highlight search term
                     if (codeCell && currentSearchTerm) {
                         const originalCode = codeCell.textContent;
                         codeCell.innerHTML = highlightSearchTerm(originalCode, searchTerm);
@@ -263,7 +348,7 @@
                 } else {
                     row.style.display = 'none';
                     // Uncheck hidden checkboxes
-                    const checkbox = row.querySelector('.container-checkbox');
+                    const checkbox = row.querySelector('.policy-checkbox');
                     if (checkbox) checkbox.checked = false;
                     
                     // Remove highlighting
@@ -276,8 +361,8 @@
             // Update UI based on search results
             if (currentSearchTerm) {
                 searchInfo.style.display = 'block';
-                searchResultsText.textContent = `عُثر على ${visibleCount} حاوية من أصل ${rows.length} حاوية`;
-                searchTerm.innerHTML = `"${searchTerm}"`;
+                searchResultsText.textContent = `عُثر على ${visibleCount} بوليصة من أصل ${rows.length} بوليصة`;
+                if (searchTerm) searchTerm.innerHTML = `"${searchTerm}"`;
                 
                 if (!hasResults) {
                     noResults.style.display = 'block';
@@ -293,7 +378,7 @@
                 
                 // Remove all highlighting
                 rows.forEach(row => {
-                    const codeCell = row.querySelector('.container-code');
+                    const codeCell = row.querySelector('.policy-code');
                     if (codeCell) {
                         codeCell.innerHTML = codeCell.textContent;
                     }
@@ -310,10 +395,12 @@
             const selectedCheckboxes = visibleCheckboxes.filter(cb => cb.checked);
             const selectedCount = selectedCheckboxes.length;
             const totalVisibleCount = visibleCheckboxes.length;
+            const totalCost = calculateTotalCost();
             
             // Update counters
             if (selectedCountSpan) selectedCountSpan.textContent = selectedCount;
             if (visibleCountSpan) visibleCountSpan.textContent = totalVisibleCount;
+            if (totalCostSpan) totalCostSpan.textContent = totalCost.toFixed(2);
             
             // Show/hide elements based on selection
             if (selectedCount > 0) {
@@ -341,7 +428,7 @@
             
             // Update row styling
             visibleRows.forEach(row => {
-                const checkbox = row.querySelector('.container-checkbox');
+                const checkbox = row.querySelector('.policy-checkbox');
                 if (checkbox && checkbox.checked) {
                     row.classList.add('table-primary');
                     row.style.transform = 'scale(1.01)';
@@ -352,6 +439,9 @@
                     row.style.boxShadow = 'none';
                 }
             });
+
+            // Update summary
+            updateSummary();
         }
 
         // Search input event listener
@@ -389,7 +479,12 @@
             });
         }
 
-        // Select/Deselect all functionality (only visible items)
+        // Discount input change
+        if (discountInput) {
+            discountInput.addEventListener('input', updateSummary);
+        }
+
+        // Select/Deselect all functionality
         if (selectAllBtn) {
             selectAllBtn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -397,12 +492,10 @@
                 const { visibleCheckboxes } = getVisibleElements();
                 
                 if (allSelected) {
-                    // Deselect all visible
                     visibleCheckboxes.forEach(checkbox => {
                         checkbox.checked = false;
                     });
                 } else {
-                    // Select all visible
                     visibleCheckboxes.forEach(checkbox => {
                         checkbox.checked = true;
                     });
@@ -427,7 +520,7 @@
         // Clear selection functionality
         if (clearSelectionBtn) {
             clearSelectionBtn.addEventListener('click', function() {
-                const checkboxes = document.querySelectorAll('.container-checkbox');
+                const checkboxes = document.querySelectorAll('.policy-checkbox');
                 checkboxes.forEach(checkbox => {
                     checkbox.checked = false;
                 });
@@ -439,13 +532,13 @@
         checkboxCells.forEach(cell => {
             cell.addEventListener('click', function(e) {
                 if (e.target.type !== 'checkbox') {
-                    const checkbox = this.querySelector('.container-checkbox');
+                    const checkbox = this.querySelector('.policy-checkbox');
                     if (checkbox) {
                         checkbox.checked = !checkbox.checked;
                         updateUI();
                         
                         // Add click animation
-                        const row = this.closest('.container-row');
+                        const row = this.closest('.policy-row');
                         if (row) {
                             row.style.transition = 'all 0.2s ease';
                             row.classList.add('animate__animated', 'animate__pulse');
@@ -460,7 +553,7 @@
 
         // Individual checkbox change
         rows.forEach(row => {
-            const checkbox = row.querySelector('.container-checkbox');
+            const checkbox = row.querySelector('.policy-checkbox');
             if (checkbox) {
                 checkbox.addEventListener('change', function() {
                     updateUI();
@@ -491,12 +584,12 @@
 
 @push('styles')
 <style>
-    .container-row {
+    .policy-row {
         transition: all 0.3s ease;
         cursor: pointer;
     }
 
-    .container-row.table-primary {
+    .policy-row.table-primary {
         background-color: rgba(13, 110, 253, 0.1) !important;
         border-left: 4px solid #0d6efd;
     }
@@ -538,7 +631,6 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* Search highlighting */
     mark.bg-warning {
         background-color: #fff3cd !important;
         color: #856404;
@@ -547,31 +639,22 @@
         font-weight: bold;
     }
 
-    /* Search input focus */
     #search-input:focus {
         border-color: #0d6efd;
         box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
     }
 
-    /* Animation classes */
     @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.02);
-        }
-        100% {
-            transform: scale(1);
-        }
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
     }
 
     .animate__pulse {
         animation: pulse 0.2s ease-in-out;
     }
 
-    /* Smooth transitions for showing/hiding rows */
-    .container-row {
+    .policy-row {
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
 </style>

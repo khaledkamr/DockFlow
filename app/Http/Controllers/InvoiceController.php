@@ -14,6 +14,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -444,5 +445,50 @@ class InvoiceController extends Controller
     public function invoiceStatementDetails(InvoiceStatement $invoiceStatement) {
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
         return view('pages.invoices.statementDetails', compact('invoiceStatement', 'hatching_total'));
+    }
+
+    public function createShippingInvoice(Request $request) {
+        $customers = Customer::all(); 
+        $customer_id = $request->input('customer_id');
+        $shippingPolicies = ShippingPolicy::where('is_received', true)->where('customer_id', $customer_id)->get();
+        $shippingPolicies = $shippingPolicies->filter(function($policy) {
+            return $policy->invoices->filter(function($invoice) {
+                return $invoice->type == 'نقل';
+            })->isEmpty();
+        });
+
+        return view('pages.invoices.create_shipping_invoice', compact('customers', 'shippingPolicies'));
+    } 
+
+    public function storeShippingInvoice(InvoiceRequest $request) {
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        $validated = $request->validated();
+        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+        $invoice = Invoice::create($validated);
+
+        $policyIds = $request->input('policy_ids', []);
+        $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
+        $amountBeforeTax = 0;
+
+        foreach($shippingPolicies as $policy) {
+            $amountBeforeTax += $policy->total_cost;
+            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->total_cost]);
+        }
+
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax = $amountAfterDiscount * 0.15;
+        $amount = $amountAfterDiscount + $tax;
+
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
+        $invoice->save();
+
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
     }
 }
