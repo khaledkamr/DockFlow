@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // CompanySeeder::class,
             // AccountTypesSeeder::class,
-            AccountsSeeder::class,
+            // AccountsSeeder::class,
             // PrimaryAccountSeeder::class,
             // UserSeeder::class,
             // ContainerTypesSeeder::class,

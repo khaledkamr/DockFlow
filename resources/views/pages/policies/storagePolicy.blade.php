@@ -24,9 +24,9 @@
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}"
                             data-contract="{{ $customer->contract ? $customer->contract->id : null }}"
-                            data-storage_price="{{ $customer->contract ? $customer->contract->services[0]->pivot->price : null }}"
-                            data-storage_duration="{{ $customer->contract ? $customer->contract->services[0]->pivot->unit : null }}"
-                            data-late_fee="{{ $customer->contract ? $customer->contract->services[1]->pivot->price : null }}">
+                            data-storage_price="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->price : null }}"
+                            data-storage_duration="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit : null }}"
+                            data-late_fee="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية بعد المدة المتفق عليها')->first()->pivot->price : null }}">
                             {{ $customer->name }}
                         </option>
                     @endforeach

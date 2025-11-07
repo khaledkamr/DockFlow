@@ -166,6 +166,50 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
+        if($transaction->customer->contract) {
+            $containers_count = $transaction->containers->count();
+
+            if($transaction->customer->contract->services()->where('description', 'اجور تخليص')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور تخليص')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'اجور تخليص',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+
+            if($transaction->customer->contract->services()->where('description', 'اجور نقل')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور نقل')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'اجور نقل',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+
+            if($transaction->customer->contract->services()->where('description', 'اجور عمال')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور عمال')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'اجور عمال',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+
+            if($transaction->customer->contract->services()->where('description', 'خدمات سابر')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'خدمات سابر')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'خدمات سابر',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+        }
+
         $validated = $request->validated();
         $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
         $invoice = Invoice::create($validated);

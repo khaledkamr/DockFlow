@@ -13,26 +13,46 @@ class ServiceSeeder extends Seeder
         $company_id = 1;
 
         $services = [
+            // [
+            //     'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة',
+            //     'type' => 'additional',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمة تفريغ الحاوية',
+            //     'type' => 'additional',
+            //     'company_id' => $company_id
+            // ],
             [
-                'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا',
+                'description' => 'اجور تخليص',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها',
+                'description' => 'اجور نقل',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة',
-                'type' => 'additional',
+                'description' => 'اجور عمال',
+                'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمة تفريغ الحاوية',
-                'type' => 'additional',
+                'description' => 'خدمات سابر',
+                'type' => 'primary',
                 'company_id' => $company_id
-            ],
+            ]
         ];
 
         foreach($services as $service) {
