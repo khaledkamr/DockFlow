@@ -240,6 +240,29 @@ class ExportController extends Controller
         return view('reports.clearanceInvoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
+    public function printShippingInvoice($code) {
+        if(Gate::denies('طباعة فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
+        }
+        
+        $invoice = Invoice::with('shippingPolicies')->where('code', $code)->first();
+        $company = $invoice->company;
+
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('reports.shipping_invoice', compact('company', 'invoice', 'discountValue', 'hatching_total', 'qrCode'));
+    }
+
     public function printInvoiceStatement($code) {
         // if(Gate::denies('طباعة فاتورة')) {
         //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');

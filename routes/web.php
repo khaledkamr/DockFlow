@@ -191,4 +191,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
     Route::get('/export/transport/order/{transportOrder:id}', 'printTransportOrder')->name('export.transport.order');
     Route::get('/export/shipping-policy/{policy:id}', 'printShippingPolicy')->name('export.shipping.policy');
+    Route::get('/print/invoice/shipping/{code}', 'printShippingInvoice')->name('print.invoice.shipping');
 });

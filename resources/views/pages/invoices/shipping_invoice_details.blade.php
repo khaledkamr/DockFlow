@@ -20,7 +20,7 @@
                 </span>
             </div>
             <div class="d-flex gap-2">
-                <a href="{{ route('print.invoice', $invoice->code) }}" target="_blank" class="btn btn-outline-primary">
+                <a href="{{ route('print.invoice.shipping', $invoice->code) }}" target="_blank" class="btn btn-outline-primary">
                     <i class="fas fa-print me-2"></i>طباعة الفاتورة
                 </a>
                 @can('ترحيل فاتورة')
@@ -174,7 +174,8 @@
                             <th class="text-center bg-dark text-white">نوع النقل</th>
                             <th class="text-center bg-dark text-white">تاريخ البوليصة</th>
                             <th class="text-center bg-dark text-white">عدد البضائع</th>
-                            <th class="text-center bg-dark text-white">الحالة</th>
+                            <th class="text-center bg-dark text-white">مكان التحميل</th>
+                            <th class="text-center bg-dark text-white">مكان التسليم</th>
                             <th class="text-center bg-dark text-white">المبلغ</th>
                         </tr>
                     </thead>
@@ -197,11 +198,10 @@
                                 </td>
                                 <td class="text-center fw-bold">{{ $policy->goods ? $policy->goods->count() : 0 }}</td>
                                 <td class="text-center">
-                                    @if($policy->is_received)
-                                        <span class="badge status-delivered">تم التسليم</span>
-                                    @else
-                                        <span class="badge status-waiting">في الانتظار</span>
-                                    @endif
+                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from ?? 'N/A' }}
+                                </td>
+                                <td class="text-center">
+                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to ?? 'N/A' }}
                                 </td>
                                 <td class="text-center fw-bold text-success">
                                     {{ number_format($policy->pivot->amount, 2) }} <i data-lucide="saudi-riyal"></i>
