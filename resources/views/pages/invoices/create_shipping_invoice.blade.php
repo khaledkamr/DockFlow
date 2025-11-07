@@ -41,9 +41,9 @@
 </form>
 
 @if (isset($shippingPolicies) && $shippingPolicies->count() > 0)
-    <form method="POST" action="{{ route('invoices.store') }}" class="mb-5">
+    <form method="POST" action="{{ route('invoices.shipping.store') }}" class="mb-5">
         @csrf
-        <input type="hidden" name="type" value="نقل">
+        <input type="hidden" name="type" value="شحن">
         <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
@@ -229,7 +229,7 @@
 @elseif(request('customer_id'))
     <div class="alert alert-info text-center">
         <i class="fas fa-info-circle me-2"></i> 
-        لا توجد بوليصات شحن مُستلمة غير مفوترة لهذا العميل.
+        لا توجد بوالص شحن مُستلمة غير مفوترة لهذا العميل.
     </div>
 @endif
 

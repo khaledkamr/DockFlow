@@ -121,7 +121,7 @@
         .table tbody tr:hover {
             background-color: #f1f3f5;
         }
-        .table .status-waiting {
+        .status-waiting {
             background-color: #ffe590;
             color: #856404;
             padding: 5px 10px;
@@ -129,7 +129,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-available {
+        .status-available {
             background-color: #d4d7ed;
             color: #151657;
             padding: 5px 10px;
@@ -137,7 +137,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-delivered {
+        .status-delivered {
             background-color: #c1eccb;
             color: #155724;
             padding: 5px 10px;
@@ -145,7 +145,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-danger {
+        .status-danger {
             background-color: #f8d7da;
             color: #721c24;
             padding: 5px 10px;
@@ -153,7 +153,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-info {
+        .status-info {
             background-color: #d1ecf1;
             color: #0c5460;
             padding: 5px 10px;
@@ -161,7 +161,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-purple {
+        .status-purple {
             background-color: #e7d6f7;
             color: #5a2d7a;
             padding: 5px 10px;

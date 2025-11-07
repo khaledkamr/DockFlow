@@ -10,7 +10,7 @@ class Invoice extends Model
 {
     use BelongsToCompany, HasUuid;
 
-    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص',];
+    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن',];
     public const PAYMENT_METHODS = [ 'كاش', 'آجل', 'تحويل بنكي',];
     public const PAYMENT_STATUS = [ 'تم الدفع', 'لم يتم الدفع',];
     
@@ -46,6 +46,12 @@ class Invoice extends Model
 
     public function company() {
         return $this->belongsTo(Company::class);
+    }
+
+    public function shippingPolicies() {
+        return $this->belongsToMany(ShippingPolicy::class, 'invoice_shipping')
+            ->withPivot('amount')
+            ->withTimestamps();
     }
 
     protected static function booted()

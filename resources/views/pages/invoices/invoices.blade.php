@@ -27,8 +27,8 @@
                     <option value="all"
                         {{ request()->query('paymentMethod') === 'all' || !request()->query('paymentMethod') ? 'selected' : '' }}>
                         جميع الطرق</option>
-                    <option value="كريدت" {{ request()->query('paymentMethod') === 'كريدت' ? 'selected' : '' }}>
-                        كريدت</option>
+                    <option value="آجل" {{ request()->query('paymentMethod') === 'آجل' ? 'selected' : '' }}>
+                        آجل</option>
                     <option value="تحويل بنكي" {{ request()->query('paymentMethod') === 'تحويل بنكي' ? 'selected' : '' }}>
                         تحويل بنكي</option>
                     <option value="كاش" {{ request()->query('paymentMethod') === 'كاش' ? 'selected' : '' }}>
@@ -79,7 +79,7 @@
         <tbody>
             @if ($invoices->isEmpty())
                 <tr>
-                    <td colspan="8" class="text-center">
+                    <td colspan="9" class="text-center">
                         <div class="status-danger fs-6">لا يوجد اي فواتيـــر!</div>
                     </td>
                 </tr>
@@ -99,6 +99,10 @@
                                 <a href="{{ route('invoices.clearance.details', $invoice) }}" class="text-decoration-none">
                                     {{ $invoice->code }}
                                 </a>
+                            @elseif($invoice->type == 'شحن')
+                                <a href="{{ route('invoices.shipping.details', $invoice) }}" class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
                             @endif
                         </td>
                         <td class="text-center">
@@ -111,9 +115,11 @@
                         <td class="text-center fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i></td>
                         <td class="text-center">{{ $invoice->payment_method }}</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
-                        <td class="text-center fw-bold {{ $invoice->isPaid == 'تم الدفع' ? 'text-success' : 'text-danger' }}">
-                            {{ $invoice->isPaid }}
-                        </td>
+                        @if($invoice->isPaid == 'تم الدفع')
+                            <td class="text-center"><span class="badge status-delivered">تم الدفع</span></td>
+                        @else
+                            <td class="text-center"><span class="badge status-danger">لم يتم الدفع</span></td>
+                        @endif
                         <td class="text-center">
                             <a href="{{ route('admin.user.profile', $invoice->made_by) }}" class="text-dark text-decoration-none">
                                 {{ $invoice->made_by->name ?? '-' }}
@@ -130,6 +136,10 @@
                                 </a>
                             @elseif($invoice->type == 'تخليص')
                                 <a href="{{ route('invoices.clearance.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                    عرض
+                                </a>
+                            @elseif($invoice->type == 'شحن')
+                                <a href="{{ route('invoices.shipping.details', $invoice) }}" class="btn btn-sm btn-primary">
                                     عرض
                                 </a>
                             @endif

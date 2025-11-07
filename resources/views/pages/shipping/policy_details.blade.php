@@ -23,12 +23,12 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col">
-                        <label class="text-muted small">من</label>
-                        <p class="fw-semibold mb-0">{{ $policy->from }}</p>
+                        <label class="text-muted small">مكان التحميل</label>
+                        <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}</p>
                     </div>
                     <div class="col">
-                        <label class="text-muted small">الى</label>
-                        <p class="fw-semibold mb-0">{{ $policy->to }}</p>
+                        <label class="text-muted small">مكان التسليم</label>
+                        <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}</p>
                     </div>
                 </div>
                 <div class="row">
@@ -39,11 +39,11 @@
                     <div class="col">
                         <label class="text-muted small">تم الاستلام؟</label>
                         @if($policy->is_received)
-                            <span class="badge bg-success">
+                            <span class="badge status-delivered">
                                 <i class="fa-solid fa-check-circle"></i> تم الاستلام
                             </span>
                         @else
-                            <span class="badge bg-warning">
+                            <span class="badge status-waiting">
                                 <i class="fa-solid fa-clock"></i> في الانتظار
                             </span>
                         @endif

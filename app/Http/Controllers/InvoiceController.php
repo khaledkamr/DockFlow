@@ -469,7 +469,7 @@ class InvoiceController extends Controller
         $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
         $invoice = Invoice::create($validated);
 
-        $policyIds = $request->input('policy_ids', []);
+        $policyIds = $request->input('shipping_policy_ids', []);
         $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
         $amountBeforeTax = 0;
 
@@ -490,5 +490,33 @@ class InvoiceController extends Controller
         $invoice->save();
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
+    }
+
+    public function shippingInvoiceDetails(Invoice $invoice) {
+        $amountBeforeTax = 0;
+
+        foreach($invoice->shippingPolicies as $policy) {
+            $policy->total_cost = $policy->transportation_cost + $policy->customs_duties + $policy->additional_fees;
+            $amountBeforeTax += $policy->total_cost;  
+        }
+
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('pages.invoices.shipping_invoice_details', compact(
+            'invoice', 
+            'discountValue', 
+            'hatching_total', 
+            'qrCode',
+        ));
     }
 }

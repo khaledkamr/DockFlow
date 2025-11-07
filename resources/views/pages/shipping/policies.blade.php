@@ -109,9 +109,9 @@
                             <td class="text-center">{{ $policy->goods ? $policy->goods->count() : 0 }}</td>
                             <td class="text-center">
                                 @if($policy->is_received)
-                                    <span class="status-delivered">تم التسليم</span>
+                                    <span class="badge status-delivered">تم التسليم</span>
                                 @else
-                                    <span class="status-waiting">في الانتظار</span>
+                                    <span class="badge status-waiting">في الانتظار</span>
                                 @endif
                             </td>
                             <td class="text-center">
