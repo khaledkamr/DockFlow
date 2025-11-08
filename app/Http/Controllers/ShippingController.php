@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShippingRequest;
+use App\Models\Account;
 use App\Models\Customer;
 use App\Models\Driver;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryLine;
 use App\Models\ShippingPolicy;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -55,6 +58,36 @@ class ShippingController extends Controller
         $policy = ShippingPolicy::create($validated);
 
         $policy->goods()->createMany($request['goods']);
+
+        if($policy->type == 'ناقل خارجي') {
+            $supplierAccount = $policy->supplier ? $policy->supplier->account : null;
+            $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
+
+            $journal = JournalEntry::create([
+                'type' => 'قيد يومي',
+                'date' => $policy->date,
+                'totalDebit' => $policy->supplier_cost,
+                'totalCredit' => $policy->supplier_cost,
+                'user_id' => $policy->user_id
+            ]);
+
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $supplierAccount ? $supplierAccount->id : null,
+                'debit' => 0,
+                'credit' => $policy->supplier_cost,
+                'description' => 'بوليصة شحن رقم '.$policy->code
+            ]);
+
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $creditAccount ? $creditAccount->id : null,
+                'debit' => $policy->supplier_cost,
+                'credit' => 0,
+                'description' => 'بوليصة شحن رقم '.$policy->code
+            ]);
+        }
+
 
         return redirect()->back()->with('success', 'تم إنشاء بوليصة شحن جديدة, <a class="text-white fw-bold" href="'.route('shipping.policies.details', $policy).'">عرض البوليصة؟</a>');
     } 
