@@ -33,26 +33,46 @@ class ServiceSeeder extends Seeder
             //     'type' => 'additional',
             //     'company_id' => $company_id
             // ],
+            // [
+            //     'description' => 'اجور تخليص',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'اجور نقل',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'اجور عمال',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمات سابر',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
             [
-                'description' => 'اجور تخليص',
+                'description' => 'اجور نقل حاوية فئة 20\40',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'اجور نقل',
+                'description' => 'اجور نقل حاوية وزن زائد',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'اجور عمال',
+                'description' => 'اجور نقل طرود LCL',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمات سابر',
+                'description' => 'اجور نقل حاوية مبردة',
                 'type' => 'primary',
                 'company_id' => $company_id
-            ]
+            ],
         ];
 
         foreach($services as $service) {

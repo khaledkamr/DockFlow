@@ -179,8 +179,24 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            if($transaction->customer->contract->services()->where('description', 'اجور نقل')->exists()) {
-                $price = $transaction->customer->contract->services->where('description', 'اجور نقل')->first()->pivot->price * $containers_count;
+            if($transaction->customer->contract->services()->where('description', 'اجور نقل حاوية فئة 20\40')->exists() ||
+               $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية وزن زائد')->exists() ||
+               $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية مبردة')->exists() ||
+               $transaction->customer->contract->services()->where('description', 'اجور نقل طرود LCL')->exists()) {
+                $price = 0;
+
+                foreach($transaction->containers as $container) {
+                    if ($container->containerType->name == 'فئة 20' || $container->containerType->name == 'فئة 40') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية فئة 20\40')->first()->pivot->price;
+                    } elseif ($container->containerType->name == 'وزن زائد') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية وزن زائد')->first()->pivot->price;
+                    } elseif ($container->containerType->name == 'حاوية مبردة') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية مبردة')->first()->pivot->price;
+                    } elseif ($container->containerType->name == 'طرود LCL') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل طرود LCL')->first()->pivot->price;
+                    }
+                }
+
                 $transaction->items()->create([
                     'description' => 'اجور نقل',
                     'amount' => $price,
