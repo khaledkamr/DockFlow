@@ -73,6 +73,7 @@ class ShippingController extends Controller
     public function reports(Request $request) {
         $policies = ShippingPolicy::all();
         $customers = Customer::all();
+        
         return view('pages.shipping.reports', compact('policies', 'customers'));
     }
 }

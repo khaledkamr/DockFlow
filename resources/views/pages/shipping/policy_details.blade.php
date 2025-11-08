@@ -94,12 +94,12 @@
                         </div>
                     @elseif($policy->type == 'ناقل خارجي')
                         <div class="col">
-                            <label class="text-muted small">السجل التجاري</label>
-                            <p class="fw-semibold mb-0">{{ $policy->supplier->CR ?? 'N/A' }}</p>
+                            <label class="text-muted small">اسم السائق</label>
+                            <p class="fw-semibold mb-0">{{ $policy->driver_name ?? 'N/A' }}</p>
                         </div>
                         <div class="col">
                             <label class="text-muted small">رقم التواصل</label>
-                            <p class="fw-semibold mb-0">{{ $policy->supplier->contact_number ?? 'N/A' }}</p>
+                            <p class="fw-semibold mb-0">{{ $policy->vehicle_plate ?? 'N/A' }}</p>
                         </div>
                     @endif
                 </div>
@@ -135,8 +135,8 @@
                 <p class="fw-bold mb-0">{{ number_format($policy->other_expenses, 2) }} <i data-lucide="saudi-riyal"></i></p>
             </div>
             <div class="col-md-3">
-                <label class="text-muted small">التكلفة الإجمالية</label>
-                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($policy->total_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
+                <label class="text-muted small">سعر العميل</label>
+                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
             </div>
         </div>
     </div>
@@ -163,8 +163,8 @@
                         @foreach($policy->goods as $good)
                             <tr>
                                 <td class="text-center fw-bold">{{ $good->description }}</td>
-                                <td class="text-center">{{ $good->quantity }}</td>
-                                <td class="text-center">{{ $good->weight }}</td>
+                                <td class="text-center">{{ $good->quantity ?? '---' }}</td>
+                                <td class="text-center">{{ $good->weight ?? '---' }}</td>
                                 <td class="text-center text-muted">{{ $good->notes ?? '---' }}</td>
                             </tr>
                         @endforeach

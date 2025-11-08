@@ -15,6 +15,9 @@ return new class extends Migration
             $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('vehicle_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('driver_name')->nullable();
+            $table->string('driver_contact')->nullable();
+            $table->string('vehicle_plate')->nullable();
             $table->string('code')->unique();
             $table->string('type');
             $table->date('date')->default(now());
@@ -26,7 +29,7 @@ return new class extends Migration
             $table->decimal('diesel_cost', 10, 2)->default(0);
             $table->decimal('driver_wage', 10, 2)->default(0);
             $table->decimal('other_expenses', 10, 2)->default(0);
-            $table->decimal('total_cost', 10, 2)->storedAs('supplier_cost + diesel_cost + driver_wage + other_expenses');
+            $table->decimal('client_cost', 10, 2)->default(0);
             $table->boolean('is_received')->default(false);
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();

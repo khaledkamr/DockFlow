@@ -83,7 +83,7 @@
                         <th class="text-center fw-bold bg-dark text-white">من</th>
                         <th class="text-center fw-bold bg-dark text-white">إلى</th>
                         <th class="text-center fw-bold bg-dark text-white">التاريخ</th>
-                        <th class="text-center fw-bold bg-dark text-white">التكلفة الإجمالية</th>
+                        <th class="text-center fw-bold bg-dark text-white">المبلغ</th>
                         <th class="text-center fw-bold bg-dark text-white">الحالة</th>
                     </tr>
                 </thead>
@@ -92,7 +92,7 @@
                         <tr class="text-center policy-row" 
                             data-policy-id="{{ $policy->id }}"
                             data-policy-code="{{ strtolower($policy->code) }}"
-                            data-policy-cost="{{ $policy->total_cost }}"
+                            data-policy-cost="{{ $policy->client_cost }}"
                             data-from="{{ strtolower($policy->from) }}"
                             data-to="{{ strtolower($policy->to) }}">
                             <td class="checkbox-cell" style="cursor: pointer;">
@@ -114,15 +114,13 @@
                                 </span>
                             </td>
                             <td>
-                                <i class="fas fa-map-marker-alt text-danger"></i>
-                                {{ $policy->from }}
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}
                             </td>
                             <td>
-                                <i class="fas fa-map-marker-alt text-danger"></i>
-                                {{ $policy->to }}
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
                             </td>
                             <td>{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                            <td class="fw-bold text-success">{{ number_format($policy->total_cost, 2) }} <i data-lucide="saudi-riyal"></i></td>
+                            <td class="fw-bold text-success">{{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i></td>
                             <td>
                                 <span class="badge status-delivered">
                                     تم الاستلام <i class="fa-solid fa-check"></i>
@@ -150,7 +148,7 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-5">
+                    <div class="col-3">
                         <label for="payment_method" class="form-label fw-bold">
                             <i class="fas fa-money-bill me-1"></i>
                             طريقة الدفع
@@ -161,15 +159,25 @@
                             <option value="تحويل بنكي">تحويل بنكي</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-3">
+                        <label for="tax_rate" class="form-label fw-bold">
+                            <i class="fas fa-receipt me-1"></i>
+                            الضريبة المضافة
+                        </label>
+                        <select name="tax_rate" id="tax_rate" class="form-select border-primary" required>
+                            <option value="15">خاضع للضريبة (15%)</option>
+                            <option value="0">غير خاضع للضريبة</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
                         <label for="discount" class="form-label fw-bold">
                             <i class="fas fa-percent me-1"></i>
                             نسبة الخصم (%)
                         </label>
                         <input type="number" name="discount" id="discount" class="form-control border-primary" 
-                               min="0" max="100" step="0.01" value="0" placeholder="0.00" required>
+                               min="0" max="100" step="1" value="0" placeholder="0.00" required>
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn" disabled>
                             <i class="fas fa-plus me-1"></i>
                             إنشاء فاتورة
@@ -183,7 +191,7 @@
                         <div class="card bg-light">
                             <div class="card-body">
                                 <div class="row text-center">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="p-2">
                                             <small class="text-muted d-block">إجمالي التكلفة</small>
                                             <div class="d-flex justify-content-center align-items-center mb-1">
@@ -192,16 +200,26 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">قيمة الضريبة المضافة</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-primary mb-0" id="summary-tax">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-primary ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
                                         <div class="p-2">
                                             <small class="text-muted d-block">قيمة الخصم</small>
-                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                            <div class="d-flex justify-content-center align-items
+                                            const summaryTax = document.getElementById('summary-tax');-center mb-1">
                                                 <h4 class="text-danger mb-0" id="summary-discount">0.00</h4>
                                                 <i data-lucide="saudi-riyal" class="text-danger ms-1"></i>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="p-2">
                                             <small class="text-muted d-block">المبلغ النهائي</small>
                                             <div class="d-flex justify-content-center align-items-center mb-1">
@@ -256,8 +274,10 @@
         const searchResultsText = document.getElementById('search-results-text');
         const noResults = document.getElementById('no-results');
         const searchTerm = document.getElementById('search-term');
+        const taxRateSelect = document.getElementById('tax_rate');
         const discountInput = document.getElementById('discount');
         const summaryTotal = document.getElementById('summary-total');
+        const summaryTax = document.getElementById('summary-tax');
         const summaryDiscount = document.getElementById('summary-discount');
         const summaryFinal = document.getElementById('summary-final');
         
@@ -296,10 +316,14 @@
             const discountPercent = parseFloat(discountInput.value) || 0;
             const discountAmount = (total * discountPercent) / 100;
             const finalAmount = total - discountAmount;
+            const taxRate = parseFloat(taxRateSelect.value) || 0;
+            const taxAmount = (finalAmount * taxRate) / 100;
+            const finalWithTax = finalAmount + taxAmount;
 
             if (summaryTotal) summaryTotal.textContent = total.toFixed(2);
+            if (summaryTax) summaryTax.textContent = taxAmount.toFixed(2);
             if (summaryDiscount) summaryDiscount.textContent = discountAmount.toFixed(2);
-            if (summaryFinal) summaryFinal.textContent = finalAmount.toFixed(2);
+            if (summaryFinal) summaryFinal.textContent = finalWithTax.toFixed(2);
         }
 
         // Update row numbers for visible rows

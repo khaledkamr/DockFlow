@@ -81,7 +81,8 @@
                     <th class="text-center bg-dark text-white">إسم العميل</th>
                     <th class="text-center bg-dark text-white">نوع البوليصة</th>
                     <th class="text-center bg-dark text-white">تاريخ البوليصة</th>
-                    <th class="text-center bg-dark text-white">عدد البضائع</th>
+                    <th class="text-center bg-dark text-white">مكان التحميل</th>
+                    <th class="text-center bg-dark text-white">مكان التسليم</th>
                     <th class="text-center bg-dark text-white">الحالة</th>
                     <th class="text-center bg-dark text-white">تم بواسطة</th>
                     <th class="text-center bg-dark text-white">الإجراءات</th>
@@ -104,9 +105,14 @@
                                     {{ $policy->customer->name }}
                                 </a>
                             </td>
-                            <td class="text-center">{{ $policy->type }}</td>
+                            <td class="text-center">
+                                <span class="badge {{ $policy->type === 'ناقل داخلي' ? 'status-delivered' : 'status-danger' }}">
+                                    {{ $policy->type }}
+                                </span>
+                            </td>
                             <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                            <td class="text-center">{{ $policy->goods ? $policy->goods->count() : 0 }}</td>
+                            <td class="text-center"><i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}</td>
+                            <td class="text-center"><i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}</td>
                             <td class="text-center">
                                 @if($policy->is_received)
                                     <span class="badge status-delivered">تم التسليم</span>

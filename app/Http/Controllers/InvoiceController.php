@@ -513,7 +513,7 @@ class InvoiceController extends Controller
         $shippingPolicies = ShippingPolicy::where('is_received', true)->where('customer_id', $customer_id)->get();
         $shippingPolicies = $shippingPolicies->filter(function($policy) {
             return $policy->invoices->filter(function($invoice) {
-                return $invoice->type == 'نقل';
+                return $invoice->type == 'شحن';
             })->isEmpty();
         });
 
@@ -534,8 +534,8 @@ class InvoiceController extends Controller
         $amountBeforeTax = 0;
 
         foreach($shippingPolicies as $policy) {
-            $amountBeforeTax += $policy->total_cost;
-            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->total_cost]);
+            $amountBeforeTax += $policy->client_cost;
+            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->client_cost]);
         }
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;

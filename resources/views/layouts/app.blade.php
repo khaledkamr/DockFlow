@@ -520,6 +520,9 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg bg-white shadow-sm" style="height: 70px;">
             <div class="container-fluid">
+                @if(auth()->user()->company->logo)
+                    <img src="{{ asset('storage/' . auth()->user()->company->logo) }}" alt="Logo" class="me-2" style="height: 40px; width: auto;">
+                @endif
                 <a class="navbar-brand text-dark fw-bold" href="#">{{ auth()->user()->company->name }}</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
