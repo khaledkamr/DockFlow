@@ -26,11 +26,13 @@ class TransactionController extends Controller
                 $matchCode = stripos($transaction->code, $search) !== false;
                 $matchCustomer = stripos($transaction->customer->name, $search) !== false;
                 $matchDate = stripos($transaction->date, $search) !== false;
+                $matchCustomsDeclaration = stripos($transaction->customs_declaration, $search) !== false;
+                $matchPolicyNumber = stripos($transaction->policy_number, $search) !== false;
                 $matchContainer = $transaction->containers->contains(function ($container) use ($search) {
                     return stripos($container->code, $search) !== false;
                 });
 
-                return $matchCode || $matchCustomer || $matchDate || $matchContainer;
+                return $matchCode || $matchCustomer || $matchDate || $matchCustomsDeclaration || $matchPolicyNumber || $matchContainer;
             });
         }
 
