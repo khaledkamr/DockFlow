@@ -41,7 +41,11 @@
 <body onload="initPrint()">
     <div class="d-flex justify-content-center">
         <div class="text-center">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
+            @if($company->logo)
+                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 100px;">
+            @else
+                <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
+            @endif
             <h6 class="fw-bold">{{ $company->name }}</h6>
             <div style="font-size: 15px;">
                 CR: {{ $company->CR }} | 

@@ -23,8 +23,6 @@ use Symfony\Component\Mailer\Transport;
 
 Route::controller(AdminController::class)->middleware('auth')->group(function() {
     Route::get('/', 'dashboard')->name('dashboard');
-    Route::get('/company/{company:uuid}', 'company')->name('company');
-    Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
     Route::get('users', 'users')->name('admin.users');
     Route::post('users/store', 'storeUser')->name('admin.users.store');
     Route::get('users/{user:uuid}', 'userProfile')->name('admin.user.profile');
@@ -125,6 +123,8 @@ Route::controller(ShippingController::class)->middleware('auth')->group(function
 
 Route::controller(CompanyController::class)->middleware('auth')->group(function () {
     Route::get('/companies', 'companies')->name('companies');
+    Route::get('/company/{company:uuid}', 'company')->name('company');
+    Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
     Route::post('/companies/{company:uuid}/add-modules', 'addModuleToCompany')->name('companies.add.modules');
     Route::patch('/companies/{company:uuid}/toggle-module/{moduleId}', 'toggleCompanyModule')->name('companies.toggle.module');
 });

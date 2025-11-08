@@ -230,7 +230,7 @@
                             </button>
                         </form>
                         <small class="text-muted mt-1 d-block">
-                            يمكنك إرفاق الملفات التالية: PDF, Word, صور, Excel, نصوص
+                            يمكنك إرفاق الملفات التالية: PDF, صور
                         </small>
                     </div>
                 </div>
