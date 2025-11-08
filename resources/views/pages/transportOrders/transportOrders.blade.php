@@ -52,7 +52,7 @@
                         <tr>
                             <td class="text-center text-primary fw-bold">{{ $order->code }}</td>
                             <td class="text-center text-primary fw-bold">
-                                <a href="{{ route('transactions.details', $order->transaction->id) }}" class="text-decoration-none">
+                                <a href="{{ route('transactions.details', $order->transaction) }}" class="text-decoration-none">
                                     {{ $order->transaction->code }}
                                 </a>
                             </td>

@@ -16,25 +16,26 @@ class ContainerController extends Controller
 {
     public function containers(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
-        foreach($containers as $container) {
-            if($container->status == 'في الساحة') {
-                $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-                if($storagePolicy) {
-                    $dueDays = $storagePolicy->storage_duration;
-                    $containerDays = Carbon::parse($container->date)->diffInDays(Carbon::now());
-                    if($containerDays > $dueDays) {
-                        $container->status = 'متأخر';
-                        $container->save();
-                    }
-                }
-            }
-        }
-
+        
         $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
-            $containers = $containers->filter(function ($container) use ($containerFilter) {
-                return $container->status === $containerFilter;
-            });
+            if($containerFilter === 'متأخر') {
+                $containers = $containers->filter(function ($container) {
+                    if($container->status !== 'في الساحة') {
+                        return false;
+                    }
+                    $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+                    if(!$storagePolicy) {
+                        return false;
+                    }
+                    $dueDays = $storagePolicy->storage_duration;
+                    return $container->days > $dueDays;
+                });
+            } else {
+                $containers = $containers->filter(function ($container) use ($containerFilter) {
+                    return $container->status === $containerFilter;
+                });
+            }
         }
 
         $search = $request->input('search', null);

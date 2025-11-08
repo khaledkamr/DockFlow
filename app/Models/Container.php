@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\BelongsToCompany;
 use App\Traits\HasUuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Container extends Model
@@ -25,6 +26,8 @@ class Container extends Model
         'company_id',
         'user_id',
     ];
+
+    protected $appends = ['days'];
 
     public function containerType() {
         return $this->belongsTo(Container_type::class);
@@ -60,5 +63,13 @@ class Container extends Model
 
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function company() {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function getDaysAttribute() {
+        return (int) Carbon::parse($this->date)->diffInDays(Carbon::now());
     }
 }
