@@ -13,24 +13,64 @@ class ServiceSeeder extends Seeder
         $company_id = 1;
 
         $services = [
+            // [
+            //     'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة',
+            //     'type' => 'additional',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمة تفريغ الحاوية',
+            //     'type' => 'additional',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'اجور تخليص',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'اجور نقل',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'اجور عمال',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
+            // [
+            //     'description' => 'خدمات سابر',
+            //     'type' => 'primary',
+            //     'company_id' => $company_id
+            // ],
             [
-                'description' => 'خدمة تخزين الحاوية الواحدة في ساحتنا',
+                'description' => 'اجور نقل حاوية فئة 20\40',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمة تخزين الحاوية بعد المدة المتفق عليها',
+                'description' => 'اجور نقل حاوية وزن زائد',
                 'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمة تبديل الحاوية من شاحنة الى شاحنة',
-                'type' => 'additional',
+                'description' => 'اجور نقل طرود LCL',
+                'type' => 'primary',
                 'company_id' => $company_id
             ],
             [
-                'description' => 'خدمة تفريغ الحاوية',
-                'type' => 'additional',
+                'description' => 'اجور نقل حاوية مبردة',
+                'type' => 'primary',
                 'company_id' => $company_id
             ],
         ];

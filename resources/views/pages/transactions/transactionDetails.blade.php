@@ -7,7 +7,7 @@
         <div>
             <h2 class="h3 text-primary mb-1">
                 <i class="fas fa-clipboard-list me-2"></i>
-                تفاصيل المعاملة #{{ $transaction->id }}
+                تفاصيل المعاملة #{{ $transaction->code }}
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">

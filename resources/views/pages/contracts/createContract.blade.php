@@ -137,7 +137,7 @@
         </div>
         
         <div id="services-container">
-            @foreach ($services->where('type', 'primary') as $index => $service)
+            {{-- @foreach ($services->where('type', 'primary') as $index => $service)
                 <div class="mb-4 bg-light p-3 rounded service-item" data-service-id="{{ $service->id }}" data-service-type="{{ $service->type }}">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="mb-0 text-primary">خدمة #{{ $index + 1 }}</h6>
@@ -165,7 +165,7 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @endforeach --}}
         </div>
         
         <!-- Service Selection Modal -->

@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
 use App\Models\InvoiceStatement;
+use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use Illuminate\Support\Facades\Auth;
@@ -239,6 +240,29 @@ class ExportController extends Controller
         return view('reports.clearanceInvoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
+    public function printShippingInvoice($code) {
+        if(Gate::denies('طباعة فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
+        }
+        
+        $invoice = Invoice::with('shippingPolicies')->where('code', $code)->first();
+        $company = $invoice->company;
+
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('reports.shipping_invoice', compact('company', 'invoice', 'discountValue', 'hatching_total', 'qrCode'));
+    }
+
     public function printInvoiceStatement($code) {
         // if(Gate::denies('طباعة فاتورة')) {
         //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
@@ -254,6 +278,12 @@ class ExportController extends Controller
     public function printTransportOrder(TransportOrder $transportOrder) {
         $company = $transportOrder->company;
         return view('reports.transportOrder', compact('company', 'transportOrder'));
+    }
+
+    public function printShippingPolicy($policyId) {
+        $policy = ShippingPolicy::with('goods')->findOrFail($policyId);
+        $company = $policy->company;
+        return view('reports.shipping_policy', compact('company', 'policy'));
     }
 
     public function excel($reportType, Request $request) {

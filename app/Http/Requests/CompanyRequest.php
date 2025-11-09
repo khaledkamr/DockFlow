@@ -21,7 +21,8 @@ class CompanyRequest extends FormRequest
             'vatNumber' => 'required',
             'national_address' => 'required',
             'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|max:15'
+            'phone' => 'nullable|max:15',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

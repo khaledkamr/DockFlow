@@ -121,7 +121,7 @@
         .table tbody tr:hover {
             background-color: #f1f3f5;
         }
-        .table .status-waiting {
+        .status-waiting {
             background-color: #ffe590;
             color: #856404;
             padding: 5px 10px;
@@ -129,7 +129,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-available {
+        .status-available {
             background-color: #d4d7ed;
             color: #151657;
             padding: 5px 10px;
@@ -137,7 +137,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-delivered {
+        .status-delivered {
             background-color: #c1eccb;
             color: #155724;
             padding: 5px 10px;
@@ -145,7 +145,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-danger {
+        .status-danger {
             background-color: #f8d7da;
             color: #721c24;
             padding: 5px 10px;
@@ -153,7 +153,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-info {
+        .status-info {
             background-color: #d1ecf1;
             color: #0c5460;
             padding: 5px 10px;
@@ -161,7 +161,7 @@
             font-size: 12px;
             display: inline-block;
         }
-        .table .status-purple {
+        .status-purple {
             background-color: #e7d6f7;
             color: #5a2d7a;
             padding: 5px 10px;
@@ -326,94 +326,127 @@
                 </li>
             @endcan
 
-            @can('عرض الحاويات')
+            @if(auth()->user()->company->hasModule('نقل'))
                 <li class="nav-item mb-1">
-                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['yard*']) ? '' : 'collapsed' }}" 
+                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['shipping.policies*']) ? '' : 'collapsed' }}" 
                     data-bs-toggle="collapse" 
-                    href="#yard-management" 
+                    href="#shipping-policy-management" 
                     role="button" 
-                    aria-expanded="{{ request()->routeIs(['yard*']) ? 'true' : 'false' }}" 
-                    aria-controls="yard-management">
-                        <i class="fa-solid fa-warehouse ms-2 me-2"></i> الســـــــاحــــــــــــة
+                    aria-expanded="{{ request()->routeIs(['shipping.policies*']) ? 'true' : 'false' }}" 
+                    aria-controls="shipping-policy-management">
+                        <i class="fa-solid fa-shipping-fast ms-2 me-2"></i> بوالــــص الشحــــن
                     </a>
-                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('yard.containers') }}">
-                            <i class="fa-solid fa-boxes-stacked ms-2 me-2"></i> الحــــــاويـــات
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['shipping.policies*']) ? 'show' : '' }}" id="shipping-policy-management">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('shipping.policies') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('shipping.policies') }}">
+                            <i class="fa-solid fa-file-contract ms-2 me-2"></i> بوالص الشحن
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers.types') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('yard.containers.types') }}">
-                            <i class="fa-solid fa-sitemap ms-2 me-2"></i> أنواع الحاويات
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('shipping.policies.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('shipping.policies.create') }}">
+                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة شحن
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('yard.containers.reports') }}">
-                            <i class="fa-solid fa-file-lines ms-2 me-2"></i> تقارير الحاويات
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('shipping.policies.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('shipping.policies.reports') }}">
+                            <i class="fa-solid fa-file-lines ms-2 me-2"></i> تقارير بوالص الشحن
                         </a>
                     </div>
                 </li>
-            @endcan
+            @endif
 
-            @can('عرض الإتفاقيات')
-                <li class="nav-item mb-1">
-                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['policies*']) ? '' : 'collapsed' }}" 
-                    data-bs-toggle="collapse" 
-                    href="#policy-management" 
-                    role="button" 
-                    aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}" 
-                    aria-controls="policy-management">
-                        <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
-                    </a>
-                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('policies') }}">
-                            <i class="fa-solid fa-file-contract ms-2 me-2"></i> الإتفاقيـــــات
+            @if(auth()->user()->company->hasModule('تخزين'))
+                @can('عرض الحاويات')
+                    <li class="nav-item mb-1">
+                        <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['yard*']) ? '' : 'collapsed' }}" 
+                        data-bs-toggle="collapse" 
+                        href="#yard-management" 
+                        role="button" 
+                        aria-expanded="{{ request()->routeIs(['yard*']) ? 'true' : 'false' }}" 
+                        aria-controls="yard-management">
+                            <i class="fa-solid fa-boxes-stacked me-2 ms-2"></i> الســـــــاحــــــــــــة
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.storage.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('policies.storage.create') }}">
-                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تخزين
-                        </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.receive.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('policies.receive.create') }}">
-                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تسليم
-                        </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.services.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('policies.services.create') }}">
-                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية خدمات
-                        </a>
-                    </div>
-                </li>
-            @endcan
+                        <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['yard*']) ? 'show' : '' }}" id="yard-management">
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('yard.containers') }}">
+                                <i class="fa-solid fa-boxes-stacked ms-2 me-2"></i> الحــــــاويـــات
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers.types') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('yard.containers.types') }}">
+                                <i class="fa-solid fa-sitemap ms-2 me-2"></i> أنواع الحاويات
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('yard.containers.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('yard.containers.reports') }}">
+                                <i class="fa-solid fa-file-lines ms-2 me-2"></i> تقارير الحاويات
+                            </a>
+                        </div>
+                    </li>
+                @endcan
+            @endif
 
-            @can('عرض الإتفاقيات')
-                <li class="nav-item mb-1">
-                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['transactions*']) ? '' : 'collapsed' }}" 
-                    data-bs-toggle="collapse" 
-                    href="#transaction-management" 
-                    role="button" 
-                    aria-expanded="{{ request()->routeIs(['transactions*']) ? 'true' : 'false' }}" 
-                    aria-controls="transaction-management">
-                        <i class="fa-solid fa-file ms-2 me-2"></i> معاملات التخليـــص
-                    </a>
-                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['transactions*']) ? 'show' : '' }}" id="transaction-management">
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('transactions') }}">
-                            <i class="fa-solid fa-file-contract ms-2 me-2"></i> المعامـــــــــلات
+            @if(auth()->user()->company->hasModule('تخزين'))
+                @can('عرض الإتفاقيات')
+                    <li class="nav-item mb-1">
+                        <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['policies*']) ? '' : 'collapsed' }}" 
+                        data-bs-toggle="collapse" 
+                        href="#policy-management" 
+                        role="button" 
+                        aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}" 
+                        aria-controls="policy-management">
+                            <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('transactions.create') }}">
-                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة معاملة
+                        <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('policies') }}">
+                                <i class="fa-solid fa-file-contract ms-2 me-2"></i> الإتفاقيـــــات
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.storage.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('policies.storage.create') }}">
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تخزين
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.receive.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('policies.receive.create') }}">
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تسليم
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.services.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('policies.services.create') }}">
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية خدمات
+                            </a>
+                        </div>
+                    </li>
+                @endcan
+            @endif
+
+            @if(auth()->user()->company->hasModule('تخليص'))
+                @can('عرض الإتفاقيات')
+                    <li class="nav-item mb-1">
+                        <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['transactions*']) ? '' : 'collapsed' }}" 
+                        data-bs-toggle="collapse" 
+                        href="#transaction-management" 
+                        role="button" 
+                        aria-expanded="{{ request()->routeIs(['transactions*']) ? 'true' : 'false' }}" 
+                        aria-controls="transaction-management">
+                            <i class="fa-solid fa-file ms-2 me-2"></i> معاملات التخليـــص
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('transactions.transportOrders') }}">
-                            <i class="fa-solid fa-copy ms-2 me-2"></i> إشعارات النقل
-                        </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('transactions.transportOrders.create') }}">
-                            <i class="fa-solid fa-truck ms-2 me-2"></i> إضافة إشعار نقل
-                        </a>
-                    </div>
-                </li>
-            @endcan
+                        <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['transactions*']) ? 'show' : '' }}" id="transaction-management">
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('transactions') }}">
+                                <i class="fa-solid fa-file-contract ms-2 me-2"></i> المعامـــــــــلات
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('transactions.create') }}">
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة معاملة
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('transactions.transportOrders') }}">
+                                <i class="fa-solid fa-copy ms-2 me-2"></i> إشعارات النقل
+                            </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('transactions.transportOrders.create') }}">
+                                <i class="fa-solid fa-truck ms-2 me-2"></i> إضافة إشعار نقل
+                            </a>
+                        </div>
+                    </li>
+                @endcan
+            @endif
 
             @can('عرض الفواتير')
                 <li class="nav-item mb-1">
@@ -430,10 +463,18 @@
                             href="{{ route('invoices') }}">
                             <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــواتيـــــر
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.create') ? 'bg-primary text-white' : 'text-dark' }}" 
-                            href="{{ route('invoices.create') }}">
-                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء فاتورة
-                        </a>
+                        @if(auth()->user()->company->hasModule('تخزين'))
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('invoices.create') }}">
+                                <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء فاتورة تخزين
+                            </a>
+                        @endif
+                        @if(auth()->user()->company->hasModule('نقل'))
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.shipping.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('invoices.shipping.create') }}">
+                                <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء فاتورة شحن
+                            </a>
+                        @endif
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.statements') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('invoices.statements') }}">
                             <i class="fa-solid fa-layer-group ms-2 me-2"></i> المطالبــــــات
@@ -479,6 +520,9 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg bg-white shadow-sm" style="height: 70px;">
             <div class="container-fluid">
+                @if(auth()->user()->company->logo)
+                    <img src="{{ asset('storage/' . auth()->user()->company->logo) }}" alt="Logo" class="me-2" style="height: 40px; width: auto;">
+                @endif
                 <a class="navbar-brand text-dark fw-bold" href="#">{{ auth()->user()->company->name }}</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
@@ -516,7 +560,7 @@
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" class="m-0">
                                         @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
+                                        <button type="submit" class="dropdown-item text-danger" style="border: none; background: transparent;">
                                             <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>
                                             تسجيل خروج
                                         </button>

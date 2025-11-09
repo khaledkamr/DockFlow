@@ -9,7 +9,7 @@
             <div class="mb-4">
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية الخدمات #{{ $policy->id }}
+                    تفاصيل إتفاقية الخدمات #{{ $policy->code }}
                 </h2>
                 @if($policy->customer_id && $policy->customer && $policy->customer->contract)
                     <nav aria-label="breadcrumb">

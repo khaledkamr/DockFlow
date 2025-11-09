@@ -113,6 +113,7 @@ class PolicyController extends Controller
     public function storeReceivePolicy(PolicyRequest $request) {
         $selected_containers = $request->selected_containers;
         $containers = [];
+        
         foreach($selected_containers as $id) {
             $container = Container::findOrFail($id);
             $container->status = 'تم التسليم';

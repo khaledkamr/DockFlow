@@ -24,9 +24,9 @@
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}"
                             data-contract="{{ $customer->contract ? $customer->contract->id : null }}"
-                            data-storage_price="{{ $customer->contract ? $customer->contract->services[0]->pivot->price : null }}"
-                            data-storage_duration="{{ $customer->contract ? $customer->contract->services[0]->pivot->unit : null }}"
-                            data-late_fee="{{ $customer->contract ? $customer->contract->services[1]->pivot->price : null }}">
+                            data-storage_price="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->price : null }}"
+                            data-storage_duration="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit : null }}"
+                            data-late_fee="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية بعد المدة المتفق عليها')->first()->pivot->price : null }}">
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -89,21 +89,21 @@
             <h5 class="mb-3">سعر التخزين</h5>
             <div class="col">
                 <label class="form-label">سعر التخزين <span class="text-danger">*</span></label>
-                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0">
+                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0" min="0" step="1">
                 @error('storage_price')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">مدة التخزين <span class="text-danger">*</span></label>
-                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0">
+                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0" min="0" step="1">
                 @error('storage_duration')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">غرامة التأخير (لليوم) <span class="text-danger">*</span></label>
-                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0">
+                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0" min="0" step="1">
                 @error('late_fee')
                     <div class="text-danger">{{ $message }}</div>
                 @endif

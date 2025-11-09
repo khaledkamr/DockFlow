@@ -122,7 +122,7 @@ class ContractController extends Controller
         }
 
         $request->validate([
-            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:2048',
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         if($request->hasFile('attachment')) {

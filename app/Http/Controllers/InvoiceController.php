@@ -14,6 +14,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -163,6 +164,66 @@ class InvoiceController extends Controller
     public function storeClearanceInvoice(InvoiceRequest $request, Transaction $transaction) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        if($transaction->customer->contract) {
+            $containers_count = $transaction->containers->count();
+
+            if($transaction->customer->contract->services()->where('description', 'اجور تخليص')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور تخليص')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'اجور تخليص',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+
+            if($transaction->customer->contract->services()->where('description', 'اجور نقل حاوية فئة 20\40')->exists() ||
+               $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية وزن زائد')->exists() ||
+               $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية مبردة')->exists() ||
+               $transaction->customer->contract->services()->where('description', 'اجور نقل طرود LCL')->exists()) {
+                $price = 0;
+
+                foreach($transaction->containers as $container) {
+                    if ($container->containerType->name == 'فئة 20' || $container->containerType->name == 'فئة 40') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية فئة 20\40')->first()->pivot->price;
+                    } elseif ($container->containerType->name == 'وزن زائد') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية وزن زائد')->first()->pivot->price;
+                    } elseif ($container->containerType->name == 'حاوية مبردة') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية مبردة')->first()->pivot->price;
+                    } elseif ($container->containerType->name == 'طرود LCL') {
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل طرود LCL')->first()->pivot->price;
+                    }
+                }
+
+                $transaction->items()->create([
+                    'description' => 'اجور نقل',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+
+            if($transaction->customer->contract->services()->where('description', 'اجور عمال')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور عمال')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'اجور عمال',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
+
+            if($transaction->customer->contract->services()->where('description', 'خدمات سابر')->exists()) {
+                $price = $transaction->customer->contract->services->where('description', 'خدمات سابر')->first()->pivot->price * $containers_count;
+                $transaction->items()->create([
+                    'description' => 'خدمات سابر',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                ]);
+            }
         }
 
         $validated = $request->validated();
@@ -444,5 +505,78 @@ class InvoiceController extends Controller
     public function invoiceStatementDetails(InvoiceStatement $invoiceStatement) {
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
         return view('pages.invoices.statementDetails', compact('invoiceStatement', 'hatching_total'));
+    }
+
+    public function createShippingInvoice(Request $request) {
+        $customers = Customer::all(); 
+        $customer_id = $request->input('customer_id');
+        $shippingPolicies = ShippingPolicy::where('is_received', true)->where('customer_id', $customer_id)->get();
+        $shippingPolicies = $shippingPolicies->filter(function($policy) {
+            return $policy->invoices->filter(function($invoice) {
+                return $invoice->type == 'شحن';
+            })->isEmpty();
+        });
+
+        return view('pages.invoices.create_shipping_invoice', compact('customers', 'shippingPolicies'));
+    } 
+
+    public function storeShippingInvoice(InvoiceRequest $request) {
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        $validated = $request->validated();
+        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+        $invoice = Invoice::create($validated);
+
+        $policyIds = $request->input('shipping_policy_ids', []);
+        $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
+        $amountBeforeTax = 0;
+
+        foreach($shippingPolicies as $policy) {
+            $amountBeforeTax += $policy->client_cost;
+            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->client_cost]);
+        }
+
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax = $amountAfterDiscount * 0.15;
+        $amount = $amountAfterDiscount + $tax;
+
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
+        $invoice->save();
+
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
+    }
+
+    public function shippingInvoiceDetails(Invoice $invoice) {
+        $amountBeforeTax = 0;
+
+        foreach($invoice->shippingPolicies as $policy) {
+            $policy->total_cost = $policy->transportation_cost + $policy->customs_duties + $policy->additional_fees;
+            $amountBeforeTax += $policy->total_cost;  
+        }
+
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('pages.invoices.shipping_invoice_details', compact(
+            'invoice', 
+            'discountValue', 
+            'hatching_total', 
+            'qrCode',
+        ));
     }
 }

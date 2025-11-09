@@ -6,7 +6,7 @@
 <h1 class="mb-4">بيانات الشركة</h1>
 
 <div class="card border-0 shadow-sm bg-white p-4">
-    <form action="{{ route('company.update', $company) }}" method="POST">
+    <form action="{{ route('company.update', $company) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mb-4 bg-light p-3 rounded">
@@ -22,6 +22,20 @@
                     <label class="form-label">إسم الفرع</label>
                     <input type="text" name="branch" class="form-control border-primary" value="{{ $company->branch }}">
                     @error('branch')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col">
+                    <label class="form-label">شعار الشركة</label>
+                    <div class="d-flex align-items-start gap-3">
+                        <input type="file" name="logo" class="form-control border-primary" accept="image/*">
+                        @if($company->logo)
+                            <div class="flex-shrink-0">
+                                <img src="{{ asset('storage/' . $company->logo) }}" alt="شعار الشركة" class="img-thumbnail" style="max-width: 60px; max-height: 60px;">
+                            </div>
+                        @endif
+                    </div>
+                    @error('logo')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -49,7 +63,7 @@
                     @enderror
                 </div>
             </div>
-           <div class="row mb-4">
+            <div class="row mb-4">
                 <div class="col">
                     <label class="form-label">العنوان الوطني</label>
                     <input type="text" name="national_address" class="form-control border-primary" value="{{ $company->national_address }}">

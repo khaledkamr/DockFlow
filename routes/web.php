@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransportController;
 use App\Http\Controllers\SupplierController;
@@ -22,8 +23,6 @@ use Symfony\Component\Mailer\Transport;
 
 Route::controller(AdminController::class)->middleware('auth')->group(function() {
     Route::get('/', 'dashboard')->name('dashboard');
-    Route::get('/company/{company:uuid}', 'company')->name('company');
-    Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
     Route::get('users', 'users')->name('admin.users');
     Route::post('users/store', 'storeUser')->name('admin.users.store');
     Route::get('users/{user:uuid}', 'userProfile')->name('admin.user.profile');
@@ -113,8 +112,20 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('relation.vehicle.delete');
 });
 
+Route::controller(ShippingController::class)->middleware('auth')->group(function () {
+    Route::get('/shipping/policies', 'policies')->name('shipping.policies');
+    Route::get('/shipping/policies/create', 'createPolicy')->name('shipping.policies.create');
+    Route::post('/shipping/policies/store', 'storePolicy')->name('shipping.policies.store');
+    Route::patch('/shipping/policies/{policy:uuid}/update-notes', 'updateNotes')->name('shipping.policies.notes');
+    Route::get('/shipping/policies/{policy:uuid}', 'policyDetails')->name('shipping.policies.details');
+    Route::patch('/shipping/policies/{policy:uuid}/toggle-receive-status', 'toggleReceiveStatus')->name('shipping.policies.toggle');
+    Route::get('/shipping/reports', 'reports')->name('shipping.policies.reports');
+});
+
 Route::controller(CompanyController::class)->middleware('auth')->group(function () {
     Route::get('/companies', 'companies')->name('companies');
+    Route::get('/company/{company:uuid}', 'company')->name('company');
+    Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
     Route::post('/companies/{company:uuid}/add-modules', 'addModuleToCompany')->name('companies.add.modules');
     Route::patch('/companies/{company:uuid}/toggle-module/{moduleId}', 'toggleCompanyModule')->name('companies.toggle.module');
 });
@@ -149,6 +160,10 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoices/statements/create', 'createInvoiceStatement')->name('invoices.statements.create');
     Route::post('/invoices/statements/store', 'storeInvoiceStatement')->name('invoices.statements.store');
     Route::get('/invoices/statements/{invoiceStatement:uuid}', 'invoiceStatementDetails')->name('invoices.statements.details');
+
+    Route::get('/invoices/shipping/create', 'createShippingInvoice')->name('invoices.shipping.create');
+    Route::post('/invoices/shipping/store', 'storeShippingInvoice')->name('invoices.shipping.store');
+    Route::get('/invoices/shipping/{invoice:uuid}', 'shippingInvoiceDetails')->name('invoices.shipping.details');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -176,4 +191,6 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoice/statement/{code}', 'printInvoiceStatement')->name('print.invoice.statement');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
     Route::get('/export/transport/order/{transportOrder:id}', 'printTransportOrder')->name('export.transport.order');
+    Route::get('/export/shipping-policy/{policy:id}', 'printShippingPolicy')->name('export.shipping.policy');
+    Route::get('/print/invoice/shipping/{code}', 'printShippingInvoice')->name('print.invoice.shipping');
 });

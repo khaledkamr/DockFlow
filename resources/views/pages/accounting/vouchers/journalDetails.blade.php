@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'تفاصيل القيض')
+@section('title', 'تفاصيل القيد')
 
 @section('content')
 <h1 class="mb-4">تفاصيل القيد</h1>

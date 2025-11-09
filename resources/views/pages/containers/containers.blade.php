@@ -145,6 +145,16 @@
                             @elseif($container->status == 'قيد النقل')
                                 <div class="status-purple">{{ $container->status }}</div>
                             @endif
+
+                            @php
+                                $storage_policy = $container->policies->where('type', 'تخزين')->first();
+                            @endphp
+
+                            @if($container->status == 'في الساحة' && $storage_policy &&  $container->days > $storage_policy->storage_duration)
+                                <div class="text-danger fw-semibold mt-1" style="font-size: 0.85rem;">
+                                    متأخر منذ {{ (int) ($container->days - $storage_policy->storage_duration) }} أيام
+                                </div>
+                            @endif
                         </td>
                         <td>{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
                         <td>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>

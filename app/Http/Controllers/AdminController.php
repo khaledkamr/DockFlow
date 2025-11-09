@@ -24,6 +24,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -58,20 +59,6 @@ class AdminController extends Controller
             'containersTrend',
             'containersDistribution'
         ));
-    }
-
-    public function company(Company $company) {
-        $modules = Module::all();
-        return view('pages.company', compact('company', 'modules'));
-    }
-
-    public function updateCompany(CompanyRequest $request, Company $company) {
-        if(Gate::allows('تعديل بيانات الشركة') == false) {
-            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل بيانات الشركة');
-        }
-        $validated = $request->validated();
-        $company->update($validated);
-        return redirect()->back()->with('success', 'تم تحديث بيانات الشركة بنجاح');
     }
 
     public function users(Request $request) {
