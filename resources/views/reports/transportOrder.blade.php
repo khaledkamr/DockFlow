@@ -4,6 +4,7 @@
 <!-- Header -->
 <div class="text-center mb-4">
     <h3 class="fw-bold text-dark mb-2">إشعار نقل</h3>
+    <p class="text-muted mb-0">{{ $transportOrder->code }}</p>
 </div>
 
 <!-- بيانات الاتفاقية -->
@@ -66,15 +67,20 @@
                     <th class="fw-bold">#</th>
                     <th class="fw-bold">رقم اللوحة</th>
                     <th class="fw-bold">السائق</th>
-                    <th class="fw-bold">من</th>
-                    <th class="fw-bold">الى</th>
+                    <th class="fw-bold">مكان التحميل</th>
+                    <th class="fw-bold">مكان التسليم</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="text-center">
                     <td class="fw-bold">1</td>
-                    <td class="fw-bold">{{ $transportOrder->vehicle->plate_number }}</td>
-                    <td class="fw-bold">{{ $transportOrder->driver->name }}</td>
+                    @if($transportOrder->type == 'ناقل داخلي')
+                        <td class="fw-bold">{{ $transportOrder->vehicle->plate_number }}</td>
+                        <td class="fw-bold">{{ $transportOrder->driver->name }}</td>
+                    @elseif($transportOrder->type == 'ناقل خارجي')
+                        <td class="fw-bold">{{ $transportOrder->vehicle_plate }}</td>
+                        <td class="fw-bold">{{ $transportOrder->driver_name }}</td>
+                    @endif
                     <td>{{ $transportOrder->from }}</td>
                     <td>{{ $transportOrder->to }}</td>
                 </tr>
@@ -126,13 +132,13 @@
 <!-- منطقة التوقيعات -->
 <div class="d-flex justify-content-between position-absolute bottom-0 start-0 end-0 bg-white p-2 pb-5 mb-5">
     <div class="col-md-4 text-center">
-        <div class="border-top pt-3 mx-3">
+        <div class="border-top border-dark border-2 pt-3 mx-3">
             <strong>توقيع المسؤول</strong>
             <br>
         </div>
     </div>
     <div class="col-md-4 text-center">
-        <div class="border-top pt-3 mx-3">
+        <div class="border-top border-dark border-2 pt-3 mx-3">
             <strong>توقيع المستلم</strong>
             <br>
         </div>

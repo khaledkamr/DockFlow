@@ -33,21 +33,21 @@
                 @enderror
             </div>
             <div class="col">
-                <label class="form-label">من</label>
+                <label class="form-label">مكان التحميل</label>
                 <input type="text" class="form-control border-primary" id="from" name="from" value="{{ old('from') }}">
                 @error('from')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
-                <label class="form-label">إلى</label>
+                <label class="form-label">مكان التسليم</label>
                 <input type="text" class="form-control border-primary" id="to" name="to" value="{{ old('to') }}">
                 @error('to')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
-                <label class="form-label">مدة النقل (بالأيام)</label>
+                <label class="form-label">مدة النقل</label>
                 <input type="number" class="form-control border-primary" id="duration" name="duration" value="{{ old('duration') }}">
             </div>
         </div>
@@ -93,32 +93,39 @@
                 <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
                     <option value="">اختر المورد...</option>
                     @foreach ($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}" data-cr="{{ $supplier->CR }}" data-phone="{{ $supplier->phone }}"
-                            {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                        <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
                             {{ $supplier->name }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div class="col external-field" style="display: none">
-                <label class="form-label">السجل التجاري</label>
-                <input type="text" class="form-control border-primary" name="cr" id="cr" readonly>
+                <label class="form-label">إسم السائق</label>
+                <input type="text" class="form-control border-primary" name="driver_name" id="driver_name">
             </div>
             <div class="col external-field" style="display: none">
-                <label class="form-label">رقم الهاتف</label>
-                <input type="text" class="form-control border-primary" name="supplier_phone" id="supplier_phone" readonly>
+                <label class="form-label">لوحة السيارة</label>
+                <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate">
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col">
+            <div class="col external-field">
+                <label class="form-label">مصاريف المورد</label>
+                <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
+                    value="{{ old('supplier_cost') ?? 0}}">
+                @error('supplier_cost')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col internal-field">
                 <label class="form-label">مصاريف الديزل</label>
                 <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost" value="{{ old('diesel_cost') ?? 0}}">
                 @error('diesel_cost')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-            <div class="col">
+            <div class="col internal-field">
                 <label class="form-label">عمولة السائق</label>
                 <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage" value="{{ old('driver_wage') ?? 0 }}">
                 @error('driver_wage')
@@ -133,9 +140,9 @@
                 @enderror
             </div>
             <div class="col">
-                <label class="form-label">ملاحظات</label>
-                <input type="text" class="form-control border-primary" name="notes" id="notes" value="{{ old('notes') }}">
-                @error('notes')
+                <label class="form-label">سعر العميل</label>
+                <input type="number" class="form-control border-primary" id="client_cost" name="client_cost" value="{{ old('client_cost') ?? 0 }}">
+                @error('client_cost')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
@@ -240,15 +247,6 @@
     $('#supplier_id').select2({
         placeholder: "ابحث عن إسم المورد...",
         allowClear: true,
-    });
-
-    $('#supplier_id').on('change', function () {
-        let cr = $(this).find(':selected').data('cr');
-        $('#cr').val(cr || '');
-        let phone = $(this).find(':selected').data('phone');
-        $('#supplier_phone').val(phone || '');
-
-        
     });
 
     // Container search functionality
