@@ -334,7 +334,7 @@
                     role="button" 
                     aria-expanded="{{ request()->routeIs(['shipping.policies*']) ? 'true' : 'false' }}" 
                     aria-controls="shipping-policy-management">
-                        <i class="fa-solid fa-truck ms-2 me-2"></i> بوالــــص الشحــــن
+                        <i class="fa-solid fa-shipping-fast ms-2 me-2"></i> بوالــــص الشحــــن
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['shipping.policies*']) ? 'show' : '' }}" id="shipping-policy-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('shipping.policies') ? 'bg-primary text-white' : 'text-dark' }}" 
@@ -560,7 +560,7 @@
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" class="m-0">
                                         @csrf
-                                        <button type="submit" class="dropdown-item text-danger">
+                                        <button type="submit" class="dropdown-item text-danger" style="border: none; background: transparent;">
                                             <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>
                                             تسجيل خروج
                                         </button>

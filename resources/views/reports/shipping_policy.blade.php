@@ -1,5 +1,5 @@
 @extends('layouts.print')
-@section('title', 'إشعار نقل - ' . time())
+@section('title', 'بوليصة شحن - ' . $policy->code )
 @section('content')
     <!-- Header -->
     <div class="text-center mb-4">
@@ -35,7 +35,7 @@
                 <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات الناقل</h6>
                 <div class="row">
                     <div class="col">
-                        <p class="mb-2 small"><strong class="text-secondary">نوع الناقل:</strong><br>{{ $policy->type }}</p>
+                        <p class="mb-2 small"><strong class="text-secondary">اسم المورد:</strong><br>{{ $policy->supplier->name ?? ' ' }}</p>
                     </div>
                     @if($policy->type == 'ناقل داخلي')
                         <div class="col">
@@ -43,24 +43,21 @@
                         </div>
                     @elseif($policy->type == 'ناقل خارجي')
                         <div class="col">
-                            <p class="mb-2 small"><strong class="text-secondary">اسم المورد:</strong><br>{{ $policy->supplier->name }}</p>
+                            <p class="mb-2 small"><strong class="text-secondary">اسم السائق:</strong><br>{{ $policy->driver_name }}</p>
                         </div>
                     @endif
                 </div>
                 <div class="row">
+                    <div class="col">
+                        <p class="mb-2 small"><strong class="text-secondary">رقم الهوية:</strong><br>{{ $policy->driver->NID }}</p>
+                    </div>
                     @if($policy->type == 'ناقل داخلي')
-                        <div class="col">
-                            <p class="mb-2 small"><strong class="text-secondary">الرقم القومي:</strong><br>{{ $policy->driver->NID }}</p>
-                        </div>
                         <div class="col">
                             <p class="mb-2 small"><strong class="text-secondary">الشاحنة:</strong><br>{{ $policy->vehicle->plate_number . ' - ' . $policy->vehicle->type }}</p>
                         </div>
                     @elseif($policy->type == 'ناقل خارجي')
                         <div class="col">
-                            <p class="mb-2 small"><strong class="text-secondary">السجل التجاري:</strong><br>{{ $policy->supplier->CR }}</p>
-                        </div>
-                        <div class="col">
-                            <p class="mb-2 small"><strong class="text-secondary">رقم التواصل:</strong><br>{{ $policy->supplier->contact_number }}</p>
+                            <p class="mb-2 small"><strong class="text-secondary">الشاحنة:</strong><br>{{ $policy->vehicle_plate }}</p>
                         </div>
                     @endif
                 </div>
@@ -69,12 +66,11 @@
     </div>
 
     <div class="mb-4">
-        <h6 class="fw-bold text-dark mb-3">بيانات البضائغ</h6>
         <div class="table-responsive">
             <table class="table table-bordered table-hover mb-0">
                 <thead class="table-dark">
                     <tr class="text-center">
-                        <th class="fw-bold">البضاعة</th>
+                        <th class="fw-bold">البيان</th>
                         <th class="fw-bold">الكمية</th>
                         <th class="fw-bold">الوزن</th>
                         <th class="fw-bold">ملاحظات</th>
@@ -86,7 +82,7 @@
                             <td class="fw-bold">{{ $good->description }}</td>
                             <td class="fw-bold">{{ $good->quantity }}</td>
                             <td>{{ $good->weight }}</td>
-                            <td>{{ $good->notes ?? '---' }}</td>
+                            <td>{{ $good->notes }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -94,57 +90,60 @@
         </div>
     </div>
 
-    <!-- الشروط والأحكام -->
-    <div class="mb-4">
-        <div class="border rounded p-3 bg-light">
-            <h6 class="fw-bold text-dark mb-3">الشروط والأحكام</h6>
-            <ul class="list-unstyled mb-0">
-                <li class="mb-2">• المحتوبات المشار إليها أعله تقع على مسؤولية العميل ولا تقع على مسؤولية الناقل.</li>
-                <li class="mb-2">• عدد الطرود ومحتوياتها المذكورة أعله هي حسب تصريح العميل ولا تشكل اي مسؤولية على الناقل.
-                </li>
-            </ul>
-        </div>
-    </div>
-
     <!-- معلومات الوصول والتفريغ -->
     <div class="mb-4">
         <div class="border rounded p-3 bg-light">
-            <h6 class="fw-bold text-dark mb-3">معلومات الوصول والتفريغ</h6>
+            <h4 class="fw-bold text-center text-dark mb-4">اقرار العميل باستلام الحمولة</h4>
+            <div class="d-flex gap-3 mb-4">
+                <h6 class="fw-bold text-dark">تم استلام حميع محتويات البضاعة في المكان والزمان المحدد بدون نقض او تلف</h6>
+                <div class="form-check d-inline-block me-3">
+                    <input class="form-check-input form-check-input-lg" type="checkbox" style="transform: scale(1.5);">
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6 text-start">
                     <div class="mb-4">
-                        <label class="fw-bold text-secondary mb-2">تاريخ التفريغ:</label>
-                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 200px;"></div>
+                        <label class="fw-bold text-secondary mb-2">تاريخ  الاستلام:</label>
+                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
                     </div>
                     <div class="mb-4">
-                        <label class="fw-bold text-secondary mb-2">وقت التفريغ:</label>
-                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 200px;"></div>
+                        <label class="fw-bold text-secondary mb-2">الكمية المستلمة:</label>
+                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
                     </div>
                 </div>
                 <div class="col-md-6 text-start">
                     <div class="mb-4">
-                        <label class="fw-bold text-secondary mb-2">تاريخ الوصول:</label>
-                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 200px;"></div>
+                        <label class="fw-bold text-secondary mb-2">فترة التأخير:</label>
+                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
                     </div>
                     <div class="mb-4">
-                        <label class="fw-bold text-secondary mb-2">وقت الوصول:</label>
-                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 200px;"></div>
+                        <label class="fw-bold text-secondary mb-2">من مواقع اخرى:</label>
+                        <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- الملاحظات -->
+    <div class="mb-4">
+        <div class="border rounded p-3 bg-light">
+            <h4 class="fw-bold text-center text-dark mb-3">الملاحظات</h4>
+            <h6 class="fw-bold text-dark mb-3">تم تدوبن الملاحظات ان وجدت بحضور مندوب من الناقل ومندوب من العميل والسائق:</h6>
+            <div style="min-height: 80px;"></div>
         </div>
     </div>
 
     <!-- منطقة التوقيعات -->
     <div class="d-flex justify-content-between position-absolute bottom-0 start-0 end-0 bg-white p-2 pb-5 mb-5">
         <div class="col-md-4 text-center">
-            <div class="border-top pt-3 mx-3">
-                <strong>توقيع المسؤول</strong>
+            <div class="border-top border-dark border-2 pt-3 mx-3">
+                <strong>اسم المستلم</strong>
                 <br>
             </div>
         </div>
         <div class="col-md-4 text-center">
-            <div class="border-top pt-3 mx-3">
+            <div class="border-top border-dark border-2 pt-3 mx-3">
                 <strong>توقيع المستلم</strong>
                 <br>
             </div>

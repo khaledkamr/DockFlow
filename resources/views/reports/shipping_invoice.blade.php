@@ -9,7 +9,7 @@
     .summary-total { border-top: 2px solid #2c3e50; }
 </style>
 
-<div class="border-bottom border-3 border-dark pb-3 mb-4">
+<div class="mb-4">
     <h5 class="fw-bold text-center mb-1 text-dark" style="font-size: 1.75rem;">فاتورة ضريبية</h5>
     <p class="text-center text-muted mb-0 small">TAX INVOICE</p>
 </div>
@@ -58,11 +58,13 @@
                 <tr class="table-dark">
                     <th class="text-center fw-semibold" style="white-space: nowrap;">#</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">رقم البوليصة</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">نوع النقل</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">تاريخ البوليصة</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">عدد البضائع</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">البيان</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">اسم السائق</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم اللوحة</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">مكان التحميل</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">مكان التسليم</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">مصاريف اخرى</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">المبلغ</th>
                 </tr>
             </thead>
@@ -71,11 +73,18 @@
                     <tr>
                         <td class="text-center small">{{ $index + 1 }}</td>
                         <td class="text-center small">{{ $policy->code }}</td>
-                        <td class="text-center small">{{ $policy->type }}</td>
                         <td class="text-center small" style="white-space: nowrap;">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                        <td class="text-center small">{{ $policy->goods->count() }}</td>
+                        <td class="text-center small">{{ $policy->goods->first()->description ?? '---' }}</td>
+                        @if($policy->type == 'ناقل داخلي')
+                            <td class="text-center small">{{ $policy->driver->name }}</td>
+                            <td class="text-center small">{{ $policy->vehicle->plate_number }}</td>
+                        @elseif ($policy->type == 'ناقل خارجي')
+                            <td class="text-center small">{{ $policy->driver_name }}</td>
+                            <td class="text-center small">{{ $policy->vehicle_plate }}</td>
+                        @endif
                         <td class="text-center small">{{ $policy->from }}</td>
                         <td class="text-center small">{{ $policy->to }}</td>
+                        <td class="text-center small">{{ $policy->other_expenses }}</td>
                         <td class="text-center small">{{ number_format($policy->pivot->amount, 2) }}</td>
                     </tr>
                 @endforeach

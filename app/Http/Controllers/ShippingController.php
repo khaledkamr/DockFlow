@@ -92,6 +92,16 @@ class ShippingController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء بوليصة شحن جديدة, <a class="text-white fw-bold" href="'.route('shipping.policies.details', $policy).'">عرض البوليصة؟</a>');
     } 
 
+    public function updateNotes(Request $request, ShippingPolicy $policy) {
+        $request->validate([
+            'notes' => 'nullable|string',
+        ]);
+
+        $policy->update($request->only('notes'));
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات بوليصة الشحن بنجاح');
+    }
+
     public function policyDetails(ShippingPolicy $policy) {
         return view('pages.shipping.policy_details', compact('policy'));
     }

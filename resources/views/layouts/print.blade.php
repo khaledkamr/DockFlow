@@ -39,23 +39,41 @@
     </style>
 </head>
 <body onload="initPrint()">
-    <div class="d-flex justify-content-center">
-        <div class="text-center">
+    <div class="position-relative border-bottom border-dark border-2 pb-2 mb-2">
+        <div class="position-absolute start-0 top-0">
+            <div class="text-muted mb-1">
+                <span>الرقم الضريبي: </span>
+                <span class="fw-semibold">{{ $company->TIN ?? 'غير محدد' }}</span>
+            </div>
+            <div class="text-muted">
+                <span>السجل التجاري: </span>
+                <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
+            </div>
+            <div class="text-muted">
+                <span>العنوان الوطني: </span>
+                <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
+            </div>
+        </div>
+        <div class="logo-section text-center">
             @if($company->logo)
-                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 100px;">
+                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 150px;">
             @else
                 <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
             @endif
-            <h6 class="fw-bold">{{ $company->name }}</h6>
-            <div style="font-size: 15px;">
-                CR: {{ $company->CR }} | 
-                TIN: {{ $company->TIN }} | 
-                phone: <span class="text-primary">{{ $company->phone }}</span> | 
-                email: <span class="text-primary">{{ $company->email }} </span>
+            <h4 class="fw-bold">{{ $company->name }}</h4>
+        </div>
+        <div class="position-absolute end-0 top-0">
+            <div class="text-muted mb-1">
+                <span>رقم التواصل: </span>
+                <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
             </div>
+            <div class="text-muted">
+                <span>البريد الإلكتروني: </span>
+                <span class="fw-semibold">{{ $company->email ?? 'غير محدد' }}</span>
+            </div>
+            
         </div>
     </div>
-    <hr class="mt-1">
 
     <div class="position-fixed bottom-0 start-0 end-0 bg-white border-top p-2 no-print-footer" style="z-index: 9999;">
         <div class="d-flex justify-content-between small text-muted">
@@ -69,7 +87,6 @@
             </div>
         </div>
     </div>
-
 
     @yield('content')
 

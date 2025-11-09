@@ -160,7 +160,7 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0 text-dark">
-                    <i class="fas fa-boxes me-2"></i>تفاصيل البوالص
+                    <i class="fas fa-shipping-fast me-2"></i>تفاصيل البوالص
                 </h5>
                 <span class="badge bg-primary text-white">عدد البوالص: {{ count($invoice->shippingPolicies) }}</span>
             </div>
@@ -171,11 +171,13 @@
                         <tr>
                             <th class="text-center bg-dark text-white">#</th>
                             <th class="text-center bg-dark text-white">رقم البوليصة</th>
-                            <th class="text-center bg-dark text-white">نوع النقل</th>
                             <th class="text-center bg-dark text-white">تاريخ البوليصة</th>
-                            <th class="text-center bg-dark text-white">عدد البضائع</th>
+                            <th class="text-center bg-dark text-white">البيان</th>
+                            <th class="text-center bg-dark text-white">اسم السائق</th>
+                            <th class="text-center bg-dark text-white">رقم اللوحة</th>
                             <th class="text-center bg-dark text-white">مكان التحميل</th>
                             <th class="text-center bg-dark text-white">مكان التسليم</th>
+                            <th class="text-center bg-dark text-white">مصاريف اخرى</th>
                             <th class="text-center bg-dark text-white">المبلغ</th>
                         </tr>
                     </thead>
@@ -189,19 +191,24 @@
                                     </a>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge {{ $policy->type == 'ناقل داخلي' ? 'status-available' : 'status-danger' }}">
-                                        {{ $policy->type }}
-                                    </span>
+                                    {{ $policy->date ? Carbon\Carbon::parse($policy->date)->format('d/m/Y') : '---' }}
+                                </td>
+                                <td class="text-center fw-bold">{{ $policy->goods->first()->description ?? '---' }}</td>
+                                <td class="text-center">
+                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}
                                 </td>
                                 <td class="text-center">
-                                    <small>{{ $policy->date ? Carbon\Carbon::parse($policy->date)->format('d/m/Y') : '---' }}</small>
+                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
                                 </td>
-                                <td class="text-center fw-bold">{{ $policy->goods ? $policy->goods->count() : 0 }}</td>
-                                <td class="text-center">
-                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from ?? 'N/A' }}
-                                </td>
-                                <td class="text-center">
-                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to ?? 'N/A' }}
+                                @if($policy->type == 'ناقل داخلي')
+                                    <td class="text-center fw-bold">{{ $policy->driver->name }}</td>
+                                    <td class="text-center fw-bold">{{ $policy->vehicle->plate_number }}</td>
+                                @elseif ($policy->type == 'ناقل خارجي')
+                                    <td class="text-center fw-bold">{{ $policy->driver_name }}</td>
+                                    <td class="text-center fw-bold">{{ $policy->vehicle_plate }}</td>
+                                @endif
+                                <td class="text-center fw-bold text-success">
+                                    {{ $policy->other_expenses }} <i data-lucide="saudi-riyal"></i>
                                 </td>
                                 <td class="text-center fw-bold text-success">
                                     {{ number_format($policy->pivot->amount, 2) }} <i data-lucide="saudi-riyal"></i>

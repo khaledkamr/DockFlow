@@ -153,7 +153,7 @@
                 <table class="table table-striped">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center">البضاعة</th>
+                            <th class="text-center">البيان</th>
                             <th class="text-center">الكمية</th>
                             <th class="text-center">الوزن</th>
                             <th class="text-center">ملاحظات</th>
@@ -177,6 +177,28 @@
                 <p>لا توجد بضائع مرتبطة بهذه البوليصة</p>
             </div>
         @endif
+    </div>
+</div>
+
+<!-- الملاحظات -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="fa-solid fa-sticky-note"></i> الملاحظات</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ route('shipping.policies.notes', $policy) }}">
+            @csrf
+            @method('PATCH')
+            <div class="mb-3">
+                <textarea class="form-control" id="notes" name="notes" rows="3" 
+                    placeholder="اكتب الملاحظات هنا...">{{ old('notes', $policy->notes) }}</textarea>
+            </div>
+            <div class="text-start">
+                <button type="submit" class="btn btn-primary">
+                    حفظ الملاحظات
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
