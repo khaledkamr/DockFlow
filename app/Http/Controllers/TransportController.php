@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\DriverRequest;
 use App\Http\Requests\TransportRequest;
 use App\Http\Requests\VehicleRequest;
+use App\Models\Account;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Customer;
 use App\Models\Driver;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryLine;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use App\Models\Vehicle;
@@ -76,7 +79,46 @@ class TransportController extends Controller
             $transaction->save();
         }
 
+        if($transportOrder->type == 'ناقل خارجي') {
+            $supplierAccount = $transportOrder->supplier ? $transportOrder->supplier->account : null;
+            $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
+
+            $journal = JournalEntry::create([
+                'type' => 'قيد يومي',
+                'date' => $transportOrder->date,
+                'totalDebit' => $transportOrder->supplier_cost,
+                'totalCredit' => $transportOrder->supplier_cost,
+                'user_id' => $transportOrder->user_id
+            ]);
+
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $supplierAccount ? $supplierAccount->id : null,
+                'debit' => 0,
+                'credit' => $transportOrder->supplier_cost,
+                'description' => 'بوليصة شحن رقم '.$transportOrder->code
+            ]);
+
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $creditAccount ? $creditAccount->id : null,
+                'debit' => $transportOrder->supplier_cost,
+                'credit' => 0,
+                'description' => 'بوليصة شحن رقم '.$transportOrder->code
+            ]);
+        }
+
         return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
+    }
+
+    public function updateNotes(Request $request, TransportOrder $transportOrder) {
+        $request->validate([
+            'notes' => 'nullable|string',
+        ]);
+
+        $transportOrder->update($request->only('notes'));
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات اشعار النقل بنجاح');
     }
 
     public function transportOrderDetails(TransportOrder $transportOrder) {

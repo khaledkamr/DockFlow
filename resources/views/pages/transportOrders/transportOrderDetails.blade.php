@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>
-        <i class="fa-solid fa-truck-fast"></i> تفاصيل إشعار النقل
+        <i class="fa-solid fa-truck-fast"></i> تفاصيل إشعار النقل {{ $transportOrder->code }}
     </h1>
     <a href="{{ route('export.transport.order', $transportOrder) }}" target="_blank" class="btn btn-outline-primary">
         <i class="fa-solid fa-print"></i> طباعة الإشعار
@@ -23,12 +23,8 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col">
-                        <label class="text-muted small">رقم الإشعار</label>
-                        <p class="fw-bold mb-0">{{ $transportOrder->code }}</p>
-                    </div>
-                    <div class="col">
-                        <label class="text-muted small">رقم المعاملة</label>
-                        <a href="{{ route('transactions.details', $transportOrder->transaction) }}" class="text-decoration-none text-dark fw-bold">
+                        <label class="text-muted small d-block">رقم المعاملة</label>
+                        <a href="{{ route('transactions.details', $transportOrder->transaction) }}" class="text-decoration-none text-primary fw-bold">
                             {{ $transportOrder->transaction->code }}
                         </a>
                     </div>
@@ -39,12 +35,12 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label class="text-muted small">من</label>
-                        <p class="fw-semibold mb-0">{{ $transportOrder->from }}</p>
+                        <label class="text-muted small">مكان التحميل</label>
+                        <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i> {{ $transportOrder->from }}</p>
                     </div>
                     <div class="col">
-                        <label class="text-muted small">الى</label>
-                        <p class="fw-semibold mb-0">{{ $transportOrder->to }}</p>
+                        <label class="text-muted small">مكان التسليم</label>
+                        <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i> {{ $transportOrder->to }}</p>
                     </div>
                 </div>
             </div>
@@ -64,7 +60,7 @@
                         <p class="fw-bold mb-0">{{ $transportOrder->type }}</p>
                     </div>
                     <div class="col">
-                        <label class="text-muted small">الاسم</label>
+                        <label class="text-muted small">{{ $transportOrder->driver ? 'اسم السائق' : 'اسم المورد' }}</label>
                         <p class="fw-bold mb-0">{{ $transportOrder->driver->name ?? $transportOrder->supplier->name ?? '--' }}</p>
                     </div>
                 </div>
@@ -80,12 +76,12 @@
                         </div>
                     @elseif($transportOrder->type == 'ناقل خارجي')
                         <div class="col">
-                            <label class="text-muted small">السجل التجاري</label>
-                            <p class="fw-semibold mb-0">{{ $transportOrder->supplier->CR ?? 'N/A' }}</p>
+                            <label class="text-muted small">اسم السائق</label>
+                            <p class="fw-semibold mb-0">{{ $transportOrder->driver_name ?? 'N/A' }}</p>
                         </div>
                         <div class="col">
                             <label class="text-muted small">رقم التواصل</label>
-                            <p class="fw-semibold mb-0">{{ $transportOrder->supplier->contact_number ?? 'N/A' }}</p>
+                            <p class="fw-semibold mb-0">{{ $transportOrder->vehicle_plate ?? 'N/A' }}</p>
                         </div>
                     @endif
                 </div>
@@ -101,21 +97,28 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-3">
-                <label class="text-muted small">تكلفة الديزل</label>
-                <p class="fw-bold mb-0">{{ number_format($transportOrder->diesel_cost, 2) }} ريال</p>
-            </div>
-            <div class="col-md-3">
-                <label class="text-muted small">أجرة السائق</label>
-                <p class="fw-bold mb-0">{{ number_format($transportOrder->driver_wage, 2) }} ريال</p>
-            </div>
+            @if($transportOrder->type == 'ناقل داخلي')
+                <div class="col-md-3">
+                    <label class="text-muted small">تكلفة الديزل</label>
+                    <p class="fw-bold mb-0">{{ number_format($transportOrder->diesel_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
+                </div>
+                <div class="col-md-3">
+                    <label class="text-muted small">أجرة السائق</label>
+                    <p class="fw-bold mb-0">{{ number_format($transportOrder->driver_wage, 2) }} <i data-lucide="saudi-riyal"></i></p>
+                </div>
+            @elseif($transportOrder->type == 'ناقل خارجي')
+                <div class="col-md-3">
+                    <label class="text-muted small">تكلفة المورد</label>
+                    <p class="fw-bold mb-0">{{ number_format($transportOrder->supplier_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
+                </div>
+            @endif
             <div class="col-md-3">
                 <label class="text-muted small">مصروفات أخرى</label>
-                <p class="fw-bold mb-0">{{ number_format($transportOrder->other_expenses, 2) }} ريال</p>
+                <p class="fw-bold mb-0">{{ number_format($transportOrder->other_expenses, 2) }} <i data-lucide="saudi-riyal"></i></p>
             </div>
             <div class="col-md-3">
-                <label class="text-muted small">التكلفة الإجمالية</label>
-                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($transportOrder->total_cost, 2) }} ريال</p>
+                <label class="text-muted small">سعر العميل</label>
+                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($transportOrder->client_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
             </div>
         </div>
     </div>
@@ -172,48 +175,33 @@
     </div>
 </div>
 
+<!-- الملاحظات -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0"><i class="fa-solid fa-sticky-note"></i> الملاحظات</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ route('transportOrders.notes', $transportOrder) }}">
+            @csrf
+            @method('PATCH')
+            <div class="mb-3">
+                <textarea class="form-control" id="notes" name="notes" rows="3" 
+                    placeholder="اكتب الملاحظات هنا...">{{ old('notes', $transportOrder->notes) }}</textarea>
+            </div>
+            <div class="text-start">
+                <button type="submit" class="btn btn-primary">
+                    حفظ الملاحظات
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
     .card {
         border: none;
         border-radius: 10px;
         overflow: hidden;
-    }
-    
-    .card-header {
-        border: none;
-        padding: 1rem 1.25rem;
-    }
-    
-    .bg-primary {
-        background-color: #0d6efd !important;
-    }
-    
-    .bg-info {
-        background-color: #0dcaf0 !important;
-    }
-    
-    .text-primary {
-        color: #0d6efd !important;
-    }
-    
-    .shadow-sm {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-    }
-    
-    label.text-muted {
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-        display: block;
-    }
-    
-    .table th {
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-    
-    .badge {
-        font-size: 0.85rem;
-        padding: 0.35em 0.65em;
     }
 </style>
 @endsection

@@ -36,6 +36,8 @@
                     <th class="text-center bg-dark text-white">كود المعاملة</th>
                     <th class="text-center bg-dark text-white">إسم العميل</th>
                     <th class="text-center bg-dark text-white">تاريخ الإشعار</th>
+                    <th class="text-center bg-dark text-white">مكان التحميل</th>
+                    <th class="text-center bg-dark text-white">مكان التسليم</th>
                     <th class="text-center bg-dark text-white">تم بواسطة</th>
                     <th class="text-center bg-dark text-white">الإجراءات</th>
                 </tr>
@@ -64,6 +66,12 @@
                             </td>
                             <td class="text-center">
                                 {{ Carbon\Carbon::parse($order->date ?? $order->created_at)->format('Y/m/d') }}
+                            </td>
+                            <td class="text-center fw-bold">
+                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $order->from }}
+                            </td>
+                            <td class="text-center fw-bold">
+                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $order->to }}
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $order->made_by) }}" class="text-dark text-decoration-none">

@@ -102,6 +102,7 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::get('/transport/orders', 'transportOrders')->name('transactions.transportOrders');
     Route::get('/transport/orders/create', 'createTransportOrder')->name('transactions.transportOrders.create');
     Route::post('/transport/orders/store', 'storeTransportOrder')->name('transportOrders.store');
+    Route::patch('/transport/orders/{transportOrder:uuid}/update-notes', 'updateNotes')->name('transportOrders.notes');
     Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
     Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('relation.drivers.vehicles');
     Route::post('drivers/store', 'storeDriver')->name('relation.driver.store');
