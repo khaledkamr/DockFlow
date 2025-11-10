@@ -179,7 +179,7 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            if($transaction->customer->contract->services()->where('description', 'اجور نقل حاوية فئة 20\40')->exists() ||
+            if($transaction->customer->contract->services()->where('description', 'اجور نقل حاوية فئة 20/40')->exists() ||
                $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية وزن زائد')->exists() ||
                $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية مبردة')->exists() ||
                $transaction->customer->contract->services()->where('description', 'اجور نقل طرود LCL')->exists()) {
@@ -187,7 +187,7 @@ class InvoiceController extends Controller
 
                 foreach($transaction->containers as $container) {
                     if ($container->containerType->name == 'فئة 20' || $container->containerType->name == 'فئة 40') {
-                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية فئة 20\40')->first()->pivot->price;
+                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية فئة 20/40')->first()->pivot->price;
                     } elseif ($container->containerType->name == 'وزن زائد') {
                         $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية وزن زائد')->first()->pivot->price;
                     } elseif ($container->containerType->name == 'حاوية مبردة') {

@@ -65,13 +65,42 @@ class ContractController extends Controller
 
         return redirect()->back()->with('success', 'تم إنشاء عقد جديد بنجاح, <a class="text-white fw-bold" href="'.route('contracts.details', $contract).'">عرض العقد؟</a>');
     }
+    
+    public function updateContract(Request $request, Contract $contract) {
+        if(Gate::denies('تعديل بيانات العقد') == true) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية التعديل على بيانات العقد');
+        }
+
+        if($request->has('start_date')) {
+            $contract->start_date = $request->start_date;
+            $contract->end_date = $request->end_date;
+            $contract->payment_grace_period = $request->payment_grace_period;
+            $contract->payment_grace_period_unit = $request->payment_grace_period_unit;
+            $contract->save();
+        }
+        
+        if($request->has('services')) {
+            $contract->services()->detach();
+            foreach($request->services as $service) {
+                $contract->services()->attach($service['service_id'], [
+                    'price' => $service['price'],
+                    'unit' => $service['unit'],
+                    'unit_desc' => $service['unit_desc']
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات العقد بنجاح');
+    }
 
     public function contractDetails(Contract $contract) {
         $start = Carbon::parse($contract->start_date);
         $end = Carbon::parse($contract->end_date);
         $months = $start->diffInMonths($end);
         $days = $start->copy()->addMonths($months)->diffInDays($end);
-        return view('pages.contracts.contractDetails', compact('contract', 'months', 'days'));
+        $services = Service::all();
+
+        return view('pages.contracts.contractDetails', compact('contract', 'months', 'days', 'services'));
     }
 
     public function services() {

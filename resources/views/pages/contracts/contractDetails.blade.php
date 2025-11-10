@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'تفاصيل العقد #' . $contract->id)
+@section('title', 'تفاصيل العقد')
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h3 text-primary">
+            <h2 class="h3 text-dark">
                 <i class="fas fa-file-contract me-2"></i>
                 تفاصيل العقد 
             </h2>
@@ -17,12 +17,16 @@
             </div>
         </div>
 
+        <!-- معلومات العقد الأساسية -->
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-info-circle me-2"></i>
                     معلومات العقد الأساسية
                 </h5>
+                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editDurationModal">
+                    تعديل المدة
+                </button>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -56,6 +60,51 @@
             </div>
         </div>
 
+        <!-- تعديل مدة العقد Modal -->
+        <div class="modal fade" id="editDurationModal" tabindex="-1" aria-labelledby="editDurationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="editDurationModalLabel">تعديل مدة العقد</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('contracts.update', $contract) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body text-dark">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label class="form-label">تاريخ البداية</label>
+                                    <input type="date" class="form-control border-primary" name="start_date" value="{{ $contract->start_date }}" required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">تاريخ الإنتهاء</label>
+                                    <input type="date" class="form-control border-primary" name="end_date" value="{{ $contract->end_date }}" required>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label class="form-label">فترة السماح للدفع</label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" min="1" step="1" class="form-control border-primary" name="payment_grace_period" value="{{ $contract->payment_grace_period }}" required>
+                                        <select name="payment_grace_period_unit" class="form-select border-primary" style="flex: 0 0 140px; width: 140px;" required>
+                                            <option value="يوم" {{ $contract->payment_grace_period_unit == 'يوم' ? 'selected' : '' }}>يوم</option>
+                                            <option value="أيام" {{ $contract->payment_grace_period_unit == 'ايام' ? 'selected' : '' }}>أيام</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary fw-bold">حفظ التعديلات</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- معلومات الطرفين -->
         <div class="row">
             <div class="col-lg-6 mb-4">
                 <div class="card border-0 shadow-sm h-100">
@@ -168,12 +217,16 @@
             </div>
         </div>
 
+        <!-- الخدمات والأسعار -->
         <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-cogs me-2"></i>
                     الخدمات والأسعار
                 </h5>
+                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editServicesModal">
+                    تعديل الخدمات
+                </button>
             </div>
             <div class="card-body">
                 <div class="row g-4">
@@ -184,18 +237,17 @@
                                     <div class="service-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
                                         <i class="bi bi-tools"></i>
                                     </div>
-                                    <h6 class="mb-0 text-primary">الخدمة #{{ $index + 1 }}</h6>
+                                    <h6 class="mb-0 text-primary">{{ $service->description }}</h6>
                                 </div>
-                                <p class="text-muted mb-2">{{ $service->description }}</p>
                                 <div class="row">
                                     <div class="col-6">
                                         <small class="text-muted">السعر</small>
-                                        <div class="fw-bold text-success">
+                                        <div class="fw-bold text-dark">
                                             {{ $service->pivot->price }} <i data-lucide="saudi-riyal"></i>
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <small class="text-muted">المدة</small>
+                                        <small class="text-muted">المدة/الكمية</small>
                                         <div class="fw-bold text-dark">{{ $service->pivot->unit . ' ' . $service->pivot->unit_desc }}</div>
                                     </div>
                                 </div>
@@ -206,7 +258,134 @@
             </div>
         </div>
 
-        <!-- File Attachments Section -->
+
+        <div class="modal fade" id="editServicesModal" tabindex="-1" aria-labelledby="editServicesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="editServicesModalLabel">تعديل خدمات العقد</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('contracts.update', $contract) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body text-dark">
+                            <div id="services-container">
+                                @foreach($contract->services as $index => $service)
+                                    <div class="service-item border border-primary rounded p-3 mb-3" data-index="{{ $index }}">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0 text-primary">الخدمة {{ $index + 1 }}</h6>
+                                            <button type="button" class="btn btn-sm btn-outline-danger remove-service">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="services[{{ $index }}][service_id]" value="{{ $service->id }}">
+                                        
+                                        <div class="row g-3">
+                                            <div class="col-6">
+                                                <label class="form-label">وصف الخدمة</label>
+                                                <input type="text" class="form-control border-primary" name="services[{{ $index }}][description]" 
+                                                       value="{{ $service->description }}" required>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-label">السعر</label>
+                                                <input type="number" step="1" min="0" class="form-control border-primary" name="services[{{ $index }}][price]" 
+                                                       value="{{ $service->pivot->price }}" required>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-label">المدة/الكمية</label>
+                                                <input type="number" step="1" min="1" value="1" class="form-control border-primary" name="services[{{ $index }}][unit]" 
+                                                       value="{{ $service->pivot->unit }}" required>
+                                            </div>
+                                            <div class="col-2">
+                                                <label class="form-label">وصف الوحدة</label>
+                                                <input type="text" class="form-control border-primary" name="services[{{ $index }}][unit_desc]" 
+                                                       value="{{ $service->pivot->unit_desc }}" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <button type="button" class="btn btn-outline-primary" id="add-service">
+                                    <i class="fas fa-plus me-1"></i>
+                                    إضافة خدمة جديدة
+                                </button>
+                            </div>
+
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                let serviceIndex = {{ $contract->services->count() }};
+                                
+                                // Add new service
+                                document.getElementById('add-service').addEventListener('click', function() {
+                                    const container = document.getElementById('services-container');
+                                    const newService = `
+                                        <div class="service-item border border-primary rounded p-3 mb-3" data-index="${serviceIndex}">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0 text-primary">خدمة جديدة ${serviceIndex + 1}</h6>
+                                                <button type="button" class="btn btn-sm btn-outline-danger remove-service">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <label class="form-label">وصف الخدمة</label>
+                                                    <select class="form-select border-primary" name="services[${serviceIndex}][service_id]" required>
+                                                        <option value="">اختر الخدمة</option>
+                                                        @foreach($services as $service)
+                                                            <option value="{{ $service->id }}">{{ $service->description }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-2">
+                                                    <label class="form-label">السعر</label>
+                                                    <input type="number" step="1" min="0" class="form-control border-primary" 
+                                                           name="services[${serviceIndex}][price]" required>
+                                                </div>
+                                                <div class="col-2">
+                                                    <label class="form-label">المدة/الكمية</label>
+                                                    <input type="number" step="1" min="1" value="1" class="form-control border-primary" 
+                                                           name="services[${serviceIndex}][unit]" required>
+                                                </div>
+                                                <div class="col-2">
+                                                    <label class="form-label">وصف الوحدة</label>
+                                                    <input type="text" class="form-control border-primary" 
+                                                           name="services[${serviceIndex}][unit_desc]" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    container.insertAdjacentHTML('beforeend', newService);
+                                    serviceIndex++;
+                                });
+                                
+                                // Remove service
+                                document.addEventListener('click', function(e) {
+                                    if (e.target.closest('.remove-service')) {
+                                        const serviceItem = e.target.closest('.service-item');
+                                        if (document.querySelectorAll('.service-item').length > 1) {
+                                            serviceItem.remove();
+                                        } else {
+                                            alert('يجب أن يحتوي العقد على خدمة واحدة على الأقل');
+                                        }
+                                    }
+                                });
+                            });
+                            </script>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary fw-bold">حفظ التعديلات</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- مرفقات العقد -->
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <h5 class="card-title mb-0">
@@ -215,7 +394,6 @@
                 </h5>
             </div>
             <div class="card-body">
-                <!-- Upload Form -->
                 <div class="row mb-4">
                     <div class="col-12">
                         <form action="{{ route('contracts.add.attachment', $contract) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-3">

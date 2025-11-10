@@ -136,6 +136,7 @@ Route::controller(ContractController::class)->middleware('auth')->group(function
     Route::get('/contracts', 'contracts')->name('contracts');
     Route::get('/contracts/create', 'createContract')->name('contracts.create');
     Route::post('/contracts/store', 'storeContract')->name('contracts.store');
+    Route::patch('/contracts/update/{contract:uuid}', 'updateContract')->name('contracts.update');
     Route::get('/contracts/{contract:uuid}', 'contractDetails')->name('contracts.details');
     Route::post('/contracts/update/{contract:uuid}', 'updateContract')->name('contracts.update');
     Route::get('/services', 'services')->name('contracts.services');

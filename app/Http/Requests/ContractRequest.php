@@ -14,8 +14,8 @@ class ContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start_date' => 'required',
-            'end_date' => 'required',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'user_id' => 'nullable|exists:users,id',
             'company_id' => 'required',
             'company_representative' => 'required',
