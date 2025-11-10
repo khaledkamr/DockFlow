@@ -5,10 +5,45 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>الصلاحيات والوظائف</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">
-        <i class="fa-solid fa-plus me-2"></i>
-        إضافة وظيفة جديدة
-    </button>
+    <div>
+        {{-- @if(auth()->user()->roles->pluck('name')->contains('Super Admin')) --}}
+            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+                <i class="fa-solid fa-plus me-2"></i>
+                إضافة صلاحية جديدة
+            </button>
+        {{-- @endif   --}}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+            <i class="fa-solid fa-plus me-2"></i>
+            إضافة وظيفة جديدة
+        </button>
+    </div>
+</div>
+
+<!-- Add permission modal -->
+<div class="modal fade" id="addPermissionModal" tabindex="-1" aria-labelledby="addPermissionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-dark fw-bold" id="addPermissionModalLabel">إضافة صلاحية جديدة</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('admin.permissions.store') }}" method="POST">
+                @csrf
+                <div class="modal-body text-dark">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label class="form-label">اسم الصلاحية</label>
+                            <input type="text" class="form-control border-primary" name="name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-start">
+                    <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="table-container">

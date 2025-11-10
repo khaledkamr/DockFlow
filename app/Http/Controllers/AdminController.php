@@ -202,4 +202,11 @@ class AdminController extends Controller
         $role->delete();
         return redirect()->back()->with('success', 'تم حذف الوظيفة بنجاح');
     }
+
+    public function storePermission(Request $request) {
+        $request->validate(['name' => 'required|string|max:255|unique:permissions,name']);
+        Permission::create(['name' => $request->name]);
+
+        return redirect()->back()->with('success', 'تم إضافة صلاحية جديدة بنجاح');
+    }
 }

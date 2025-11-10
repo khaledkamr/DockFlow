@@ -35,6 +35,7 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::post('roles/store', 'storeRole')->name('admin.roles.store');
     Route::put('roles/update/{role:id}', 'updateRole')->name('admin.roles.update');
     Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
+    Route::post('permissions/store', 'storePermission')->name('admin.permissions.store');
 });
 
 Route::controller(AuthController::class)->group(function () {

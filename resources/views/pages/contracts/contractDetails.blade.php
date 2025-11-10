@@ -258,7 +258,7 @@
             </div>
         </div>
 
-
+        <!-- تعديل خدمات العقد Modal -->
         <div class="modal fade" id="editServicesModal" tabindex="-1" aria-labelledby="editServicesModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
