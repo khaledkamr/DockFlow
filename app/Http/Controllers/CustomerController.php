@@ -93,4 +93,23 @@ class CustomerController extends Controller
         $customer->delete();
         return redirect()->back()->with('success', 'تم حذف العميل ' . $name . ' بنجاح');
     }
+
+    public function getContract($id) {
+        $customer = Customer::with('contract.services')->findOrFail($id);
+
+        if(!$customer || !$customer->contract) {
+            return response()->json(['contract' => null]);
+        }
+
+        $contract = $customer->contract;
+        $storageService = $contract?->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first();
+        $lateService = $contract?->services->where('description', 'خدمة تخزين الحاوية بعد المدة المتفق عليها')->first();
+
+        return response()->json([
+            'contract' => $customer->contract,
+            'storage_price' => $storageService?->pivot->price,
+            'storage_duration' => $storageService?->pivot->unit,
+            'late_fee' => $lateService?->pivot->price,
+        ]);
+    }
 }

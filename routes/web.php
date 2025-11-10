@@ -49,6 +49,7 @@ Route::controller(CustomerController::class)->middleware('auth')->group(function
     Route::post('/customer/store', 'storeCustomer')->name('users.customer.store');
     Route::put('/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
     Route::delete('/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
+    Route::get('/customers/{id}/contract', 'getContract')->name('customers.get.contract');
 });
 
 Route::controller(SupplierController::class)->middleware('auth')->group(function () {

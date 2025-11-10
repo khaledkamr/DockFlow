@@ -148,7 +148,7 @@ class PolicyController extends Controller
         }
 
         $company = Company::first();
-        $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
+        $customers = Customer::with('contract.services')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
         $services = Service::all();
 

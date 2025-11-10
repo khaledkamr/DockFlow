@@ -141,6 +141,8 @@
 </div>
 
 <script>
+    let currentContractServices = {};
+
     $('#customer_name').select2({
         placeholder: "ابحث عن إسم العميل...",
         allowClear: true,
@@ -154,6 +156,40 @@
         $('#contract_id').val(contract || '');
         let account = $(this).find(':selected').data('account');
         $('#customer_account').val(account || '');
+
+        currentContractServices = {};
+
+        if (id) {
+            fetch(`/customers/${id}/contract`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.contract && data.contract.services.length > 0) {
+                        data.contract.services.forEach(service => {
+                            currentContractServices[service.id] = service.pivot.price;
+                        });
+                        console.log("خدمات العقد:", currentContractServices);
+                    } else {
+                        console.log("العميل دا ملوش عقد أو العقد مفيهوش خدمات");
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+    });
+
+    document.addEventListener('change', function(e) {
+        if (e.target.matches('select[name*="[service_id]"]')) {
+            const serviceId = e.target.value;
+            const row = e.target.closest('.container-row');
+            const priceInput = row.querySelector('input[name*="[price]"]');
+            
+            if (currentContractServices[serviceId]) {
+                priceInput.value = currentContractServices[serviceId];
+                priceInput.readOnly = true;
+            } else {
+                priceInput.value = '';
+                priceInput.readOnly = false;
+            }
+        }
     });
     
     document.addEventListener('DOMContentLoaded', function() {
