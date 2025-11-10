@@ -40,7 +40,7 @@ class ContractController extends Controller
         if(Gate::allows('إضافة عقد') == false) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول لهذه الصفحة');
         }
-        $company = Company::first();
+        $company = Auth::user()->company;
         $customers = Customer::all();
         $customers = $customers->filter(function($customer) {
             return !$customer->contract;
@@ -52,11 +52,9 @@ class ContractController extends Controller
     public function storeContract(ContractRequest $request) {
         $validated = $request->validated();
         $contract = Contract::create($validated);
+
         if($request->has('services')) {
             foreach($request->services as $service) {
-                if( !isset($service['price']) || !isset($service['unit']) || !isset($service['unit_desc']) ) {
-                    return redirect()->back()->withInput()->with('error', 'جميع حقول الخدمات مطلوبة');
-                }
                 $contract->services()->attach($service['service_id'], [
                     'price' => $service['price'],
                     'unit' => $service['unit'],
@@ -64,6 +62,7 @@ class ContractController extends Controller
                 ]);
             }
         }
+
         return redirect()->back()->with('success', 'تم إنشاء عقد جديد بنجاح, <a class="text-white fw-bold" href="'.route('contracts.details', $contract).'">عرض العقد؟</a>');
     }
 

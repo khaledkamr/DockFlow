@@ -43,7 +43,7 @@
         <div class="position-absolute start-0 top-0">
             <div class="text-muted mb-1">
                 <span>الرقم الضريبي: </span>
-                <span class="fw-semibold">{{ $company->TIN ?? 'غير محدد' }}</span>
+                <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
             </div>
             <div class="text-muted">
                 <span>السجل التجاري: </span>

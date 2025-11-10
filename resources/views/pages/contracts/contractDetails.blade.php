@@ -8,15 +8,12 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="h3 text-primary">
                 <i class="fas fa-file-contract me-2"></i>
-                تفاصيل العقد #{{ $contract->code }}
+                تفاصيل العقد 
             </h2>
             <div>
                 <a href="{{ route('print.contract', $contract->id) }}" class="btn btn-primary me-2" target="_blank">
-                    <i class="fas fa-print me-1"></i> طباعة
+                    <i class="fas fa-print me-1"></i> طباعة العقد
                 </a>
-                {{-- <a class="btn btn-success">
-                    <i class="fas fa-download me-1"></i> تحميل PDF
-                </a> --}}
             </div>
         </div>
 
@@ -31,12 +28,6 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="border-end pe-3 text-center">
-                            <small class="text-muted">رقم العقد</small>
-                            <h6 class="fw-bold text-primary">#{{ $contract->id }}</h6>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="border-end pe-3 text-center">
                             <small class="text-muted">تاريخ البداية</small>
                             <h6 class="fw-bold">{{ \Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') }}</h6>
                         </div>
@@ -48,10 +39,18 @@
                         </div>
                     </div>
                     <div class="col-md-3 text-center">
-                        <small class="text-muted">مدة العقد</small>
-                        <h6 class="fw-bold text-dark">
-                            {{ $months }} شهر و {{ $days }} يوم
-                        </h6>
+                        <div class="border-end pe-3 text-center">
+                            <small class="text-muted">مدة العقد</small>
+                            <h6 class="fw-bold text-dark">
+                                {{ $months }} شهر و {{ $days }} يوم
+                            </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <small class="text-muted">مدة السماح للدفع</small>
+                            <h6 class="fw-bold">{{ $contract->payment_grace_period . ' ' . $contract->payment_grace_period_unit }}</h6>
+                        </div>
                     </div>
                 </div>
             </div>

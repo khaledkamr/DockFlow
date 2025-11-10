@@ -27,6 +27,8 @@ class ContractRequest extends FormRequest
             'customer_representative_nationality' => 'required',
             'customer_representative_NID' => 'required',
             'customer_representative_role' => 'required',
+            'payment_grace_period' => 'required|integer',
+            'payment_grace_period_unit' => 'required|string',
         ];
     }
 }
