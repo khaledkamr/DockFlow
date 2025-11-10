@@ -56,7 +56,11 @@
         </div>
         <div class="logo-section text-center">
             @if($company->logo)
-                <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 150px;">
+                @if($company->name == 'شركة شمس الخليج للتخليص الجمركي')
+                    <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 100px;">
+                @else
+                    <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 150px;">
+                @endif
             @else
                 <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
             @endif
