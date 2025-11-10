@@ -3,15 +3,15 @@
 @section('title', 'المستخدمين')
 
 @section('content')
-    <h1 class="mb-4">الموظفين</h1>
+    <h1 class="mb-4">المستخدمين</h1>
 
     <div class="row mb-4">
         <div class="col-md-6">
             <form method="GET" action="" class="d-flex flex-column">
-                <label for="search" class="form-label text-dark fw-bold">بحث عن موظف:</label>
+                <label for="search" class="form-label text-dark fw-bold">بحث عن مستخدم:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن موظف بالإيميل او بالإسم... " value="{{ request()->query('search') }}">
+                        placeholder=" ابحث عن مستخدم بالإيميل او بالإسم... " value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span>بحث</span>
                         <i class="fa-solid fa-magnifying-glass ms-2"></i>
@@ -27,7 +27,7 @@
                         onchange="this.form.submit()">
                         <option value="all"
                             {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
-                            جميع الموظفين</option>
+                            جميع المستخدمين</option>
                         @foreach ($roles as $role)
                             <option value="{{ $role->id }}"
                                 {{ request()->query('role') == $role->id ? 'selected' : '' }}>
@@ -45,7 +45,7 @@
             <button class="btn btn-primary w-100 fw-bold" type="button" data-bs-toggle="modal"
                 data-bs-target="#createUserModal">
                 <i class="fa-solid fa-user-plus pe-1"></i>
-                أضف موظف
+                أضف مستخدم
             </button>
         </div>
     </div>

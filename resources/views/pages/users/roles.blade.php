@@ -6,12 +6,10 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>الصلاحيات والوظائف</h1>
     <div>
-        {{-- @if(auth()->user()->roles->pluck('name')->contains('Super Admin')) --}}
-            <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
-                <i class="fa-solid fa-plus me-2"></i>
-                إضافة صلاحية جديدة
-            </button>
-        {{-- @endif   --}}
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+            <i class="fa-solid fa-plus me-2"></i>
+            إضافة صلاحية جديدة
+        </button>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">
             <i class="fa-solid fa-plus me-2"></i>
             إضافة وظيفة جديدة

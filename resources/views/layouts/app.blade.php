@@ -289,7 +289,7 @@
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['admin*']) ? 'show' : '' }}" id="admin-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.users') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.users') }}">
-                            <i class="fa-solid fa-user-tie ms-2 me-2"></i> الموظفين
+                            <i class="fa-solid fa-user-tie ms-2 me-2"></i> المستخدمين
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.roles') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('admin.roles') }}">

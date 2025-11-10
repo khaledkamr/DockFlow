@@ -27,14 +27,6 @@
                     <option value="all"
                         {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
                         جميع العملاء</option>
-                    <option value="professor" {{ request()->query('role') === 'professor' ? 'selected' : '' }}>
-                        Professors</option>
-                    <option value="admin" {{ request()->query('role') === 'admin' ? 'selected' : '' }}>
-                        Admins</option>
-                    <option value="student" {{ request()->query('role') === 'student' ? 'selected' : '' }}>
-                        Students</option>
-                    <option value="parent" {{ request()->query('role') === 'parent' ? 'selected' : '' }}>
-                        Parents</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
