@@ -12,8 +12,6 @@
 <div class="card border-0 shadow-sm bg-white p-4">
     <form action="{{ route('contracts.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="start_date" value="{{ Carbon\Carbon::now() }}">
-        <input type="hidden" name="end_date" value="{{ Carbon\Carbon::now()->addMonths(3) }}">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         
         <h5 class="mb-3">بيانات الشركة</h5>
@@ -82,6 +80,7 @@
                             </option>
                         @endforeach
                     </select>
+                    
                 </div>
                 <input type="hidden" name="customer_id" id="customer_id" value="">
                 <div class="col">
@@ -128,6 +127,43 @@
                 </div>
             </div>
         </div>
+
+        <h5 class="mb-3">مدة العقد</h5>
+        <div class="mb-4 bg-light p-3 rounded">
+            <div class="row">
+                <div class="col">
+                    <label class="form-label">تاريخ بداية العقد</label>
+                    <input type="date" name="start_date" class="form-control border-primary" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                    @error('start_date')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col">
+                    <label class="form-label">تاريخ نهاية العقد</label>
+                    <input type="date" name="end_date" class="form-control border-primary" value="{{ Carbon\Carbon::now()->addMonths(3)->format('Y-m-d') }}">
+                    @error('end_date')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col">
+                    <label class="form-label">فترة السماح للدفع</label>
+                    <div class="input-group mb-3">
+                        <input type="number" min="1" step="1" class="form-control border-primary" name="payment_grace_period" value="{{ old('payment_grace_period', 7) }}">
+                        <select name="payment_grace_period_unit" class="form-select border-primary" style="flex: 0 0 140px; width: 140px;">
+                            <option value="">وحدة القياس</option>
+                            <option value="يوم" {{ old('payment_grace_period_unit') == 'يوم' ? 'selected' : '' }}>يوم</option>
+                            <option value="أيام" {{ old('payment_grace_period_unit') == 'أيام' ? 'selected' : '' }}>أيام</option>
+                        </select>
+                    </div>
+                    @error('payment_grace_period')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                    @error('payment_grace_period_unit')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+        </div>
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="mb-0">الخدمات والأسعار</h5>
@@ -137,35 +173,7 @@
         </div>
         
         <div id="services-container">
-            {{-- @foreach ($services->where('type', 'primary') as $index => $service)
-                <div class="mb-4 bg-light p-3 rounded service-item" data-service-id="{{ $service->id }}" data-service-type="{{ $service->type }}">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="mb-0 text-primary">خدمة #{{ $index + 1 }}</h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger remove-service">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="form-label">الوصف</label>
-                            <input type="text" class="form-control border-primary" value="{{ $service->description }}" readonly>
-                            <input type="hidden" name="services[{{ $service->id }}][service_id]" value="{{ $service->id }}">
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label">السعر</label>
-                            <input type="number" step="0.01" class="form-control border-primary" name="services[{{ $service->id }}][price]" value="{{ old('services.'.$service->id.'.price') }}">
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label">الكمية</label>
-                            <input type="number" class="form-control border-primary" name="services[{{ $service->id }}][unit]" value="{{ old('services.'.$service->id.'.unit') }}">
-                        </div>
-                        <div class="col-2">
-                            <label class="form-label">الوحدة</label>
-                            <input type="text" class="form-control border-primary" name="services[{{ $service->id }}][unit_desc]" value="{{ old('services.'.$service->id.'.unit_desc') }}">
-                        </div>
-                    </div>
-                </div>
-            @endforeach --}}
+            
         </div>
         
         <!-- Service Selection Modal -->
@@ -191,7 +199,7 @@
                         <div class="row">
                             <div class="col">
                                 <label for="service-price" class="form-label">السعر</label>
-                                <input type="number" step="0.01" class="form-control border-primary" id="service-price" placeholder="0.00">
+                                <input type="number" min="1" step="1" class="form-control border-primary" id="service-price" placeholder="0.00">
                             </div>
                             <div class="col">
                                 <label for="service-unit" class="form-label">الكمية</label>
@@ -253,7 +261,7 @@
         const unit = $('#service-unit').val();
         const unitDesc = $('#service-unit-desc').val();
 
-        if (!serviceId || !price || !unit) {
+        if (!serviceId || !price || !unit || !unitDesc) {
             showToast('الرجاء ملء جميع الحقول المطلوبة', 'danger');
             return;
         }
@@ -283,20 +291,20 @@
                 <div class="row">
                     <div class="col-6">
                         <label class="form-label">الوصف</label>
-                        <input type="text" class="form-control border-primary" value="${description}" readonly>
+                        <input type="text" class="form-control border-primary" value="${description}" required readonly>
                         <input type="hidden" name="services[${serviceId}][service_id]" value="${serviceId}">
                     </div>
                     <div class="col-2">
                         <label class="form-label">السعر</label>
-                        <input type="number" step="0.01" class="form-control border-primary" name="services[${serviceId}][price]" value="${price}" readonly>
+                        <input type="number" step="0.01" class="form-control border-primary" name="services[${serviceId}][price]" value="${price}" required>
                     </div>
                     <div class="col-2">
                         <label class="form-label">الكمية</label>
-                        <input type="number" class="form-control border-primary" name="services[${serviceId}][unit]" value="${unit}" readonly>
+                        <input type="number" class="form-control border-primary" name="services[${serviceId}][unit]" value="${unit}" required>
                     </div>
                     <div class="col-2">
                         <label class="form-label">الوحدة</label>
-                        <input type="text" class="form-control border-primary" name="services[${serviceId}][unit_desc]" value="${unitDesc}" readonly>
+                        <input type="text" class="form-control border-primary" name="services[${serviceId}][unit_desc]" value="${unitDesc}" required>
                     </div>
                 </div>
             </div>
@@ -305,17 +313,6 @@
         $('#services-container').append(serviceHtml);
     }
 
-    // Remove service
-    $(document).on('click', '.remove-service', function() {
-        serviceItem = $(this).closest('.service-item');
-        if(serviceItem.data('service-type') === 'primary') {
-            showToast('هذه خدمة أساسية في العقد لا يمكن حذفها', 'danger');
-            return;
-        }
-        serviceItem.remove();
-        checkSubmitButton();
-        updateServiceNumbers();
-    });
 
     function updateServiceNumbers() {
         $('#services-container .service-item').each(function(index) {

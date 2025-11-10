@@ -23,6 +23,8 @@ class Contract extends Model
         'customer_representative_nationality',
         'customer_representative_NID',
         'customer_representative_role',
+        'payment_grace_period',
+        'payment_grace_period_unit',
         'user_id',
     ];
 

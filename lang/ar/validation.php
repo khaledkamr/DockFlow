@@ -43,6 +43,8 @@ return [
         'customer_representative_nationality' => 'جنسية ممثل العميل',
         'customer_representative_NID' => 'الهوية الوطنية لممثل العميل',
         'customer_representative_role' => 'دور ممثل العميل',
+        'payment_grace_period' => 'فترة السماح للدفع',
+        'payment_grace_period_unit' => 'وحدة فترة السماح للدفع',
         'start_date' => 'تاريخ البداية',
         'end_date' => 'تاريخ النهاية',
         'description' => 'الوصف',
