@@ -9,6 +9,11 @@
             <h2 class="h3 text-dark">
                 <i class="fas fa-file-contract me-2"></i>
                 تفاصيل العقد 
+                @if($contract->end_date < \Carbon\Carbon::now())
+                    <span class="badge status-danger ms-2">منتهي</span>
+                @else
+                    <span class="badge status-delivered ms-2">ساري</span>
+                @endif
             </h2>
             <div>
                 <a href="{{ route('print.contract', $contract->id) }}" class="btn btn-primary me-2" target="_blank">

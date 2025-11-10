@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CompanyAddressRequest;
 use App\Http\Requests\CompanyRequest;
+use App\Models\BankAccount;
 use App\Models\Company;
 use App\Models\Module;
 use Illuminate\Http\Request;
@@ -100,5 +102,69 @@ class CompanyController extends Controller
         $company->update(['logo' => null]);
 
         return redirect()->back()->with('success', 'تم إزالة الشعار بنجاح');
+    }
+
+    public function storeAddress(CompanyAddressRequest $request, Company $company) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $validated = $request->validated();
+        $company->address()->create($validated);
+
+        return redirect()->back()->with('success', 'تم إضافة بيانات العنوان الوطني بنجاح');
+    }
+
+    public function updateAddress(CompanyAddressRequest $request, Company $company) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $validated = $request->validated();
+        $company->address()->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات العنوان الوطني بنجاح');
+    }
+
+    public function storeBankNumber(Request $request, Company $company) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $validated = $request->validate([
+            'bank' => 'required|string|max:100',
+            'account_number' => 'required|string|max:50',
+        ]);
+
+        $company->bankAccounts()->create($validated);
+            
+        return redirect()->back()->with('success', 'تم إضافة رقم البنك بنجاح');
+    }
+
+    public function updateBankNumber(Request $request, $bankAccountId) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $validated = $request->validate([
+            'bank' => 'required|string|max:100',
+            'account_number' => 'required|string|max:50',
+        ]);
+
+        $bankAccount = BankAccount::findOrFail($bankAccountId);
+        $bankAccount->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث رقم البنك بنجاح');
+    }
+    
+    public function deleteBankNumber($bankAccountId) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $bankAccount = BankAccount::findOrFail($bankAccountId);
+        $bankAccount->delete();
+
+        return redirect()->back()->with('success', 'تم حذف رقم البنك بنجاح');
     }
 }

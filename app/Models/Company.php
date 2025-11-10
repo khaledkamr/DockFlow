@@ -34,4 +34,12 @@ class Company extends Model
     public function hasModule($moduleSlug) {
         return $this->modules()->where('slug', $moduleSlug)->wherePivot('is_active', true)->exists();
     }
+
+    public function bankAccounts() {
+        return $this->hasMany(BankAccount::class);
+    }
+
+    public function address() {
+        return $this->hasOne(CompanyAddress::class);
+    }
 }

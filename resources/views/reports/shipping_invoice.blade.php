@@ -9,7 +9,7 @@
     .summary-total { border-top: 2px solid #2c3e50; }
 </style>
 
-<div class="mb-4">
+<div class="mb-3 mt-3">
     <h5 class="fw-bold text-center mb-1 text-dark" style="font-size: 1.75rem;">فاتورة ضريبية</h5>
     <p class="text-center text-muted mb-0 small">TAX INVOICE</p>
 </div>
@@ -34,16 +34,18 @@
 
     <div class="col-md-6">
         <div class="border rounded-3 p-3 bg-light h-100">
-            <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات الفاتورة</h6>
-            <div class="row">
-                <div class="col-7">
-                    <p class="mb-2 small"><strong class="text-secondary">رقم الفاتورة:</strong><br>{{ $invoice->code ?? '---' }}</p>
-                    <p class="mb-2 small"><strong class="text-secondary">التاريخ:</strong><br>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
-                </div>
-                <div class="col-5 d-flex align-items-center justify-content-center">
-                    <div class="border rounded p-2 bg-white">
-                        {!! $qrCode !!}
+            <div class="d-flex align-items-center gap-3">
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات الفاتورة</h6>
+                    <div class="row">
+                        <div class="col-7">
+                            <p class="mb-2 small"><strong class="text-secondary">رقم الفاتورة:</strong><br>{{ $invoice->code ?? '---' }}</p>
+                            <p class="mb-2 small"><strong class="text-secondary">التاريخ:</strong><br>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
+                        </div>
                     </div>
+                </div>
+                <div class="border rounded p-2 bg-white">
+                    {!! $qrCode !!}
                 </div>
             </div>
         </div>
@@ -114,4 +116,18 @@
         <span class="text-muted fst-italic">{{ $hatching_total }}</span>
     </div>
 </div>
+
+@if($company->bankAccounts->isNotEmpty())
+    <div class="border rounded-3 p-3 bg-light mt-4">
+        <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">الحسابات البنكية للشركة</h6>
+        <div class="row">
+            @foreach($company->bankAccounts as $bankAccount)
+                <div class="col-6">
+                    <div class="small"><strong class="text-secondary">{{ $bankAccount->bank }}: </strong>{{ $bankAccount->account_number }}</div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
+
 @endsection

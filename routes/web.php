@@ -131,6 +131,11 @@ Route::controller(CompanyController::class)->middleware('auth')->group(function 
     Route::put('/company/update/{company:uuid}', 'updateCompany')->name('company.update');
     Route::post('/companies/{company:uuid}/add-modules', 'addModuleToCompany')->name('companies.add.modules');
     Route::patch('/companies/{company:uuid}/toggle-module/{moduleId}', 'toggleCompanyModule')->name('companies.toggle.module');
+    Route::post('/companies/store-address/{company:uuid}', 'storeAddress')->name('companies.store.address');
+    Route::put('/companies/update-address/{company:uuid}', 'updateAddress')->name('companies.update.address');
+    Route::post('companies/add-account-number/{company:uuid}', 'storeBankNumber')->name('companies.store.bank');
+    Route::put('companies/update-account-number/{bankAccountId}', 'updateBankNumber')->name('companies.update.bank');
+    Route::delete('companies/delete-account-number/{bankAccountId}', 'deleteBankNumber')->name('companies.delete.bank');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {

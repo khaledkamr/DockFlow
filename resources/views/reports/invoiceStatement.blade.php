@@ -9,7 +9,7 @@
     .summary-total { border-top: 2px solid #2c3e50; }
 </style>
 
-<div class="border-bottom border-3 border-dark pb-3 mb-4">
+<div class="mb-3 mt-3">
     <h5 class="fw-bold text-center mb-1 text-dark" style="font-size: 1.75rem;">مطالبة فواتير</h5>
 </div>
 
@@ -92,4 +92,18 @@
         <span class="text-muted fst-italic">{{ $hatching_total }}</span>
     </div>
 </div>
+
+@if($company->bankAccounts->isNotEmpty())
+    <div class="border rounded-3 p-3 bg-light mt-4">
+        <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">الحسابات البنكية للشركة</h6>
+        <div class="row">
+            @foreach($company->bankAccounts as $bankAccount)
+                <div class="col-6">
+                    <div class="small"><strong class="text-secondary">{{ $bankAccount->bank }}: </strong>{{ $bankAccount->account_number }}</div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
+
 @endsection

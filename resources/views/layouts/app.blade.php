@@ -523,7 +523,9 @@
                 @if(auth()->user()->company->logo)
                     <img src="{{ asset('storage/' . auth()->user()->company->logo) }}" alt="Logo" class="me-2" style="height: 40px; width: auto;">
                 @endif
-                <a class="navbar-brand text-dark fw-bold" href="#">{{ auth()->user()->company->name }}</a>
+                <a class="navbar-brand text-dark fw-bold" href="{{ route('company', auth()->user()->company) }}">
+                    {{ auth()->user()->company->name }}
+                </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
                         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -552,9 +554,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="settingsDropdown">
                                 <li><a class="dropdown-item" href="#">الإعدادات</a></li>
-                                @can('عرض بيانات الشركة')
-                                    <li><a class="dropdown-item" href="{{ route('company', auth()->user()->company) }}">بيانات الشركة</a></li>
-                                @endcan 
+                                <li><a class="dropdown-item" href="{{ route('company', auth()->user()->company) }}">بيانات الشركة</a></li>
                                 <li><a class="dropdown-item" href="{{ route('user.profile', auth()->user()) }}">الملف الشخصي</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
