@@ -39,11 +39,6 @@ class ServiceSeeder extends Seeder
             //     'company_id' => $company_id
             // ],
             // [
-            //     'description' => 'اجور نقل',
-            //     'type' => 'primary',
-            //     'company_id' => $company_id
-            // ],
-            // [
             //     'description' => 'اجور عمال',
             //     'type' => 'primary',
             //     'company_id' => $company_id

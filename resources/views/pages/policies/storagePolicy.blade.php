@@ -22,11 +22,7 @@
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}"
-                            data-contract="{{ $customer->contract ? $customer->contract->id : null }}"
-                            data-storage_price="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->price : null }}"
-                            data-storage_duration="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first()->pivot->unit : null }}"
-                            data-late_fee="{{ $customer->contract ? $customer->contract->services->where('description', 'خدمة تخزين الحاوية بعد المدة المتفق عليها')->first()->pivot->price : null }}">
+                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}">
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -199,12 +195,39 @@
         $('#contract_id').val(contract || '');
         let account = $(this).find(':selected').data('account');
         $('#customer_account').val(account || '');
-        let contract_storage_price = $(this).find(':selected').data('storage_price');
-        $('#storage_price').val(contract_storage_price || 0);
-        let contract_storage_duration = $(this).find(':selected').data('storage_duration');
-        $('#storage_duration').val(contract_storage_duration || 0);
-        let contract_late_fee = $(this).find(':selected').data('late_fee');
-        $('#late_fee').val(contract_late_fee || 0);
+
+        let contract_storage_price = 0;
+        let contract_storage_duration = 0;
+        let contract_late_fee = 0;
+
+        if (id) {
+            fetch(`/customers/${id}/contract`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.storage_price && data.storage_duration && data.late_fee) {
+                        contract_storage_price = data.storage_price;
+                        contract_storage_duration = data.storage_duration;
+                        contract_late_fee = data.late_fee;
+                        
+                        $('#storage_price').val(contract_storage_price || 0);
+                        $('#storage_price').prop('readonly', true);
+                        $('#storage_duration').val(contract_storage_duration || 0);
+                        $('#storage_duration').prop('readonly', true);
+                        $('#late_fee').val(contract_late_fee || 0);
+                        $('#late_fee').prop('readonly', true);
+                    } else {
+                        $('#storage_price').val(contract_storage_price || 0);
+                        $('#storage_price').prop('readonly', false);
+                        $('#storage_duration').val(contract_storage_duration || 0);
+                        $('#storage_duration').prop('readonly', false);
+                        $('#late_fee').val(contract_late_fee || 0);
+                        $('#late_fee').prop('readonly', false);
+                        
+                        console.log("العميل دا ملوش عقد أو العقد مفيهوش خدمات");
+                    }
+                })
+                .catch(err => console.error(err));
+        }
     });
     
     document.addEventListener('DOMContentLoaded', function() {
