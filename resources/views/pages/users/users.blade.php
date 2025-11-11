@@ -164,9 +164,9 @@
                         </td>
                     </tr>
                 @else
-                    @foreach ($users as $user)
+                    @foreach ($users as $index => $user)
                         <tr>
-                            <td class="text-center text-primary fw-bold">{{ $user->id }}</td>
+                            <td class="text-center text-primary fw-bold">{{ $index + 1 }}</td>
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $user) }}" class="text-dark fw-bold text-decoration-none">
                                     {{ $user->name }}

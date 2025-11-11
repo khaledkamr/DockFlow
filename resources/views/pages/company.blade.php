@@ -172,6 +172,12 @@
                                             {{ $bankNumber->account_number }}
                                         </span>
                                     </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="text-white small me-2">IBAN:</span>
+                                        <span class=" rounded-3 text-white fw-semibold" style="font-family: 'Courier New';">
+                                            {{ $bankNumber->iban ?? 'N/A' }}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="d-flex flex-column gap-2 ms-3">
                                     <button type="button" class="btn btn-light btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#editBankModal{{ $bankNumber->id }}" style="width: 36px; height: 36px; border-radius: 8px; padding: 0;">
@@ -229,6 +235,10 @@
                                         <label class="form-label">رقم الحساب</label>
                                         <input type="text" name="account_number" class="form-control border-primary" value="{{ $bankNumber->account_number }}" required>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">IBAN</label>
+                                        <input type="text" name="iban" class="form-control border-primary" value="{{ $bankNumber->iban }}">
+                                    </div>
                                 </div>
                                 <div class="modal-footer d-flex flex-row-reverse">
                                     <button type="submit" class="btn btn-primary fw-bold">تعديل الحساب</button>
@@ -260,11 +270,15 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">اسم البنك</label>
-                            <input type="text" name="bank" class="form-control border-primary" required>
+                            <input type="text" name="bank" class="form-control border-primary" value="{{ old('bank') }}" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">رقم الحساب</label>
-                            <input type="text" name="account_number" class="form-control border-primary" required>
+                            <input type="text" name="account_number" class="form-control border-primary" value="{{ old('account_number') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">IBAN</label>
+                            <input type="text" name="iban" class="form-control border-primary" value="{{ old('iban') }}">
                         </div>
                     </div>
                     <div class="modal-footer d-flex flex-row-reverse">

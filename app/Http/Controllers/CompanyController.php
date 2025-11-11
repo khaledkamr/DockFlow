@@ -134,6 +134,7 @@ class CompanyController extends Controller
         $validated = $request->validate([
             'bank' => 'required|string|max:100',
             'account_number' => 'required|string|max:50',
+            'iban' => 'nullable|string|max:34',
         ]);
 
         $company->bankAccounts()->create($validated);
@@ -149,6 +150,7 @@ class CompanyController extends Controller
         $validated = $request->validate([
             'bank' => 'required|string|max:100',
             'account_number' => 'required|string|max:50',
+            'iban' => 'nullable|string|max:34',
         ]);
 
         $bankAccount = BankAccount::findOrFail($bankAccountId);

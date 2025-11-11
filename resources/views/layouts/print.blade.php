@@ -51,7 +51,15 @@
             </div>
             <div class="text-muted">
                 <span>العنوان الوطني: </span>
-                <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
+                @if($company->address())
+                    <span class="fw-semibold">
+                        {{ $company->address->city ?? 'غير محدد' }} -
+                        {{ $company->address->district ?? 'غير محدد' }} -
+                        {{ $company->address->postal_code ?? 'غير محدد' }}
+                    </span>
+                @else
+                    <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
+                @endif
             </div>
         </div>
         <div class="logo-section text-center">

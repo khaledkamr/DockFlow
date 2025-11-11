@@ -119,6 +119,7 @@
             @foreach($company->bankAccounts as $bankAccount)
                 <div class="col-6">
                     <div class="small"><strong class="text-secondary">{{ $bankAccount->bank }}: </strong>{{ $bankAccount->account_number }}</div>
+                    <div class="small"><strong class="text-secondary">رقم الحساب الدولي (IBAN): </strong>{{ $bankAccount->iban ?? 'N/A' }}</div>
                 </div>
             @endforeach
         </div>
