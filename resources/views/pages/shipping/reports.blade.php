@@ -140,7 +140,7 @@
             </form>
         </div>
         <div class="d-flex gap-2">
-            <form method="GET" action="{{ route('export.excel', 'containers') }}">
+            {{-- <form method="GET" action="{{ route('export.excel', 'containers') }}">
                 <input type="hidden" name="customer" value="{{ request('customer') }}">
                 <input type="hidden" name="from" value="{{ request('from') }}">
                 <input type="hidden" name="to" value="{{ request('to') }}">
@@ -155,13 +155,13 @@
                 <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                     <i class="fa-solid fa-file-excel"></i>
                 </button>
-            </form>
+            </form> --}}
 
             {{-- <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
             </button> --}}
 
-            <form action="{{ route('print', 'containers') }}" method="POST" target="_blank">
+            <form action="{{ route('print.shipping.reports') }}" method="GET" target="_blank">
                 @csrf
                 <input type="hidden" name="customer" value="{{ request('customer') }}">
                 <input type="hidden" name="from" value="{{ request('from') }}">

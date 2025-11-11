@@ -109,9 +109,9 @@
                 </button>
             </form>
 
-            <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
+            {{-- <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
                 <i class="fa-solid fa-file-pdf"></i>
-            </button>
+            </button> --}}
 
             <form action="{{ route('print', 'containers') }}" method="POST" target="_blank">
                 @csrf

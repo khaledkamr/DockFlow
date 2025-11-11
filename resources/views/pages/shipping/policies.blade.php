@@ -106,7 +106,7 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                <span class="badge {{ $policy->type === 'ناقل داخلي' ? 'status-delivered' : 'status-danger' }}">
+                                <span class="badge {{ $policy->type === 'ناقل داخلي' ? 'status-available' : 'status-danger' }}">
                                     {{ $policy->type }}
                                 </span>
                             </td>

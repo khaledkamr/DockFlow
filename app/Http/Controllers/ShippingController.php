@@ -89,7 +89,6 @@ class ShippingController extends Controller
             ]);
         }
 
-
         return redirect()->back()->with('success', 'تم إنشاء بوليصة شحن جديدة, <a class="text-white fw-bold" href="'.route('shipping.policies.details', $policy).'">عرض البوليصة؟</a>');
     } 
 

@@ -286,6 +286,69 @@ class ExportController extends Controller
         return view('reports.shipping_policy', compact('company', 'policy'));
     }
 
+    public function printShippingReports(Request $request) {
+        $policies = ShippingPolicy::all();
+        $company = Auth::user()->company;
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $status = $request->input('status', 'all');
+        $invoice_status = $request->input('invoice_status', 'all');
+        $supplier = $request->input('supplier', 'all');
+        $driver = $request->input('driver', 'all');
+        $vehicle = $request->input('vehicle', 'all');
+        $loading_location = $request->input('loading_location', 'all');
+        $delivery_location = $request->input('delivery_location', 'all');
+
+       if($customer && $customer != 'all') {
+            $policies = $policies->where('customer_id', $customer);
+        }
+        if($from) {
+            $policies = $policies->where('date', '>=', $from);
+        }
+        if($to) {
+            $policies = $policies->where('date', '<=', $to);
+        }
+        if($type && $type != 'all') {
+            $policies = $policies->where('type', $type);
+        }
+        if($status && $status != 'all') {
+            $policies = $policies->where('is_received', $status == 'تم التسليم' ? true : false);
+        }
+        if($invoice_status && $invoice_status != 'all') {
+            $policies = $policies->filter(function($policy) use ($invoice_status) {
+                $invoice = $policy->invoices->filter(function($invoice) {
+                    return $invoice->type == 'شحن';
+                })->isEmpty();
+                if($invoice_status == 'with_invoice') {
+                    return $invoice == false;
+                } elseif($invoice_status == 'without_invoice') {
+                    return $invoice;
+                }
+            });
+        }
+        if($supplier && $supplier != 'all') {
+            $policies = $policies->where('supplier_id', $supplier);
+        }
+        if($driver && $driver != 'all') {
+            $policies = $policies->where('driver_id', $driver);
+        }
+        if($vehicle && $vehicle != 'all') {
+            $policies = $policies->where('vehicle_id', $vehicle);
+        }
+        if($loading_location && $loading_location != 'all') {
+            $policies = $policies->where('from', $loading_location);
+        }
+        if($delivery_location && $delivery_location != 'all') {
+            $policies = $policies->where('to', $delivery_location);
+        }
+
+        return view('reports.shipping_report', compact('company', 'policies', 'from', 'to'));
+
+    }
+
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
