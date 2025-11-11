@@ -159,9 +159,12 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
     Route::patch('invoice/update/{invoice:uuid}', 'updateInvoice')->name('invoices.update');
     Route::get('/invoice/{invoice:uuid}', 'invoiceDetails')->name('invoices.details');
+
+    Route::get('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
+
     Route::post('/invoice/service/store', 'storeServiceInvoice')->name('invoices.service.store');
     Route::get('invoice/services/{invoice:uuid}', 'invoiceServicesDetails')->name('invoices.services.details');
-    Route::get('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
+    
     Route::post('invoice/clearance/{transaction:uuid}', 'storeClearanceInvoice')->name('invoices.clearance.store');
     Route::get('invoice/clearance/details/{invoice:uuid}', 'clearanceInvoiceDetails')->name('invoices.clearance.details');
 
@@ -173,6 +176,8 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoices/shipping/create', 'createShippingInvoice')->name('invoices.shipping.create');
     Route::post('/invoices/shipping/store', 'storeShippingInvoice')->name('invoices.shipping.store');
     Route::get('/invoices/shipping/{invoice:uuid}', 'shippingInvoiceDetails')->name('invoices.shipping.details');
+    
+    Route::get('/invoices/reports', 'invoicesReports')->name('invoices.reports');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -203,4 +208,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/export/shipping-policy/{policy:id}', 'printShippingPolicy')->name('export.shipping.policy');
     Route::get('/print/invoice/shipping/{code}', 'printShippingInvoice')->name('print.invoice.shipping');
     Route::get('/print/shipping/reports', 'printShippingReports')->name('print.shipping.reports');
+    Route::get('/print/invoices/reports', 'printInvoiceReports')->name('print.invoices.reports');
 });

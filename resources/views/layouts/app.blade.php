@@ -10,6 +10,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
     <style>
         :root {
             --blue-1: #0b56a9;
@@ -475,6 +480,10 @@
                                 <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء فاتورة شحن
                             </a>
                         @endif
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('invoices.reports') }}">
+                            <i class="fa-solid fa-chart-line ms-2 me-2"></i> تقارير الفواتير
+                        </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.statements') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('invoices.statements') }}">
                             <i class="fa-solid fa-layer-group ms-2 me-2"></i> المطالبــــــات

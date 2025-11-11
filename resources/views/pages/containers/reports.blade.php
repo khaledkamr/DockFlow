@@ -9,11 +9,11 @@
     <form method="GET" class="row g-3" id="reportForm">
         <div class="col">
             <label class="form-label">من تاريخ</label>
-            <input type="date" name="from" value="{{ request('from') }}" class="form-control border-primary">
+            <input type="date" name="from" value="{{ request('from', Carbon\Carbon::now()->startOfYear()->format('Y-m-d')) }}" class="form-control border-primary">
         </div>
         <div class="col">
             <label class="form-label">إلى تاريخ</label>
-            <input type="date" name="to" value="{{ request('to') }}" class="form-control border-primary">
+            <input type="date" name="to" value="{{ request('to', Carbon\Carbon::now()->format('Y-m-d')) }}" class="form-control border-primary">
         </div>
         <div class="col">
             <label class="form-label">الحالة</label>
@@ -39,7 +39,7 @@
         </div>
         <div class="col">
             <label class="form-label">العميل</label>
-            <select name="customer" class="form-select border-primary">
+            <select name="customer" id="customer_id" class="form-select border-primary">
                 <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
                 @foreach($customers as $customer)
                     <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
@@ -49,8 +49,8 @@
             </select>
         </div>
         <div class="col-12 text-start">
-            <button id="submitBtn" class="btn btn-primary fw-bold px-4">
-                <span id="btnIcon"><i class="fa-solid fa-file-circle-check"></i></span>
+            <button id="submitBtn" class="btn btn-primary fw-bold px-4" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
+                <i class="fa-solid fa-file-circle-check"></i>
                 عرض التقرير
             </button>
         </div>
@@ -90,10 +90,10 @@
             <form method="GET" action="">
                 <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                 <select id="per_page" name="per_page" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
-                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
                     <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25</option>
                     <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
                     <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
+                    <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
                 </select>
             </form>
         </div>
@@ -141,7 +141,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if ($containers->isEmpty())
+                @if ($containers->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type', 'status']))
                     <tr>
                         <td colspan="10" class="text-center">
                             <div class="status-danger fs-6">لم يتم العثور على اي حاويات!</div>
@@ -187,5 +187,25 @@
         {{ $containers->appends(request()->query())->onEachSide(1)->links() }}
     </div>
 </div>
+
+<script>
+    $('#customer_id').select2({
+        placeholder: "ابحث عن إسم العميل...",
+        allowClear: true
+    });
+</script>
+
+<style>
+    .select2-container .select2-selection {
+        height: 38px;
+        border-radius: 8px;
+        border: 1px solid #0d6efd;
+        padding: 5px;
+    }
+
+    .select2-container .select2-selection__rendered {
+        line-height: 30px;
+    }
+</style>
 
 @endsection

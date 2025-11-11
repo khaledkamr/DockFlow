@@ -346,7 +346,35 @@ class ExportController extends Controller
         }
 
         return view('reports.shipping_report', compact('company', 'policies', 'from', 'to'));
+    }
 
+    public function printInvoiceReports(Request $request) {
+        $invoices = Invoice::all();
+        $company = Auth::user()->company;
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $payment_method = $request->input('payment_method', 'all');
+
+        if($customer && $customer != 'all') {
+            $invoices = $invoices->where('customer_id', $customer);
+        }
+        if($from) {
+            $invoices = $invoices->where('date', '>=', $from);
+        }
+        if($to) {
+            $invoices = $invoices->where('date', '<=', $to);
+        }
+        if($type !== 'all') {
+            $invoices = $invoices->where('type', $type);
+        }
+        if($payment_method !== 'all') {
+            $invoices = $invoices->where('payment_method', $payment_method);
+        }
+
+        return view('reports.invoice_report', compact('company', 'invoices', 'from', 'to'));
     }
 
     public function excel($reportType, Request $request) {

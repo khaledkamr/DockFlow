@@ -579,4 +579,58 @@ class InvoiceController extends Controller
             'qrCode',
         ));
     }
+
+    public function invoicesReports(Request $request) {
+        $invoices = Invoice::all();
+        $customers = Customer::all();
+        $types = [];
+        if(Auth::user()->company->hasModule('تخزين')) {
+            $types[] = 'تخزين';
+            $types[] = 'خدمات';
+        }
+        if(Auth::user()->company->hasModule('تخليص')) {
+            $types[] = 'تخليص';
+        }
+        if(Auth::user()->company->hasModule('نقل')) {
+            $types[] = 'شحن';
+        }
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $payment_method = $request->input('payment_method', 'all');
+
+        if($customer !== 'all') {
+            $invoices = $invoices->where('customer_id', $customer);
+        }
+        if($from) {
+            $invoices = $invoices->where('date', '>=', $from);
+        }
+        if($to) {
+            $invoices = $invoices->where('date', '<=', $to);
+        }
+        if($type !== 'all') {
+            $invoices = $invoices->where('type', $type);
+        }
+        if($payment_method !== 'all') {
+            $invoices = $invoices->where('payment_method', $payment_method);
+        }
+
+        $perPage = $request->input('per_page', 10);
+        $invoices = new \Illuminate\Pagination\LengthAwarePaginator(
+            $invoices->forPage(request()->get('page', 1), $perPage),
+            $invoices->count(),
+            $perPage,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('pages.invoices.reports', compact(
+            'invoices', 
+            'customers',
+            'types',
+            'perPage'
+        ));
+    }
 }

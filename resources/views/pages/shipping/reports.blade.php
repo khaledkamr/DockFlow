@@ -10,7 +10,7 @@
         <div class="row g-3 mb-3">
             <div class="col-3">
                 <label class="form-label">العميل</label>
-                <select name="customer" class="form-select border-primary">
+                <select name="customer" id="customer_id" class="form-select border-primary">
                     <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach($customers as $customer)
                         <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
@@ -60,7 +60,7 @@
         <div class="row g-3 mb-4">
             <div class="col-3">
                 <label class="form-label">المورد</label>
-                <select name="supplier" class="form-select border-primary">
+                <select name="supplier" id="supplier_id" class="form-select border-primary">
                     <option value="all" {{ request('supplier') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach($suppliers as $supplier)
                         <option value="{{ $supplier->id }}" {{ request('supplier') == $supplier->id ? 'selected' : '' }}>
@@ -71,7 +71,7 @@
             </div>
             <div class="col">
                 <label class="form-label">السائق</label>
-                <select name="driver" class="form-select border-primary">
+                <select name="driver" id="driver_id" class="form-select border-primary">
                     <option value="all" {{ request('driver') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach($drivers as $driver)
                         <option value="{{ $driver->id }}" {{ request('driver') == $driver->id ? 'selected' : '' }}>
@@ -82,7 +82,7 @@
             </div>
             <div class="col">
                 <label class="form-label">السيارة</label>
-                <select name="vehicle" class="form-select border-primary">
+                <select name="vehicle" id="vehicle_id" class="form-select border-primary">
                     <option value="all" {{ request('vehicle') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach($vehicles as $vehicle)
                         <option value="{{ $vehicle->id }}" {{ request('vehicle') == $vehicle->id ? 'selected' : '' }}>
@@ -93,7 +93,7 @@
             </div>
             <div class="col">
                 <label class="form-label">مكان التحميل</label>
-                <select name="loading_location" class="form-select border-primary">
+                <select name="loading_location" id="loading_location" class="form-select border-primary">
                     <option value="all" {{ request('loading_location') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach($loadingLocations as $location)
                         <option value="{{ $location }}" {{ request('loading_location') == $location ? 'selected' : '' }}>
@@ -104,7 +104,7 @@
             </div>
             <div class="col">
                 <label class="form-label">مكان التسليم</label>
-                <select name="delivery_location" class="form-select border-primary">
+                <select name="delivery_location" id="delivery_location" class="form-select border-primary">
                     <option value="all" {{ request('delivery_location') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach($deliveryLocations as $location)
                         <option value="{{ $location }}" {{ request('delivery_location') == $location ? 'selected' : '' }}>
@@ -132,35 +132,14 @@
             <form method="GET" action="">
                 <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                 <select id="per_page" name="per_page" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
-                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10</option>
                     <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25</option>
                     <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
                     <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
+                    <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
                 </select>
             </form>
         </div>
         <div class="d-flex gap-2">
-            {{-- <form method="GET" action="{{ route('export.excel', 'containers') }}">
-                <input type="hidden" name="customer" value="{{ request('customer') }}">
-                <input type="hidden" name="from" value="{{ request('from') }}">
-                <input type="hidden" name="to" value="{{ request('to') }}">
-                <input type="hidden" name="type" value="{{ request('type') }}">
-                <input type="hidden" name="status" value="{{ request('status') }}">
-                <input type="hidden" name="status" value="{{ request('invoice_status') }}">
-                <input type="hidden" name="status" value="{{ request('supplier') }}">
-                <input type="hidden" name="status" value="{{ request('driver') }}">
-                <input type="hidden" name="status" value="{{ request('vehicle') }}">
-                <input type="hidden" name="status" value="{{ request('loading_location') }}">
-                <input type="hidden" name="status" value="{{ request('delivery_location') }}">
-                <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
-                    <i class="fa-solid fa-file-excel"></i>
-                </button>
-            </form> --}}
-
-            {{-- <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
-                <i class="fa-solid fa-file-pdf"></i>
-            </button> --}}
-
             <form action="{{ route('print.shipping.reports') }}" method="GET" target="_blank">
                 @csrf
                 <input type="hidden" name="customer" value="{{ request('customer') }}">
@@ -198,7 +177,7 @@
                 </tr>
             </thead>
             <tbody>
-                @if ($policies->isEmpty())
+                @if ($policies->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type', 'status', 'invoice_status', 'supplier', 'driver', 'vehicle', 'loading_location', 'delivery_location']))
                     <tr>
                         <td colspan="11" class="text-center">
                             <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
@@ -241,5 +220,45 @@
         {{ $policies->appends(request()->query())->onEachSide(1)->links() }}
     </div>
 </div>
+
+<script>
+    $('#customer_id').select2({
+        placeholder: "ابحث عن إسم العميل...",
+        allowClear: true
+    });
+    $('#supplier_id').select2({
+        placeholder: "ابحث عن إسم المورد...",
+        allowClear: true
+    });
+    $('#driver_id').select2({
+        placeholder: "ابحث عن إسم السائق...",
+        allowClear: true
+    });
+    $('#vehicle_id').select2({
+        placeholder: "ابحث عن رقم السيارة...",
+        allowClear: true
+    });
+    $('#loading_location').select2({
+        placeholder: "ابحث عن مكان التحميل...",
+        allowClear: true
+    });
+    $('#delivery_location').select2({
+        placeholder: "ابحث عن مكان التسليم...",
+        allowClear: true
+    });
+</script>
+
+<style>
+    .select2-container .select2-selection {
+        height: 38px;
+        border-radius: 8px;
+        border: 1px solid #0d6efd;
+        padding: 5px;
+    }
+
+    .select2-container .select2-selection__rendered {
+        line-height: 30px;
+    }
+</style>
 
 @endsection

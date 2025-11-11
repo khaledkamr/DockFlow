@@ -11,7 +11,7 @@
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="card-title fw-bold">إجمالي عدد الحاويات في الساحة</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $containers->where('status', 'في الساحة')->count() }}</h6>
+                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $containers->whereIn('status', ['في الساحة', 'متأخر'])->count() }}</h6>
                 </div>
                 <div>
                     <i class="bi bi-boxes fs-2"></i>
