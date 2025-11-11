@@ -32,8 +32,10 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th class="text-center bg-dark text-white">كود المعاملة</th>
+                    <th class="text-center bg-dark text-white">رقم المعاملة</th>
+                    <th class="text-center bg-dark text-white">رقم البوليصة</th>
                     <th class="text-center bg-dark text-white">إسم العميل</th>
+                    <th class="text-center bg-dark text-white">عدد الحاويات</th>
                     <th class="text-center bg-dark text-white">تاريخ المعاملة</th>
                     <th class="text-center bg-dark text-white">تم بواسطة</th>
                     <th class="text-center bg-dark text-white">الإجراءات</th>
@@ -50,12 +52,14 @@
                     @foreach ($transactions as $transaction)
                         <tr>
                             <td class="text-center text-primary fw-bold">{{ $transaction->code }}</td>
+                            <td class="text-center text-primary fw-bold">{{ $transaction->policy_number ?? 'N/A' }}</td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $transaction->customer->id) }}"
                                     class="text-dark text-decoration-none fw-bold">
                                     {{ $transaction->customer->name }}
                                 </a>
                             </td>
+                            <td class="text-center fw-bold">{{ $transaction->containers->count() }}</td>
                             <td class="text-center">
                                 {{ Carbon\Carbon::parse($transaction->date ?? $transaction->created_at)->format('Y/m/d') }}
                             </td>
