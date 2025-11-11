@@ -10,7 +10,7 @@ class PrimaryAccountSeeder extends Seeder
 {
     public function run(): void
     {
-        $company_id = 1;
+        $company_id = 2;
 
         $accounts = [
             [
