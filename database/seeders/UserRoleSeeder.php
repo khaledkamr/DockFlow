@@ -11,9 +11,9 @@ class UserRoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = Role::where('name', 'مشرف')->where('company_id', 2)->first();
+        $superAdmin = Role::where('name', 'Super Admin')->where('company_id', 2)->first();
         $userRoles = [
-            ['user_id' => 4, 'role_id' => $admin->id],
+            ['user_id' => 9, 'role_id' => $superAdmin->id],
             // ['user_id' => 2, 'role_id' => $admin->id],
             // ['user_id' => 3, 'role_id' => $admin->id],
         ];
