@@ -23,4 +23,12 @@ class Vehicle extends Model
     public function account() {
         return $this->belongsTo(Account::class);
     }
+
+    public function transportOrders() {
+        return $this->hasMany(TransportOrder::class);
+    }
+
+    public function shippingPolicies() {
+        return $this->hasMany(ShippingPolicy::class);
+    }
 }

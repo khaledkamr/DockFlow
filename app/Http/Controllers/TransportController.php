@@ -158,7 +158,25 @@ class TransportController extends Controller
     }
 
     public function storeDriver(DriverRequest $request) {
+        $parentAccount = Account::where('name', 'السائقون')->where('level', 4)->first();
+        $lastChildAccount = Account::where('parent_id', $parentAccount->id)->latest('code')->first();
+
+        if($lastChildAccount) {
+            $code = (string)((int)($lastChildAccount->code) + 1);
+        } else {
+            $code = $parentAccount->code . '0001';
+        }
+
+        $account = Account::create([
+            'name' => $request->name,
+            'code' => $code,
+            'type_id' => $parentAccount->type_id,
+            'parent_id' => $parentAccount->id,
+            'level' => 5,
+        ]);
+
         $validated = $request->validated();
+        $validated['account_id'] = $account->id;
         Driver::create($validated);
 
         return redirect()->back()->with('success', 'تم إضافة سائق جديد بنجاح');
@@ -172,21 +190,54 @@ class TransportController extends Controller
     }
 
     public function deleteDriver(Driver $driver) {
+        if($driver->transportOrders()->exists() || $driver->shippingPolicies()->exists()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا السائق لوجود بيانات مرتبطة به.');
+        }
 
+        $driver->delete();
+
+        return redirect()->back()->with('success', 'تم حذف السائق بنجاح');
     }
 
     public function storeVehicle(VehicleRequest $request) {
+        $parentAccount = Account::where('name', 'الشاحنات')->where('level', 4)->first();
+        $lastChildAccount = Account::where('parent_id', $parentAccount->id)->latest('code')->first();
+
+        if($lastChildAccount) {
+            $code = (string)((int)($lastChildAccount->code) + 1);
+        } else {
+            $code = $parentAccount->code . '0001';
+        }
+
+        $account = Account::create([
+            'name' => $request->type . ' - ' . $request->plate_number,
+            'code' => $code,
+            'parent_id' => $parentAccount->id,
+            'type_id' => $parentAccount->type_id,
+            'level' => 5,
+        ]);
+
         $validated = $request->validated();
+        $validated['account_id'] = $account->id;
         Vehicle::create($validated);
 
         return redirect()->back()->with('success', 'تم إضافة شاحنة جديدة بنجاح');
     }
 
-    public function updateVehicle(Request $request, Vehicle $vehicle) {
+    public function updateVehicle(VehicleRequest $request, Vehicle $vehicle) {
+        $validated = $request->validated();
+        $vehicle->update($validated);
 
+        return redirect()->back()->with('success', 'تم تحديث بيانات الشاحنة بنجاح');
     }
 
     public function deleteVehicle(Vehicle $vehicle) {
+        if($vehicle->transportOrders()->exists() || $vehicle->shippingPolicies()->exists() || $vehicle->driver) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذه الشاحنة لوجود بيانات مرتبطة بها.');
+        }
 
+        $vehicle->delete();
+
+        return redirect()->back()->with('success', 'تم حذف الشاحنة بنجاح');
     }
 }
