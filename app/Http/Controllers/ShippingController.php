@@ -10,6 +10,7 @@ use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use App\Models\ShippingPolicy;
 use App\Models\Supplier;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class ShippingController extends Controller
@@ -116,7 +117,85 @@ class ShippingController extends Controller
     public function reports(Request $request) {
         $policies = ShippingPolicy::all();
         $customers = Customer::all();
-        
-        return view('pages.shipping.reports', compact('policies', 'customers'));
+        $drivers = Driver::with('vehicle')->get();
+        $vehicles = Vehicle::all();
+        $suppliers = Supplier::all();
+        $loadingLocations = $policies->pluck('from')->unique();
+        $deliveryLocations = $policies->pluck('to')->unique();
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $status = $request->input('status', 'all');
+        $invoice_status = $request->input('invoice_status', 'all');
+        $supplier = $request->input('supplier', 'all');
+        $driver = $request->input('driver', 'all');
+        $vehicle = $request->input('vehicle', 'all');
+        $loading_location = $request->input('loading_location', 'all');
+        $delivery_location = $request->input('delivery_location', 'all');
+
+        if($customer && $customer != 'all') {
+            $policies = $policies->where('customer_id', $customer);
+        }
+        if($from) {
+            $policies = $policies->where('date', '>=', $from);
+        }
+        if($to) {
+            $policies = $policies->where('date', '<=', $to);
+        }
+        if($type && $type != 'all') {
+            $policies = $policies->where('type', $type);
+        }
+        if($status && $status != 'all') {
+            $policies = $policies->where('is_received', $status == 'تم التسليم' ? true : false);
+        }
+        if($invoice_status && $invoice_status != 'all') {
+            $policies = $policies->filter(function($policy) use ($invoice_status) {
+                $invoice = $policy->invoices->filter(function($invoice) {
+                    return $invoice->type == 'شحن';
+                })->isEmpty();
+                if($invoice_status == 'with_invoice') {
+                    return $invoice == false;
+                } elseif($invoice_status == 'without_invoice') {
+                    return $invoice;
+                }
+            });
+        }
+        if($supplier && $supplier != 'all') {
+            $policies = $policies->where('supplier_id', $supplier);
+        }
+        if($driver && $driver != 'all') {
+            $policies = $policies->where('driver_id', $driver);
+        }
+        if($vehicle && $vehicle != 'all') {
+            $policies = $policies->where('vehicle_id', $vehicle);
+        }
+        if($loading_location && $loading_location != 'all') {
+            $policies = $policies->where('from', $loading_location);
+        }
+        if($delivery_location && $delivery_location != 'all') {
+            $policies = $policies->where('to', $delivery_location);
+        }
+
+        $perPage = $request->input('per_page', 10);
+        $policies = new \Illuminate\Pagination\LengthAwarePaginator(
+            $policies->forPage(request()->get('page', 1), $perPage),
+            $policies->count(),
+            $perPage,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('pages.shipping.reports', compact(
+            'policies', 
+            'customers', 
+            'drivers', 
+            'vehicles', 
+            'suppliers', 
+            'loadingLocations', 
+            'deliveryLocations',
+            'perPage'
+        ));
     }
 }

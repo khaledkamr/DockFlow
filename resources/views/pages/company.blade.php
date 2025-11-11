@@ -341,7 +341,8 @@
                         <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
                             @foreach($modules as $module)
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="checkbox" name="module_ids[]" value="{{ $module->id }}" id="module{{ $module->id }}">
+                                    <input class="form-check-input" type="checkbox" name="module_ids[]" value="{{ $module->id }}" id="module{{ $module->id }}"
+                                        {{ in_array($module->id, $company->modules->pluck('id')->toArray()) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="module{{ $module->id }}">
                                         {{ $module->name }}
                                         @if($module->description)

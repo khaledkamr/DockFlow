@@ -7,9 +7,16 @@
     <h1>
         <i class="fa-solid fa-truck-fast"></i> تفاصيل بوليصة الشحن {{ $policy->code }}
     </h1>
-    <a href="{{ route('export.shipping.policy', $policy->id) }}" target="_blank" class="btn btn-outline-primary">
-        <i class="fa-solid fa-print"></i> طباعة البوليصة
-    </a>
+    <div>
+        @if($policy->invoices->where('type', 'شحن')->first())
+            <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}" target="_blank" class="btn btn-outline-primary me-2">
+                <i class="fa-solid fa-scroll"></i> عرض الفاتورة
+            </a>
+        @endif
+        <a href="{{ route('export.shipping.policy', $policy->id) }}" target="_blank" class="btn btn-outline-primary">
+            <i class="fa-solid fa-print"></i> طباعة البوليصة
+        </a>
+    </div>
 </div>
 
 <!-- المعلومات الأساسية -->

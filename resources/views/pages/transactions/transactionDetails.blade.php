@@ -23,7 +23,7 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        المعاملة #{{ $transaction->id }}
+                        المعاملة #{{ $transaction->code }}
                         @if($transaction->status == 'معلقة')
                             <span class="badge bg-warning text-dark ms-2">معلقة</span>
                         @elseif($transaction->status == 'مغلقة')
@@ -33,6 +33,13 @@
             </nav>
         </div>
         <div class="d-flex gap-2">
+            @if($transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
+                <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}" target="_blank"
+                    class="btn btn-outline-primary">
+                    <i class="fas fa-scroll"></i>
+                    عرض الفاتورة
+                </a>
+            @endif
             @if ($transaction->containers->first()->invoices->isEmpty())
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
                     data-bs-target="#createInvoice">
