@@ -37,7 +37,7 @@
         <div>
             <table class="table table-bordered">
                 <thead class="text-center">
-                    <tr class="table-primary">
+                    <tr class="table-dark">
                         <th>الرقم</th>
                         <th>الوصف</th>
                         <th>السعر</th>
@@ -47,7 +47,7 @@
                 <tbody class="text-center">
                     @foreach ($contract->services as $index => $service)
                         <tr>
-                            <td>{{ $index + 1 }} </td>
+                            <td>{{ $index + 1 }}</td>
                             <td>{{ $service->description }} </td>
                             <td>{{ $service->pivot->price == 0 ? 'مجاناً' : $service->pivot->price }} </td>
                             <td>{{ $service->pivot->unit .' '. $service->pivot->unit_desc }} </td>
@@ -64,7 +64,7 @@
         <div><strong>3-</strong> يلتزم الطرف الثاني بسداد فواتير الطرف الأول خلال {{ $contract->payment_grace_period . ' ' . $contract->payment_grace_period_unit }} من تقديم الفاتورة.</div>
         <div><strong>4-</strong> يسري هذا العقد لمدة {{ $months }} أشهر وفي حالة الرغبة في تمديد المدة بالتوافق بين الطرفين يظل هذا العقد ساري وإذا استحدثت شروط يتم تعديل العقد في حينة او يعتمد ما يتم الاتفاق عليه من خلال الإيميلات الرسمية بين الطرفين.</div>
         <div><strong>5-</strong> يمكن تعديل عرض الأسعار بناءً على التغيرات في السوق أو تكاليف التشغيل, وذلك عن طريق الإيميلات الرسمية بين الطرفين.</div>
-        <div><strong>6-</strong> محتويات الحاويات تقع تحت مسؤولية العميل ولا تتحمل الشركة أي مسؤولية عن فقدان أو تلف هذه المحتويات.</div>
+        <div><strong>6-</strong> محتويات الحاويات تقع تحت مسؤولية العميل ولا تتحمل الشركة أي مسؤولية تلف هذه المحتويات.</div>
         <div><strong>7-</strong> الأسعار الموضحة لا تشمل الضريبة او رسوم حكومية اخرى.</div>
     </li>
 </ul>

@@ -12,7 +12,6 @@
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
     <form action="{{ route('shipping.policies.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <div class="row mb-3">
             <div class="col">
@@ -44,8 +43,8 @@
                 @enderror
             </div>
             <div class="col">
-                <label class="form-label">مدة النقل (بالأيام)</label>
-                <input type="number" class="form-control border-primary" id="duration" name="duration" value="{{ old('duration') }}">
+                <label class="form-label">تاريخ البوليصة</label>
+                <input type="date" class="form-control border-primary" id="date" name="date" value="{{ old('date', Carbon\Carbon::now()->format('Y-m-d')) }}">
             </div>
         </div>
 
