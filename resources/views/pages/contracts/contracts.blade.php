@@ -75,7 +75,7 @@
                         <td class="text-center text-primary fw-bold">{{ $contract->id }}</td>
                         <td class="text-center fw-bold">{{ $contract->company->name }}</td>
                         <td class="text-center fw-bold">
-                            <a href="{{ route('users.customer.profile', $contract->customer->id) }}"
+                            <a href="{{ route('users.customer.profile', $contract->customer) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $contract->customer->name }}
                             </a>
