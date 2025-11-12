@@ -51,7 +51,7 @@
             </div>
             <div class="text-muted">
                 <span>العنوان الوطني: </span>
-                @if($company->address())
+                @if($company->address()->exists())
                     <span class="fw-semibold">
                         {{ $company->address->city ?? 'غير محدد' }} -
                         {{ $company->address->district ?? 'غير محدد' }} -
