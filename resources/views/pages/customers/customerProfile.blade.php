@@ -11,7 +11,6 @@
                 <i class="fas fa-user-circle me-2"></i>
                 {{ $customer['name'] }}
             </h4>
-            <small class="opacity-75">رقم العميل: #{{ $customer['id'] }}</small>
         </div>
         <div class="text-end">
             <span class="badge bg-light text-dark fs-6">{{ $customer['type'] }}</span>
