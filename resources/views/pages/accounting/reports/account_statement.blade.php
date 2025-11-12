@@ -2,7 +2,7 @@
     <input type="hidden" name="view" value="كشف حساب">
     <div class="col-md-4">
         <label class="form-label">الحساب</label>
-        <select name="account" class="form-select border-primary" required>
+        <select name="account" id="account_id" class="form-select border-primary" required>
             <option value="">اختر الحساب</option>
             @foreach($accountsLevel5 as $account)
                 <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
@@ -99,3 +99,26 @@
     </div>
     <h5 class="mt-4">الرصيد الختامي: <strong>{{ $balance }}</strong></h5>
 </div>
+
+
+<script>
+    $(document).ready(function() {
+        $('#account_id').select2({
+            placeholder: "اختر حساب",
+            allowClear: true
+        });
+    });
+</script>
+
+<style>
+    .select2-container .select2-selection {
+        height: 38px;
+        border-radius: 8px;
+        border: 1px solid #0d6efd;
+        padding: 5px;
+    }
+
+    .select2-container .select2-selection__rendered {
+        line-height: 30px;
+    }
+</style>
