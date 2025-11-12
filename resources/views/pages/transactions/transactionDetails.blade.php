@@ -11,10 +11,10 @@
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    @if($transaction->contract_id)
+                    @if($transaction->customer->contract)
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.details', $transaction->customer->contract) }}"
-                                class="text-decoration-none">العقد #{{ $transaction->contract_id }}</a>
+                                class="text-decoration-none">العقد #{{ $transaction->customer->contract->id }}</a>
                         </li>
                     @endif
                     <li class="breadcrumb-item">
