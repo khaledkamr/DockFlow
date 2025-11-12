@@ -38,7 +38,7 @@ class SupplierController extends Controller
         $accountId = Account::where('id', $request->account_id)->first()->id;
         $lastSupplier = Account::where('parent_id', $accountId)->latest('id')->first();
         if($lastSupplier) {
-            $code = $lastSupplier->code + 1;
+            $code = (string)((int)$lastSupplier->code + 1);
         } else {
             $code = Account::where('id', $accountId)->latest('id')->first()->code;
             $code = $code . '0001';
