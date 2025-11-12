@@ -21,11 +21,11 @@
             <div class="row">
                 <div class="col-6">
                     <p class="mb-2 small"><strong class="text-secondary">اسم العميل:</strong><br>{{ $invoice->customer->name ?? '---' }}</p>
-                    <p class="mb-2 small"><strong class="text-secondary">رقم العميل:</strong><br>{{ $invoice->customer->account->code ?? '---' }}</p>
+                    <p class="small"><strong class="text-secondary">رقم العميل:</strong><br>{{ $invoice->customer->account->code ?? '---' }}</p>
                 </div>
                 <div class="col-6">
                     <p class="mb-2 small"><strong class="text-secondary">الرقم الضريبي:</strong><br>{{ $invoice->customer->CR ?? '---' }}</p>
-                    <p class="mb-2 small"><strong class="text-secondary">العنوان الوطني:</strong><br>{{ $invoice->customer->national_address ?? '---' }}</p>
+                    <p class="small"><strong class="text-secondary">العنوان الوطني:</strong><br>{{ $invoice->customer->national_address ?? '---' }}</p>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <div class="row">
                         <div class="col-7">
                             <p class="mb-2 small"><strong class="text-secondary">رقم الفاتورة:</strong><br>{{ $invoice->code ?? '---' }}</p>
-                            <p class="mb-2 small"><strong class="text-secondary">التاريخ:</strong><br>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
+                            <p class="small"><strong class="text-secondary">التاريخ:</strong><br>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') ?? '---' }}</p>
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@
                     <p class="mb-2 small"><strong class="text-secondary">رقم البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration ?? '---' }}</p>
                 </div>
                 <div class="col">
-                    <p class="mb-2 small"><strong class="text-secondary">تاريخ البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration_date ?? '---' }}</p>
+                    <p class="small"><strong class="text-secondary">تاريخ البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration_date ?? '---' }}</p>
                 </div>
             </div>
         </div>
