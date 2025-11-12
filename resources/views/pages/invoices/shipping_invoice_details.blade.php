@@ -194,12 +194,6 @@
                                     {{ $policy->date ? Carbon\Carbon::parse($policy->date)->format('d/m/Y') : '---' }}
                                 </td>
                                 <td class="text-center fw-bold">{{ $policy->goods->first()->description ?? '---' }}</td>
-                                <td class="text-center">
-                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}
-                                </td>
-                                <td class="text-center">
-                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
-                                </td>
                                 @if($policy->type == 'ناقل داخلي')
                                     <td class="text-center fw-bold">{{ $policy->driver->name }}</td>
                                     <td class="text-center fw-bold">{{ $policy->vehicle->plate_number }}</td>
@@ -207,11 +201,17 @@
                                     <td class="text-center fw-bold">{{ $policy->driver_name }}</td>
                                     <td class="text-center fw-bold">{{ $policy->vehicle_plate }}</td>
                                 @endif
+                                <td class="text-center">
+                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}
+                                </td>
+                                <td class="text-center">
+                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
+                                </td>
                                 <td class="text-center fw-bold text-success">
                                     {{ $policy->other_expenses }} <i data-lucide="saudi-riyal"></i>
                                 </td>
                                 <td class="text-center fw-bold text-success">
-                                    {{ number_format($policy->pivot->amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                    {{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i>
                                 </td>
                             </tr>
                         @endforeach
