@@ -164,7 +164,7 @@ class ContainerController extends Controller
                 return $container->customer->id == $customer;
             });
         }
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 100);
         $containers = new \Illuminate\Pagination\LengthAwarePaginator(
             $containers->forPage(request()->get('page', 1), $perPage),
             $containers->count(),
