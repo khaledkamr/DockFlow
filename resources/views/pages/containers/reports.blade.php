@@ -167,6 +167,8 @@
                                         {{ $container->status }}
                                         <i class="fa-solid fa-check"></i>
                                     </div>
+                                @elseif($container->status == 'خدمات')
+                                    <div class="status-waiting">{{ $container->status }}</div>
                                 @elseif($container->status == 'متأخر')
                                     <div class="status-danger">{{ $container->status }}</div>
                                 @elseif($container->status == 'في الميناء')
