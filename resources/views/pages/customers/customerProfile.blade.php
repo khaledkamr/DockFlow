@@ -119,8 +119,8 @@
                                         <strong>{{ $service->pivot->price }} <i data-lucide="saudi-riyal"></i></strong>
                                     </div>
                                     <div class="d-flex gap-3">
-                                        <span>المدة:</span>
-                                        <strong>{{ $service->pivot->unit .' ', $service->pivot->desc_unit }} أيام</strong>
+                                        <span>المدة/الكمية:</span>
+                                        <strong>{{ $service->pivot->unit .' '. $service->pivot->unit_desc }}</strong>
                                     </div>
                                 </div>
                             </div>
