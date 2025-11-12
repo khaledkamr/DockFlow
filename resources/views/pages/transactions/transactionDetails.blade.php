@@ -191,9 +191,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($transaction->items->sortBy('id') as $index => $item)
+                                @php
+                                    $index = 1;
+                                @endphp
+                                @foreach ($transaction->items->sortBy('id') as $item)
                                     <tr class="align-middle" id="item-row-{{ $item->id }}">
-                                        <td class="text-center">{{ $index + 1 }}</td>
+                                        <td class="text-center">{{ $index++ }}</td>
                                         <td class="text-center fw-bold">{{ $item->description }}</td>
                                         <td class="text-center">{{ number_format($item->amount, 2) }}</td>
                                         <td class="text-center">{{ number_format($item->tax, 2) }}</td>
