@@ -59,7 +59,7 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('users.customer.profile', $order->customer->id) }}"
+                                <a href="{{ route('users.customer.profile', $order->customer) }}"
                                     class="text-dark text-decoration-none fw-bold">
                                     {{ $order->customer->name }}
                                 </a>

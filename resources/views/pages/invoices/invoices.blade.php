@@ -106,7 +106,7 @@
                             @endif
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('users.customer.profile', $invoice->customer->id) }}"
+                            <a href="{{ route('users.customer.profile', $invoice->customer) }}"
                                 class="text-dark text-decoration-none">
                                 {{ $invoice->customer->name }}
                             </a>

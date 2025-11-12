@@ -54,7 +54,7 @@
                             <td class="text-center text-primary fw-bold">{{ $transaction->code }}</td>
                             <td class="text-center text-primary fw-bold">{{ $transaction->policy_number ?? 'N/A' }}</td>
                             <td class="text-center">
-                                <a href="{{ route('users.customer.profile', $transaction->customer->id) }}"
+                                <a href="{{ route('users.customer.profile', $transaction->customer) }}"
                                     class="text-dark text-decoration-none fw-bold">
                                     {{ $transaction->customer->name }}
                                 </a>
