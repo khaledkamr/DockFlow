@@ -291,6 +291,7 @@
     </div>
 </div>
 
+@if(auth()->user()->hasRole('Super Admin'))
 <div class="card border-0 shadow-sm bg-white p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="mb-0">مديولات النظام</h3>
@@ -376,5 +377,5 @@
         </div>
     </div>
 </div>
-
+@endif
 @endsection
