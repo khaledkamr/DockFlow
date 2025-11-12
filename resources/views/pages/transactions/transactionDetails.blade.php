@@ -191,7 +191,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($transaction->items as $index => $item)
+                                @foreach ($transaction->items->sortBy('id') as $index => $item)
                                     <tr class="align-middle" id="item-row-{{ $item->id }}">
                                         <td class="text-center">{{ $index + 1 }}</td>
                                         <td class="text-center fw-bold">{{ $item->description }}</td>
