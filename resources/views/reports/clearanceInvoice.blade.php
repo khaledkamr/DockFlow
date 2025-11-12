@@ -57,13 +57,13 @@
             <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات المعاملة</h6>
             <div class="row">
                 <div class="col">
-                    <div class="mb-2 small"><strong class="text-secondary">رقم المعاملة:</strong><br>{{ $invoice->containers->first()->transactions->first()->code ?? '---' }}</div>
+                    <div class="small"><strong class="text-secondary">رقم المعاملة:</strong><br>{{ $invoice->containers->first()->transactions->first()->code ?? '---' }}</div>
                 </div>
                 <div class="col">
-                    <div class="mb-2 small"><strong class="text-secondary">رقم البوليصة:</strong><br>{{ $invoice->containers->first()->transactions->first()->policy_number ?? '---' }}</div>
+                    <div class="small"><strong class="text-secondary">رقم البوليصة:</strong><br>{{ $invoice->containers->first()->transactions->first()->policy_number ?? '---' }}</div>
                 </div>
                 <div class="col">
-                    <div class="mb-2 small"><strong class="text-secondary">رقم البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration ?? '---' }}</div>
+                    <div class="small"><strong class="text-secondary">رقم البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration ?? '---' }}</div>
                 </div>
                 <div class="col">
                     <div class="small"><strong class="text-secondary">تاريخ البيان الجمركي:</strong><br>{{ $invoice->containers->first()->transactions->first()->customs_declaration_date ?? '---' }}</div>
