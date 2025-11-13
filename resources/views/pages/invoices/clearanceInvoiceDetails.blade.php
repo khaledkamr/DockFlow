@@ -231,7 +231,7 @@
                         @endphp
                         @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item)
                             <tr>
-                                <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                <td class="text-center fw-bold">{{ $index++ }}</td>
                                 <td class="text-center fw-bold">
                                     {{ $item->description }}
                                 </td>
