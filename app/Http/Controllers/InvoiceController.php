@@ -405,7 +405,56 @@ class InvoiceController extends Controller
             $incomeAccount = Account::where('name', 'ايرادات متنوعة')->where('level', 5)->first();
         }
         $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+
+        $journal = JournalEntry::create([
+            'date' => Carbon::now(),
+            'totalDebit' => $invoice->total_amount,
+            'totalCredit' => $invoice->total_amount,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $incomeAccount->id,
+            'debit' => 0.00,
+            'credit' => $invoice->amount_after_discount,
+            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
+        ]);
+
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $taxAccount->id,
+            'debit' => 0.00,
+            'credit' => $invoice->tax,
+            'description' => 'قيمة مضافة فاتورة ' . $invoice->type . ' رقم ' . $invoice->code
+        ]);
+
+        JournalEntryLine::create([
+            'journal_entry_id' => $journal->id,
+            'account_id' => $creditAccount->id,
+            'debit' => $invoice->total_amount,
+            'credit' => 0.00,
+            'description' => 'استحقاق فاتورة ' . $invoice->type . ' رقم ' . $invoice->code
+        ]);
+
+        $invoice->is_posted = true;
+        $invoice->save();
+
+        return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
+    }
+
+    public function postClearanceInvoice(Invoice $invoice) {
+        if($invoice->is_posted) {
+            return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
+        }
+
+        $creditAccount = $invoice->customer->account; // مدين
         
+        if(Auth::user()->company->name == 'شركة شمس الخليج للتخليص الجمركي') {
+            $expenseAccount = Account::where('name', 'بنك ساب')->where('level', 5)->first();
+        }
+        $incomeAccount = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
+        $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
             'date' => Carbon::now(),

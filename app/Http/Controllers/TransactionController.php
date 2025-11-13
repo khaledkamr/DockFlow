@@ -74,18 +74,54 @@ class TransactionController extends Controller
 
     public function transactionDetails(Transaction $transaction) {
         $items = [
-            ['name' => 'رسوم اذن التسليم - DELIVERY ORDER'],
-            ['name' => 'رسوم مواني - PORT CHARGE'],
-            ['name' => 'رسوم الشركه السعوديه للمواني - SAUDI GLOBAL PORT FEES'],
-            ['name' => 'اجور السكه الحديد - DRY PORT FEES'],
-            ['name' => 'رسوم موعد فسح - APPOINTMENT FASAH'],
-            ['name' => 'رسوم سابر - SABER FEES'],
-            ['name' => 'رسوم جمركية - CUSTOMS FEES'],
-            ['name' => 'ارضيات - DEMURRAGE CHARGE'],
-            ['name' => 'اجور تخليص - CLEARANCE FEES'],
-            ['name' => 'اجور نقل - TRANSPORT FEES'],
-            ['name' => 'اجور عمال - LABOUR'],
-            ['name' => 'خدمات سابر - SABER FEES'],
+            [
+                'name' => 'رسوم اذن التسليم - DELIVERY ORDER',
+                'type' => 'مصروف'
+            ],
+            [   
+                'name' => 'رسوم مواني - PORT CHARGE',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'رسوم الشركه السعوديه للمواني - SAUDI GLOBAL PORT FEES',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'اجور السكه الحديد - DRY PORT FEES',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'رسوم موعد فسح - APPOINTMENT FASAH',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'رسوم سابر - SABER FEES',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'رسوم جمركية - CUSTOMS FEES',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'ارضيات - DEMURRAGE CHARGE',
+                'type' => 'مصروف'
+            ],
+            [
+                'name' => 'اجور تخليص - CLEARANCE FEES',
+                'type' => 'ايراد'
+            ],
+            [
+                'name' => 'اجور نقل - TRANSPORT FEES',
+                'type' => 'ايراد'
+            ],
+            [
+                'name' => 'اجور عمال - LABOUR',
+                'type' => 'ايراد'
+            ],
+            [
+                'name' => 'خدمات سابر - SABER FEES',
+                'type' => 'ايراد'
+            ],
         ];
 
         $procedures = [
