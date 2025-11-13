@@ -226,7 +226,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('id') as $index => $item)
+                        @php
+                            $index = 1;
+                        @endphp
+                        @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item)
                             <tr>
                                 <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                 <td class="text-center fw-bold">
