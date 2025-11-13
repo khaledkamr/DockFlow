@@ -140,7 +140,9 @@
             $('#containers-list').show();
             
             // Calculate max selectable containers
-            const availableContainers = containers.filter(container => container.status === 'في الساحة' || container.status === 'متأخر');
+            console.log(containers);
+            const availableContainers = containers.filter(container => (container.status === 'متأخر' || container.status === 'في الساحة'));
+            console.log(availableContainers);
             maxSelectableContainers = hasUnpaidInvoices ? Math.max(0, availableContainers.length - 1) : availableContainers.length;
             
         } else if (containers) {
@@ -185,7 +187,7 @@
 
         // Filter containers that are available for receiving (status: 'في الساحة')
         const availableContainers = containers.filter(container => 
-            container.status === 'في الساحة'
+            container.status === 'في الساحة' || container.status === 'متأخر'
         );
 
         if (availableContainers.length === 0) {
