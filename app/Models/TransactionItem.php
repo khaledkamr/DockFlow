@@ -9,6 +9,7 @@ class TransactionItem extends Model
 {
     protected $fillable = [
         'transaction_id',
+        'number',
         'description',
         'type',
         'amount',

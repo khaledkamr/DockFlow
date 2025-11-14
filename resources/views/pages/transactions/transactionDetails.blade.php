@@ -191,12 +191,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $index = 1;
-                                @endphp
-                                @foreach ($transaction->items->sortBy('id') as $item)
+                                @foreach ($transaction->items->sortBy('number') as $item)
                                     <tr class="align-middle" id="item-row-{{ $item->id }}">
-                                        <td class="text-center">{{ $index++ }}</td>
+                                        <td class="text-center fw-bold">{{ $item->number }}</td>
                                         <td class="text-center fw-bold">{{ $item->description }}</td>
                                         <td class="text-center">{{ number_format($item->amount, 2) }}</td>
                                         <td class="text-center">{{ number_format($item->tax, 2) }}</td>
@@ -228,9 +225,15 @@
                                                     @method('PUT')
                                                     <div class="modal-body">
                                                         <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
-                                                        <div class="mb-3">
-                                                            <label for="editDescription" class="form-label">البند</label>
-                                                            <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required readonly>{{ $item->description }}</textarea>
+                                                        <div class="row g-3 mb-3">
+                                                            <div class="col-2">
+                                                                <label class="form-label">الرقم</label>
+                                                                <input type="number" name="number" class="form-control border-primary" value="{{ $item->number }}" required>
+                                                            </div>
+                                                            <div class="col-10">
+                                                                <label for="editDescription" class="form-label">البند</label>
+                                                                <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required readonly>{{ $item->description }}</textarea>
+                                                            </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col">
@@ -480,16 +483,22 @@
                     <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
                     <input type="hidden" name="type" value="">
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="description" class="form-label">البند</label>
-                            <select class="form-select border-primary" id="description" name="description" required>
-                                <option disabled selected>اختر البند...</option>
-                                @foreach($items as $item)
-                                    <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}">{{ $item['name'] }}</option>
-                                @endforeach
-                            </select>
+                        <div class="row g-3 mb-3">
+                            <div class="col-2">
+                                <label class="form-label">الرقم</label>
+                                <input type="number" name="number" class="form-control border-primary" value="{{ $transaction->items->count() + 1 }}" required>
+                            </div>
+                            <div class="col-10">
+                                <label for="description" class="form-label">البند</label>
+                                <select class="form-select border-primary" id="description" name="description" required>
+                                    <option disabled selected>اختر البند...</option>
+                                    @foreach($items as $item)
+                                        <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}">{{ $item['name'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                        <div class="row">
+                        <div class="row g-3">
                             <div class="col">
                                 <label for="amount" class="form-label">المبلغ</label>
                                 <input type="number" class="form-control border-primary" id="amount" name="amount"

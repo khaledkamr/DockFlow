@@ -226,12 +226,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $index = 1;
-                        @endphp
-                        @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item)
+                        @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('number') as $item)
                             <tr>
-                                <td class="text-center fw-bold">{{ $index++ }}</td>
+                                <td class="text-center fw-bold">{{ $item->number }}</td>
                                 <td class="text-center fw-bold">
                                     {{ $item->description }}
                                 </td>

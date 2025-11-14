@@ -108,10 +108,9 @@
             </tr>
         </thead>
         <tbody>
-            @php $index = 1; @endphp
-            @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item)
+            @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('number') as $item)
                 <tr>
-                    <td class="text-center small">{{ $index++ }}</td>
+                    <td class="text-center small">{{ $item->number }}</td>
                     <td class="text-center small">{{ $item->description }}</td>
                     <td class="text-center small">{{ number_format($item->amount, 2) }}</td>
                     <td class="text-center small">{{ number_format($item->tax, 2) }}</td>

@@ -172,7 +172,8 @@ class InvoiceController extends Controller
             if($transaction->customer->contract->services()->where('description', 'اجور تخليص')->exists()) {
                 $price = $transaction->customer->contract->services->where('description', 'اجور تخليص')->first()->pivot->price * $containers_count;
                 $transaction->items()->create([
-                    'description' => 'اجور تخليص',
+                    'number' => $transaction->items()->count() + 1,
+                    'description' => 'اجور تخليص - CLEARANCE FEES',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
@@ -198,7 +199,8 @@ class InvoiceController extends Controller
                 }
 
                 $transaction->items()->create([
-                    'description' => 'اجور نقل',
+                    'number' => $transaction->items()->count() + 1,
+                    'description' => 'اجور نقل - TRANSPORT FEES',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
@@ -208,7 +210,8 @@ class InvoiceController extends Controller
             if($transaction->customer->contract->services()->where('description', 'اجور عمال')->exists()) {
                 $price = $transaction->customer->contract->services->where('description', 'اجور عمال')->first()->pivot->price * $containers_count;
                 $transaction->items()->create([
-                    'description' => 'اجور عمال',
+                    'number' => $transaction->items()->count() + 1,
+                    'description' => 'اجور عمال - LABOUR',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
@@ -218,7 +221,8 @@ class InvoiceController extends Controller
             if($transaction->customer->contract->services()->where('description', 'خدمات سابر')->exists()) {
                 $price = $transaction->customer->contract->services->where('description', 'خدمات سابر')->first()->pivot->price * $containers_count;
                 $transaction->items()->create([
-                    'description' => 'خدمات سابر',
+                    'number' => $transaction->items()->count() + 1,
+                    'description' => 'خدمات سابر - SABER FEES',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
@@ -500,7 +504,6 @@ class InvoiceController extends Controller
                 'description' => 'ايرادات تخليص فاتورة رقم ' . $invoice->code
             ]);
         }
-
         if($transport_revenue > 0) {
             JournalEntryLine::create([
                 'journal_entry_id' => $journal->id,
@@ -510,7 +513,6 @@ class InvoiceController extends Controller
                 'description' => 'ايرادات نقل فاتورة رقم ' . $invoice->code
             ]);
         }
-
         if($labor_revenue > 0) {
             JournalEntryLine::create([
                 'journal_entry_id' => $journal->id,
@@ -520,7 +522,6 @@ class InvoiceController extends Controller
                 'description' => 'ايرادات اجور عمال فاتورة رقم ' . $invoice->code
             ]);
         }
-
         if($saber_revenue > 0) {
             JournalEntryLine::create([
                 'journal_entry_id' => $journal->id,

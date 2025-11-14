@@ -15,6 +15,7 @@ class ItemRequest extends FormRequest
     {
         return [
             'transaction_id' => 'required|exists:transactions,id',
+            'number' => 'required|integer|min:1',
             'description' => 'required|string|max:255',
             'type' => 'nullable|string|max:100',
             'amount' => 'required|numeric|min:0',
