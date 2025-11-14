@@ -116,11 +116,11 @@ class TransactionController extends Controller
             ],
             [
                 'name' => 'اجور عمال - LABOUR',
-                'type' => 'ايراد تخليص'
+                'type' => 'ايراد عمال'
             ],
             [
                 'name' => 'خدمات سابر - SABER FEES',
-                'type' => 'ايراد تخليص'
+                'type' => 'ايراد سابر'
             ],
         ];
 

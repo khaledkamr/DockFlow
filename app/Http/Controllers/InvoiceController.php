@@ -455,6 +455,8 @@ class InvoiceController extends Controller
         }
         $clearance_revenue_Account = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
         $transport_revenue_Account = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
+        $labor_revenue_Account = Account::where('name', 'ايرادات اجور عمال')->where('level', 5)->first();
+        $saber_revenue_Account = Account::where('name', 'ايرادات خدمات سابر')->where('level', 5)->first();
         $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
@@ -466,6 +468,8 @@ class InvoiceController extends Controller
 
         $clearance_revenue = 0;
         $transport_revenue = 0;
+        $labor_revenue = 0;
+        $saber_revenue = 0;
 
         foreach($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item) {
             if($item->type == 'مصروف') {
@@ -480,6 +484,10 @@ class InvoiceController extends Controller
                 $clearance_revenue += $item->amount;
             } elseif($item->type == 'ايراد نقل') {
                 $transport_revenue += $item->amount;
+            } elseif($item->type == 'ايراد عمال') {
+                $labor_revenue += $item->amount;
+            } elseif($item->type == 'ايراد سابر') {
+                $saber_revenue += $item->amount;
             }
         }
 
@@ -500,6 +508,26 @@ class InvoiceController extends Controller
                 'debit' => 0.00,
                 'credit' => $transport_revenue,
                 'description' => 'ايرادات نقل فاتورة رقم ' . $invoice->code
+            ]);
+        }
+
+        if($labor_revenue > 0) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $labor_revenue_Account->id,
+                'debit' => 0.00,
+                'credit' => $labor_revenue,
+                'description' => 'ايرادات اجور عمال فاتورة رقم ' . $invoice->code
+            ]);
+        }
+
+        if($saber_revenue > 0) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $saber_revenue_Account->id,
+                'debit' => 0.00,
+                'credit' => $saber_revenue,
+                'description' => 'ايرادات خدمات سابر فاتورة رقم ' . $invoice->code
             ]);
         }
 
