@@ -24,7 +24,7 @@
                     <i class="fas fa-print me-2"></i>طباعة الفاتورة
                 </a>
                 @can('ترحيل فاتورة')
-                    <a href="{{ route('invoices.post', $invoice) }}" class="btn btn-outline-primary">
+                    <a href="{{ route('invoices.post.clearance', $invoice) }}" class="btn btn-outline-primary">
                         <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
                     </a>
                 @endcan

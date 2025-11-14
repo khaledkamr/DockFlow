@@ -10,6 +10,7 @@ class TransactionItem extends Model
     protected $fillable = [
         'transaction_id',
         'description',
+        'type',
         'amount',
         'tax',
         'total',

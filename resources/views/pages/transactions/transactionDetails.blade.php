@@ -478,13 +478,14 @@
                 <form id="addItemForm" method="POST" action="{{ route('transactions.item.store') }}">
                     @csrf
                     <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                    <input type="hidden" name="type" value="">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="description" class="form-label">البند</label>
                             <select class="form-select border-primary" id="description" name="description" required>
                                 <option disabled selected>اختر البند...</option>
                                 @foreach($items as $item)
-                                    <option value="{{ $item['name'] }}">{{ $item['name'] }}</option>
+                                    <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}">{{ $item['name'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -570,5 +571,11 @@
             document.getElementById('editTax' + index).value = tax.toFixed(2);
             document.getElementById('editTotal' + index).value = total.toFixed(2);
         }
+
+        document.getElementById('description').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const itemType = selectedOption.getAttribute('data-type');
+            document.querySelector('#addItemForm input[name="type"]').value = itemType;
+        });
     </script>
 @endsection

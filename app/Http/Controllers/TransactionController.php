@@ -108,19 +108,19 @@ class TransactionController extends Controller
             ],
             [
                 'name' => 'اجور تخليص - CLEARANCE FEES',
-                'type' => 'ايراد'
+                'type' => 'ايراد تخليص'
             ],
             [
                 'name' => 'اجور نقل - TRANSPORT FEES',
-                'type' => 'ايراد'
+                'type' => 'ايراد نقل'
             ],
             [
                 'name' => 'اجور عمال - LABOUR',
-                'type' => 'ايراد'
+                'type' => 'ايراد تخليص'
             ],
             [
                 'name' => 'خدمات سابر - SABER FEES',
-                'type' => 'ايراد'
+                'type' => 'ايراد تخليص'
             ],
         ];
 

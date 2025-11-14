@@ -453,7 +453,8 @@ class InvoiceController extends Controller
         if(Auth::user()->company->name == 'شركة شمس الخليج للتخليص الجمركي') {
             $expenseAccount = Account::where('name', 'بنك ساب')->where('level', 5)->first();
         }
-        $incomeAccount = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
+        $clearance_revenue_Account = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
+        $transport_revenue_Account = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
         $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
@@ -463,13 +464,44 @@ class InvoiceController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
-        JournalEntryLine::create([
-            'journal_entry_id' => $journal->id,
-            'account_id' => $incomeAccount->id,
-            'debit' => 0.00,
-            'credit' => $invoice->amount_after_discount,
-            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
-        ]);
+        $clearance_revenue = 0;
+        $transport_revenue = 0;
+
+        foreach($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item) {
+            if($item->type == 'مصروف') {
+                JournalEntryLine::create([
+                    'journal_entry_id' => $journal->id,
+                    'account_id' => $expenseAccount->id,
+                    'debit' => 0.00,
+                    'credit' => $item->amount,
+                    'description' => 'مصروف ' . $item->description . ' فاتورة رقم ' . $invoice->code
+                ]);
+            } elseif($item->type == 'ايراد تخليص') {
+                $clearance_revenue += $item->amount;
+            } elseif($item->type == 'ايراد نقل') {
+                $transport_revenue += $item->amount;
+            }
+        }
+
+        if($clearance_revenue > 0) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $clearance_revenue_Account->id,
+                'debit' => 0.00,
+                'credit' => $clearance_revenue,
+                'description' => 'ايرادات تخليص فاتورة رقم ' . $invoice->code
+            ]);
+        }
+
+        if($transport_revenue > 0) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $transport_revenue_Account->id,
+                'debit' => 0.00,
+                'credit' => $transport_revenue,
+                'description' => 'ايرادات نقل فاتورة رقم ' . $invoice->code
+            ]);
+        }
 
         JournalEntryLine::create([
             'journal_entry_id' => $journal->id,
