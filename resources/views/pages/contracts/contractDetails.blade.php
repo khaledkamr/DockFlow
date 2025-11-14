@@ -113,11 +113,14 @@
         <div class="row">
             <div class="col-lg-6 mb-4">
                 <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-dark text-white">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-building me-2"></i>
                             الطرف الأول
                         </h5>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editRepresentativeOneModal">
+                            تعديل الممثل
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
@@ -168,11 +171,14 @@
 
             <div class="col-lg-6 mb-4">
                 <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-dark text-white">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-user-tie me-2"></i>
                             الطرف الثاني
                         </h5>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editRepresentativeTwoModal">
+                            تعديل الممثل
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
@@ -218,6 +224,78 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تعديل بيانات الطرف الاول Modal -->
+        <div class="modal fade" id="editRepresentativeOneModal" tabindex="-1" aria-labelledby="editRepresentativeOneModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="editRepresentativeOneModalLabel">تعديل بيانات ممثل الطرف الاول</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('contracts.update', $contract) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body text-dark">
+                            <div class="row mb-3">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">ممثل الطرف الاول</label>
+                                    <input type="text" class="form-control border-primary" name="company_representative" value="{{ $contract->company_representative }}" required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">الجنسية</label>
+                                    <input type="text" class="form-control border-primary" name="company_representative_nationality" value="{{ $contract->company_representative_nationality }}" required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">الرقم القومي</label>
+                                    <input type="text" class="form-control border-primary" name="company_representative_NID" value="{{ $contract->company_representative_NID }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary fw-bold">حفظ التعديلات</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- تعديل بيانات الطرف الاول Modal -->
+        <div class="modal fade" id="editRepresentativeTwoModal" tabindex="-1" aria-labelledby="editRepresentativeTwoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-dark fw-bold" id="editRepresentativeTwoModalLabel">تعديل بيانات ممثل الطرف الاول</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('contracts.update', $contract) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body text-dark">
+                            <div class="row mb-3">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">ممثل الطرف الثاني</label>
+                                    <input type="text" class="form-control border-primary" name="customer_representative" value="{{ $contract->customer_representative }}" required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">الجنسية</label>
+                                    <input type="text" class="form-control border-primary" name="customer_representative_nationality" value="{{ $contract->customer_representative_nationality }}" required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label">الرقم القومي</label>
+                                    <input type="text" class="form-control border-primary" name="customer_representative_NID" value="{{ $contract->customer_representative_NID }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <button type="submit" class="btn btn-primary fw-bold">حفظ التعديلات</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

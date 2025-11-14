@@ -78,7 +78,21 @@ class ContractController extends Controller
             $contract->payment_grace_period_unit = $request->payment_grace_period_unit;
             $contract->save();
         }
-        
+
+        if($request->has('company_representative')) {
+            $contract->company_representative = $request->company_representative;
+            $contract->company_representative_nationality = $request->company_representative_nationality;
+            $contract->company_representative_NID = $request->company_representative_NID;
+            $contract->save();
+        }
+
+        if($request->has('customer_representative')) {
+            $contract->customer_representative = $request->customer_representative;
+            $contract->customer_representative_nationality = $request->customer_representative_nationality;
+            $contract->customer_representative_NID = $request->customer_representative_NID;
+            $contract->save();
+        }
+
         if($request->has('services')) {
             $contract->services()->detach();
             foreach($request->services as $service) {
