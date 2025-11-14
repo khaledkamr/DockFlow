@@ -7,6 +7,7 @@
 
 <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
     <form method="GET" class="row g-3" id="reportForm">
+        <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
         <div class="col">
             <label class="form-label">من تاريخ</label>
             <input type="date" name="from" value="{{ request('from', Carbon\Carbon::now()->startOfYear()->format('Y-m-d')) }}" class="form-control border-primary">
@@ -95,6 +96,9 @@
                     <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
                     <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
                 </select>
+                @foreach(request()->except('per_page') as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
             </form>
         </div>
         <div class="d-flex gap-2">

@@ -31,11 +31,11 @@
     </div>
     <div class="col-md-3">
         <label class="form-label">من تاريخ</label>
-        <input type="date" name="from" class="form-control border-primary" value="{{ request('from') }}">
+        <input type="date" name="from" class="form-control border-primary" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}">
     </div>
     <div class="col-md-3">
         <label class="form-label">إلى تاريخ</label>
-        <input type="date" name="to" class="form-control border-primary" value="{{ request('to') }}">
+        <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->format('Y-m-d')) }}">
     </div>
     <div class="col-md-3 d-flex align-items-end">
         <button type="submit" class="btn btn-primary fw-bold w-100" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
