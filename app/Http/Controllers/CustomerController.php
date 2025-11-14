@@ -112,4 +112,23 @@ class CustomerController extends Controller
             'late_fee' => $lateService?->pivot->price,
         ]);
     }
+
+    public function checkService(Request $request) {
+        $customer = Customer::with('contract.services')->findOrFail($request->customer_id);
+        $serviceDescription = null;
+        
+        if($request->pickup == 'الميناء' && $request->dropoff == 'الساحة') {
+            $serviceDescription = 'نقل الحاوية من الميناء الى الساحة';
+        }
+        $service = $customer->contract?->services->where('description', $serviceDescription)->first();
+
+        if($service) {
+            return response()->json([
+                'exists' => true,
+                'price' => $service->pivot->price,
+            ]);
+        } else {
+            return response()->json(['exists' => false]);
+        }
+    }
 }

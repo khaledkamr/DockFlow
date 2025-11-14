@@ -51,6 +51,7 @@ Route::controller(CustomerController::class)->middleware('auth')->group(function
     Route::put('/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
     Route::delete('/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
     Route::get('/customers/{id}/contract', 'getContract')->name('customers.get.contract');
+    Route::get('/customers/check-service', 'checkService')->name('customer.check.service');
 });
 
 Route::controller(SupplierController::class)->middleware('auth')->group(function () {

@@ -30,14 +30,28 @@
             </div>
             <div class="col">
                 <label class="form-label">مكان التحميل</label>
-                <input type="text" class="form-control border-primary" id="from" name="from" value="{{ old('from') }}">
+                <select class="form-select border-primary" id="from" name="from">
+                    <option value="">اختر مكان التحميل...</option>
+                    @foreach ($places as $place)
+                        <option value="{{ $place->name }}" {{ old('from') == $place->name ? 'selected' : '' }}>
+                            {{ $place->name }}
+                        </option>
+                    @endforeach
+                </select>
                 @error('from')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">مكان التفريغ</label>
-                <input type="text" class="form-control border-primary" id="to" name="to" value="{{ old('to') }}">
+                <select class="form-select border-primary" id="to" name="to">
+                    <option value="">اختر مكان التفريغ...</option>
+                    @foreach ($places as $place)
+                        <option value="{{ $place->name }}" {{ old('to') == $place->name ? 'selected' : '' }}>
+                            {{ $place->name }}
+                        </option>
+                    @endforeach
+                </select>
                 @error('to')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -199,9 +213,45 @@
 </div>
 
 <script>
+    const pickupInput = document.querySelector('#from');
+    const dropoffInput = document.querySelector('#to');
+    const clientPriceInput = document.querySelector('#client_cost');
+    const customerId = document.querySelector('#customer_id');
+
+    function checkService() {
+        const pickup = pickupInput.value;
+        const dropoff = dropoffInput.value;
+
+        if (!pickup || !dropoff) return;
+
+        fetch(`{{ route('customer.check.service') }}?customer_id=${customerId.value}&pickup=${pickup}&dropoff=${dropoff}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("DATA:", data);
+                if (data.exists) {
+                    clientPriceInput.value = data.price;
+                }
+            });
+    }
+
+    pickupInput.addEventListener('change', checkService);
+    dropoffInput.addEventListener('change', checkService);
+
     $('#customer_id').select2({
         placeholder: "ابحث عن إسم العميل...",
         allowClear: true
+    });
+
+    $('#from').select2({
+        placeholder: "اختر مكان التحميل...",
+        allowClear: true,
+        tags: true,
+    });
+
+    $('#to').select2({
+        placeholder: "اختر مكان التفريغ...",
+        allowClear: true,
+        tags: true,
     });
 
     $(document).ready(function() {
@@ -306,6 +356,9 @@
     $(document).ready(function() {
         updateDeleteButtons();
     });
+
+    
+    
 </script>
 
 <style>

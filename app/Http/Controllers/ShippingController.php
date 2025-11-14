@@ -8,10 +8,12 @@ use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\Places;
 use App\Models\ShippingPolicy;
 use App\Models\Supplier;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShippingController extends Controller
 {
@@ -50,8 +52,9 @@ class ShippingController extends Controller
         $customers = Customer::all();
         $suppliers = Supplier::all();
         $drivers = Driver::with('vehicle')->get();
+        $places = Places::all();
 
-        return view('pages.shipping.create_policy', compact('customers', 'suppliers', 'drivers'));
+        return view('pages.shipping.create_policy', compact('customers', 'suppliers', 'drivers', 'places'));
     }
 
     public function storePolicy(ShippingRequest $request) {
@@ -86,6 +89,18 @@ class ShippingController extends Controller
                 'debit' => $policy->supplier_cost,
                 'credit' => 0,
                 'description' => 'بوليصة شحن رقم '.$policy->code
+            ]);
+        }
+
+        if($policy->from && $policy->to) {
+            Places::firstOrCreate([
+                'name' => $policy->from,
+                'company_id' => Auth::user()->company_id,
+            ]);
+
+            Places::firstOrCreate([
+                'name' => $policy->to,
+                'company_id' => Auth::user()->company_id,
             ]);
         }
 
