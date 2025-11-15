@@ -3,7 +3,7 @@
 @section('title', 'تفاصيل القيد')
 
 @section('content')
-<h1 class="mb-4">تفاصيل القيد</h1>
+<h1 class="mb-4">تفاصيل القيد {{ $journal->code }}</h1>
 
 <div class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-4">
