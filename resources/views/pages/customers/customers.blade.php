@@ -3,47 +3,138 @@
 @section('title', 'العملاء')
 
 @section('content')
-<h1 class="mb-4">العمـــلاء</h1>
+<style>
+    /* Minimal custom styles - mostly using Bootstrap */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+    }
+    
+    /* Add scroll indicator shadow */
+    .table-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 30px;
+        background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .table-container.has-scroll::after {
+        opacity: 1;
+    }
+    
+    .table {
+        min-width: 800px; /* Ensure table doesn't collapse too much */
+    }
+    
+    .table thead th,
+    .table tbody td {
+        white-space: nowrap;
+    }
+    
+    @media (max-width: 768px) {
+        .table thead th {
+            font-size: 13px;
+            padding: 12px 8px;
+        }
+        
+        .table tbody td {
+            font-size: 13px;
+            padding: 12px 8px;
+        }
+        
+        .action-icons i {
+            font-size: 18px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .table thead th {
+            font-size: 12px;
+            padding: 10px 6px;
+        }
+        
+        .table tbody td {
+            font-size: 12px;
+            padding: 10px 6px;
+        }
+        
+        .table {
+            min-width: 900px;
+        }
+    }
+    
+    /* Scroll hint */
+    .scroll-hint {
+        display: none;
+        text-align: center;
+        color: #6c757d;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .scroll-hint {
+            display: block;
+        }
+    }
+</style>
 
-<div class="row mb-4">
-    <div class="col-md-6">
+<h1 class="mb-3 mb-md-4 fs-3 fs-md-1">العمـــلاء</h1>
+
+<!-- Search and Filter Section -->
+<div class="row g-3 mb-4">
+    <!-- Search Form -->
+    <div class="col-12 col-lg-6">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="search" class="form-label text-dark fw-bold">بحث عن عميل:</label>
-            <div class="d-flex">
-                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن عميل بالإيميل او بالإسم... "
+            <label for="search" class="form-label text-dark fw-bold mb-2">بحث عن عميل:</label>
+            <div class="d-flex gap-2">
+                <input type="text" name="search" class="form-control border-primary flex-grow-1" 
+                    placeholder="ابحث عن عميل بالإيميل او بالإسم..."
                     value="{{ request()->query('search') }}">
-                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
-                    <span>بحث</span>
-                    <i class="fa-solid fa-magnifying-glass ms-2"></i>
+                <button type="submit" class="btn btn-primary fw-bold d-flex align-items-center px-3 px-md-4">
+                    <span class="d-none d-sm-inline">بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-0 ms-sm-2"></i>
                 </button>
             </div>
         </form>
     </div>
-    <div class="col-md-4">
+    
+    <!-- Status Filter -->
+    <div class="col-12 col-sm-6 col-lg-4 d-none d-sm-block">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
-            <div class="d-flex">
-                <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
-                    <option value="all"
-                        {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
-                        جميع العملاء</option>
-                </select>
-                @if (request()->query('search'))
-                    <input type="hidden" name="search" value="{{ request()->query('search') }}">
-                @endif
-            </div>
+            <label for="statusFilter" class="form-label text-dark fw-bold mb-2">تصفية حسب الحالة:</label>
+            <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
+                <option value="all" {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
+                    جميع العملاء
+                </option>
+            </select>
+            @if (request()->query('search'))
+                <input type="hidden" name="search" value="{{ request()->query('search') }}">
+            @endif
         </form>
     </div>
-    <div class="col-md-2 d-flex align-items-end">
-        <button class="btn btn-primary w-100 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#createUserModal">
-            <i class="fa-solid fa-user-plus pe-1"></i>
-            أضف عميل
+    
+    <!-- Add Customer Button -->
+    <div class="col-12 col-sm-6 col-lg-2">
+        <label class="form-label d-none d-lg-block opacity-0">.</label>
+        <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" 
+            type="button" data-bs-toggle="modal" data-bs-target="#createUserModal">
+            <i class="fa-solid fa-user-plus ms-2"></i>
+            <span>أضف عميل</span>
         </button>
     </div>
 </div>
 
+<!-- Create Customer Modal -->
 <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-dark fw-bold" id="createUserModalLabel">إنشاء عميل جديد</h5>
@@ -53,66 +144,67 @@
                 @csrf
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                 <div class="modal-body text-dark">
-                    <div class="row mb-3">
-                        <div class="col">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
                             <label for="name" class="form-label">إسم العميل</label>
                             <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}">
                             @error('name')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-md-6">
                             <label for="CR" class="form-label">السجل التجاري</label>
                             <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ old('CR') }}">
                             @error('CR')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
                             <label class="form-label">الرقم الضريبي</label>
                             <input type="text" class="form-control border-primary" name="vatNumber" value="{{ old('vatNumber') }}">
                             @error('vatNumber')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-md-6">
                             <label for="national_address" class="form-label">العنوان الوطني</label>
                             <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ old('national_address') }}">
                             @error('national_address')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
                             <label for="phone" class="form-label">رقم الهاتف</label>
                             <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ old('phone') }}">
                             @error('phone')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-md-6">
                             <label for="email" class="form-label">البريد الإلكتروني</label>
                             <input type="text" class="form-control border-primary" id="email" name="email" value="{{ old('email') }}">
                             @error('email')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer d-flex justify-content-start">
-                    <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
-                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                    <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">إنشاء</button>
+                    <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2" data-bs-dismiss="modal">إلغاء</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<div class="table-container">
-    <table class="table table-hover">
+<!-- Customers Table -->
+<div class="table-container" id="tableContainer">
+    <table class="table table-hover mb-0">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم حساب العميل</th>
@@ -128,7 +220,7 @@
         <tbody>
             @if ($customers->isEmpty())
                 <tr>
-                    <td colspan="8" class="text-center">
+                    <td colspan="8" class="text-center py-4">
                         <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
                     </td>
                 </tr>
@@ -152,7 +244,7 @@
                             </a>
                         </td>
                         <td class="action-icons text-center">
-                            <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
+                            <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $customer->id }}">
@@ -161,9 +253,9 @@
                         </td>
                     </tr>
 
-                    {{-- update modal --}}
+                    <!-- Edit Customer Modal -->
                     <div class="modal fade" id="editUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $customer->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
@@ -174,78 +266,78 @@
                                     @method('PUT')
                                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                                     <div class="modal-body text-dark">
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <label for="name" class="form-label">إسم العميل</label>
-                                                <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $customer->name }}">
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label for="name{{ $customer->id }}" class="form-label">إسم العميل</label>
+                                                <input type="text" class="form-control border-primary" id="name{{ $customer->id }}" name="name" value="{{ $customer->name }}">
                                                 @error('name')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col">
-                                                <label for="CR" class="form-label">السجل التجاري</label>
-                                                <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ $customer->CR }}">
+                                            <div class="col-12 col-md-6">
+                                                <label for="CR{{ $customer->id }}" class="form-label">السجل التجاري</label>
+                                                <input type="text" class="form-control border-primary" id="CR{{ $customer->id }}" name="CR" value="{{ $customer->CR }}">
                                                 @error('CR')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <label for="vatNumber" class="form-label">الرقم الضريبي</label>
-                                                <input type="text" class="form-control border-primary" id="vatNumber" name="vatNumber" value="{{ $customer->vatNumber }}">
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label for="vatNumber{{ $customer->id }}" class="form-label">الرقم الضريبي</label>
+                                                <input type="text" class="form-control border-primary" id="vatNumber{{ $customer->id }}" name="vatNumber" value="{{ $customer->vatNumber }}">
                                                 @error('vatNumber')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col">
-                                                <label for="national_address" class="form-label">العنوان الوطني</label>
-                                                <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ $customer->national_address }}">
+                                            <div class="col-12 col-md-6">
+                                                <label for="national_address{{ $customer->id }}" class="form-label">العنوان الوطني</label>
+                                                <input type="text" class="form-control border-primary" id="national_address{{ $customer->id }}" name="national_address" value="{{ $customer->national_address }}">
                                                 @error('national_address')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col">
-                                                <label for="phone" class="form-label">رقم الهاتف</label>
-                                                <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ $customer->phone }}">
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-12 col-md-6">
+                                                <label for="phone{{ $customer->id }}" class="form-label">رقم الهاتف</label>
+                                                <input type="text" class="form-control border-primary" id="phone{{ $customer->id }}" name="phone" value="{{ $customer->phone }}">
                                                 @error('phone')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                 @enderror
                                             </div>
-                                            <div class="col">
-                                                <label for="email" class="form-label">البريد الإلكتروني</label>
-                                                <input type="text" class="form-control border-primary" id="email" name="email" value="{{ $customer->email }}">
+                                            <div class="col-12 col-md-6">
+                                                <label for="email{{ $customer->id }}" class="form-label">البريد الإلكتروني</label>
+                                                <input type="text" class="form-control border-primary" id="email{{ $customer->id }}" name="email" value="{{ $customer->email }}">
                                                 @error('email')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer d-flex justify-content-start">
-                                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
-                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                        <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">حفظ التغييرات</button>
+                                        <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2" data-bs-dismiss="modal">إلغاء</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
 
-                    {{-- delete modal --}}
+                    <!-- Delete Customer Modal -->
                     <div class="modal fade" id="deleteUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
+                                    <h5 class="modal-title text-dark fw-bold fs-6" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <div class="modal-body text-center text-dark">
+                                <div class="modal-body text-center text-dark px-4 py-4">
                                     هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('users.customer.delete', $customer) }}" method="POST">
+                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
+                                    <button type="button" class="btn btn-secondary fw-bold order-1" data-bs-dismiss="modal">إلغاء</button>
+                                    <form action="{{ route('users.customer.delete', $customer) }}" method="POST" class="order-2">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger fw-bold">حذف</button>
@@ -259,7 +351,40 @@
         </tbody>
     </table>
 </div>
-<div class="mt-4">
+<div class="scroll-hint">
+    <i class="fa-solid fa-arrows-left-right me-1"></i>
+    اسحب الجدول لليمين أو اليسار لرؤية المزيد
+</div>
+
+<!-- Pagination -->
+<div class="mt-3 mt-md-4 d-flex justify-content-center">
     {{ $customers->appends(request()->query())->onEachSide(1)->links() }}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tableContainer = document.getElementById('tableContainer');
+        
+        // Check if table needs scrolling
+        function checkScroll() {
+            if (tableContainer.scrollWidth > tableContainer.clientWidth) {
+                tableContainer.classList.add('has-scroll');
+            } else {
+                tableContainer.classList.remove('has-scroll');
+            }
+        }
+        
+        // Check on load and resize
+        checkScroll();
+        window.addEventListener('resize', checkScroll);
+        
+        // Remove scroll hint after first interaction
+        const scrollHint = document.querySelector('.scroll-hint');
+        if (scrollHint) {
+            tableContainer.addEventListener('scroll', function() {
+                scrollHint.style.display = 'none';
+            }, { once: true });
+        }
+    });
+</script>
 @endsection

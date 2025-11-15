@@ -3,8 +3,97 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style>
+    /* Responsive cards adjustments */
+    @media (max-width: 768px) {
+        .stats-card {
+            margin-bottom: 15px;
+        }
+        
+        .card-body h6.card-title {
+            font-size: 14px;
+        }
+        
+        .card-body h6.fw-bold {
+            font-size: 1.2rem !important;
+        }
+        
+        .card-body i.fa-xl {
+            font-size: 1.2rem !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+        
+        .card-body h6.card-title {
+            font-size: 13px;
+        }
+        
+        .card-body h6.fw-bold {
+            font-size: 1.1rem !important;
+        }
+    }
+
+    /* Chart containers responsive */
+    @media (max-width: 768px) {
+        .chart-container {
+            height: 200px !important;
+        }
+        
+        .chart-container canvas {
+            max-height: 200px;
+        }
+    }
+
+    /* Events container responsive */
+    @media (max-width: 768px) {
+        .event-card {
+            padding: 0.75rem !important;
+        }
+        
+        .event-card h6 {
+            font-size: 13px;
+        }
+        
+        .event-card p {
+            font-size: 14px;
+        }
+    }
+
+    /* Button responsive */
+    @media (max-width: 576px) {
+        .btn-sm {
+            font-size: 12px;
+            padding: 0.35rem 0.7rem;
+        }
+        
+        .card-title {
+            font-size: 15px !important;
+        }
+    }
+
+    /* Date input responsive */
+    @media (max-width: 768px) {
+        .form-control[type="date"] {
+            font-size: 12px;
+            padding: 0.4rem;
+        }
+    }
+
+    /* Spacing adjustments for mobile */
+    @media (max-width: 768px) {
+        .row.mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+    }
+</style>
+
+<!-- Statistics Cards Row -->
 <div class="row mb-4">
-    <div class="col">
+    <div class="col-12 col-sm-6 col-lg-3 stats-card">
         <div class="card rounded-3 border-0 shadow-sm">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
@@ -17,7 +106,7 @@
             </div>
         </div>
     </div>
-    <div class="col">
+    <div class="col-12 col-sm-6 col-lg-3 stats-card">
         <div class="card rounded-3 border-0 shadow-sm">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
@@ -30,7 +119,7 @@
             </div>
         </div>
     </div>
-    <div class="col">
+    <div class="col-12 col-sm-6 col-lg-3 stats-card">
         <div class="card rounded-3 border-0 shadow-sm">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
@@ -43,7 +132,7 @@
             </div>
         </div>
     </div>
-    <div class="col">
+    <div class="col-12 col-sm-6 col-lg-3 stats-card">
         <div class="card rounded-3 border-0 shadow-sm">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
@@ -58,12 +147,13 @@
     </div>
 </div>
 
+<!-- Container Reports Row -->
 <div class="row mb-4">
-    <div class="col-4">
+    <div class="col-12 col-lg-4 mb-3 mb-lg-0">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
-                <h5 class="card-title d-flex justify-content-between align-items-center text-dark fw-bold mb-4">
-                    <div>
+                <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center text-dark fw-bold mb-4">
+                    <div class="mb-2 mb-sm-0">
                         <i class="fa-solid fa-file-circle-question me-1"></i>
                         تقارير الحاويات
                     </div>
@@ -110,11 +200,11 @@
             </div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-12 col-lg-8">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
-                <h5 class="card-title d-flex justify-content-between align-items-center text-dark fw-bold">
-                    <div>معدل دخول وخروج الحاويات</div>
+                <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center text-dark fw-bold mb-3">
+                    <div class="mb-2 mb-sm-0">معدل دخول وخروج الحاويات</div>
                     <a href="{{ route('yard.containers.reports') }}" class="btn btn-sm btn-primary fw-bold">
                         عرض تقارير الحاويات
                     </a>
@@ -127,25 +217,26 @@
     </div>
 </div>
 
+<!-- Charts and Finance Row -->
 <div class="row mb-4">
-    <div class="col-md-3">
+    <div class="col-12 col-lg-3 mb-3 mb-lg-0 order-2 order-lg-1">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
                 <h5 class="card-title text-center fw-bold mb-4">توزيع الحاويات في الساحة</h5>
                 <div class="chart-container d-flex justify-content-center align-items-center" style="position: relative; height:257px;">
                     <canvas id="containersDistribution"></canvas>
                 </div>
-                <a href="{{ route('yard.containers') }}" class="btn btn-primary fw-bold w-100">
+                <a href="{{ route('yard.containers') }}" class="btn btn-primary fw-bold w-100 mt-3">
                     عرض جميع الحاويــات
                 </a>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-12 col-lg-6 mb-3 mb-lg-0 order-1 order-lg-2">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
-                <h5 class="card-title d-flex justify-content-between align-items-center fw-bold mb-4">
-                    <div>
+                <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center fw-bold mb-4">
+                    <div class="mb-2 mb-sm-0">
                         تقارير الإيرادات الشهرية
                         <i class="fa-solid fa-money-bill-trend-up"></i>
                     </div>
@@ -159,11 +250,11 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-12 col-lg-3 order-3">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
-                <h5 class="card-title d-flex justify-content-between align-items-center text-dark fw-bold mb-4">
-                    <div>الصندوق</div>
+                <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center text-dark fw-bold mb-4">
+                    <div class="mb-2 mb-sm-0">الصندوق</div>
                     <a href="{{ route('admin.money.entries') }}" class="btn btn-sm btn-primary fw-bold">
                         تفاصيل
                     </a>
@@ -217,6 +308,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Line Chart - Container Trend
         const containersLineChart = document.getElementById('containersLineChart').getContext('2d');
         new Chart(containersLineChart, {
             type: 'line',
@@ -245,6 +337,9 @@
                         beginAtZero: true,
                         ticks: {
                             stepSize: 1,
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
                         },
                     },
                     x: {
@@ -252,19 +347,31 @@
                             display: false
                         },
                         ticks: {
-                            maxRotation: 45,
-                            minRotation: 0
+                            maxRotation: window.innerWidth < 768 ? 45 : 0,
+                            minRotation: window.innerWidth < 768 ? 45 : 0,
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
                         },
                     }
                 },
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    tooltip: {
+                        titleFont: {
+                            size: window.innerWidth < 768 ? 12 : 14
+                        },
+                        bodyFont: {
+                            size: window.innerWidth < 768 ? 11 : 13
+                        }
                     }
                 }
             }
         });
 
+        // Pie Chart - Container Distribution
         const containersDistribution = document.getElementById('containersDistribution').getContext('2d');
         new Chart(containersDistribution, {
             type: 'pie',
@@ -292,11 +399,14 @@
                 maintainAspectRatio: true,
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: window.innerWidth < 768 ? 'bottom' : 'bottom',
                         labels: {
                             color: '#212529',
-                            padding: 12,
+                            padding: window.innerWidth < 768 ? 8 : 12,
                             usePointStyle: true,
+                            font: {
+                                size: window.innerWidth < 768 ? 11 : 12
+                            }
                         }
                     },
                     tooltip: {
@@ -304,12 +414,19 @@
                             label: function(context) {
                                 return `Total: ${context.raw}`;
                             }
+                        },
+                        titleFont: {
+                            size: window.innerWidth < 768 ? 12 : 14
+                        },
+                        bodyFont: {
+                            size: window.innerWidth < 768 ? 11 : 13
                         }
                     }
                 }
             }
         });
 
+        // Bar Chart - Profit Chart
         const profitChart = document.getElementById('profitChart').getContext('2d');
         new Chart(profitChart, {
             type: 'bar',
@@ -321,8 +438,8 @@
                     backgroundColor: 'rgba(0, 123, 255, 0.7)',
                     borderColor: '#007bff',
                     borderWidth: 1,
-                    borderRadius: 15,
-                    barThickness: 50,
+                    borderRadius: window.innerWidth < 768 ? 8 : 15,
+                    barThickness: window.innerWidth < 768 ? 30 : 50,
                 }]
             },
             options: {
@@ -337,6 +454,12 @@
                             label: function(context) {
                                 return `Total: ${context.raw} students`;
                             }
+                        },
+                        titleFont: {
+                            size: window.innerWidth < 768 ? 12 : 14
+                        },
+                        bodyFont: {
+                            size: window.innerWidth < 768 ? 11 : 13
                         }
                     }
                 },
@@ -345,16 +468,34 @@
                         beginAtZero: true,
                         max: 16,
                         ticks: {
-                            stepSize: 1
+                            stepSize: 1,
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
                         }
                     },
                     x: {
                         grid: {
                             display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
                         }
                     }
                 }
             }
+        });
+
+        // Update charts on window resize
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                // Charts will automatically resize due to responsive: true
+                Chart.instances.forEach(chart => chart.resize());
+            }, 250);
         });
     });
 </script>

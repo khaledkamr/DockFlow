@@ -10,7 +10,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -23,6 +22,7 @@
             --blue-4: #42b3af;
             --blue-5: #52d6cb;
             --gradient: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
+            --sidebar-width: 300px;
         }
 
         body {
@@ -58,17 +58,91 @@
             color: #0056d8;
         }
 
-        /* Sidebar width */
+        /* Sidebar styling */
         .sidebar {
-            width: 300px;
+            width: var(--sidebar-width);
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1050;
+            transition: transform 0.3s ease-in-out;
         }
+
         .sidebar .nav-link:hover:not(.bg-primary){
             background-color: rgba(0, 38, 255, 0.1);
             color: #0b56a9 !important;
             transition: 0.3s;
         }
+
+        /* Main content area */
         .main-content {
-            margin-right: 300px;
+            margin-right: var(--sidebar-width);
+            transition: margin-right 0.3s ease-in-out;
+        }
+
+        /* Mobile sidebar hidden by default */
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-right: 0;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+                display: none;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        /* Mobile menu toggle button */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1030;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        @media (max-width: 991px) {
+            .mobile-menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
         }
 
         /* Logo gradient text */
@@ -94,13 +168,57 @@
             transform: rotate(180deg);
         }
 
-        /* table styling */
+        /* Navbar responsive adjustments */
+        @media (max-width: 991px) {
+            .navbar .d-flex.mx-auto {
+                width: 100% !important;
+                margin: 10px 0 !important;
+            }
+
+            .navbar .d-flex.align-items-center.gap-3 {
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .navbar .me-5 {
+                margin-right: 0 !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 16px;
+            }
+
+            .navbar .d-flex.align-items-center .rounded-circle {
+                width: 35px !important;
+                height: 35px !important;
+            }
+
+            .navbar .d-flex.flex-column span {
+                font-size: 12px !important;
+            }
+        }
+
+        /* Table responsive */
         .table-container {
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            overflow-x: auto;
         }
+
+        @media (max-width: 768px) {
+            .table {
+                font-size: 12px;
+            }
+            
+            .table th, .table td {
+                padding: 10px 8px;
+            }
+        }
+
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -126,6 +244,8 @@
         .table tbody tr:hover {
             background-color: #f1f3f5;
         }
+
+        /* Status badges */
         .status-waiting {
             background-color: #ffe590;
             color: #856404;
@@ -175,16 +295,17 @@
             display: inline-block;
         }
         
-        /* paginator styling */
+        /* Pagination */
         .pagination {
             margin: 0;
             padding: 0;
+            flex-wrap: wrap;
         }
         .pagination .page-item .page-link {
             color: #0d6efd;
             border: 1px solid #0d6efd;
             padding: 8px 16px;
-            margin: 0 2px;
+            margin: 2px;
             border-radius: 4px;
             transition: 0.3s;
         }
@@ -201,7 +322,7 @@
             border-color: #dee2e6;
         }
 
-        /* nav link styles */
+        /* Nav tabs */
         .nav-tabs .nav-link {
             color: #495057;
         }
@@ -225,6 +346,16 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
+        
+        @media (max-width: 991px) {
+            .go-to-top {
+                bottom: 90px;
+                left: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
         .go-to-top:hover {
             background-color: #217cab;
             transform: translateY(-2px);
@@ -238,11 +369,44 @@
             transform: translateY(0);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
+
+        /* Content padding adjustment for mobile */
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 1rem !important;
+            }
+        }
+
+        /* Sidebar close button */
+        .sidebar-close {
+            display: none;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            color: #333;
+            z-index: 10;
+        }
+
+        @media (max-width: 991px) {
+            .sidebar-close {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar -->
-    <div class="sidebar bg-white shadow-sm p-3 position-fixed top-0 start-0 vh-100 overflow-auto" style="z-index: 100;">
+    <div class="sidebar p-3" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        
         <div class="text-center mb-4">
             <img class="" src="{{ asset('img/logo.png') }}" width="150px" alt="logo">
             <h2 class="fw-bold logo-gradient">DockFlow</h2>
@@ -303,7 +467,7 @@
                     </div>
                 </li>
             @endcan
-            
+
             @can('عرض العقود')
                 <li class="nav-item mb-1">
                     <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['contracts*']) ? '' : 'collapsed' }}" 
@@ -524,10 +688,15 @@
             @endcan
         </ul>
     </div>
+
+    <!-- Mobile Menu Toggle Button -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+        <i class="fa-solid fa-bars"></i>
+    </button>
     
     <div class="main-content">
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg bg-white shadow-sm" style="height: 70px;">
+        <nav class="navbar navbar-expand-lg bg-white shadow-sm" style="min-height: 70px;">
             <div class="container-fluid">
                 @if(auth()->user()->company->logo)
                     <img src="{{ asset('storage/' . auth()->user()->company->logo) }}" alt="Logo" class="me-2" style="height: 40px; width: auto;">
@@ -542,7 +711,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarContent">
-                    <form class="d-flex mx-auto" style="width: 40%;">
+                    <form class="d-flex mx-auto" style="width: 40%; max-width: 500px;">
                         <div class="input-group">
                             <input class="form-control border-primary" type="search" placeholder="بحث..." aria-label="Search">
                             <button class="btn btn-outline-primary" type="submit">
@@ -578,7 +747,7 @@
                             </ul>
                         </div>
                         
-                        <div class="d-flex align-items-center text-dark me-5">
+                        <div class="d-flex align-items-center text-dark">
                             <a href="{{ route('user.profile', Auth::user()) }}">
                                 <img src="{{ Auth::user()->avatar ?? asset('img/user-profile.jpg') }}" alt="Profile Photo" class="rounded-circle me-2" style="width: 40px; height: 40px;">
                             </a>
@@ -600,40 +769,6 @@
         <div class="content-area p-4">
             @yield('content')
         </div>
-
-        @if (session('success'))
-            @push('scripts')
-                <script>
-                    showToast(`{!! session('success') !!}`, "success");
-                </script>
-            @endpush
-        @endif
-
-        @if (session('error'))
-            @push('scripts')
-                <script>
-                    showToast("{{ session('error') }}", "danger");
-                </script>
-            @endpush
-        @endif
-
-        @if (session('errors'))
-            @push('scripts')
-                <script>
-                    showToast("حدث خطأ في العملية الرجاء مراجعة البيانات", "danger");
-                </script>
-            @endpush
-        @endif
-
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                @push('scripts')
-                    <script>
-                        showToast("{{ $error }}", "danger");
-                    </script>
-                @endpush
-            @endforeach
-        @endif
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -655,7 +790,7 @@
             // Initial check for go to top button
             toggleGoToTopButton();
 
-            // Handle sidebar collapse events to update arrow rotation
+            // Handle sidebar collapse events
             const collapseElements = document.querySelectorAll('.collapse');
             collapseElements.forEach(function(collapseEl) {
                 const parentLink = document.querySelector(`[href="#${collapseEl.id}"]`);
@@ -668,6 +803,44 @@
                     parentLink.classList.add('collapsed');
                 });
             });
+
+            // Mobile sidebar functionality
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                sidebarOverlay.classList.toggle('show');
+                
+                // Change icon
+                const icon = mobileMenuToggle.querySelector('i');
+                if (sidebar.classList.contains('show')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+
+            mobileMenuToggle.addEventListener('click', toggleSidebar);
+            sidebarClose.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when clicking on a link (on mobile)
+            if (window.innerWidth <= 991) {
+                const sidebarLinks = sidebar.querySelectorAll('.nav-link');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        // Don't close if it's a parent link (collapsible)
+                        if (!this.classList.contains('parent-link')) {
+                            setTimeout(toggleSidebar, 300);
+                        }
+                    });
+                });
+            }
         });
 
         // Toast notification function
@@ -691,7 +864,6 @@
             const bsToast = new bootstrap.Toast(toast);
             bsToast.show();
             
-            // Remove toast after it's hidden
             toast.addEventListener('hidden.bs.toast', () => {
                 toast.remove();
             });
@@ -715,7 +887,7 @@
             });
         }
 
-        // Show/hide go to top button based on scroll position
+        // Show/hide go to top button
         function toggleGoToTopButton() {
             const goToTopBtn = document.getElementById('goToTopBtn');
             if (window.pageYOffset > 300) {
