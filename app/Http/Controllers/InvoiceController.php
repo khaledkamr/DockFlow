@@ -238,6 +238,30 @@ class InvoiceController extends Controller
             $invoice->containers()->attach($container->id, ['amount' => 0]);
         }
 
+        $grouped = $transaction->items
+            ->groupBy('description')
+            ->map(function ($group) {
+                return [
+                    'description' => $group->first()->description,
+                    'amount' => $group->sum('amount'),
+                    'tax' => $group->sum('tax'),
+                    'total' => $group->sum('total'),
+                ];
+            })
+            ->values();         
+
+        $number = 1;
+
+        foreach ($grouped as $item) {
+            $invoice->clearanceInvoiceItems()->create([
+                'number' => $number++,
+                'description' => $item['description'],
+                'amount' => $item['amount'],
+                'tax' => $item['tax'],
+                'total' => $item['total'],
+            ]);
+        }
+
         $amountBeforeTax = 0;
         $tax = 0;
         $totalAmount = 0;
@@ -267,12 +291,6 @@ class InvoiceController extends Controller
                 $query->whereIn('container_id', $containerIds);
             })
             ->first();
-
-        $amountBeforeTax = 0;
-
-        foreach($transaction->items as $item) {
-            $amountBeforeTax += $item->total;
-        }
 
         $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 

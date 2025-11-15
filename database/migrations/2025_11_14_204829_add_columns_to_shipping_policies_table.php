@@ -17,7 +17,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('shipping_policies', function (Blueprint $table) {
-            $table->dropColumn(['distance', 'total_const']);
+            $table->dropColumn(['distance', 'total_cost']);
         });
     }
 };

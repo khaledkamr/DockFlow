@@ -226,7 +226,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($invoice->containers->first()->transactions->first()->items->sortBy('number') as $item)
+                        @foreach ($invoice->clearanceInvoiceItems->sortBy('number') as $item)
                             <tr>
                                 <td class="text-center fw-bold">{{ $item->number }}</td>
                                 <td class="text-center fw-bold">

@@ -54,6 +54,10 @@ class Invoice extends Model
             ->withTimestamps();
     }
 
+    public function clearanceInvoiceItems() {
+        return $this->hasMany(ClearanceInvoiceItem::class, 'invoice_id');
+    }
+
     protected static function booted()
     {
         static::creating(function ($invoice) {
