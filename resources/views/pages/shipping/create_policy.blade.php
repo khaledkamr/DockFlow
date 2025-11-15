@@ -120,7 +120,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 internal-field">
+                    <div class="col-12 col-sm-6 col-md-3 internal-field">
                         <label class="form-label">مصاريف الديزل</label>
                         <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
                             value="{{ old('diesel_cost') ?? 0 }}">
@@ -128,7 +128,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 internal-field">
+                    <div class="col-12 col-sm-6 col-md-3 internal-field">
                         <label class="form-label">عمولة السائق</label>
                         <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
                             value="{{ old('driver_wage') ?? 0 }}">
@@ -136,7 +136,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <label class="form-label">مصاريف أخرى</label>
                         <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
                             value="{{ old('other_expenses') ?? 0 }}">
@@ -144,7 +144,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <div class="col-12 col-sm-6 col-md-3">
                         <label class="form-label">سعر العميل</label>
                         <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
                             value="{{ old('client_cost') ?? 0 }}">
@@ -163,10 +163,10 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th class="text-center text-nowrap" style="min-width: 200px">الوصف</th>
-                                        <th class="text-center text-nowrap">الكمية</th>
-                                        <th class="text-center text-nowrap">الوزن</th>
-                                        <th class="text-center text-nowrap">ملاحظات</th>
-                                        <th class="text-center text-nowrap">إجراء</th>
+                                        <th class="text-center text-nowrap" style="min-width: 100px">الكمية</th>
+                                        <th class="text-center text-nowrap" style="min-width: 100px">الوزن</th>
+                                        <th class="text-center text-nowrap" style="min-width: 200px">ملاحظات</th>
+                                        <th class="text-center text-nowrap" style="min-width: 50px">إجراء</th>
                                     </tr>
                                 </thead>
                                 <tbody id="goods-tbody">
@@ -195,7 +195,7 @@
                             </table>
                         </div>
 
-                        <div class="scroll-hint">
+                        <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
                             <i class="fa-solid fa-arrows-left-right me-1"></i>
                             اسحب الجدول لليمين أو اليسار لرؤية المزيد
                         </div>

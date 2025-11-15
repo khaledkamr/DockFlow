@@ -304,7 +304,7 @@
         </table>
     </div>
 
-    <div class="scroll-hint">
+    <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
         <i class="fa-solid fa-arrows-left-right me-1"></i>
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>

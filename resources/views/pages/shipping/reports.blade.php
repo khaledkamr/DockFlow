@@ -21,18 +21,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">من تاريخ</label>
                     <input type="date" name="from"
                         value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">إلى تاريخ</label>
                     <input type="date" name="to" value="{{ request('to', now()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">نوع الناقل</label>
                     <select name="type" class="form-select border-primary">
                         <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -44,7 +44,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">حالة التسليم</label>
                     <select name="status" class="form-select border-primary">
                         <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -102,7 +102,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">مكان التحميل</label>
                     <select name="loading_location" id="loading_location" class="form-select border-primary">
                         <option value="all" {{ request('loading_location') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -114,7 +114,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">مكان التسليم</label>
                     <select name="delivery_location" id="delivery_location" class="form-select border-primary">
                         <option value="all" {{ request('delivery_location') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -255,7 +255,7 @@
             </table>
         </div>
 
-        <div class="scroll-hint">
+        <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
             <i class="fa-solid fa-arrows-left-right me-1"></i>
             اسحب الجدول لليمين أو اليسار لرؤية المزيد
         </div>

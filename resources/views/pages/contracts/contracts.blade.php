@@ -20,7 +20,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-12 col-sm-7 col-lg-4">
+        <div class="col-6 col-sm-7 col-lg-4">
             <form method="GET" action="" class="d-flex flex-column h-100">
                 <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
                 <div class="d-flex flex-grow-1">
@@ -42,11 +42,10 @@
                 </div>
             </form>
         </div>
-        <div class="col-12 col-sm-5 col-lg-2 d-flex align-items-end">
+        <div class="col-6 col-sm-5 col-lg-2 d-flex align-items-end">
             <a href="{{ route('contracts.create') }}" class="btn btn-primary w-100 fw-bold">
                 <i class="fa-solid fa-file-circle-plus pe-1"></i>
-                <span class="d-none d-sm-inline">أضف عقد</span>
-                <span class="d-inline d-sm-none">إضافة</span>
+                <span class="d-inline">أضف عقد</span>
             </a>
         </div>
     </div>
@@ -100,7 +99,7 @@
         </table>
     </div>
 
-    <div class="scroll-hint">
+    <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
         <i class="fa-solid fa-arrows-left-right me-1"></i>
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>

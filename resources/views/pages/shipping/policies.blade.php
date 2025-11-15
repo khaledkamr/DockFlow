@@ -21,7 +21,7 @@
             </form>
         </div>
 
-        <div class="col-12 col-sm-4 col-lg-2">
+        <div class="col-6 col-sm-4 col-lg-2">
             <form method="GET" action="" class="d-flex flex-column h-100">
                 <label for="typeFilter" class="form-label text-dark fw-bold">تصفية حسب النوع:</label>
                 <div class="d-flex flex-grow-1">
@@ -43,7 +43,7 @@
             </form>
         </div>
 
-        <div class="col-12 col-sm-4 col-lg-2">
+        <div class="col-6 col-sm-4 col-lg-2">
             <form method="GET" action="" class="d-flex flex-column h-100">
                 <label for="statusFilter" class="form-label text-dark fw-bold">تصفية حسب الحالة:</label>
                 <div class="d-flex flex-grow-1">
@@ -70,8 +70,7 @@
         <div class="col-12 col-sm-4 col-lg-2 d-flex align-items-end">
             <a href="{{ route('shipping.policies.create') }}" class="btn btn-primary w-100 fw-bold">
                 <i class="fa-solid fa-file-circle-plus pe-1"></i>
-                <span class="d-none d-sm-inline">إنشاء بوليصة</span>
-                <span class="d-inline d-sm-none">إضافة</span>
+                <span class="d-inline">إنشاء بوليصة</span>
             </a>
         </div>
     </div>
@@ -145,7 +144,7 @@
         </table>
     </div>
 
-    <div class="scroll-hint">
+    <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
         <i class="fa-solid fa-arrows-left-right me-1"></i>
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>
