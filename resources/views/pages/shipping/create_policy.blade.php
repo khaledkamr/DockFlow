@@ -30,28 +30,14 @@
             </div>
             <div class="col">
                 <label class="form-label">مكان التحميل</label>
-                <select class="form-select border-primary" id="from" name="from">
-                    <option value="">اختر مكان التحميل...</option>
-                    @foreach ($places as $place)
-                        <option value="{{ $place->name }}" {{ old('from') == $place->name ? 'selected' : '' }}>
-                            {{ $place->name }}
-                        </option>
-                    @endforeach
-                </select>
+                <input type="text" class="form-control border-primary" id="from" name="from" value="{{ old('from') }}" placeholder="اختر مكان التحميل...">
                 @error('from')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">مكان التفريغ</label>
-                <select class="form-select border-primary" id="to" name="to">
-                    <option value="">اختر مكان التفريغ...</option>
-                    @foreach ($places as $place)
-                        <option value="{{ $place->name }}" {{ old('to') == $place->name ? 'selected' : '' }}>
-                            {{ $place->name }}
-                        </option>
-                    @endforeach
-                </select>
+                <input type="text" class="form-control border-primary" id="to" name="to" value="{{ old('to') }}" placeholder="اختر مكان التفريغ...">
                 @error('to')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -229,6 +215,7 @@
             .then(data => {
                 console.log("DATA:", data);
                 if (data.exists) {
+                    console.log("Service exists. Price:", data.price);
                     clientPriceInput.value = data.price;
                 }
             });
@@ -240,18 +227,6 @@
     $('#customer_id').select2({
         placeholder: "ابحث عن إسم العميل...",
         allowClear: true
-    });
-
-    $('#from').select2({
-        placeholder: "اختر مكان التحميل...",
-        allowClear: true,
-        tags: true,
-    });
-
-    $('#to').select2({
-        placeholder: "اختر مكان التفريغ...",
-        allowClear: true,
-        tags: true,
     });
 
     $(document).ready(function() {
