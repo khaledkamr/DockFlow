@@ -644,8 +644,8 @@ class InvoiceController extends Controller
         $amountBeforeTax = 0;
 
         foreach($shippingPolicies as $policy) {
-            $amountBeforeTax += $policy->client_cost;
-            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->client_cost]);
+            $amountBeforeTax += $policy->total_cost;
+            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->total_cost]);
         }
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
@@ -663,13 +663,6 @@ class InvoiceController extends Controller
     }
 
     public function shippingInvoiceDetails(Invoice $invoice) {
-        $amountBeforeTax = 0;
-
-        foreach($invoice->shippingPolicies as $policy) {
-            $policy->total_cost = $policy->transportation_cost + $policy->customs_duties + $policy->additional_fees;
-            $amountBeforeTax += $policy->total_cost;  
-        }
-
         $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));

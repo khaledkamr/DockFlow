@@ -123,27 +123,31 @@
     <div class="card-body">
         <div class="row">
             @if($policy->type == 'ناقل داخلي')
-                <div class="col-md-3">
+                <div class="col">
                     <label class="text-muted small">تكلفة الديزل</label>
                     <p class="fw-bold mb-0">{{ number_format($policy->diesel_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <label class="text-muted small">أجرة السائق</label>
                     <p class="fw-bold mb-0">{{ number_format($policy->driver_wage, 2) }} <i data-lucide="saudi-riyal"></i></p>
                 </div>
             @elseif($policy->type == 'ناقل خارجي')
-                <div class="col-md-3">
+                <div class="col">
                     <label class="text-muted small">تكلفة المورد</label>
                     <p class="fw-bold mb-0">{{ number_format($policy->supplier_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
                 </div>
             @endif
-            <div class="col-md-3">
+            <div class="col">
                 <label class="text-muted small">مصروفات أخرى</label>
                 <p class="fw-bold mb-0">{{ number_format($policy->other_expenses, 2) }} <i data-lucide="saudi-riyal"></i></p>
             </div>
-            <div class="col-md-3">
+            <div class="col">
                 <label class="text-muted small">سعر العميل</label>
-                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
+                <p class="fw-bold text-dark mb-0">{{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
+            </div>
+            <div class="col">
+                <label class="text-muted small">اجمالي سعر العميل</label>
+                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($policy->total_cost, 2) }} <i data-lucide="saudi-riyal"></i></p>
             </div>
         </div>
     </div>

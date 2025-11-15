@@ -92,7 +92,7 @@
                         <tr class="text-center policy-row" 
                             data-policy-id="{{ $policy->id }}"
                             data-policy-code="{{ strtolower($policy->code) }}"
-                            data-policy-cost="{{ $policy->client_cost }}"
+                            data-policy-cost="{{ $policy->total_cost }}"
                             data-from="{{ strtolower($policy->from) }}"
                             data-to="{{ strtolower($policy->to) }}">
                             <td class="checkbox-cell" style="cursor: pointer;">
@@ -120,7 +120,7 @@
                                 <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
                             </td>
                             <td>{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                            <td class="fw-bold text-success">{{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i></td>
+                            <td class="fw-bold text-success">{{ number_format($policy->total_cost, 2) }} <i data-lucide="saudi-riyal"></i></td>
                             <td>
                                 <span class="badge status-delivered">
                                     تم الاستلام <i class="fa-solid fa-check"></i>
@@ -506,6 +506,9 @@
         // Discount input change
         if (discountInput) {
             discountInput.addEventListener('input', updateSummary);
+        }
+        if (taxRateSelect) {
+            taxRateSelect.addEventListener('change', updateSummary);
         }
 
         // Select/Deselect all functionality

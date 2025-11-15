@@ -15,7 +15,7 @@
                     @if($invoice->isPaid == 'تم الدفع')
                         <i class="fas fa-check-circle me-1"></i>مدفوعة
                     @elseif($invoice->isPaid == 'لم يتم الدفع')
-                        <i class="fas fa-clock me-1"></i>معلقة
+                        <i class="fas fa-clock me-1"></i>غير مدفوعة
                     @endif
                 </span>
             </div>

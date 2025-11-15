@@ -15,7 +15,7 @@
                     @if($invoice->isPaid == 'تم الدفع')
                         <i class="fas fa-check-circle me-1"></i>مدفوعة
                     @elseif($invoice->isPaid == 'لم يتم الدفع')
-                        <i class="fas fa-clock me-1"></i>معلقة
+                        <i class="fas fa-clock me-1"></i>عير مدفوعة
                     @endif
                 </span>
             </div>
@@ -179,6 +179,7 @@
                             <th class="text-center bg-dark text-white">مكان التسليم</th>
                             <th class="text-center bg-dark text-white">مصاريف اخرى</th>
                             <th class="text-center bg-dark text-white">المبلغ</th>
+                            <th class="text-center bg-dark text-white">الإجمالي</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -207,11 +208,14 @@
                                 <td class="text-center">
                                     <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
                                 </td>
-                                <td class="text-center fw-bold text-success">
-                                    {{ $policy->other_expenses }} <i data-lucide="saudi-riyal"></i>
+                                <td class="text-center fw-bold text-dark">
+                                    {{ $policy->other_expenses }}</i>
+                                </td>
+                                <td class="text-center fw-bold text-dark">
+                                    {{ number_format($policy->client_cost, 2) }}</i>
                                 </td>
                                 <td class="text-center fw-bold text-success">
-                                    {{ number_format($policy->client_cost, 2) }} <i data-lucide="saudi-riyal"></i>
+                                    {{ number_format($policy->total_cost, 2) }} <i data-lucide="saudi-riyal"></i>
                                 </td>
                             </tr>
                         @endforeach
