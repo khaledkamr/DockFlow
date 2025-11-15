@@ -30,14 +30,14 @@
             </div>
             <div class="col">
                 <label class="form-label">مكان التحميل</label>
-                <input type="text" class="form-control border-primary" id="from" name="from" value="{{ old('from') }}" placeholder="اختر مكان التحميل...">
+                <input type="text" class="form-control border-primary" id="from" name="from" value="{{ old('from') }}">
                 @error('from')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
             <div class="col">
                 <label class="form-label">مكان التفريغ</label>
-                <input type="text" class="form-control border-primary" id="to" name="to" value="{{ old('to') }}" placeholder="اختر مكان التفريغ...">
+                <input type="text" class="form-control border-primary" id="to" name="to" value="{{ old('to') }}">
                 @error('to')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
