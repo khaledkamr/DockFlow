@@ -497,7 +497,7 @@ class InvoiceController extends Controller
         $labor_revenue = 0;
         $saber_revenue = 0;
 
-        foreach($invoice->containers->first()->transactions->first()->items->sortBy('id') as $item) {
+        foreach($invoice->clearanceInvoiceItems->sortBy('id') as $item) {
             if($item->type == 'مصروف') {
                 JournalEntryLine::create([
                     'journal_entry_id' => $journal->id,
