@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
             // CompanySeeder::class,
             // AccountTypesSeeder::class,
             // AccountsSeeder::class,
-            PrimaryAccountSeeder::class,
+            // PrimaryAccountSeeder::class,
             // UserSeeder::class,
             // ContainerTypesSeeder::class,
             // ServiceSeeder::class,
@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             // VehicleSeeder::class,
             // ModuleSeeder::class,
             // CompanyModulesSeeder::class,
+            PlacesSeeder::class,
         ]);
     }
 }
