@@ -245,7 +245,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="text-muted">الضريبة المضافة (15%):</span>
+                            <span class="text-muted">الضريبة المضافة ({{ $invoice->tax_rate }}%):</span>
                             <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} <i data-lucide="saudi-riyal"></i></span>
                         </div>
                         

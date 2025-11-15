@@ -117,10 +117,12 @@ class InvoiceController extends Controller
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax = $amountAfterDiscount * 0.15;
+        $tax_rate = $request->input('tax_rate', 15) / 100;
+        $tax = $amountAfterDiscount * $tax_rate;
         $amount = $amountAfterDiscount + $tax;
 
         $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax_rate = $request->input('tax_rate', 15);
         $invoice->tax = $tax;
         $invoice->amount_after_discount = $amountAfterDiscount;
         $invoice->total_amount = $amount;
@@ -347,10 +349,12 @@ class InvoiceController extends Controller
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax = $amountAfterDiscount * 0.15;
+        $tax_rate = $request->input('tax_rate', 15) / 100;
+        $tax = $amountAfterDiscount * $tax_rate;
         $amount = $amountAfterDiscount + $tax;
 
         $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax_rate = $request->input('tax_rate', 15);
         $invoice->tax = $tax;
         $invoice->amount_after_discount = $amountAfterDiscount;
         $invoice->total_amount = $amount;
@@ -668,10 +672,12 @@ class InvoiceController extends Controller
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax = $amountAfterDiscount * 0.15;
+        $tax_rate = $request->input('tax_rate', 15) / 100;
+        $tax = $amountAfterDiscount * $tax_rate;
         $amount = $amountAfterDiscount + $tax;
 
         $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax_rate = $request->input('tax_rate', 15);
         $invoice->tax = $tax;
         $invoice->amount_after_discount = $amountAfterDiscount;
         $invoice->total_amount = $amount;

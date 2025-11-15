@@ -67,6 +67,13 @@
                                     </select>
                                 </div>
                                 <div class="col">
+                                    <label for="tax_rate" class="form-label">الضريبة المضافة</label>
+                                    <select name="tax_rate" id="tax_rate" class="form-select border-primary" required>
+                                        <option value="15">خاضع للضريبة (15%)</option>
+                                        <option value="0">غير خاضع للضريبة</option>
+                                    </select>
+                                </div>
+                                <div class="col">
                                     <label class="form-label">نسبة الخصم(%)</label>
                                     <input type="number" name="discount" id="discount" class="form-control border-primary" 
                                         min="0" max="100" step="1" value="0" placeholder="0.00" required>

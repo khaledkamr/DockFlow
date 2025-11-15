@@ -61,6 +61,10 @@
         <div class="alert alert-info mb-3" id="selection-counter" style="display: none;">
             <i class="fas fa-info-circle"></i>
             تم تحديد <span id="selected-count">0</span> حاوية من أصل <span id="visible-count">{{ $containers->count() }}</span> حاوية
+            <span class="ms-3">
+                <i class="fas fa-dollar-sign text-success"></i>
+                إجمالي التكلفة: <strong id="total-cost">0.00</strong> ر.س
+            </span>
         </div>
 
         <div class="table-container">
@@ -86,6 +90,7 @@
                         <tr class="text-center container-row" 
                             data-container-id="{{ $container->id }}"
                             data-container-code="{{ strtolower($container->code) }}"
+                            data-container-cost="{{ $container->total }}"
                             data-customer-name="{{ strtolower($container->customer->name) }}">
                             <td class="checkbox-cell" style="cursor: pointer;">
                                 <div class="form-check d-flex justify-content-center">
@@ -107,7 +112,7 @@
                                 </a>
                             </td>
                             <td>{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
-                            <td class="fw-bold">{{ number_format($container->total, 2) }}</td>
+                            <td class="fw-bold text-success">{{ number_format($container->total, 2) }} <i data-lucide="saudi-riyal"></i></td>
                             <td><span class="badge bg-success">تم التسليم <i class="fa-solid fa-check"></i></span></td>
                         </tr>
                     @endforeach
@@ -122,7 +127,7 @@
         </div>
 
         <!-- Payment Details Section -->
-        <div class="card border-dark mb-3 mt-4" id="payment-details" style="">
+        <div class="card border-dark mb-3 mt-4" id="payment-details">
             <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">
                     <i class="fas fa-credit-card me-2"></i>
@@ -131,7 +136,7 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-5">
+                    <div class="col-3">
                         <label for="payment_method" class="form-label fw-bold">
                             <i class="fas fa-money-bill me-1"></i>
                             طريقة الدفع
@@ -142,29 +147,83 @@
                             <option value="تحويل بنكي">تحويل بنكي</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-3">
+                        <label for="tax_rate" class="form-label fw-bold">
+                            <i class="fas fa-receipt me-1"></i>
+                            الضريبة المضافة
+                        </label>
+                        <select name="tax_rate" id="tax_rate" class="form-select border-primary" required>
+                            <option value="15">خاضع للضريبة (15%)</option>
+                            <option value="0">غير خاضع للضريبة</option>
+                        </select>
+                    </div>
+                    <div class="col-3">
                         <label for="discount" class="form-label fw-bold">
                             <i class="fas fa-percent me-1"></i>
                             نسبة الخصم (%)
                         </label>
                         <input type="number" name="discount" id="discount" class="form-control border-primary" 
-                               min="0" max="100" step="0.01" value="0" placeholder="0.00" required>
+                               min="0" max="100" step="1" value="0" placeholder="0.00" required>
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
+                    <div class="col-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn" disabled>
                             <i class="fas fa-plus me-1"></i>
                             إنشاء فاتورة
                         </button>
                     </div>
                 </div>
+                
+                <!-- Summary Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">إجمالي التكلفة</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-primary mb-0" id="summary-total">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-primary ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">قيمة الضريبة المضافة</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-primary mb-0" id="summary-tax">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-primary ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">قيمة الخصم</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-danger mb-0" id="summary-discount">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-danger ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="p-2">
+                                            <small class="text-muted d-block">المبلغ النهائي</small>
+                                            <div class="d-flex justify-content-center align-items-center mb-1">
+                                                <h4 class="text-success mb-0" id="summary-final">0.00</h4>
+                                                <i data-lucide="saudi-riyal" class="text-success ms-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4">
-            {{-- <button type="submit" class="btn btn-primary fw-bold" id="create-invoice-btn" disabled>
-                <i class="fas fa-plus me-1"></i>
-                إنشاء فاتورة
-            </button> --}}
             <button type="button" class="btn btn-outline-danger fw-bold" id="clear-selection-btn"
                 style="display: none;">
                 <i class="fas fa-times me-1"></i>
@@ -194,6 +253,7 @@
         const selectionCounter = document.getElementById('selection-counter');
         const selectedCountSpan = document.getElementById('selected-count');
         const visibleCountSpan = document.getElementById('visible-count');
+        const totalCostSpan = document.getElementById('total-cost');
         const searchInput = document.getElementById('search-input');
         const clearSearchBtn = document.getElementById('clear-search');
         const clearSearchBtnAlt = document.getElementById('clear-search-btn');
@@ -201,6 +261,12 @@
         const searchResultsText = document.getElementById('search-results-text');
         const noResults = document.getElementById('no-results');
         const searchTerm = document.getElementById('search-term');
+        const taxRateSelect = document.getElementById('tax_rate');
+        const discountInput = document.getElementById('discount');
+        const summaryTotal = document.getElementById('summary-total');
+        const summaryTax = document.getElementById('summary-tax');
+        const summaryDiscount = document.getElementById('summary-discount');
+        const summaryFinal = document.getElementById('summary-final');
         
         const rows = document.querySelectorAll('.container-row');
         const checkboxCells = document.querySelectorAll('.checkbox-cell');
@@ -217,6 +283,34 @@
                 if (checkbox) visibleCheckboxes.push(checkbox);
             });
             return { visibleRows, visibleCheckboxes };
+        }
+
+        // Calculate total cost
+        function calculateTotalCost() {
+            let total = 0;
+            const selectedCheckboxes = document.querySelectorAll('.container-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const row = checkbox.closest('.container-row');
+                const cost = parseFloat(row.getAttribute('data-container-cost')) || 0;
+                total += cost;
+            });
+            return total;
+        }
+
+        // Update summary
+        function updateSummary() {
+            const total = calculateTotalCost();
+            const discountPercent = parseFloat(discountInput.value) || 0;
+            const discountAmount = (total * discountPercent) / 100;
+            const afterDiscount = total - discountAmount;
+            const taxRate = parseFloat(taxRateSelect.value) || 0;
+            const taxAmount = (afterDiscount * taxRate) / 100;
+            const finalAmount = afterDiscount + taxAmount;
+
+            if (summaryTotal) summaryTotal.textContent = total.toFixed(2);
+            if (summaryTax) summaryTax.textContent = taxAmount.toFixed(2);
+            if (summaryDiscount) summaryDiscount.textContent = discountAmount.toFixed(2);
+            if (summaryFinal) summaryFinal.textContent = finalAmount.toFixed(2);
         }
 
         // Update row numbers for visible rows
@@ -277,7 +371,7 @@
             if (currentSearchTerm) {
                 searchInfo.style.display = 'block';
                 searchResultsText.textContent = `عُثر على ${visibleCount} حاوية من أصل ${rows.length} حاوية`;
-                searchTerm.innerHTML = `"${searchTerm}"`;
+                if (searchTerm) searchTerm.innerHTML = `"${searchTerm}"`;
                 
                 if (!hasResults) {
                     noResults.style.display = 'block';
@@ -310,10 +404,12 @@
             const selectedCheckboxes = visibleCheckboxes.filter(cb => cb.checked);
             const selectedCount = selectedCheckboxes.length;
             const totalVisibleCount = visibleCheckboxes.length;
+            const totalCost = calculateTotalCost();
             
             // Update counters
             if (selectedCountSpan) selectedCountSpan.textContent = selectedCount;
             if (visibleCountSpan) visibleCountSpan.textContent = totalVisibleCount;
+            if (totalCostSpan) totalCostSpan.textContent = totalCost.toFixed(2);
             
             // Show/hide elements based on selection
             if (selectedCount > 0) {
@@ -352,6 +448,9 @@
                     row.style.boxShadow = 'none';
                 }
             });
+
+            // Update summary
+            updateSummary();
         }
 
         // Search input event listener
@@ -387,6 +486,14 @@
                     searchInput.focus();
                 }
             });
+        }
+
+        // Discount and tax input changes
+        if (discountInput) {
+            discountInput.addEventListener('input', updateSummary);
+        }
+        if (taxRateSelect) {
+            taxRateSelect.addEventListener('change', updateSummary);
         }
 
         // Select/Deselect all functionality (only visible items)
@@ -538,7 +645,6 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
-    /* Search highlighting */
     mark.bg-warning {
         background-color: #fff3cd !important;
         color: #856404;
@@ -547,13 +653,11 @@
         font-weight: bold;
     }
 
-    /* Search input focus */
     #search-input:focus {
         border-color: #0d6efd;
         box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
     }
 
-    /* Animation classes */
     @keyframes pulse {
         0% {
             transform: scale(1);
@@ -570,7 +674,6 @@
         animation: pulse 0.2s ease-in-out;
     }
 
-    /* Smooth transitions for showing/hiding rows */
     .container-row {
         transition: opacity 0.3s ease, transform 0.3s ease;
     }
