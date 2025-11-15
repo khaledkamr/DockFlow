@@ -3,266 +3,331 @@
 @section('title', 'تقارير بوالص الشحن')
 
 @section('content')
-<h1 class="mb-4">تقارير بوالص الشحن</h1>
+    <h1 class="mb-4">تقارير بوالص الشحن</h1>
 
-<div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
-    <form method="GET" id="reportForm">
-        <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
-        <div class="row g-3 mb-3">
-            <div class="col-3">
-                <label class="form-label">العميل</label>
-                <select name="customer" id="customer_id" class="form-select border-primary">
-                    <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach($customers as $customer)
-                        <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
-                            {{ $customer->name }}
+    <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
+        <form method="GET" id="reportForm">
+            <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">العميل</label>
+                    <select name="customer" id="customer_id" class="form-select border-primary">
+                        <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
+                        @foreach ($customers as $customer)
+                            <option value="{{ $customer->id }}"
+                                {{ request('customer') == $customer->id ? 'selected' : '' }}>
+                                {{ $customer->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">من تاريخ</label>
+                    <input type="date" name="from"
+                        value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
+                        class="form-control border-primary">
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">إلى تاريخ</label>
+                    <input type="date" name="to" value="{{ request('to', now()->format('Y-m-d')) }}"
+                        class="form-control border-primary">
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">نوع الناقل</label>
+                    <select name="type" class="form-select border-primary">
+                        <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
+                        <option value="ناقل داخلي" {{ request('type') == 'ناقل داخلي' ? 'selected' : '' }}>
+                            ناقل داخلي
                         </option>
-                    @endforeach
-                </select>
+                        <option value="ناقل خارجي" {{ request('type') == 'ناقل خارجي' ? 'selected' : '' }}>
+                            ناقل خارجي
+                        </option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">حالة التسليم</label>
+                    <select name="status" class="form-select border-primary">
+                        <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
+                        <option value="تم التسليم" {{ request('status') == 'تم التسليم' ? 'selected' : '' }}>تم التسليم
+                        </option>
+                        <option value="تحت التسليم" {{ request('status') == 'تحت التسليم' ? 'selected' : '' }}>تحت التسليم
+                        </option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">حالة الفاتورة</label>
+                    <select name="invoice_status" class="form-select border-primary">
+                        <option value="all" {{ request('invoice_status') == 'all' ? 'selected' : '' }}>الكل</option>
+                        <option value="with_invoice" {{ request('invoice_status') == 'with_invoice' ? 'selected' : '' }}>مع
+                            فاتورة</option>
+                        <option value="without_invoice"
+                            {{ request('invoice_status') == 'without_invoice' ? 'selected' : '' }}>بدون فاتورة</option>
+                    </select>
+                </div>
             </div>
-            <div class="col">
-                <label class="form-label">من تاريخ</label>
-                <input type="date" name="from" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}" class="form-control border-primary">
-            </div>
-            <div class="col">
-                <label class="form-label">إلى تاريخ</label>
-                <input type="date" name="to" value="{{ request('to', now()->format('Y-m-d')) }}" class="form-control border-primary">
-            </div>
-            <div class="col">
-                <label class="form-label">نوع الناقل</label>
-                <select name="type" class="form-select border-primary">
-                    <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
-                    <option value="ناقل داخلي" {{ request('type') == 'ناقل داخلي' ? 'selected' : '' }}>
-                        ناقل داخلي
-                    </option>
-                    <option value="ناقل خارجي" {{ request('type') == 'ناقل خارجي' ? 'selected' : '' }}>
-                        ناقل خارجي
-                    </option>
-                </select>
-            </div>
-             <div class="col">
-                <label class="form-label">حالة التسليم</label>
-                <select name="status" class="form-select border-primary">
-                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
-                    <option value="تم التسليم" {{ request('status') == 'تم التسليم' ? 'selected' : '' }}>تم التسليم</option>
-                    <option value="تحت التسليم" {{ request('status') == 'تحت التسليم' ? 'selected' : '' }}>تحت التسليم</option>
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label">حالة الفاتورة</label>
-                <select name="invoice_status" class="form-select border-primary">
-                    <option value="all" {{ request('invoice_status') == 'all' ? 'selected' : '' }}>الكل</option>
-                    <option value="with_invoice" {{ request('invoice_status') == 'with_invoice' ? 'selected' : '' }}>مع فاتورة</option>
-                    <option value="without_invoice" {{ request('invoice_status') == 'without_invoice' ? 'selected' : '' }}>بدون فاتورة</option>
-                </select>
-            </div>
-        </div>
 
-        <div class="row g-3 mb-4">
-            <div class="col-3">
-                <label class="form-label">المورد</label>
-                <select name="supplier" id="supplier_id" class="form-select border-primary">
-                    <option value="all" {{ request('supplier') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach($suppliers as $supplier)
-                        <option value="{{ $supplier->id }}" {{ request('supplier') == $supplier->id ? 'selected' : '' }}>
-                            {{ $supplier->name }}
-                        </option>
-                    @endforeach
-                </select>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">المورد</label>
+                    <select name="supplier" id="supplier_id" class="form-select border-primary">
+                        <option value="all" {{ request('supplier') == 'all' ? 'selected' : '' }}>الكل</option>
+                        @foreach ($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}"
+                                {{ request('supplier') == $supplier->id ? 'selected' : '' }}>
+                                {{ $supplier->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">السائق</label>
+                    <select name="driver" id="driver_id" class="form-select border-primary">
+                        <option value="all" {{ request('driver') == 'all' ? 'selected' : '' }}>الكل</option>
+                        @foreach ($drivers as $driver)
+                            <option value="{{ $driver->id }}" {{ request('driver') == $driver->id ? 'selected' : '' }}>
+                                {{ $driver->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">السيارة</label>
+                    <select name="vehicle" id="vehicle_id" class="form-select border-primary">
+                        <option value="all" {{ request('vehicle') == 'all' ? 'selected' : '' }}>الكل</option>
+                        @foreach ($vehicles as $vehicle)
+                            <option value="{{ $vehicle->id }}"
+                                {{ request('vehicle') == $vehicle->id ? 'selected' : '' }}>
+                                {{ $vehicle->plate_number }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">مكان التحميل</label>
+                    <select name="loading_location" id="loading_location" class="form-select border-primary">
+                        <option value="all" {{ request('loading_location') == 'all' ? 'selected' : '' }}>الكل</option>
+                        @foreach ($loadingLocations as $location)
+                            <option value="{{ $location }}"
+                                {{ request('loading_location') == $location ? 'selected' : '' }}>
+                                {{ $location }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <label class="form-label">مكان التسليم</label>
+                    <select name="delivery_location" id="delivery_location" class="form-select border-primary">
+                        <option value="all" {{ request('delivery_location') == 'all' ? 'selected' : '' }}>الكل</option>
+                        @foreach ($deliveryLocations as $location)
+                            <option value="{{ $location }}"
+                                {{ request('delivery_location') == $location ? 'selected' : '' }}>
+                                {{ $location }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div class="col">
-                <label class="form-label">السائق</label>
-                <select name="driver" id="driver_id" class="form-select border-primary">
-                    <option value="all" {{ request('driver') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach($drivers as $driver)
-                        <option value="{{ $driver->id }}" {{ request('driver') == $driver->id ? 'selected' : '' }}>
-                            {{ $driver->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label">السيارة</label>
-                <select name="vehicle" id="vehicle_id" class="form-select border-primary">
-                    <option value="all" {{ request('vehicle') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach($vehicles as $vehicle)
-                        <option value="{{ $vehicle->id }}" {{ request('vehicle') == $vehicle->id ? 'selected' : '' }}>
-                            {{ $vehicle->plate_number }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label">مكان التحميل</label>
-                <select name="loading_location" id="loading_location" class="form-select border-primary">
-                    <option value="all" {{ request('loading_location') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach($loadingLocations as $location)
-                        <option value="{{ $location }}" {{ request('loading_location') == $location ? 'selected' : '' }}>
-                            {{ $location }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label">مكان التسليم</label>
-                <select name="delivery_location" id="delivery_location" class="form-select border-primary">
-                    <option value="all" {{ request('delivery_location') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach($deliveryLocations as $location)
-                        <option value="{{ $location }}" {{ request('delivery_location') == $location ? 'selected' : '' }}>
-                            {{ $location }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-12 text-start">
-                <button id="submitBtn" class="btn btn-primary fw-bold px-4" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
-                    عرض التقرير
-                    <i class="fa-solid fa-file-circle-check ms-1"></i>
-                </button>
-            </div>
-        </div>
-    </form>
-</div>
 
-<div class="card border-0 shadow-sm rounded-3 p-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="">
-            <form method="GET" action="">
-                <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
-                <select id="per_page" name="per_page" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
-                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
-                    <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
-                </select>
-                @foreach(request()->except('per_page') as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                @endforeach
-            </form>
-        </div>
-        <div class="d-flex gap-2">
-            <form action="{{ route('print.shipping.reports') }}" method="GET" target="_blank">
-                @csrf
-                <input type="hidden" name="customer" value="{{ request('customer') }}">
-                <input type="hidden" name="from" value="{{ request('from') }}">
-                <input type="hidden" name="to" value="{{ request('to') }}">
-                <input type="hidden" name="type" value="{{ request('type') }}">
-                <input type="hidden" name="status" value="{{ request('status') }}">
-                <input type="hidden" name="status" value="{{ request('invoice_status') }}">
-                <input type="hidden" name="status" value="{{ request('supplier') }}">
-                <input type="hidden" name="status" value="{{ request('driver') }}">
-                <input type="hidden" name="status" value="{{ request('vehicle') }}">
-                <input type="hidden" name="status" value="{{ request('loading_location') }}">
-                <input type="hidden" name="status" value="{{ request('delivery_location') }}">
-                <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
-                    <i class="fa-solid fa-print"></i>
-                </button>
-            </form>
-        </div>
+            <div class="row">
+                <div class="col-12 text-start">
+                    <button id="submitBtn" class="btn btn-primary fw-bold px-4"
+                        onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
+                        <span class="d-inline">عرض التقرير</span>
+                        <i class="fa-solid fa-file-circle-check ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="table-container">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center bg-dark text-white">#</th>
-                    <th class="text-center bg-dark text-white">رقم البوليصة</th>
-                    <th class="text-center bg-dark text-white">التاريخ</th>
-                    <th class="text-center bg-dark text-white">العميل</th>
-                    <th class="text-center bg-dark text-white">نوع الناقل</th>
-                    <th class="text-center bg-dark text-white">المورد</th>
-                    <th class="text-center bg-dark text-white">السائق</th>
-                    <th class="text-center bg-dark text-white">السيارة</th>
-                    <th class="text-center bg-dark text-white">مكان التحميل</th>
-                    <th class="text-center bg-dark text-white">مكان التسليم</th>
-                    <th class="text-center bg-dark text-white">الحالة</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if ($policies->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type', 'status', 'invoice_status', 'supplier', 'driver', 'vehicle', 'loading_location', 'delivery_location']))
+
+    <div class="card border-0 shadow-sm rounded-3 p-3">
+        <div
+            class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+            <div class="">
+                <form method="GET" action="">
+                    <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
+                    <select id="per_page" name="per_page" onchange="this.form.submit()"
+                        class="form-select form-select-sm d-inline-block w-auto">
+                        <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
+                        <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
+                    </select>
+                    @foreach (request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            </div>
+            <div class="d-flex gap-2">
+                <form action="{{ route('print.shipping.reports') }}" method="GET" target="_blank">
+                    @csrf
+                    <input type="hidden" name="customer" value="{{ request('customer') }}">
+                    <input type="hidden" name="from" value="{{ request('from') }}">
+                    <input type="hidden" name="to" value="{{ request('to') }}">
+                    <input type="hidden" name="type" value="{{ request('type') }}">
+                    <input type="hidden" name="status" value="{{ request('status') }}">
+                    <input type="hidden" name="status" value="{{ request('invoice_status') }}">
+                    <input type="hidden" name="status" value="{{ request('supplier') }}">
+                    <input type="hidden" name="status" value="{{ request('driver') }}">
+                    <input type="hidden" name="status" value="{{ request('vehicle') }}">
+                    <input type="hidden" name="status" value="{{ request('loading_location') }}">
+                    <input type="hidden" name="status" value="{{ request('delivery_location') }}">
+                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="طباعة">
+                        <i class="fa-solid fa-print"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="table-container" id="tableContainer">
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td colspan="11" class="text-center">
-                            <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
-                        </td>
+                        <th class="text-center bg-dark text-white text-nowrap">#</th>
+                        <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
+                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
+                        <th class="text-center bg-dark text-white text-nowrap">نوع الناقل</th>
+                        <th class="text-center bg-dark text-white text-nowrap">المورد</th>
+                        <th class="text-center bg-dark text-white text-nowrap">السائق</th>
+                        <th class="text-center bg-dark text-white text-nowrap">السيارة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
+                        <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
                     </tr>
-                @else
-                    @php
-                        $index = 1;
-                    @endphp
-                    @foreach ($policies as $policy)
+                </thead>
+                <tbody>
+                    @if (
+                        $policies->isEmpty() ||
+                            !request()->hasAny([
+                                'customer',
+                                'from',
+                                'to',
+                                'type',
+                                'status',
+                                'invoice_status',
+                                'supplier',
+                                'driver',
+                                'vehicle',
+                                'loading_location',
+                                'delivery_location',
+                            ]))
                         <tr>
-                            <td class="text-center">{{ $index++ }}</td>
-                            <td class="text-center fw-bold">
-                                <a href="{{ route('shipping.policies.details', $policy) }}" class="text-decoration-none">
-                                    {{ $policy->code }}
-                                </a>
-                            </td>
-                            <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                            <td class="text-center">{{ $policy->customer->name }}</td>
-                            <td class="text-center">{{ $policy->type }}</td>
-                            <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
-                            <td class="text-center">{{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
-                            <td class="text-center">{{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}</td>
-                            <td class="text-center">{{ $policy->from }}</td>
-                            <td class="text-center">{{ $policy->to }}</td>
-                            <td class="text-center">
-                                @if($policy->is_received)
-                                    <div class="badge status-delivered">تم التسليم</div>
-                                @else
-                                    <div class="badge status-waiting">تحت التسليم</div>
-                                @endif
+                            <td colspan="11" class="text-center">
+                                <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
                             </td>
                         </tr>
-                    @endforeach
-                @endif
-            </tbody>
-        </table>
+                    @else
+                        @php
+                            $index = 1;
+                        @endphp
+                        @foreach ($policies as $policy)
+                            <tr>
+                                <td class="text-center">{{ $index++ }}</td>
+                                <td class="text-center fw-bold">
+                                    <a href="{{ route('shipping.policies.details', $policy) }}"
+                                        class="text-decoration-none">
+                                        {{ $policy->code }}
+                                    </a>
+                                </td>
+                                <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
+                                <td class="text-center">{{ $policy->customer->name }}</td>
+                                <td class="text-center">{{ $policy->type }}</td>
+                                <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
+                                <td class="text-center">
+                                    {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
+                                <td class="text-center">
+                                    {{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}
+                                </td>
+                                <td class="text-center">{{ $policy->from }}</td>
+                                <td class="text-center">{{ $policy->to }}</td>
+                                <td class="text-center">
+                                    @if ($policy->is_received)
+                                        <div class="badge status-delivered">تم التسليم</div>
+                                    @else
+                                        <div class="badge status-waiting">تحت التسليم</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
+        <div class="scroll-hint">
+            <i class="fa-solid fa-arrows-left-right me-1"></i>
+            اسحب الجدول لليمين أو اليسار لرؤية المزيد
+        </div>
+
+        <div class="mt-4">
+            {{ $policies->appends(request()->query())->onEachSide(1)->links() }}
+        </div>
     </div>
-    <div class="mt-4">
-        {{ $policies->appends(request()->query())->onEachSide(1)->links() }}
-    </div>
-</div>
 
-<script>
-    $('#customer_id').select2({
-        placeholder: "ابحث عن إسم العميل...",
-        allowClear: true
-    });
-    $('#supplier_id').select2({
-        placeholder: "ابحث عن إسم المورد...",
-        allowClear: true
-    });
-    $('#driver_id').select2({
-        placeholder: "ابحث عن إسم السائق...",
-        allowClear: true
-    });
-    $('#vehicle_id').select2({
-        placeholder: "ابحث عن رقم السيارة...",
-        allowClear: true
-    });
-    $('#loading_location').select2({
-        placeholder: "ابحث عن مكان التحميل...",
-        allowClear: true
-    });
-    $('#delivery_location').select2({
-        placeholder: "ابحث عن مكان التسليم...",
-        allowClear: true
-    });
-</script>
+    <script>
+        $('#customer_id').select2({
+            placeholder: "ابحث عن إسم العميل...",
+            allowClear: true
+        });
+        $('#supplier_id').select2({
+            placeholder: "ابحث عن إسم المورد...",
+            allowClear: true
+        });
+        $('#driver_id').select2({
+            placeholder: "ابحث عن إسم السائق...",
+            allowClear: true
+        });
+        $('#vehicle_id').select2({
+            placeholder: "ابحث عن رقم السيارة...",
+            allowClear: true
+        });
+        $('#loading_location').select2({
+            placeholder: "ابحث عن مكان التحميل...",
+            allowClear: true
+        });
+        $('#delivery_location').select2({
+            placeholder: "ابحث عن مكان التسليم...",
+            allowClear: true
+        });
 
-<style>
-    .select2-container .select2-selection {
-        height: 38px;
-        border-radius: 8px;
-        border: 1px solid #0d6efd;
-        padding: 5px;
-    }
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableContainer = document.getElementById('tableContainer');
+            
+            // Check if table needs scrolling
+            function checkScroll() {
+                if (tableContainer.scrollWidth > tableContainer.clientWidth) {
+                    tableContainer.classList.add('has-scroll');
+                } else {
+                    tableContainer.classList.remove('has-scroll');
+                }
+            }
+            
+            // Check on load and resize
+            checkScroll();
+            window.addEventListener('resize', checkScroll);
+            
+            // Remove scroll hint after first interaction
+            const scrollHint = document.querySelector('.scroll-hint');
+            if (scrollHint) {
+                tableContainer.addEventListener('scroll', function() {
+                    scrollHint.style.display = 'none';
+                }, { once: true });
+            }
+        });
+    </script>
 
-    .select2-container .select2-selection__rendered {
-        line-height: 30px;
-    }
-</style>
+    <style>
+        .select2-container .select2-selection {
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid #0d6efd;
+            padding: 5px;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 30px;
+        }
+    </style>
 
 @endsection
