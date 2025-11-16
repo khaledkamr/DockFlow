@@ -18,6 +18,20 @@ class ContractController extends Controller
 {
     public function contracts(Request $request) {
         $contracts = Contract::orderBy('id', 'desc')->get();
+
+        $status = $request->input('status', null);
+        if($status) {
+            if($status == 'جاري') {
+                $contracts = $contracts->filter(function($contract) {
+                    return Carbon::parse($contract->end_date) >= Carbon::now();
+                });
+            } elseif($status == 'منتهي') {
+                $contracts = $contracts->filter(function($contract) {
+                    return Carbon::parse($contract->end_date) < Carbon::now();
+                });
+            }
+        }
+
         $search = $request->input('search', null);
         if($search) {
             $contracts = $contracts->filter(function($contract) use($search) {
@@ -26,6 +40,7 @@ class ContractController extends Controller
                     || stripos($contract->start_date, $search) !== false;
             });
         }
+
         $contracts = new \Illuminate\Pagination\LengthAwarePaginator(
             $contracts->forPage(request()->get('page', 1), 50),
             $contracts->count(),
@@ -33,6 +48,7 @@ class ContractController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
+
         return view('pages.contracts.contracts', compact('contracts'));
     }
 

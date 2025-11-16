@@ -4,14 +4,7 @@
 
 @section('content')
 <style>
-    /* Minimal custom styles - mostly using Bootstrap */
-    .table-container {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-    }
-    
-    /* Add scroll indicator shadow */
+    /* Only essential custom styles that Bootstrap can't handle */
     .table-container::after {
         content: '';
         position: absolute;
@@ -27,62 +20,6 @@
     
     .table-container.has-scroll::after {
         opacity: 1;
-    }
-    
-    .table {
-        min-width: 800px; /* Ensure table doesn't collapse too much */
-    }
-    
-    .table thead th,
-    .table tbody td {
-        white-space: nowrap;
-    }
-    
-    @media (max-width: 768px) {
-        .table thead th {
-            font-size: 13px;
-            padding: 12px 8px;
-        }
-        
-        .table tbody td {
-            font-size: 13px;
-            padding: 12px 8px;
-        }
-        
-        .action-icons i {
-            font-size: 18px;
-        }
-    }
-    
-    @media (max-width: 576px) {
-        .table thead th {
-            font-size: 12px;
-            padding: 10px 6px;
-        }
-        
-        .table tbody td {
-            font-size: 12px;
-            padding: 10px 6px;
-        }
-        
-        .table {
-            min-width: 900px;
-        }
-    }
-    
-    /* Scroll hint */
-    .scroll-hint {
-        display: none;
-        text-align: center;
-        color: #6c757d;
-        font-size: 14px;
-        margin-top: 10px;
-    }
-    
-    @media (max-width: 768px) {
-        .scroll-hint {
-            display: block;
-        }
     }
 </style>
 
@@ -123,7 +60,7 @@
     
     <!-- Add Customer Button -->
     <div class="col-12 col-sm-6 col-lg-2">
-        <label class="form-label d-none d-lg-block opacity-0">.</label>
+        <label class="form-label d-none d-lg-block opacity-0 user-select-none">.</label>
         <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" 
             type="button" data-bs-toggle="modal" data-bs-target="#createUserModal">
             <i class="fa-solid fa-user-plus ms-2"></i>
@@ -204,17 +141,17 @@
 
 <!-- Customers Table -->
 <div class="table-container" id="tableContainer">
-    <table class="table table-hover mb-0">
+    <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم حساب العميل</th>
-                <th class="text-center bg-dark text-white">إسم العميل</th>
-                <th class="text-center bg-dark text-white">رقم السجل التجاري</th>
-                <th class="text-center bg-dark text-white">العنوان الوطني</th>
-                <th class="text-center bg-dark text-white">رقم الهاتف</th>
-                <th class="text-center bg-dark text-white">الإيميل</th>
-                <th class="text-center bg-dark text-white">تم بواسطة</th>
-                <th class="text-center bg-dark text-white">الإجراءات</th>
+                <th class="text-center bg-dark text-white text-nowrap">رقم حساب العميل</th>
+                <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
+                <th class="text-center bg-dark text-white text-nowrap">رقم السجل التجاري</th>
+                <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
+                <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
+                <th class="text-center bg-dark text-white text-nowrap">الإيميل</th>
+                <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
+                <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
             </tr>
         </thead>
         <tbody>
@@ -227,28 +164,28 @@
             @else
                 @foreach ($customers as $customer)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $customer->account->code }}</td>
-                        <td class="text-center">
+                        <td class="text-center text-primary fw-bold text-nowrap">{{ $customer->account->code }}</td>
+                        <td class="text-center text-nowrap">
                             <a href="{{ route('users.customer.profile', $customer) }}"
                                 class="text-dark fw-bold text-decoration-none">
                                 {{ $customer->name }}
                             </a>
                         </td>
-                        <td class="text-center">{{ $customer->CR }}</td>
-                        <td class="text-center">{{ $customer->national_address }}</td>
-                        <td class="text-center">{{ $customer->phone ?? '-' }}</td>
-                        <td class="text-center">{{ $customer->email ?? '-' }}</td>
-                        <td class="text-center">
+                        <td class="text-center text-nowrap">{{ $customer->CR }}</td>
+                        <td class="text-center text-nowrap">{{ $customer->national_address }}</td>
+                        <td class="text-center text-nowrap">{{ $customer->phone ?? '-' }}</td>
+                        <td class="text-center text-nowrap">{{ $customer->email ?? '-' }}</td>
+                        <td class="text-center text-nowrap">
                             <a href="{{ route('admin.user.profile', $customer->made_by) }}" class="text-dark text-decoration-none">
                                 {{ $customer->made_by->name ?? '-' }}
                             </a>
                         </td>
-                        <td class="action-icons text-center">
+                        <td class="text-center text-nowrap">
                             <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>
+                                <i class="fa-solid fa-pen-to-square text-primary fs-5 fs-md-6" title="تعديل العميل"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-user-xmark text-danger" title="حذف العميل"></i>
+                                <i class="fa-solid fa-user-xmark text-danger fs-5 fs-md-6" title="حذف العميل"></i>
                             </button>
                         </td>
                     </tr>
@@ -351,7 +288,7 @@
         </tbody>
     </table>
 </div>
-<div class="scroll-hint">
+<div class="text-center text-secondary small mt-2 d-md-none">
     <i class="fa-solid fa-arrows-left-right me-1"></i>
     اسحب الجدول لليمين أو اليسار لرؤية المزيد
 </div>
@@ -367,9 +304,9 @@
         
         // Check if table needs scrolling
         function checkScroll() {
-            if (tableContainer.scrollWidth > tableContainer.clientWidth) {
+            if (tableContainer && tableContainer.scrollWidth > tableContainer.clientWidth) {
                 tableContainer.classList.add('has-scroll');
-            } else {
+            } else if (tableContainer) {
                 tableContainer.classList.remove('has-scroll');
             }
         }
@@ -380,7 +317,7 @@
         
         // Remove scroll hint after first interaction
         const scrollHint = document.querySelector('.scroll-hint');
-        if (scrollHint) {
+        if (scrollHint && tableContainer) {
             tableContainer.addEventListener('scroll', function() {
                 scrollHint.style.display = 'none';
             }, { once: true });

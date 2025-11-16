@@ -186,7 +186,7 @@
                                 <tr class="text-center">
                                     <td class="text-center">{{ $container->id}}</td>
                                     <td>
-                                        <a href="{{ route('container.details', $container->id) }}" class="fw-bold text-decoration-none">
+                                        <a href="{{ route('container.details', $container) }}" class="fw-bold text-decoration-none">
                                             {{ $container->code }}
                                         </a>
                                     </td>

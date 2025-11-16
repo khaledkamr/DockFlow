@@ -14,7 +14,7 @@
             @csrf
             <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
             <div class="row g-3 mb-3">
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">العميل</label>
                     <select class="form-select border-primary" id="customer_id" name="customer_id">
                         <option value="">اختر العميل...</option>
@@ -28,7 +28,7 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">مكان التحميل</label>
                     <input type="text" class="form-control border-primary" id="from" name="from"
                         value="{{ old('from') }}">
@@ -36,7 +36,7 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">مكان التفريغ</label>
                     <input type="text" class="form-control border-primary" id="to" name="to"
                         value="{{ old('to') }}">
@@ -44,7 +44,7 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">تاريخ البوليصة</label>
                     <input type="date" class="form-control border-primary" id="date" name="date"
                         value="{{ old('date', Carbon\Carbon::now()->format('Y-m-d')) }}">
@@ -52,14 +52,14 @@
             </div>
 
             <div class="row g-3 mb-3">
-                <div class="col-12 col-md-6 col-lg-3">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">نوع الناقل</label>
                     <select name="type" id="type" class="form-select border-primary">
                         <option value="ناقل داخلي" {{ old('type') == 'ناقل داخلي' ? 'selected' : '' }}>ناقل داخلي</option>
                         <option value="ناقل خارجي" {{ old('type') == 'ناقل خارجي' ? 'selected' : '' }}>ناقل خارجي</option>
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-3 internal-field">
+                <div class="col-6 col-md-6 col-lg-3 internal-field">
                     <label class="form-label">إســم السائق</label>
                     <select name="driver_id" id="driver_id" class="form-select border-primary">
                         <option value="">اختر السائق...</option>
@@ -77,19 +77,19 @@
                         <div class="text-danger">{{ $message }}</div>
                         @endif
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 internal-field">
+                    <div class="col-6 col-md-6 col-lg-3 internal-field">
                         <label class="form-label">هوية السائق</label>
                         <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID"
                             value="{{ old('driver_NID') }}" readonly>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3 internal-field">
+                    <div class="col-6 col-md-6 col-lg-3 internal-field">
                         <label class="form-label">لوحة السيارة</label>
                         <input type="text" class="form-control border-primary" name="plate_number" id="plate_number"
                             value="{{ old('plate_number') }}" readonly>
                         <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
                     </div>
 
-                    <div class="col-12 col-md-6 col-lg-4 external-field" style="display: none">
+                    <div class="col-6 col-md-6 col-lg-4 external-field" style="display: none">
                         <label class="form-label d-block">إســم المورد</label>
                         <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
                             <option value="">اختر المورد...</option>
@@ -101,18 +101,18 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 external-field" style="display: none">
+                    <div class="col-6 col-md-6 col-lg-4 external-field" style="display: none">
                         <label class="form-label">إسم السائق</label>
                         <input type="text" class="form-control border-primary" name="driver_name" id="driver_name">
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4 external-field" style="display: none">
+                    <div class="col-6 col-md-6 col-lg-4 external-field" style="display: none">
                         <label class="form-label">لوحة السيارة</label>
                         <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate">
                     </div>
                 </div>
 
                 <div class="row g-3 mb-4">
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-2 external-field">
+                    <div class="col-6 col-sm-6 col-md-4 col-lg-2 external-field">
                         <label class="form-label">مصاريف المورد</label>
                         <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
                             value="{{ old('supplier_cost') ?? 0 }}">
@@ -120,7 +120,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3 internal-field">
+                    <div class="col-6 col-sm-6 col-md-3 internal-field">
                         <label class="form-label">مصاريف الديزل</label>
                         <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
                             value="{{ old('diesel_cost') ?? 0 }}">
@@ -128,7 +128,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3 internal-field">
+                    <div class="col-6 col-sm-6 col-md-3 internal-field">
                         <label class="form-label">عمولة السائق</label>
                         <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
                             value="{{ old('driver_wage') ?? 0 }}">
@@ -136,7 +136,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
+                    <div class="col-6 col-sm-6 col-md-3">
                         <label class="form-label">مصاريف أخرى</label>
                         <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
                             value="{{ old('other_expenses') ?? 0 }}">
@@ -144,7 +144,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-12 col-sm-6 col-md-3">
+                    <div class="col-6 col-sm-6 col-md-3">
                         <label class="form-label">سعر العميل</label>
                         <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
                             value="{{ old('client_cost') ?? 0 }}">

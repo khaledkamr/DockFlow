@@ -9,7 +9,7 @@
         <form method="GET" id="reportForm">
             <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
             <div class="row g-3 mb-3">
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">العميل</label>
                     <select name="customer" id="customer_id" class="form-select border-primary">
                         <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -54,7 +54,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">حالة الفاتورة</label>
                     <select name="invoice_status" class="form-select border-primary">
                         <option value="all" {{ request('invoice_status') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -67,7 +67,7 @@
             </div>
 
             <div class="row g-3 mb-4">
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">المورد</label>
                     <select name="supplier" id="supplier_id" class="form-select border-primary">
                         <option value="all" {{ request('supplier') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -79,7 +79,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">السائق</label>
                     <select name="driver" id="driver_id" class="form-select border-primary">
                         <option value="all" {{ request('driver') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -90,7 +90,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-4">
                     <label class="form-label">السيارة</label>
                     <select name="vehicle" id="vehicle_id" class="form-select border-primary">
                         <option value="all" {{ request('vehicle') == 'all' ? 'selected' : '' }}>الكل</option>

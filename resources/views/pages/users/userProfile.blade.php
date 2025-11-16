@@ -43,33 +43,33 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-sm-6 col-lg-4">
                             <label class="form-label fw-bold text-muted small">الاسم الكامل</label>
                             <p class="form-control-plaintext">{{ $user->name }}</p>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-sm-6 col-lg-4">
                             <label class="form-label fw-bold text-muted small">البريد الإلكتروني</label>
                             <p class="form-control-plaintext text-break">{{ $user->email }}</p>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-sm-6 col-lg-4">
                             <label class="form-label fw-bold text-muted small">الصلاحية</label>
                             <p class="form-control-plaintext">
                                 {{ $user->roles->first()->name }}
                             </p>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-sm-6 col-lg-4">
                             <label class="form-label fw-bold text-muted small">رقم الهاتف</label>
                             <p class="form-control-plaintext">
                                 {{ $user->phone ?? 'غير محدد' }}
                             </p>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-sm-6 col-lg-4">
                             <label class="form-label fw-bold text-muted small">الجنسية</label>
                             <p class="form-control-plaintext">
                                 {{ $user->nationality ?? 'غير محددة' }}
                             </p>
                         </div>
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="col-6 col-sm-6 col-lg-4">
                             <label class="form-label fw-bold text-muted small">رقم الإقامة</label>
                             <p class="form-control-plaintext">
                                 {{ $user->NID ?? 'غير محدد' }}

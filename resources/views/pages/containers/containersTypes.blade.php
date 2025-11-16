@@ -67,8 +67,8 @@
                 @foreach ($containerTypes as $containerType)
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $containerType->id }}</td>
-                        <td class="text-center">{{ $containerType->name }}</td>
-                        <td class="text-center text-success fw-bold">{{ $containerType->daily_price }} ريال</td>
+                        <td class="text-center text-nowrap">{{ $containerType->name }}</td>
+                        <td class="text-center text-success fw-bold text-nowrap">{{ $containerType->daily_price }} ريال</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $containerType->id }}">
                                 <i class="fa-solid fa-pen-to-square text-primary" title="Edit user"></i>

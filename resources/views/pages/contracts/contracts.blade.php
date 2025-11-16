@@ -33,8 +33,6 @@
                             جاري</option>
                         <option value="منتهي" {{ request()->query('status') === 'منتهي' ? 'selected' : '' }}>
                             منتهي</option>
-                        <option value="ملغي" {{ request()->query('status') === 'ملغي' ? 'selected' : '' }}>
-                            ملغي</option>
                     </select>
                     @if (request()->query('search'))
                         <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -55,10 +53,10 @@
             <thead>
                 <tr>
                     <th class="text-center bg-dark text-white text-nowrap">رقم العقد</th>
-                    <th class="text-center bg-dark text-white text-nowrap">الطرف الأول</th>
-                    <th class="text-center bg-dark text-white text-nowrap">الطرف الثاني</th>
+                    <th class="text-center bg-dark text-white text-nowrap">العميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ العقد</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ الإنتهاء</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
@@ -74,7 +72,6 @@
                     @foreach ($contracts as $contract)
                         <tr>
                             <td class="text-center text-primary fw-bold text-nowrap">{{ $contract->id }}</td>
-                            <td class="text-center fw-bold text-nowrap">{{ $contract->company->name }}</td>
                             <td class="text-center fw-bold text-nowrap">
                                 <a href="{{ route('users.customer.profile', $contract->customer) }}"
                                     class="text-dark text-decoration-none">
@@ -84,7 +81,15 @@
                             <td class="text-center text-nowrap">
                                 {{ Carbon\Carbon::parse($contract->start_date)->format('Y/m/d') }}</td>
                             <td class="text-center text-nowrap">
-                                {{ Carbon\Carbon::parse($contract->end_date)->format('Y/m/d') }}</td>
+                                {{ Carbon\Carbon::parse($contract->end_date)->format('Y/m/d') }}
+                            </td>
+                            <td class="text-center">
+                                @if ($contract->end_date < \Carbon\Carbon::now())
+                                    <span class="badge status-danger ms-2">منتهي</span>
+                                @else
+                                    <span class="badge status-delivered ms-2">ساري</span>
+                                @endif
+                            </td>
                             <td class="text-center text-nowrap">{{ $contract->made_by->name ?? '-' }}</td>
                             <td class="action-icons text-center text-nowrap">
                                 <a href="{{ route('contracts.details', $contract) }}"

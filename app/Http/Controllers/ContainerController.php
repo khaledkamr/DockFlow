@@ -125,20 +125,6 @@ class ContainerController extends Controller
 
     public function reports(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
-        foreach($containers as $container) {
-            if($container->status == 'في الساحة') {
-                $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-                if($storagePolicy) {
-                    $dueDays = $storagePolicy->storage_duration;
-                    $containerDays = Carbon::parse($container->date)->diffInDays(Carbon::now());
-                    if($containerDays > $dueDays) {
-                        $container->status = 'متأخر';
-                        $container->save();
-                    }
-                }
-            }
-        }
-        
         $types = Container_type::all();
         $customers = Customer::all();
 

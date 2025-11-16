@@ -142,7 +142,7 @@
     </div>
     <div class="card-body">
         <div class="row g-2 g-md-3">
-            <div class="col-12 col-sm-6 col-lg-4 col-xl">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-receipt text-muted me-2"></i>
                     <div class="flex-grow-1">
@@ -151,7 +151,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-lg-4 col-xl">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-id-card text-muted me-2"></i>
                     <div class="flex-grow-1">
@@ -160,7 +160,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-lg-4 col-xl">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-phone text-muted me-2"></i>
                     <div class="flex-grow-1">
@@ -169,7 +169,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-lg-4 col-xl">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-envelope text-muted me-2"></i>
                     <div class="flex-grow-1">
@@ -178,7 +178,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-lg-4 col-xl">
+            <div class="col-6 col-sm-6 col-lg-4 col-xl">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-map-marker-alt text-muted me-2"></i>
                     <div class="flex-grow-1">
@@ -202,21 +202,21 @@
         </div>
         <div class="card-body">
             <div class="row g-3 mb-4">
-                <div class="col-12 col-md-4">
+                <div class="col-6 col-md-4">
                     <div class="text-center p-3 border rounded">
                         <i class="fas fa-calendar-check text-success fs-4 mb-2"></i>
                         <div class="small text-muted">تاريخ البداية</div>
                         <div class="fw-bold">{{ Carbon\Carbon::parse($customer->contract->start_date)->format('Y/m/d') }}</div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-6 col-md-4">
                     <div class="text-center p-3 border rounded">
                         <i class="fas fa-calendar-times text-danger fs-4 mb-2"></i>
                         <div class="small text-muted">تاريخ الانتهاء</div>
                         <div class="fw-bold">{{ Carbon\Carbon::parse($customer->contract->end_date)->format('Y/m/d') }}</div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-6 col-md-4 d-none d-md-block">
                     <div class="text-center p-3 border rounded">
                         <i class="fas fa-hourglass-half text-warning fs-4 mb-2"></i>
                         <div class="small text-muted">مدة العقد</div>
@@ -236,8 +236,8 @@
                     <div class="col-12 col-lg-6">
                         <div class="card bg-light border border-primary">
                             <div class="card-body">
-                                <h6 class="card-title text-primary fs-6">{{ $service->description }}</h6>
-                                <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                                <h6 class="card-title text-primary fw-bold fs-6">{{ $service->description }}</h6>
+                                <div class="d-flex flex-row justify-content-between gap-2">
                                     <div class="d-flex gap-2">
                                         <span>السعر:</span>
                                         <strong>{{ $service->pivot->price }} <i data-lucide="saudi-riyal"></i></strong>
@@ -258,7 +258,7 @@
 
 <!-- Containers -->
 <div class="card border-0 rounded-3 shadow-sm mb-3 mb-md-4">
-    <div class="card-header bg-dark text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+    <div class="card-header bg-dark text-white d-flex flex-row justify-content-between align-items-start align-items-md-center gap-2">
         <h5 class="mb-0 fs-6 fs-md-5">
             <i class="fas fa-shipping-fast me-2"></i>
             الحاويات ({{ count($customer['containers']) }})
@@ -323,7 +323,7 @@
 
 <!-- Invoices -->
 <div class="card border-0 rounded-3 shadow-sm mb-3 mb-md-4">
-    <div class="card-header bg-dark text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+    <div class="card-header bg-dark text-white d-flex flex-row justify-content-between align-items-start align-items-md-center gap-2">
         <h5 class="mb-0 fs-6 fs-md-5">
             <i class="fas fa-file-invoice-dollar me-2"></i>
             الفواتير ({{ count($customer->invoices) }})
