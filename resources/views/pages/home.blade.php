@@ -110,8 +110,8 @@
         <div class="card rounded-3 border-0 shadow-sm">
             <div class="card-body d-flex justify-content-between align-items-center">
                 <div>
-                    <h6 class="card-title">إجمالي الموظفين</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $invoices }}</h6>
+                    <h6 class="card-title">إجمالي المستخدمين</h6>
+                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $users }}</h6>
                 </div>
                 <div>
                     <i class="fa-solid fa-users fa-xl"></i>

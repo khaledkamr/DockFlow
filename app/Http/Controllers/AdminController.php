@@ -30,6 +30,7 @@ class AdminController extends Controller
 {
     public function dashboard(Request $request) {
         $customers = Customer::all()->count();
+        $users = User::all()->count();
         $contracts = Contract::all()->count();
         $invoices = Invoice::all()->count();
         $containers = Container::all();
@@ -49,6 +50,7 @@ class AdminController extends Controller
         
         return view('pages.home', compact(
             'customers', 
+            'users',
             'contracts', 
             'invoices', 
             'containers',
