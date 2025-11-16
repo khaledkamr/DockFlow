@@ -101,7 +101,7 @@
                             </td>
                             <td class="fw-bold row-number">{{ $loop->iteration }}</td>
                             <td class="text-primary fw-bold">
-                                <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none container-code">
+                                <a href="{{ route('container.details', $container) }}" class="text-decoration-none container-code">
                                     {{ $container->code }}
                                 </a>
                             </td>
