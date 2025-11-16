@@ -127,7 +127,7 @@ class ExportController extends Controller
             $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
             if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
                 $days = (int) Carbon::parse($container->date)
-                    ->addDays($container->policies->where('type', 'تخزين')->first()->storage_duration)
+                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
                     ->diffInDays(Carbon::parse($container->exit_date));
                 $container->late_days = $days;
                 $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
