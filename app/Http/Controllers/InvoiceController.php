@@ -333,7 +333,7 @@ class InvoiceController extends Controller
             $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
             if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
                 $days = (int) Carbon::parse($container->date)
-                    ->addDays($container->policies->where('type', 'تخزين')->first()->storage_duration)
+                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
                     ->diffInDays(Carbon::parse($container->exit_date));
                 $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
             } else {
