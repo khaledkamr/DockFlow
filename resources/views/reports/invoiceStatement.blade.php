@@ -50,7 +50,7 @@
     <div class="table-responsive">
         <table class="table table-bordered border-dark mb-0">
             <thead>
-                <tr class="table-primary">
+                <tr class="table-dark">
                     <th class="text-center fw-semibold" style="white-space: nowrap;">#</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">رقم الفاتورة</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">نوع الفاتورة</th>

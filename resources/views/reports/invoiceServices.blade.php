@@ -54,7 +54,7 @@
 <div class="my-4">
     <table class="table table-bordered border-dark mb-0">
         <thead>
-            <tr class="table-primary">
+            <tr class="table-dark">
                 <th class="text-center fw-semibold">#</th>
                 <th class="text-center fw-semibold">رقم الإتفاقية</th>
                 <th class="text-center fw-semibold">رقم الحاوية</th>
