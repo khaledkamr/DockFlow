@@ -68,6 +68,11 @@ class PolicyController extends Controller
     public function storeStoragePolicy(PolicyRequest $request) {
         $policy_containers = [];
         foreach($request->containers as $container) {
+            $existContainer = Container::where('code', $container['code'])->first();
+            if($existContainer && $existContainer->status == 'في الساحة') {
+                return redirect()->back()->with('error', 'الحاوية موجوده في الساحة بالفعل');
+            }
+
             if(isset($container['id']) && $container['id'] != '') {
                 $existingContainer = Container::findOrFail($container['id']);
                 $existingContainer->status = 'في الساحة';
@@ -89,6 +94,7 @@ class PolicyController extends Controller
                 'notes' => $container['notes'],
                 'user_id' => Auth::user()->id,
             ]);
+
             $policy_containers[] = $container;
         }
 

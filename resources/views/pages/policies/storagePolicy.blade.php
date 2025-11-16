@@ -22,7 +22,8 @@
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
                     @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}">
+                        <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}"
+                            {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
                             {{ $customer->name }}
                         </option>
                     @endforeach
@@ -32,18 +33,18 @@
             <input type="hidden" id="customer_id" name="customer_id">
             <div class="col">
                 <label class="form-label">رقــم العميــل</label>
-                <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
+                <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="{{ old('customer_account') }}" readonly>
             </div>
             <div class="col">
                 <label class="form-label">إســم السائق <span class="text-danger">*</span></label>
-                <input type="text" name="driver_name" class="form-control border-primary">
+                <input type="text" name="driver_name" class="form-control border-primary" value="{{  old('driver_name') }}">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">رقــم هوية السائق <span class="text-danger">*</span></label>
-                <input type="text" class="form-control border-primary" name="driver_NID">
+                <input type="text" class="form-control border-primary" name="driver_NID" value="{{ old('driver_NID') }}">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
@@ -53,28 +54,28 @@
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">رقم السائق</label>
-                <input type="text" class="form-control border-primary" name="driver_number">
+                <input type="text" class="form-control border-primary" name="driver_number" value="{{ old('driver_number') }}">
                 @error('driver_number')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">نوع السيارة <span class="text-danger">*</span></label>
-                <input type="text" class="form-control border-primary" name="driver_car">
+                <input type="text" class="form-control border-primary" name="driver_car" value="{{ old('driver_car') }}">
                 @error('driver_car')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">لوحة السيارة <span class="text-danger">*</span></label>
-                <input type="text" class="form-control border-primary" name="car_code">
+                <input type="text" class="form-control border-primary" name="car_code" value="{{ old('car_code') }}">
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col">
                 <label class="form-label">البيان الضريبي</label>
-                <input type="text" name="tax_statement" class="form-control border-primary">
+                <input type="text" name="tax_statement" class="form-control border-primary" value="{{ old('tax_statement') }}">
                 @error('tax_statement')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
