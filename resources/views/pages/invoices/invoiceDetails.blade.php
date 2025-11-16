@@ -192,7 +192,7 @@
                                     </a>
                                 </td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('container.details', $container->id) }}" class="text-decoration-none">
+                                    <a href="{{ route('container.details', $container) }}" class="text-decoration-none">
                                         {{ $container->code }}
                                     </a>
                                 </td>
