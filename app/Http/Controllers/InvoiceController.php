@@ -171,7 +171,9 @@ class InvoiceController extends Controller
         if($transaction->customer->contract) {
             $containers_count = $transaction->containers->count();
 
-            if($transaction->customer->contract->services()->where('description', 'اجور تخليص')->exists()) {
+            $contractServices = collect($transaction->customer->contract->services->pluck('description')->toArray());
+
+            if($contractServices->contains('اجور تخليص')  && !$transaction->items->contains('description', 'اجور تخليص - CLEARANCE FEES')) {
                 $price = $transaction->customer->contract->services->where('description', 'اجور تخليص')->first()->pivot->price * $containers_count;
                 $transaction->items()->create([
                     'number' => $transaction->items()->count() + 1,
@@ -182,10 +184,11 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            if($transaction->customer->contract->services()->where('description', 'اجور نقل حاوية فئة 20/40')->exists() ||
-               $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية وزن زائد')->exists() ||
-               $transaction->customer->contract->services()->where('description', 'اجور نقل حاوية مبردة')->exists() ||
-               $transaction->customer->contract->services()->where('description', 'اجور نقل طرود LCL')->exists()) {
+            if(($contractServices->contains('اجور نقل حاوية فئة 20/40') || 
+               $contractServices->contains('اجور نقل حاوية وزن زائد') ||
+               $contractServices->contains('اجور نقل حاوية مبردة') ||
+               $contractServices->contains('اجور نقل طرود LCL')) && 
+               !$transaction->items->contains('description', 'اجور نقل - TRANSPORT FEES')) {
                 $price = 0;
 
                 foreach($transaction->containers as $container) {
@@ -209,7 +212,7 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            if($transaction->customer->contract->services()->where('description', 'اجور عمال')->exists()) {
+            if($contractServices->contains('اجور عمال') && !$transaction->items->contains('description', 'اجور عمال - LABOUR')) {
                 $price = $transaction->customer->contract->services->where('description', 'اجور عمال')->first()->pivot->price * $containers_count;
                 $transaction->items()->create([
                     'number' => $transaction->items()->count() + 1,
@@ -220,7 +223,7 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            if($transaction->customer->contract->services()->where('description', 'خدمات سابر')->exists()) {
+            if($contractServices->contains('خدمات سابر') && !$transaction->items->contains('description', 'خدمات سابر - SABER FEES')) {
                 $price = $transaction->customer->contract->services->where('description', 'خدمات سابر')->first()->pivot->price * $containers_count;
                 $transaction->items()->create([
                     'number' => $transaction->items()->count() + 1,
