@@ -17,7 +17,7 @@
 <!-- بيانات العميل والفاتورة -->
 <div class="row g-3 mb-4">
     <div class="col-md-6">
-        <div class="border rounded-3 p-3 bg-light h-100">
+        <div class="border border-dark rounded-3 p-3 bg-light h-100">
             <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات العميل</h6>
             <div class="row">
                 <div class="col-6">
@@ -33,7 +33,7 @@
     </div>
 
     <div class="col-md-6">
-        <div class="border rounded-3 p-3 bg-light h-100">
+        <div class="border border-dark rounded-3 p-3 bg-light h-100">
             <div class="d-flex align-items-center gap-3">
                 <div class="flex-grow-1">
                     <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات الفاتورة</h6>
@@ -55,7 +55,7 @@
 <!-- بيانات بوالص الشحن -->
 <div class="my-4">
     <div class="table-responsive">
-        <table class="table table-bordered mb-0">
+        <table class="table table-bordered border-dark mb-0">
             <thead>
                 <tr class="table-dark">
                     <th class="text-center fw-semibold" style="white-space: nowrap;">#</th>
@@ -118,7 +118,7 @@
 </div>
 
 @if($company->bankAccounts->isNotEmpty())
-    <div class="border rounded-3 p-3 bg-light mt-4">
+    <div class="border border-dark rounded-3 p-3 bg-light mt-4">
         <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">الحسابات البنكية للشركة</h6>
         <div class="row">
             @foreach($company->bankAccounts as $bankAccount)
