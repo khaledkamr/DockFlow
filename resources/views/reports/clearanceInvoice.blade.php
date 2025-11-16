@@ -144,7 +144,7 @@
 </div>
 
 @if($company->bankAccounts->isNotEmpty())
-    <div class="border rounded-3 p-3 bg-light mt-4">
+    <div class="border border-dark rounded-3 p-3 bg-light mt-4">
         <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">الحسابات البنكية للشركة</h6>
         <div class="row">
             @foreach($company->bankAccounts as $bankAccount)
