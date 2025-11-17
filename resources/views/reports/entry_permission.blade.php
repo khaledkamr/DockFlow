@@ -97,7 +97,7 @@
     <h6 class="fw-bold text-dark mb-3">بيانات الحاويات المرخص بدخولها</h6>
     <div class="table-responsive">
         <table class="table table-bordered border-dark table-hover mb-0">
-            <thead class="table-dark">
+            <thead>
                 <tr class="text-center">
                     <th class="fw-bold">#</th>
                     <th class="fw-bold">رقم الحاوية</th>
@@ -109,14 +109,14 @@
             </thead>
             <tbody>
                 @foreach($policyContainers as $index => $container)
-                <tr class="text-center">
-                    <td class="fw-bold">{{ $index + 1 }}</td>
-                    <td class="fw-bold text-primary">{{ $container->code }}</td>
-                    <td>{{ $container->customer->name }}</td>
-                    <td>{{ $container->containerType->name }}</td>
-                    <td class="fw-bold">{{ $container->location }}</td>
-                    <td>{{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
-                </tr>
+                    <tr class="text-center">
+                        <td class="fw-bold">{{ $index + 1 }}</td>
+                        <td class="fw-bold">{{ $container->code }}</td>
+                        <td>{{ $container->customer->name }}</td>
+                        <td>{{ $container->containerType->name }}</td>
+                        <td class="fw-bold">{{ $container->location }}</td>
+                        <td>{{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

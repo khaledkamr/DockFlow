@@ -94,14 +94,14 @@
 
 <div class="table-responsive">
     <table class="table table-bordered border-dark table-hover mb-0">
-        <thead class="">
-            <tr class="">
-                <th class="text-center bg-dark text-white fw-bold">#</th>
-                <th class="text-center bg-dark text-white fw-bold">كود الحاوية</th>
-                <th class="text-center bg-dark text-white fw-bold">العميل</th>
-                <th class="text-center bg-dark text-white fw-bold">نوع الحاوية</th>
-                <th class="text-center bg-dark text-white fw-bold">الموقع</th>
-                <th class="text-center bg-dark text-white fw-bold">تاريخ الخروج</th>
+        <thead>
+            <tr>
+                <th class="text-center fw-bold">#</th>
+                <th class="text-center fw-bold">كود الحاوية</th>
+                <th class="text-center fw-bold">العميل</th>
+                <th class="text-center fw-bold">نوع الحاوية</th>
+                <th class="text-center fw-bold">الموقع</th>
+                <th class="text-center fw-bold">تاريخ الخروج</th>
             </tr>
         </thead>
         <tbody>

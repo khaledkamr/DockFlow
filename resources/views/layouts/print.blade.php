@@ -35,7 +35,14 @@
         }
         @media print {
             .no-print { display: none !important; }
+            .table thead tr th {
+                background-color: #000 !important;
+                color: #fff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
         }
+
     </style>
 </head>
 <body onload="initPrint()">
