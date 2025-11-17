@@ -107,6 +107,7 @@
                     <th class="text-center bg-dark text-white">المبلغ</th>
                     <th class="text-center bg-dark text-white">الضريبة المضافة</th>
                     <th class="text-center bg-dark text-white">الإجمالي</th>
+                    <th class="text-center bg-dark text-white">تم بواسطة</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,6 +150,7 @@
                             <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                             <td class="text-center">{{ $invoice->tax }}</td>
                             <td class="text-center">{{ $invoice->total_amount }}</td>
+                            <td class="text-center">{{ $invoice->made_by->name }}</td>
                         </tr>
                     @endforeach
                 @endif
