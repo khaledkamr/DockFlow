@@ -56,7 +56,7 @@ class AdminController extends Controller
         $containersTypes = Container_type::all();
         $containersDistribution = [];
         foreach($containersTypes as $type) {
-            $containersDistribution[$type->name] = $containers->where('container_type_id', $type->id)->count();
+            $containersDistribution[$type->name] = $containers->where('container_type_id', $type->id)->where('status', 'في الساحة')->count();
         }
 
         $receipt_vouchers_amount = $policies->where('type', 'سند صرف نقدي')->sum('amount');
