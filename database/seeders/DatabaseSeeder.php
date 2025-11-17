@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // CompanySeeder::class,
+            CompanySeeder::class,
             // AccountTypesSeeder::class,
             // AccountsSeeder::class,
             // PrimaryAccountSeeder::class,
@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             // VehicleSeeder::class,
             // ModuleSeeder::class,
             // CompanyModulesSeeder::class,
-            PlacesSeeder::class,
+            // PlacesSeeder::class,
         ]);
     }
 }

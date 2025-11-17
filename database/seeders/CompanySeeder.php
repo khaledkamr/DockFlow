@@ -21,16 +21,16 @@ class CompanySeeder extends Seeder
                 'phone' => '0123456789',
                 'email' => 'tag@gmail.com'
             ],
-            [
-                'name' => 'شركة مسار سريع للنقليات',
-                'branch' => 'فرع الرياض',
-                'CR' => '1010771099',
-                'TIN' => '7027331624',
-                'vatNumber' => '312266919700004',
-                'national_address' => 'الرياض',
-                'phone' => '0123456790',
-                'email' => 'fast@gmail.com'
-            ],
+            // [
+            //     'name' => 'شركة مسار سريع للنقليات',
+            //     'branch' => 'فرع الرياض',
+            //     'CR' => '1010771099',
+            //     'TIN' => '7027331624',
+            //     'vatNumber' => '312266919700004',
+            //     'national_address' => 'الرياض',
+            //     'phone' => '0123456790',
+            //     'email' => 'fast@gmail.com'
+            // ],
         ];
 
         foreach ($companies as $company) {
