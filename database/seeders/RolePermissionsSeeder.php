@@ -12,7 +12,7 @@ class RolePermissionsSeeder extends Seeder
     public function run(): void
     {
         $permissions = Permission::all();
-        $role = Role::where('name', 'Super Admin')->where('company_id', 2)->first();
+        $role = Role::where('name', 'Super Admin')->where('company_id', 3)->first();
 
         foreach($permissions as $permission) {
             $role->permissions()->attach($permission->id);
