@@ -747,7 +747,7 @@
                             </ul>
                         </div>
                         
-                        <div class="d-flex align-items-center text-dark">
+                        <div class="d-flex align-items-center text-dark me-0 me-md-3">
                             <a href="{{ route('user.profile', Auth::user()) }}">
                                 <img src="{{ Auth::user()->avatar ?? asset('img/user-profile.jpg') }}" alt="Profile Photo" class="rounded-circle me-2" style="width: 40px; height: 40px;">
                             </a>
