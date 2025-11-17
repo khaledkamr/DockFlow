@@ -232,6 +232,7 @@
             </div>
         </div>
     </div>
+    
     <div class="col-12 col-lg-6 mb-3 mb-lg-0 order-1 order-lg-2">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
@@ -250,6 +251,7 @@
             </div>
         </div>
     </div>
+
     <div class="col-12 col-lg-3 order-3">
         <div class="card rounded-3 shadow-sm border-0">
             <div class="card-body">
@@ -266,7 +268,7 @@
                                 <h6 class="mb-1 fw-bold">سندات الصرف</h6>
                             </div>
                             <p class="mb-0 text-muted fw-bold">
-                                {{ $availableContainers }} <i class="fa-solid fa-dollar-sign ms-1"></i>
+                                {{ $receipt_vouchers_amount }} <i class="fa-solid fa-dollar-sign ms-1"></i>
                             </p>
                         </div>
                     </div>
@@ -276,7 +278,7 @@
                                 <h6 class="mb-1 fw-bold">سندات القبض</h6>
                             </div>
                             <p class="mb-0 text-muted fw-bold">
-                                {{ $waitingContainers  }} <i class="fa-solid fa-dollar-sign ms-1"></i>
+                                {{ $payment_vouchers_amount }} <i class="fa-solid fa-dollar-sign ms-1"></i>
                             </p>
                         </div>
                     </div>
@@ -286,7 +288,7 @@
                                 <h6 class="mb-1 fw-bold">الصندوق</h6>
                             </div>
                             <p class="mb-0 text-muted fw-bold">
-                                {{ $receivedContainers  }} <i class="fa-solid fa-dollar-sign ms-1"></i>
+                                {{ $balanceBox }} <i class="fa-solid fa-dollar-sign ms-1"></i>
                             </p>
                         </div>
                     </div>
@@ -296,7 +298,7 @@
                                 <h6 class="mb-1 fw-bold">البنك</h6>
                             </div>
                             <p class="mb-0 text-muted fw-bold">
-                                {{ $deliveredContainers  }} <i class="fa-solid fa-dollar-sign ms-1"></i>
+                                {{ 0 }} <i class="fa-solid fa-dollar-sign ms-1"></i>
                             </p>
                         </div>
                     </div>
@@ -313,16 +315,30 @@
         new Chart(containersLineChart, {
             type: 'line',
             data: {
-                labels: ['sat', 'sun', 'mon', 'tue', 'wed', 'thr', 'fri', 'sat'],
+                labels: @json(array_keys($containersEnteredTrend)),
                 datasets: [{
-                    label: 'عدد الحاويات',
-                    data: @json($containersTrend),
-                    borderColor: '#007bff',
-                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    label: 'عدد الحاويات الداخلة',
+                    data: @json(array_values($containersEnteredTrend)),
+                    borderColor: '#0b56a9',
+                    backgroundColor: 'rgba(11, 86, 169, 0.1)',
                     borderWidth: 2,
                     tension: 0.4,
                     fill: true,
-                    pointBackgroundColor: '#007bff',
+                    pointBackgroundColor: '#0b56a9',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'عدد الحاويات الخارجة',
+                    data: @json(array_values($containersExitTrend)),
+                    borderColor: '#2cacbd',
+                    backgroundColor: 'rgba(44, 172, 189, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#2cacbd',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
                     pointRadius: 4,
@@ -376,16 +392,18 @@
         new Chart(containersDistribution, {
             type: 'pie',
             data: {
-                labels: ['فئة 20', 'فئة 30', 'فئة 40', 'اخرى'],
+                labels: @json(array_keys($containersDistribution)),
                 datasets: [{
-                    data: @json($containersDistribution),
+                    data: @json(array_values($containersDistribution)),
                     backgroundColor: [
-                        '#0b56a9', 
-                        '#2b87ac',
-                        '#42b3af', 
-                        'rgba(108, 117, 125, 0.65)', 
+                        '#0b56a9',
+                        '#218bab',
+                        '#2cacbd', 
+                        '#42b3af',
+                        '#52d6cb', 
                     ],
                     borderColor: [
+                        '#fff',
                         '#fff',
                         '#fff',
                         '#fff',
@@ -434,7 +452,7 @@
                 labels: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'],
                 datasets: [{
                     label: 'students distribution',
-                    data: [1, 2, 3, 10, 5, 15, 7],
+                    data: [0, 0, 0, 0, 0, 0, 0],
                     backgroundColor: 'rgba(0, 123, 255, 0.7)',
                     borderColor: '#007bff',
                     borderWidth: 1,
