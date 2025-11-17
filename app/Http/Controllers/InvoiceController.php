@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Gate;
 class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
-        $invoices = Invoice::orderBy('id', 'desc')->get();
+        $invoices = Invoice::orderBy('code', 'desc')->get();
 
         $methodFilter = request()->query('paymentMethod');
         if ($methodFilter && $methodFilter !== 'all') {
