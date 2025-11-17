@@ -368,6 +368,7 @@ class InvoiceController extends Controller
 
     public function invoiceDetails(Invoice $invoice) {
         $amountBeforeTax = 0;
+        $services = 0;
 
         foreach($invoice->containers as $container) {
             $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
