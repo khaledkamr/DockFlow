@@ -74,7 +74,7 @@
             @endif
             <h4 class="fw-bold">{{ $company->name }}</h4>
         </div>
-        <div class="position-absolute end-0 top-0">
+        <div class="position-absolute end-0 top-0 text-end">
             <div class="text-muted mb-1">
                 <span>رقم التواصل: </span>
                 <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
@@ -83,7 +83,6 @@
                 <span>البريد الإلكتروني: </span>
                 <span class="fw-semibold">{{ $company->email ?? 'غير محدد' }}</span>
             </div>
-            
         </div>
     </div>
 
