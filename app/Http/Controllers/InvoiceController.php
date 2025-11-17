@@ -730,6 +730,7 @@ class InvoiceController extends Controller
         $to = $request->input('to', null);
         $type = $request->input('type', 'all');
         $payment_method = $request->input('payment_method', 'all');
+        $is_posted = $request->input('is_posted', 'all');
 
         if($customer !== 'all') {
             $invoices = $invoices->where('customer_id', $customer);
@@ -746,8 +747,11 @@ class InvoiceController extends Controller
         if($payment_method !== 'all') {
             $invoices = $invoices->where('payment_method', $payment_method);
         }
+        if($is_posted !== 'all') {
+            $invoices = $invoices->where('is_posted', $is_posted == 'true' ? true : false);
+        }
 
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 100);
         $invoices = new \Illuminate\Pagination\LengthAwarePaginator(
             $invoices->forPage(request()->get('page', 1), $perPage),
             $invoices->count(),

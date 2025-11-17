@@ -47,6 +47,14 @@
                     <option value="تحويل بنكي" {{ request('payment_method') == 'تحويل بنكي' ? 'selected' : '' }}>تحويل بنكي</option>
                 </select>
             </div>
+            <div class="col">
+                <label class="form-label">الترحيل</label>
+                <select name="is_posted" class="form-select border-primary">
+                    <option value="all" {{ request('is_posted') == 'all' ? 'selected' : '' }}>الكل</option>
+                    <option value="true" {{ request('is_posted') == 'true' ? 'selected' : '' }}>تم الترحيل</option>
+                    <option value="false" {{ request('is_posted') == 'false' ? 'selected' : '' }}>لم يتم الترحيل</option>
+                </select>
+            </div>
         </div>
         
         <div class="row">
@@ -66,7 +74,6 @@
             <form method="GET" action="">
                 <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                 <select id="per_page" name="per_page" onchange="this.form.submit()" class="form-select form-select-sm d-inline-block w-auto">
-                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25</option>
                     <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
                     <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
                     <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
