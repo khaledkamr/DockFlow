@@ -10,22 +10,32 @@ class ContainerTypesSeeder extends Seeder
 {
     public function run(): void
     {
-        $company_id = 1;
+        $company_id = 3;
 
         $types = [
             [
                 'name' => 'فئة 20',
-                'daily_price' => 50,
-                'company_id' => $company_id,
-            ],
-            [
-                'name' => 'فئة 30',
-                'daily_price' => 50,
+                'daily_price' => 0,
                 'company_id' => $company_id,
             ],
             [
                 'name' => 'فئة 40',
-                'daily_price' => 50,
+                'daily_price' => 0,
+                'company_id' => $company_id,
+            ],
+            [
+                'name' => 'وزن زائد',
+                'daily_price' => 0,
+                'company_id' => $company_id,
+            ],
+            [
+                'name' => 'طرود LCL',
+                'daily_price' => 0,
+                'company_id' => $company_id,
+            ],
+            [
+                'name' => 'حاوية مبرده',
+                'daily_price' => 0,
                 'company_id' => $company_id,
             ],
         ];

@@ -10,24 +10,26 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        $company_id = 3;
+
         $users = [
-            // [
-            //     'name' => 'خالد قمر',
-            //     'email' => 'kk@gmail.com',
-            //     'password' => Hash::make('111'),
-            //     'company_id' => 1
-            // ],
-            // [
-            //     'name' => 'أدمن',
-            //     'email' => 'admin@gmail.com',
-            //     'password' => Hash::make('123456789'),
-            //     'company_id' => 1
-            // ],
             [
                 'name' => 'خالد قمر',
-                'email' => 'kkm@gmail.com',
+                'email' => 'kk.tag@gmail.com',
                 'password' => Hash::make('111'),
-                'company_id' => 2
+                'company_id' => $company_id
+            ],
+            [
+                'name' => 'قمر رشاد',
+                'email' => 'kamr.tag@gmail.com',
+                'password' => Hash::make('111'),
+                'company_id' => $company_id
+            ],
+            [
+                'name' => 'بكري',
+                'email' => 'bakry.tag@gmail.com',
+                'password' => Hash::make('111'),
+                'company_id' => $company_id
             ],
         ];
 

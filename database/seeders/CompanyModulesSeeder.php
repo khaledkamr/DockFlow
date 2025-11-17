@@ -11,8 +11,8 @@ class CompanyModulesSeeder extends Seeder
 {
     public function run(): void
     {
-        $modules = Module::where('slug', 'نقل')->first();
-        $company = Company::where('id', 2)->first();
+        $modules = Module::all();
+        $company = Company::where('id', 3)->first();
 
         if ($company && $modules) {
             $company->modules()->sync($modules->pluck('id')->toArray());
