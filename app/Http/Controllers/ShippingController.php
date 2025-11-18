@@ -192,7 +192,7 @@ class ShippingController extends Controller
             $policies = $policies->where('to', $delivery_location);
         }
 
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 100);
         $policies = new \Illuminate\Pagination\LengthAwarePaginator(
             $policies->forPage(request()->get('page', 1), $perPage),
             $policies->count(),
