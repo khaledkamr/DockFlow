@@ -18,7 +18,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 fw-bold text-end">إسم العميل:</div>
-                        <div class="col-7">{{ $policy->contract->customer->name }}</div>
+                        <div class="col-7">{{ $policy->customer->name }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-5 fw-bold text-end">تاريخ الإتفاقية:</div>

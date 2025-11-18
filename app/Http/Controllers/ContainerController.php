@@ -16,6 +16,19 @@ class ContainerController extends Controller
 {
     public function containers(Request $request) {
         $containers = Container::orderBy('id', 'desc')->get();
+        $lateContainers = Container::where('status', 'في الساحة')
+            ->whereHas('policies', function($query) {
+            $query->where('type', 'تخزين');
+            })
+            ->get()
+            ->filter(function ($container) {
+            $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+            if(!$storagePolicy) {
+                return false;
+            }
+            $dueDays = $storagePolicy->storage_duration;
+            return $container->days > $dueDays;
+            });
         
         $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
@@ -56,7 +69,7 @@ class ContainerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('pages.containers.containers', compact('containers'));
+        return view('pages.containers.containers', compact('containers', 'lateContainers'));
     }
 
     public function containerStore(Request $request) {
@@ -138,7 +151,21 @@ class ContainerController extends Controller
             $containers = $containers->whereBetween('date', [$from, $to]);
         }
         if($status !== 'all') {
-            $containers = $containers->where('status', $status);
+            if($status == 'متأخر') {
+                $containers = $containers->filter(function ($container) {
+                    if($container->status !== 'في الساحة') {
+                        return false;
+                    }
+                    $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+                    if(!$storagePolicy) {
+                        return false;
+                    }
+                    $dueDays = $storagePolicy->storage_duration;
+                    return $container->days > $dueDays;
+                });
+            } else {
+                $containers = $containers->where('status', $status);
+            }
         }
         if($type !== 'all') {
             $containers = $containers->filter(function($container) use($type) {

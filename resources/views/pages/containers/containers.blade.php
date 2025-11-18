@@ -26,7 +26,7 @@
                     <div>
                         <h6 class="card-title fw-bold">إجمالي الحاويات المتأخرة</h6>
                         <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">
-                            {{ $containers->where('status', 'متأخر')->count() }}</h6>
+                            {{ $lateContainers->count() }}</h6>
                     </div>
                     <div>
                         <i class="fa-solid fa-hourglass-start fs-2"></i>

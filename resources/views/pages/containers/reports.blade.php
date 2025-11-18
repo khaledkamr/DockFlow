@@ -8,18 +8,18 @@
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
         <form method="GET" class="row g-3" id="reportForm">
             <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
-            <div class="col-6 col-md-6 col-lg-4">
+            <div class="col-6 col-md-6 col-lg">
                 <label class="form-label">من تاريخ</label>
                 <input type="date" name="from"
                     value="{{ request('from', Carbon\Carbon::now()->startOfYear()->format('Y-m-d')) }}"
                     class="form-control border-primary">
             </div>
-            <div class="col-6 col-md-6 col-lg-4">
+            <div class="col-6 col-md-6 col-lg">
                 <label class="form-label">إلى تاريخ</label>
                 <input type="date" name="to" value="{{ request('to', Carbon\Carbon::now()->format('Y-m-d')) }}"
                     class="form-control border-primary">
             </div>
-            <div class="col-6 col-md-6 col-lg-4">
+            <div class="col-6 col-md-6 col-lg">
                 <label class="form-label">الحالة</label>
                 <select name="status" class="form-select border-primary">
                     <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -30,7 +30,7 @@
                     <option value="في الميناء" {{ request('status') == 'في الميناء' ? 'selected' : '' }}>في الميناء</option>
                 </select>
             </div>
-            <div class="col-6 col-md-6 col-lg-4">
+            <div class="col-6 col-md-6 col-lg">
                 <label class="form-label">النوع</label>
                 <select name="type" class="form-select border-primary">
                     <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -41,7 +41,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg">
                 <label class="form-label">العميل</label>
                 <select name="customer" id="customer_id" class="form-select border-primary">
                     <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -187,6 +187,17 @@
                                         <div class="badge status-info">{{ $container->status }}</div>
                                     @elseif($container->status == 'قيد النقل')
                                         <div class="badge status-purple">{{ $container->status }}</div>
+                                    @endif
+
+                                    
+                                    @php
+                                        $storage_policy = $container->policies->where('type', 'تخزين')->first();
+                                    @endphp
+
+                                    @if ($container->status == 'في الساحة' && $storage_policy && $container->days > $storage_policy->storage_duration)
+                                        <div class="text-danger fw-semibold mt-1" style="font-size: 0.85rem;">
+                                            متأخر منذ {{ (int) ($container->days - $storage_policy->storage_duration) }} أيام
+                                        </div>
                                     @endif
                                 </td>
                                 <td class="text-center text-nowrap">
