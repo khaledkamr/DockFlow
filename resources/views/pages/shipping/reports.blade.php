@@ -9,7 +9,7 @@
         <form method="GET" id="reportForm">
             <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
             <div class="row g-3 mb-3">
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">العميل</label>
                     <select name="customer" id="customer_id" class="form-select border-primary">
                         <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -21,18 +21,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">من تاريخ</label>
                     <input type="date" name="from"
                         value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">إلى تاريخ</label>
                     <input type="date" name="to" value="{{ request('to', now()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">نوع الناقل</label>
                     <select name="type" class="form-select border-primary">
                         <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -44,7 +44,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">حالة التسليم</label>
                     <select name="status" class="form-select border-primary">
                         <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -54,8 +54,8 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
-                    <label class="form-label">حالة الفاتورة</label>
+                <div class="col-6 col-md-6 col-lg">
+                    <label class="form-label">مفوترة</label>
                     <select name="invoice_status" class="form-select border-primary">
                         <option value="all" {{ request('invoice_status') == 'all' ? 'selected' : '' }}>الكل</option>
                         <option value="with_invoice" {{ request('invoice_status') == 'with_invoice' ? 'selected' : '' }}>مع
@@ -67,7 +67,7 @@
             </div>
 
             <div class="row g-3 mb-4">
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">المورد</label>
                     <select name="supplier" id="supplier_id" class="form-select border-primary">
                         <option value="all" {{ request('supplier') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -79,7 +79,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">السائق</label>
                     <select name="driver" id="driver_id" class="form-select border-primary">
                         <option value="all" {{ request('driver') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -90,7 +90,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">السيارة</label>
                     <select name="vehicle" id="vehicle_id" class="form-select border-primary">
                         <option value="all" {{ request('vehicle') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -102,7 +102,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">مكان التحميل</label>
                     <select name="loading_location" id="loading_location" class="form-select border-primary">
                         <option value="all" {{ request('loading_location') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -114,7 +114,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg-4">
+                <div class="col-6 col-md-6 col-lg">
                     <label class="form-label">مكان التسليم</label>
                     <select name="delivery_location" id="delivery_location" class="form-select border-primary">
                         <option value="all" {{ request('delivery_location') == 'all' ? 'selected' : '' }}>الكل</option>
