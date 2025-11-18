@@ -52,6 +52,18 @@
                     @endforeach
                 </select>
             </div>
+            <div class="col-12 col-md-6 col-lg">
+                <label class="form-label">مفوترة</label>
+                <select name="invoiced" id="invoiced" class="form-select border-primary">
+                    <option value="all" {{ request('invoiced') == 'all' ? 'selected' : '' }}>الكل</option>
+                    <option value="مع فاتورة" {{ request('invoiced') == 'مع فاتورة' ? 'selected' : '' }}>
+                        مع فاتورة
+                    </option>
+                    <option value="بدون فاتورة" {{ request('invoiced') == 'بدون فاتورة' ? 'selected' : '' }}>
+                        بدون فاتورة
+                    </option>
+                </select>
+            </div>
             <div class="col-12 text-start">
                 <button id="submitBtn" class="btn btn-primary fw-bold px-4"
                     onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
@@ -84,7 +96,7 @@
         <div class="col-6 col-sm-6 col-lg-3">
             <div class="card border-0 shadow-sm rounded-3 p-3">
                 <h6>متأخره</h6>
-                <h3 class="text-danger fw-bold mb-0">{{ $containers->where('status', 'متأخر')->count() }}</h3>
+                <h3 class="text-danger fw-bold mb-0">{{ $lateContainers->count() }}</h3>
             </div>
         </div>
     </div>
@@ -188,7 +200,6 @@
                                     @elseif($container->status == 'قيد النقل')
                                         <div class="badge status-purple">{{ $container->status }}</div>
                                     @endif
-
                                     
                                     @php
                                         $storage_policy = $container->policies->where('type', 'تخزين')->first();

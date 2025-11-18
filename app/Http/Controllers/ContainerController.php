@@ -145,7 +145,8 @@ class ContainerController extends Controller
         $to = $request->input('to', null);
         $status = $request->input('status', 'all');
         $type = $request->input('type', 'all');
-        $customer =$request->input('customer', 'all');
+        $customer = $request->input('customer', 'all');
+        $invoiced = $request->input('invoiced', 'all');
 
         if($to && $from) {
             $containers = $containers->whereBetween('date', [$from, $to]);
@@ -177,6 +178,18 @@ class ContainerController extends Controller
                 return $container->customer->id == $customer;
             });
         }
+        if($invoiced !== 'all') {
+            if($invoiced == 'مع فاتورة') {
+                $containers = $containers->filter(function($container) {
+                    return $container->invoices()->exists();
+                });
+            } elseif($invoiced == 'بدون فاتورة') {
+                $containers = $containers->filter(function($container) {
+                    return !$container->invoices()->exists();
+                });
+            }
+        }
+
         $perPage = $request->input('per_page', 100);
         $containers = new \Illuminate\Pagination\LengthAwarePaginator(
             $containers->forPage(request()->get('page', 1), $perPage),
@@ -185,11 +198,27 @@ class ContainerController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
+
+        $lateContainers = Container::where('status', 'في الساحة')
+            ->whereHas('policies', function($query) {
+            $query->where('type', 'تخزين');
+            })
+            ->get()
+            ->filter(function ($container) {
+            $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+            if(!$storagePolicy) {
+                return false;
+            }
+            $dueDays = $storagePolicy->storage_duration;
+            return $container->days > $dueDays;
+            });
+        
         return view('pages.containers.reports', compact(
             'containers',
             'types',
             'customers',
-            'perPage'
+            'perPage',
+            'lateContainers'
         ));
     }
 
