@@ -44,7 +44,7 @@ class InvoiceStatement extends Model
         static::creating(function ($invoiceStatement) {
             $year = date('Y');
             $prefix = 'IS';
-            $lastInvoiceStatement = self::whereYear('date', $year)->latest('id')->first();
+            $lastInvoiceStatement = self::whereYear('date', $year)->latest('code')->first();
             if ($lastInvoiceStatement && $lastInvoiceStatement->code) {
                 $lastNumber = (int) substr($lastInvoiceStatement->code, -5);
                 $newNumber = $lastNumber + 1;

@@ -63,7 +63,7 @@ class Invoice extends Model
         static::creating(function ($invoice) {
             $year = date('Y');
             $prefix = 'IN';
-            $lastInvoice = self::whereYear('date', $year)->latest('id')->first();
+            $lastInvoice = self::whereYear('date', $year)->latest('code')->first();
             if ($lastInvoice && $lastInvoice->code) {
                 $lastNumber = (int) substr($lastInvoice->code, -5);
                 $newNumber = $lastNumber + 1;

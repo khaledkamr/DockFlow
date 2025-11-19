@@ -63,7 +63,7 @@ class Policy extends Model
                 $prefix = 'SV';
             }
 
-            $lastPolicy = self::where('type', $policy->type)->whereYear('date', $year)->latest('id')->first();
+            $lastPolicy = self::where('type', $policy->type)->whereYear('date', $year)->latest('code')->first();
             if ($lastPolicy && $lastPolicy->code) {
                 $lastNumber = (int) substr($lastPolicy->code, -5);
                 $newNumber = $lastNumber + 1;

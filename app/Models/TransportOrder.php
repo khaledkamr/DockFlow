@@ -71,7 +71,7 @@ class TransportOrder extends Model
         static::creating(function ($transportOrder) {
             $year = date('Y');
             $prefix = 'TO';
-            $lastTransportOrder = self::whereYear('date', $year)->latest('id')->first();
+            $lastTransportOrder = self::whereYear('date', $year)->latest('code')->first();
             if ($lastTransportOrder && $lastTransportOrder->code) {
                 $lastNumber = (int) substr($lastTransportOrder->code, -5);
                 $newNumber = $lastNumber + 1;

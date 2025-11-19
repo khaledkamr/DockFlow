@@ -73,7 +73,7 @@ class ShippingPolicy extends Model
         static::creating(function ($policy) {
             $year = date('Y');
             $prefix = 'SP';
-            $lastPolicy = self::whereYear('date', $year)->latest('id')->first();
+            $lastPolicy = self::whereYear('date', $year)->latest('code')->first();
             if ($lastPolicy && $lastPolicy->code) {
                 $lastNumber = (int) substr($lastPolicy->code, -5);
                 $newNumber = $lastNumber + 1;

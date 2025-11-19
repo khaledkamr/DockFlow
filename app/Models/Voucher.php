@@ -43,7 +43,7 @@ class Voucher extends Model
                 default => 'XX',
             };
 
-            $lastVoucher = self::where('type', $voucher->type)->whereYear('date', $year)->latest('id')->first();
+            $lastVoucher = self::where('type', $voucher->type)->whereYear('date', $year)->latest('code')->first();
 
             if ($lastVoucher && $lastVoucher->code) {
                 $lastNumber = (int) substr($lastVoucher->code, -5);

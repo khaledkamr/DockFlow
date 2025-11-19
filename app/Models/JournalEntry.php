@@ -49,7 +49,7 @@ class JournalEntry extends Model
                 $year = date('Y');
                 $journalEntry->type = 'قيد يومي';
                 $prefix = 'JD';
-                $lastJournal = self::where('type', $journalEntry->type)->whereYear('date', $year)->latest('id')->first();
+                $lastJournal = self::where('type', $journalEntry->type)->whereYear('date', $year)->latest('code')->first();
                 if ($lastJournal && $lastJournal->code) {
                     $lastNumber = (int) substr($lastJournal->code, -5);
                     $newNumber = $lastNumber + 1;
