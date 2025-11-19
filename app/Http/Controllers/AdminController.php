@@ -241,4 +241,8 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'تم إضافة صلاحية جديدة بنجاح');
     }
+
+    public function settings() {
+        return view('pages.settings.settings');
+    }
 }
