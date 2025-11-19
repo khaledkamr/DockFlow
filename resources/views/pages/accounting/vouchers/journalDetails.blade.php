@@ -13,10 +13,6 @@
                 <i class="fa-solid fa-file-excel"></i>
             </button>
 
-            <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
-                <i class="fa-solid fa-file-pdf"></i>
-            </button>
-
             <form action="{{ route('print', 'journal_entry') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="journal_id" value="{{ $journal->id }}">

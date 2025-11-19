@@ -26,7 +26,7 @@
     }
 </style>
 
-<h1 class="mb-4">تعديل القيد</h1>
+<h1 class="mb-4">تعديل القيد {{ $journal->code }}</h1>
 
 <form action="{{ route('journal.update', $journal) }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
     @csrf

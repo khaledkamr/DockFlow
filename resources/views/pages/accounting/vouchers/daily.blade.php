@@ -1,3 +1,18 @@
+<div class="row g-3 mb-4">
+    <div class="col-12 col-lg-6">
+        <form method="GET" action="" class="d-flex flex-column h-100">
+            <div class="d-flex flex-grow-1">
+                <input type="text" name="journal_search" class="form-control border-primary"
+                    placeholder=" ابحث عن قيد برقم القيد او التاريخ... " value="{{ request()->query('journal_search') }}">
+                <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
+                    <span class="d-none d-sm-inline">بحث</span>
+                    <i class="fa-solid fa-magnifying-glass ms-sm-2"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="table-container">
     <table class="table table-hover">
         <thead>

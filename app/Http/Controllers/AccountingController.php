@@ -63,17 +63,25 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");
     }
 
-    public function entries() {
+    public function entries(Request $request) {
         $company = Company::first();
         $accounts = Account::where('level', 5)->get();
         $vouchers = Voucher::all();
         $journals = JournalEntry::all();
+
+        $journalSearch = $request->query('journal_search');
+        if($journalSearch) {
+            $journals = $journals->filter(function($journal) use($journalSearch) {
+                return str_contains((string)$journal->code, $journalSearch) || str_contains($journal->date, $journalSearch);
+            });
+        }
 
         $balance = 0;
         $balanceArray = [];
         $vouchersBox = $vouchers->filter(function($voucher) {
             return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
         });
+
         foreach($vouchersBox as $voucher) {
             if($voucher->type == 'سند قبض نقدي') {
                 $balance += $voucher->amount;
@@ -85,29 +93,19 @@ class AccountingController extends Controller
         }
         
         if(request()->query('view') == 'سند قبض نقدي') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'سند قبض نقدي';
-            });
+            $vouchers = $vouchers->where('type', 'سند قبض نقدي');
         }
         elseif(request()->query('view') == 'سند قبض بشيك') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'سند قبض بشيك';
-            });
+            $vouchers = $vouchers->where('type', 'سند قبض بشيك');
         }
         elseif(request()->query('view') == 'سند صرف نقدي') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'سند صرف نقدي';
-            });
+            $vouchers = $vouchers->where('type', 'سند صرف نقدي');
         }
         elseif(request()->query('view') == 'سند صرف بشيك') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'سند صرف بشيك';
-            });
+            $vouchers = $vouchers->where('type', 'سند صرف بشيك');
         }
         elseif(request()->query('view') == 'الصندوق') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
-            });
+            $vouchers = $vouchers->where('type', 'سند قبض نقدي')->orWhere('type', 'سند صرف نقدي');
         }
         
         return view('pages.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray', 'company'));
