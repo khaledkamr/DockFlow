@@ -24,13 +24,47 @@
                     <i class="fa-solid fa-print"></i>
                 </button>
             </form>
-            
 
             <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>
+
+            <div data-bs-toggle="tooltip" data-bs-placement="top" title="حذف">
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteJournalModal">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
         </div>
     </div>
+
+    <div class="modal fade" id="deleteJournalModal" tabindex="-1"
+        aria-labelledby="deleteJournalModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark fw-bold"
+                        id="deleteJournalModalLabel">تأكيد الحذف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center text-dark">
+                    هل انت متأكد من حذف القيد؟
+                </div>
+                <div
+                    class="modal-footer d-flex flex-column flex-sm-row justify-content-center">
+                    <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1"
+                        data-bs-dismiss="modal">إلغاء</button>
+                    <form action="{{ route('journal.delete', $journal) }}" method="POST"
+                        class="order-1 order-sm-2 w-sm-auto">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="table-container">
         <table class="table table-striped">
             <thead>
