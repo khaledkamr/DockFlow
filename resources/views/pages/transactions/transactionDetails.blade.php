@@ -162,154 +162,152 @@
     </div>
 
     <!-- Transaction Items Section -->
-    @can('عرض بنود المعاملة')
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
-                <div class="d-flex justify-content-between align-items-center text-white">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-list me-2"></i>
-                        بنود المعاملة
-                    </h5>
-                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
-                        <i class="fas fa-plus me-1"></i>
-                        إضافة بند جديد
-                    </button>
-                </div>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <div class="d-flex justify-content-between align-items-center text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    بنود المعاملة
+                </h5>
+                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                    <i class="fas fa-plus me-1"></i>
+                    إضافة بند جديد
+                </button>
             </div>
-            <div class="card-body p-0">
-                @if (count($transaction->items) > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th class="text-center fw-bold">#</th>
-                                    <th class="text-center fw-bold">البند</th>
-                                    <th class="text-center fw-bold">المبلغ</th>
-                                    <th class="text-center fw-bold">الضريبة</th>
-                                    <th class="text-center fw-bold">الإجمالي</th>
-                                    <th class="text-center fw-bold">الإجرائات</th>
+        </div>
+        <div class="card-body p-0">
+            @if (count($transaction->items) > 0)
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="text-center fw-bold">#</th>
+                                <th class="text-center fw-bold">البند</th>
+                                <th class="text-center fw-bold">المبلغ</th>
+                                <th class="text-center fw-bold">الضريبة</th>
+                                <th class="text-center fw-bold">الإجمالي</th>
+                                <th class="text-center fw-bold">الإجرائات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($transaction->items->sortBy('number') as $item)
+                                <tr class="align-middle" id="item-row-{{ $item->id }}">
+                                    <td class="text-center fw-bold">{{ $item->number }}</td>
+                                    <td class="text-center fw-bold">{{ $item->description }}</td>
+                                    <td class="text-center">{{ number_format($item->amount, 2) }}</td>
+                                    <td class="text-center">{{ number_format($item->tax, 2) }}</td>
+                                    <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i data-lucide="saudi-riyal"></i></td>
+                                    <td class="text-center">
+                                        <a href="#" class="text-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#editItemModal{{ $item->id }}">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="#" class="text-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteItemModal{{ $item->id }}">
+                                            <i class="fas fa-trash-can"></i>
+                                        </a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($transaction->items->sortBy('number') as $item)
-                                    <tr class="align-middle" id="item-row-{{ $item->id }}">
-                                        <td class="text-center fw-bold">{{ $item->number }}</td>
-                                        <td class="text-center fw-bold">{{ $item->description }}</td>
-                                        <td class="text-center">{{ number_format($item->amount, 2) }}</td>
-                                        <td class="text-center">{{ number_format($item->tax, 2) }}</td>
-                                        <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i data-lucide="saudi-riyal"></i></td>
-                                        <td class="text-center">
-                                            <a href="#" class="text-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#editItemModal{{ $item->id }}">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="#" class="text-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteItemModal{{ $item->id }}">
-                                                <i class="fas fa-trash-can"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
 
-                                    <!-- Edit Item Modal -->
-                                    <div class="modal fade" id="editItemModal{{ $item->id }}" tabindex="-1" aria-labelledby="editItemModalLabel{{ $item->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title fw-bold" id="editItemModalLabel{{ $item->id }}">
-                                                        <i class="fas fa-edit me-2"></i>
-                                                        تعديل البند
-                                                    </h5>
-                                                    <button type="button" class="btn-close btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                <!-- Edit Item Modal -->
+                                <div class="modal fade" id="editItemModal{{ $item->id }}" tabindex="-1" aria-labelledby="editItemModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold" id="editItemModalLabel{{ $item->id }}">
+                                                    <i class="fas fa-edit me-2"></i>
+                                                    تعديل البند
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('transactions.item.update', $item) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
+                                                    <div class="row g-3 mb-3">
+                                                        <div class="col-2">
+                                                            <label class="form-label">الرقم</label>
+                                                            <input type="number" name="number" class="form-control border-primary" value="{{ $item->number }}" required>
+                                                        </div>
+                                                        <div class="col-10">
+                                                            <label for="editDescription" class="form-label">البند</label>
+                                                            <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required readonly>{{ $item->description }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <label class="form-label">المبلغ</label>
+                                                            <input type="number" class="form-control border-primary" name="amount" id="editAmount{{ $loop->index }}" value="{{ $item->amount }}"
+                                                                step="1" required onchange="calculateEditTotal({{ $loop->index }})">
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="editTax" class="form-label">الضريبة</label>
+                                                            <select class="form-select border-primary" id="editTaxPercentage{{ $loop->index }}" onchange="calculateEditTotal({{ $loop->index }})">
+                                                                <option disabled selected>نوع الضريبة</option>
+                                                                <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
+                                                                <option value="0" data-rate="0">غير خاضع للضريبة</option>
+                                                            </select>
+                                                            <input type="hidden" id="editTax{{ $loop->index }}" name="tax" value="{{ $item->tax }}">
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="editTotal" class="form-label">الإجمالي</label>
+                                                            <input type="number" class="form-control border-primary" name="total" id="editTotal{{ $loop->index }}" value="{{ $item->total }}"
+                                                                step="1" readonly>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <form action="{{ route('transactions.item.update', $item) }}" method="POST">
+                                                <div class="modal-footer d-flex justify-content-start">
+                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
+                                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Item Modal -->
+                                <div class="modal fade" id="deleteItemModal{{ $item->id }}" tabindex="-1" aria-labelledby="deleteItemModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title text-dark fw-bold" id="deleteItemModalLabel{{ $item->id }}">تأكيد الحذف</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center text-dark">
+                                                هل انت متأكد من البند <strong>{{ $item->description }}</strong>؟
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                                <form action="{{ route('transactions.item.delete', $item) }}" method="POST">
                                                     @csrf
-                                                    @method('PUT')
-                                                    <div class="modal-body">
-                                                        <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
-                                                        <div class="row g-3 mb-3">
-                                                            <div class="col-2">
-                                                                <label class="form-label">الرقم</label>
-                                                                <input type="number" name="number" class="form-control border-primary" value="{{ $item->number }}" required>
-                                                            </div>
-                                                            <div class="col-10">
-                                                                <label for="editDescription" class="form-label">البند</label>
-                                                                <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required readonly>{{ $item->description }}</textarea>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                                <label class="form-label">المبلغ</label>
-                                                                <input type="number" class="form-control border-primary" name="amount" id="editAmount{{ $loop->index }}" value="{{ $item->amount }}"
-                                                                    step="1" required onchange="calculateEditTotal({{ $loop->index }})">
-                                                            </div>
-                                                            <div class="col">
-                                                                <label for="editTax" class="form-label">الضريبة</label>
-                                                                <select class="form-select border-primary" id="editTaxPercentage{{ $loop->index }}" onchange="calculateEditTotal({{ $loop->index }})">
-                                                                    <option disabled selected>نوع الضريبة</option>
-                                                                    <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
-                                                                    <option value="0" data-rate="0">غير خاضع للضريبة</option>
-                                                                </select>
-                                                                <input type="hidden" id="editTax{{ $loop->index }}" name="tax" value="{{ $item->tax }}">
-                                                            </div>
-                                                            <div class="col">
-                                                                <label for="editTotal" class="form-label">الإجمالي</label>
-                                                                <input type="number" class="form-control border-primary" name="total" id="editTotal{{ $loop->index }}" value="{{ $item->total }}"
-                                                                    step="1" readonly>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer d-flex justify-content-start">
-                                                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
-                                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                                    </div>
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger fw-bold">حذف</button>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Delete Item Modal -->
-                                    <div class="modal fade" id="deleteItemModal{{ $item->id }}" tabindex="-1" aria-labelledby="deleteItemModalLabel{{ $item->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title text-dark fw-bold" id="deleteItemModalLabel{{ $item->id }}">تأكيد الحذف</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body text-center text-dark">
-                                                    هل انت متأكد من البند <strong>{{ $item->description }}</strong>؟
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                                    <form action="{{ route('transactions.item.delete', $item) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-light fw-bold">
-                                    <td colspan="2" class="text-center">الإجمالي:</td>
-                                    <td class="text-center">{{ number_format($transaction->items->sum('amount'), 2) }}</td>
-                                    <td class="text-center">{{ number_format($transaction->items->sum('tax'), 2) }}</td>
-                                    <td class="text-center text-primary">
-                                        {{ number_format($transaction->items->sum('total'), 2) }}</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                @else
-                    <div class="text-center py-5">
-                        <h5 class="text-muted">لا توجد بنود مرتبطة بهذه المعاملة</h5>
-                    </div>
-                @endif
-            </div>
+                                </div>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-light fw-bold">
+                                <td colspan="2" class="text-center">الإجمالي:</td>
+                                <td class="text-center">{{ number_format($transaction->items->sum('amount'), 2) }}</td>
+                                <td class="text-center">{{ number_format($transaction->items->sum('tax'), 2) }}</td>
+                                <td class="text-center text-primary">
+                                    {{ number_format($transaction->items->sum('total'), 2) }}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            @else
+                <div class="text-center py-5">
+                    <h5 class="text-muted">لا توجد بنود مرتبطة بهذه المعاملة</h5>
+                </div>
+            @endif
         </div>
-    @endcan
+    </div>
 
     <!-- Procedures Timeline Section -->
     @can('عرض إجراءات المعاملة')

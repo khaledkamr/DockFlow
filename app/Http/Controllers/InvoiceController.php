@@ -253,19 +253,19 @@ class InvoiceController extends Controller
             ->groupBy('description')
             ->map(function ($group) {
                 return [
+                    'number' => $group->min('number'),
                     'description' => $group->first()->description,
                     'amount' => $group->sum('amount'),
                     'tax' => $group->sum('tax'),
                     'total' => $group->sum('total'),
                 ];
             })
+            ->sortBy('number')
             ->values();         
-
-        $number = 1;
 
         foreach ($grouped as $item) {
             $invoice->clearanceInvoiceItems()->create([
-                'number' => $number++,
+                'number' => $item['number'],
                 'description' => $item['description'],
                 'amount' => $item['amount'],
                 'tax' => $item['tax'],
