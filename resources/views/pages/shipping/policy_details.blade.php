@@ -8,7 +8,7 @@
             <i class="fa-solid fa-truck-fast"></i> <span class="d-none d-md-inline">تفاصيل بوليصة الشحن</span><span class="d-sm-inline d-md-none">بوليصة</span>
             {{ $policy->code }}
         </h1>
-        <div class="d-flex flex-row gap-2 w-100">
+        <div class="d-flex flex-row gap-2">
             @if ($policy->invoices->where('type', 'شحن')->first())
             <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}"
                 target="_blank" class="btn btn-outline-primary flex-fill">

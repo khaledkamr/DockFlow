@@ -193,6 +193,7 @@
                         <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
                         <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
                         <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -212,7 +213,7 @@
                                 'delivery_location',
                             ]))
                         <tr>
-                            <td colspan="11" class="text-center">
+                            <td colspan="12" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
                             </td>
                         </tr>
@@ -230,7 +231,11 @@
                                     </a>
                                 </td>
                                 <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                                <td class="text-center">{{ $policy->customer->name }}</td>
+                                <td class="text-center fw-bold">
+                                    <a href="{{ route('users.customer.profile', $policy->customer) }}" class="text-decoration-none text-dark" target="_blank">
+                                        {{ $policy->customer->name }}
+                                    </a>
+                                </td>
                                 <td class="text-center">{{ $policy->type }}</td>
                                 <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
                                 <td class="text-center">
@@ -245,6 +250,16 @@
                                         <div class="badge status-delivered">تم التسليم</div>
                                     @else
                                         <div class="badge status-waiting">تحت التسليم</div>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($policy->invoices->where('type', 'شحن')->isEmpty())
+                                        -
+                                    @else
+                                        <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}" target="_blank"
+                                            class="text-decoration-none fw-bold">
+                                            {{ $policy->invoices->where('type', 'شحن')->first()->code }}
+                                        </a>
                                     @endif
                                 </td>
                             </tr>
