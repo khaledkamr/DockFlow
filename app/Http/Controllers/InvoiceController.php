@@ -720,9 +720,10 @@ class InvoiceController extends Controller
     }
 
     public function invoicesReports(Request $request) {
-        $invoices = Invoice::all();
+        $invoices = Invoice::orderBy('code', 'asc')->get();
         $customers = Customer::all();
         $types = [];
+
         if(Auth::user()->company->hasModule('تخزين')) {
             $types[] = 'تخزين';
             $types[] = 'خدمات';
@@ -748,6 +749,7 @@ class InvoiceController extends Controller
             $invoices = $invoices->where('date', '>=', $from);
         }
         if($to) {
+            $to = Carbon::parse($to)->endOfDay();
             $invoices = $invoices->where('date', '<=', $to);
         }
         if($type !== 'all') {

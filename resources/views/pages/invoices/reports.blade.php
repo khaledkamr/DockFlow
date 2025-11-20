@@ -83,11 +83,9 @@
         <div class="d-flex gap-2">
             <form action="{{ route('print.invoices.reports') }}" method="GET" target="_blank">
                 @csrf
-                <input type="hidden" name="customer" value="{{ request('customer') }}">
-                <input type="hidden" name="from" value="{{ request('from') }}">
-                <input type="hidden" name="to" value="{{ request('to') }}">
-                <input type="hidden" name="type" value="{{ request('type') }}">
-                <input type="hidden" name="status" value="{{ request('payment_method') }}">
+                @foreach(request()->except('page', 'per_page') as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
                 <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
                     <i class="fa-solid fa-print"></i>
                 </button>
