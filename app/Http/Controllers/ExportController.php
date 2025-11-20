@@ -365,6 +365,7 @@ class ExportController extends Controller
             $invoices = $invoices->where('date', '>=', $from);
         }
         if($to) {
+            $to = Carbon::parse($to)->endOfDay();
             $invoices = $invoices->where('date', '<=', $to);
         }
         if($type !== 'all') {
