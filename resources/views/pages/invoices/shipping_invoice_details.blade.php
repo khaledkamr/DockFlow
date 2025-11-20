@@ -23,11 +23,13 @@
                 <a href="{{ route('print.invoice.shipping', $invoice->code) }}" target="_blank" class="btn btn-outline-primary">
                     <i class="fas fa-print me-2"></i>طباعة الفاتورة
                 </a>
-                @can('ترحيل فاتورة')
-                    <a href="{{ route('invoices.post', $invoice) }}" class="btn btn-outline-primary">
-                        <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
-                    </a>
-                @endcan
+                @if(!$invoice->is_posted)
+                    @can('ترحيل فاتورة')
+                        <a href="{{ route('invoices.post', $invoice) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
+                        </a>
+                    @endcan
+                @endif
                 @if($invoice->isPaid == 'لم يتم الدفع')
                     <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#updateInvoice">
                         <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الحالة
