@@ -3,7 +3,7 @@
 @section('title', 'المعاملات')
 
 @section('content')
-    <h1 class="mb-4">المعاملات</h1>
+    <h1 class="mb-4">معاملات التخليص الجمركي</h1>
 
     <div class="row mb-4">
         <div class="col">
@@ -38,6 +38,7 @@
                     <th class="text-center bg-dark text-white">عدد الحاويات</th>
                     <th class="text-center bg-dark text-white">تاريخ المعاملة</th>
                     <th class="text-center bg-dark text-white">تم بواسطة</th>
+                    <th class="text-center bg-dark text-white">الفاتورة</th>
                     <th class="text-center bg-dark text-white">الإجراءات</th>
                 </tr>
             </thead>
@@ -67,6 +68,15 @@
                                 <a href="{{ route('admin.user.profile', $transaction->made_by) }}" class="text-dark text-decoration-none">
                                     {{ $transaction->made_by->name ?? "-" }}
                                 </a>
+                            </td>
+                            <td class="text-center">
+                                @if($transaction->containers()->first()->invoices->where('type', 'تخليص')->first())
+                                    <a href="{{ route('invoices.clearance.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}" class="text-decoration-none fw-bold">
+                                        {{ $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()->code }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
                             </td>
                             <td class="action-icons text-center">
                                 <a href="{{ route('transactions.details', $transaction) }}" class="btn btn-sm btn-primary">
