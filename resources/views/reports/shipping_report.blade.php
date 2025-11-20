@@ -20,6 +20,7 @@
                 <th>مكان التحميل</th>
                 <th>مكان التسليم</th>
                 <th>الحالة</th>
+                <th>الفاتورة</th>
             </tr>
         </thead>
         <tbody>
@@ -52,6 +53,7 @@
                                 <div class="status-delivered">تحت التسليم</div>
                             @endif
                         </td>
+                        <td class="text-center">{{ $policy->invoices->where('type', 'شحن')->first()->code ?? '-' }}</td>
                     </tr>
                 @endforeach
             @endif

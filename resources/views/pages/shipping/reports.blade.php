@@ -160,17 +160,9 @@
             <div class="d-flex gap-2">
                 <form action="{{ route('print.shipping.reports') }}" method="GET" target="_blank">
                     @csrf
-                    <input type="hidden" name="customer" value="{{ request('customer') }}">
-                    <input type="hidden" name="from" value="{{ request('from') }}">
-                    <input type="hidden" name="to" value="{{ request('to') }}">
-                    <input type="hidden" name="type" value="{{ request('type') }}">
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-                    <input type="hidden" name="status" value="{{ request('invoice_status') }}">
-                    <input type="hidden" name="status" value="{{ request('supplier') }}">
-                    <input type="hidden" name="status" value="{{ request('driver') }}">
-                    <input type="hidden" name="status" value="{{ request('vehicle') }}">
-                    <input type="hidden" name="status" value="{{ request('loading_location') }}">
-                    <input type="hidden" name="status" value="{{ request('delivery_location') }}">
+                    @foreach(request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                     <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
                         data-bs-placement="top" title="طباعة">
                         <i class="fa-solid fa-print"></i>
