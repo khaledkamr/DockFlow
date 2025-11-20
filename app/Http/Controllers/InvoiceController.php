@@ -437,6 +437,8 @@ class InvoiceController extends Controller
             $incomeAccount = Account::where('name', 'ايرادات التخزين')->where('level', 5)->first();
         } elseif($invoice->type == 'تخليص') {
             $incomeAccount = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
+        } elseif($invoice->type == 'شحن') {
+            $incomeAccount = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
         } else {
             $incomeAccount = Account::where('name', 'ايرادات متنوعة')->where('level', 5)->first();
         }
