@@ -93,7 +93,7 @@
                             <div class="col-12 mb-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <strong class="text-muted">الرقم الضريبي:</strong>
-                                    <span class="fw-bold">{{ $invoice->customer->CR ?? '---' }}</span>
+                                    <span class="fw-bold">{{ $invoice->customer->vatNumber ?? '---' }}</span>
                                 </div>
                             </div>
                             <div class="col-12">

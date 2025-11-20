@@ -23,7 +23,7 @@
                     <p class="mb-2 small"><strong class="text-secondary">رقم العميل:</strong><br>{{ $invoiceStatement->customer->account->code ?? '---' }}</p>
                 </div>
                 <div class="col-6">
-                    <p class="mb-2 small"><strong class="text-secondary">الرقم الضريبي:</strong><br>{{ $invoiceStatement->customer->CR ?? '---' }}</p>
+                    <p class="mb-2 small"><strong class="text-secondary">الرقم الضريبي:</strong><br>{{ $invoiceStatement->customer->vatNumber ?? '---' }}</p>
                     <p class="mb-2 small"><strong class="text-secondary">العنوان الوطني:</strong><br>{{ $invoiceStatement->customer->national_address ?? '---' }}</p>
                 </div>
             </div>
