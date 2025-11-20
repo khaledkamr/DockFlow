@@ -3,7 +3,7 @@
 @section('title', 'تقرير الفواتير')
 
 @section('content')
-<h5 class="text-center fw-bold mb-4 mt-4">تقرير الفواتير من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
+<h5 class="text-center fw-bold mb-4 mt-4">تقرير الفواتير من فترة ({{ $from }}) الى فترة ({{ Carbon\Carbon::parse($to)->format('Y-m-d') }})</h5>
 
 <div class="table-container">
     <table class="table table-bordered">
