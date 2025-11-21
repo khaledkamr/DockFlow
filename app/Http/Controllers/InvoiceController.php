@@ -478,7 +478,7 @@ class InvoiceController extends Controller
         $invoice->is_posted = true;
         $invoice->save();
 
-        return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
+        return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
 
     public function postClearanceInvoice(Invoice $invoice) {
@@ -585,7 +585,7 @@ class InvoiceController extends Controller
         $invoice->is_posted = true;
         $invoice->save();
 
-        return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('admin.journal.details', $journal)."'>عرض القيد</a>");
+        return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
 
     public function invoiceStatements(Request $request) {
@@ -777,5 +777,20 @@ class InvoiceController extends Controller
             'types',
             'perPage'
         ));
+    }
+
+    public function deleteInvoice(Invoice $invoice) {
+        if($invoice->is_posted) {
+            return redirect()->back()->with('error', 'لا يمكن حذف فاتورة تم ترحيلها');
+        }
+
+        $name = $invoice->code;
+
+        $invoice->containers()->detach();
+        $invoice->clearanceInvoiceItems()->delete();
+        $invoice->shippingPolicies()->detach();
+        $invoice->delete();
+
+        return redirect()->back()->with('success', 'تم حذف الفاتورة ' . $name . ' بنجاح');
     }
 }

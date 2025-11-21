@@ -163,6 +163,7 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('invoice/create', 'storeInvoice')->name('invoices.store');
     Route::patch('invoice/update/{invoice:uuid}', 'updateInvoice')->name('invoices.update');
     Route::get('/invoice/{invoice:uuid}', 'invoiceDetails')->name('invoices.details');
+    Route::delete('invoice/delete/{invoice:uuid}', 'deleteInvoice')->name('invoices.delete');
 
     Route::get('invoice/post/{invoice:uuid}', 'postInvoice')->name('invoices.post');
     Route::get('invoice/post/clearance/{invoice:uuid}', 'postClearanceInvoice')->name('invoices.post.clearance');
