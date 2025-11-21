@@ -9,15 +9,15 @@
 
 <h2 class="mb-4">إضافة بوليصة خدمات</h2>
 
-<div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
+<div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
     <form action="{{ route('policies.services.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
         <input type="hidden" name="type" value="خدمات">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <input type="hidden" name="company_id" value="{{ $company->id }}">
-        <div class="row mb-3">
-            <div class="col">
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم العميــل</label>
                 <select class="form-select border-primary" id="customer_name" name="customer_name">
                     <option value="">اختر اسم العميل...</option>
@@ -31,48 +31,46 @@
             </div>
             <input type="hidden" id="contract_id" name="contract_id">
             <input type="hidden" id="customer_id" name="customer_id">
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقــم العميــل</label>
                 <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم السائق</label>
                 <input type="text" name="driver_name" class="form-control border-primary">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقــم هوية السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_NID">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-        </div>
-        <div class="row mb-4">
-            <div class="col">
+            <div class="col-6 col-sm-6 col-lg-3">
                 <label class="form-label">رقــم هاتف السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_phone">
                 @error('driver_phone')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-sm-6 col-lg-3">
                 <label class="form-label">نوع السيارة</label>
                 <input type="text" class="form-control border-primary" name="driver_car">
                 @error('driver_car')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-sm-6 col-lg-3">
                 <label class="form-label">لوحة السيارة</label>
                 <input type="text" class="form-control border-primary" name="car_code">
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-12 col-sm-6 col-sm-6 col-lg-3">
                 <label class="form-label">البيان الضريبي</label>
                 <input type="text" name="tax_statement" class="form-control border-primary">
                 @error('tax_statement')
@@ -82,29 +80,29 @@
         </div>
 
         <div class="mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                 <h5 class="mb-0">بيانات الحاويات</h5>
                 <button type="button" class="btn btn-primary btn-sm" id="addContainerBtn">
-                    <i class="fas fa-plus me-1"></i> إضافة حاوية جديدة
+                    <i class="fas fa-plus me-1"></i> <span class="d-none d-sm-inline">إضافة حاوية جديدة</span><span class="d-inline d-sm-none">إضافة حاوية</span>
                 </button>
             </div>
             
             <div id="containersSection">
                 <div class="container-row border border-primary rounded p-3 mb-3" data-row="0">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="d-flex flex-row justify-content-between align-items-center gap-2 mb-2">
                         <h6 class="mb-0 text-primary">الحاوية #<span class="container-number">1</span></h6>
                         <button type="button" class="btn btn-danger btn-sm remove-container" style="display: none;">
-                            <i class="fas fa-trash-can"></i> 
+                            <i class="fas fa-trash-can"></i><span class="d-none d-sm-inline ms-1">حذف</span>
                         </button>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">رقم الحاويــة</label>
                             <input type="text" class="form-control border-primary" name="containers[0][code]" required>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">فئة الحاويــة</label>
                             <select class="form-select border-primary" name="containers[0][container_type_id]" required>
                                 <option value="">اختر فئة الحاوية...</option>
@@ -114,7 +112,7 @@
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-12 col-sm-6 col-lg-4">
                             <label class="form-label">الخدمة</label>
                             <select class="form-select border-primary" name="containers[0][service_id]" required>
                                 <option value="">اختر الخدمة...</option>
@@ -123,7 +121,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-2">
+                        <div class="col-12 col-sm-6 col-lg-2">
                             <label class="form-label">السعر</label>
                             <input type="text" class="form-control border-primary" name="containers[0][price]">
                             <div class="invalid-feedback"></div>
@@ -133,8 +131,10 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <button type="submit" class="btn btn-primary fw-bold">حفظ البوليصة</button>
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mt-4">
+            <button type="submit" class="btn btn-primary fw-bold">
+                حفظ البوليصة
+            </button>
             <span class="text-muted">إجمالي الحاويات: <span id="totalContainers">1</span></span>
         </div>
     </form>

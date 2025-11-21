@@ -125,7 +125,7 @@
                     <tr>
                         <th class="text-center bg-dark text-white text-nowrap">#</th>
                         <th class="text-center bg-dark text-white text-nowrap">كود الحاويــة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">صاحــب الحاويــة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
                         <th class="text-center bg-dark text-white text-nowrap">الفئـــة</th>
                         <th class="text-center bg-dark text-white text-nowrap">الموقــع</th>
                         <th class="text-center bg-dark text-white text-nowrap">الحالـــة</th>

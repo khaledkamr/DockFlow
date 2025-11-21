@@ -9,7 +9,7 @@
         <form method="GET" id="reportForm">
             <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
             <div class="row g-3 mb-3">
-                <div class="col-6 col-md-6 col-lg-3">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">العميل</label>
                     <select name="customer" id="customer_id" class="form-select border-primary">
                         <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -21,18 +21,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg">
+                <div class="col-6 col-sm-3 col-md-6 col-lg">
                     <label class="form-label">من تاريخ</label>
                     <input type="date" name="from"
                         value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-6 col-md-6 col-lg">
+                <div class="col-6 col-sm-3 col-md-6 col-lg">
                     <label class="form-label">إلى تاريخ</label>
                     <input type="date" name="to" value="{{ request('to', now()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-6 col-md-6 col-lg">
+                <div class="col-6 col-sm-6 col-md-6 col-lg">
                     <label class="form-label">الحالة</label>
                     <select name="status" class="form-select border-primary">
                         <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -44,7 +44,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-6 col-md-6 col-lg">
+                <div class="col-6 col-sm-6 col-md-6 col-lg">
                     <label class="form-label">مفوترة</label>
                     <select name="invoice_status" class="form-select border-primary">
                         <option value="all" {{ request('invoice_status') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -60,7 +60,7 @@
                 <div class="col-12 text-start">
                     <button id="submitBtn" class="btn btn-primary fw-bold px-4"
                         onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
-                        <span class="d-inline">عرض التقرير</span>
+                        عرض التقرير
                         <i class="fa-solid fa-file-circle-check ms-1"></i>
                     </button>
                 </div>
@@ -68,9 +68,9 @@
         </form>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-3 p-3">
+    <div class="card border-0 shadow-sm rounded-3 p-3 mb-5">
         <div
-            class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+            class="d-flex flex-row justify-content-between align-items-center gap-2 mb-3">
             <div class="">
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
@@ -88,12 +88,12 @@
             <div class="d-flex gap-2">
                 <form action="{{ route('print.transactions.reports') }}" method="GET" target="_blank">
                     @csrf
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="طباعة">
-                        <i class="fa-solid fa-print"></i>
+                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="طباعة">
+                        <i class="fa-solid fa-print me-1"></i><span class="d-none d-sm-inline">طباعة</span>
                     </button>
                 </form>
             </div>
@@ -135,7 +135,8 @@
                                 </td>
                                 <td class="text-center fw-bold">{{ $transaction->policy_number ?? '-' }}</td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('users.customer.profile', $transaction->customer) }}" class="text-decoration-none text-dark" target="_blank">
+                                    <a href="{{ route('users.customer.profile', $transaction->customer) }}"
+                                        class="text-decoration-none text-dark" target="_blank">
                                         {{ $transaction->customer->name }}
                                     </a>
                                 </td>
@@ -147,11 +148,13 @@
                                         <span class="badge status-waiting">معلقة</span>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}</td>
+                                <td class="text-center">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}
+                                </td>
                                 <td class="text-center">{{ $transaction->made_by->name }}</td>
                                 <td class="text-center">
-                                    @if($transaction->containers()->first()->invoices->where('type', 'تخليص')->first())
-                                        <a href="{{ route('invoices.clearance.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}" class="text-decoration-none fw-bold">
+                                    @if ($transaction->containers()->first()->invoices->where('type', 'تخليص')->first())
+                                        <a href="{{ route('invoices.clearance.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}"
+                                            class="text-decoration-none fw-bold">
                                             {{ $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()->code }}
                                         </a>
                                     @else
@@ -183,7 +186,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -192,17 +195,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>

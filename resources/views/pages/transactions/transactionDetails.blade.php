@@ -3,28 +3,34 @@
 @section('title', 'تفاصيل المعاملة')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-2">
         <div>
             <h2 class="h3 text-primary mb-1">
-                <i class="fas fa-clipboard-list me-2"></i>
-                تفاصيل المعاملة #{{ $transaction->code }}
+                <i class="fas fa-clipboard-list me-2 d-none d-md-inline"></i>
+                <span class="d-none d-md-inline">تفاصيل المعاملة {{ $transaction->code }}</span>
+                <span class="d-inline d-md-none">المعاملة {{ $transaction->code }}</span>
+                @if ($transaction->status == 'معلقة')
+                    <span class="badge status-waiting text-dark ms-2 d-inline d-md-none">معلقة</span>
+                @elseif($transaction->status == 'مغلقة')
+                    <span class="badge status-delivered ms-2 d-inline d-md-none">مغلقة</span>
+                @endif
             </h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    @if($transaction->customer->contract)
+                    @if ($transaction->customer->contract)
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.details', $transaction->customer->contract) }}"
                                 class="text-decoration-none">العقد #{{ $transaction->customer->contract->id }}</a>
                         </li>
                     @endif
-                    <li class="breadcrumb-item">
+                    <li class="breadcrumb-item d-none d-md-inline">
                         <a href="" class="text-decoration-none">
                             المعاملات
                         </a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">
+                    <li class="breadcrumb-item active d-none d-md-inline" aria-current="page">
                         المعاملة #{{ $transaction->code }}
-                        @if($transaction->status == 'معلقة')
+                        @if ($transaction->status == 'معلقة')
                             <span class="badge bg-warning text-dark ms-2">معلقة</span>
                         @elseif($transaction->status == 'مغلقة')
                             <span class="badge bg-success ms-2">مغلقة</span>
@@ -32,19 +38,21 @@
                     </li>
             </nav>
         </div>
-        <div class="d-flex gap-2">
-            @if($transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
-                <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}" target="_blank"
-                    class="btn btn-outline-primary">
-                    <i class="fas fa-scroll"></i>
-                    عرض الفاتورة
+        <div class="d-flex flex-wrap gap-2">
+            @if (
+                $transaction->containers->first()->invoices &&
+                    $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
+                <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
+                    target="_blank" class="btn btn-outline-primary">
+                    <i class="fas fa-scroll me-1"></i>
+                    <span class="d-inline">عرض الفاتورة</span>
                 </a>
             @endif
             @if ($transaction->containers->first()->invoices->isEmpty())
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
                     data-bs-target="#createInvoice">
-                    <i class="fas fa-scroll"></i>
-                    إنشاء فاتورة
+                    <i class="fas fa-scroll me-1"></i>
+                    <span class="d-inline">إنشاء فاتورة</span>
                 </button>
             @endif
         </div>
@@ -64,10 +72,11 @@
                     <input type="hidden" name="customer_id" value="{{ $transaction->customer_id }}">
                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                     <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
-                    <input type="hidden" name="container_ids[]" value="{{ $transaction->containers->pluck('id')->join(',') }}">
+                    <input type="hidden" name="container_ids[]"
+                        value="{{ $transaction->containers->pluck('id')->join(',') }}">
                     <div class="modal-body text-dark">
-                        <div class="row mb-4">
-                            <div class="col">
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
                                 <label class="form-label">طريقة الدفع</label>
                                 <select class="form-select border-primary" name="payment_method" required>
                                     <option value="آجل">آجل</option>
@@ -75,9 +84,9 @@
                                     <option value="تحويل بنكي">تحويل بنكي</option>
                                 </select>
                             </div>
-                            <div class="col">
+                            <div class="col-12 col-md-6">
                                 <label class="form-label">نسبة الخصم(%)</label>
-                                <input type="number" name="discount" id="discount" class="form-control border-primary" 
+                                <input type="number" name="discount" id="discount" class="form-control border-primary"
                                     min="0" max="100" step="1" value="0" placeholder="0.00">
                             </div>
                         </div>
@@ -95,7 +104,8 @@
     <div class="row">
         <div class="col-lg-6 d-flex flex-column gap-3 mb-4">
             <div class="card border-0 shadow-sm h-100">
-                <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+                <div
+                    class="card-header d-flex flex-row justify-content-between align-items-center gap-2 bg-dark text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
                         معلومات المعاملة
@@ -106,18 +116,20 @@
                     <div class="row g-4">
                         <div class="col-12">
                             <div>
-                                <div class="row">
-                                    <div class="col">
+                                <div class="row g-3">
+                                    <div class="col-4 col-sm-6 col-lg-4">
                                         <label class="form-label text-muted small">رقم البوليصة</label>
-                                        <div class="fw-bold fs-5">{{ $transaction->policy_number }}</div>
+                                        <div class="fw-bold fs-6">{{ $transaction->policy_number }}</div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-4 col-sm-6 col-lg-4">
                                         <label class="form-label text-muted small">البيان الجمركي</label>
-                                        <div class="fw-bold fs-5">{{ $transaction->customs_declaration ?? 'N/A' }}</div>
+                                        <div class="fw-bold fs-6">{{ $transaction->customs_declaration ?? 'N/A' }}</div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-4 col-sm-6 col-lg-4">
                                         <label class="form-label text-muted small">تاريخ البيان الجمركي</label>
-                                        <div class="fw-bold fs-5">{{ Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y/m/d') ?? 'N/A' }}</div>
+                                        <div class="fw-bold fs-6">
+                                            {{ Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y/m/d') ?? 'N/A' }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -137,7 +149,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-4">
-                        <div class="col-md-6">
+                        <div class="col-12 col-sm-6">
                             <h6 class="text-muted mb-2">
                                 <i class="fas fa-building me-2"></i>
                                 الطرف الأول
@@ -146,7 +158,7 @@
                                 <div class="fw-bold">{{ $transaction->made_by->company->name }}</div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-12 col-sm-6">
                             <h6 class="text-muted mb-2">
                                 <i class="fas fa-user-tie me-2"></i>
                                 الطرف الثاني
@@ -164,14 +176,16 @@
     <!-- Transaction Items Section -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-dark text-white">
-            <div class="d-flex justify-content-between align-items-center text-white">
+            <div
+                class="d-flex flex-row justify-content-between align-items-center gap-2 text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-list me-2"></i>
                     بنود المعاملة
                 </h5>
-                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#addItemModal">
                     <i class="fas fa-plus me-1"></i>
-                    إضافة بند جديد
+                    <span class="d-none d-sm-inline">إضافة بند جديد</span><span class="d-inline d-sm-none">إضافة</span>
                 </button>
             </div>
         </div>
@@ -181,84 +195,103 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center fw-bold">#</th>
-                                <th class="text-center fw-bold">البند</th>
-                                <th class="text-center fw-bold">المبلغ</th>
-                                <th class="text-center fw-bold">الضريبة</th>
-                                <th class="text-center fw-bold">الإجمالي</th>
-                                <th class="text-center fw-bold">الإجرائات</th>
+                                <th class="text-center fw-bold text-nowrap">#</th>
+                                <th class="text-center fw-bold text-nowrap">البند</th>
+                                <th class="text-center fw-bold text-nowrap">المبلغ</th>
+                                <th class="text-center fw-bold text-nowrap">الضريبة</th>
+                                <th class="text-center fw-bold text-nowrap">الإجمالي</th>
+                                <th class="text-center fw-bold text-nowrap">الإجرائات</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($transaction->items->sortBy('number') as $item)
                                 <tr class="align-middle" id="item-row-{{ $item->id }}">
                                     <td class="text-center fw-bold">{{ $item->number }}</td>
-                                    <td class="text-center fw-bold">{{ $item->description }}</td>
+                                    <td class="text-center fw-bold" style="min-width: 150px;">{{ $item->description }}</td>
                                     <td class="text-center">{{ number_format($item->amount, 2) }}</td>
                                     <td class="text-center">{{ number_format($item->tax, 2) }}</td>
-                                    <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i data-lucide="saudi-riyal"></i></td>
+                                    <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i
+                                            data-lucide="saudi-riyal"></i></td>
                                     <td class="text-center">
-                                        <a href="#" class="text-primary me-2" type="button" data-bs-toggle="modal" data-bs-target="#editItemModal{{ $item->id }}">
+                                        <a href="#" class="text-primary me-2" type="button"
+                                            data-bs-toggle="modal" data-bs-target="#editItemModal{{ $item->id }}">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="#" class="text-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteItemModal{{ $item->id }}">
+                                        <a href="#" class="text-danger" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#deleteItemModal{{ $item->id }}">
                                             <i class="fas fa-trash-can"></i>
                                         </a>
                                     </td>
                                 </tr>
 
                                 <!-- Edit Item Modal -->
-                                <div class="modal fade" id="editItemModal{{ $item->id }}" tabindex="-1" aria-labelledby="editItemModalLabel{{ $item->id }}" aria-hidden="true">
+                                <div class="modal fade" id="editItemModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="editItemModalLabel{{ $item->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title fw-bold" id="editItemModalLabel{{ $item->id }}">
+                                                <h5 class="modal-title fw-bold"
+                                                    id="editItemModalLabel{{ $item->id }}">
                                                     <i class="fas fa-edit me-2"></i>
                                                     تعديل البند
                                                 </h5>
-                                                <button type="button" class="btn-close btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <button type="button" class="btn-close btn-close"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form action="{{ route('transactions.item.update', $item) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="modal-body">
-                                                    <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
+                                                    <input type="hidden" name="transaction_id"
+                                                        value="{{ $item->transaction->id }}">
                                                     <div class="row g-3 mb-3">
                                                         <div class="col-2">
                                                             <label class="form-label">الرقم</label>
-                                                            <input type="number" name="number" class="form-control border-primary" value="{{ $item->number }}" required>
+                                                            <input type="number" name="number"
+                                                                class="form-control border-primary"
+                                                                value="{{ $item->number }}" required>
                                                         </div>
                                                         <div class="col-10">
                                                             <label for="editDescription" class="form-label">البند</label>
-                                                            <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required readonly>{{ $item->description }}</textarea>
+                                                            <textarea class="form-control border-primary" id="editDescription" name="description" rows="1" required
+                                                                readonly>{{ $item->description }}</textarea>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col">
                                                             <label class="form-label">المبلغ</label>
-                                                            <input type="number" class="form-control border-primary" name="amount" id="editAmount{{ $loop->index }}" value="{{ $item->amount }}"
-                                                                step="1" required onchange="calculateEditTotal({{ $loop->index }})">
+                                                            <input type="number" class="form-control border-primary"
+                                                                name="amount" id="editAmount{{ $loop->index }}"
+                                                                value="{{ $item->amount }}" step="1" required
+                                                                onchange="calculateEditTotal({{ $loop->index }})">
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTax" class="form-label">الضريبة</label>
-                                                            <select class="form-select border-primary" id="editTaxPercentage{{ $loop->index }}" onchange="calculateEditTotal({{ $loop->index }})">
+                                                            <select class="form-select border-primary"
+                                                                id="editTaxPercentage{{ $loop->index }}"
+                                                                onchange="calculateEditTotal({{ $loop->index }})">
                                                                 <option disabled selected>نوع الضريبة</option>
-                                                                <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
-                                                                <option value="0" data-rate="0">غير خاضع للضريبة</option>
+                                                                <option value="15" data-rate="15">خاضع للضريبة (15%)
+                                                                </option>
+                                                                <option value="0" data-rate="0">غير خاضع للضريبة
+                                                                </option>
                                                             </select>
-                                                            <input type="hidden" id="editTax{{ $loop->index }}" name="tax" value="{{ $item->tax }}">
+                                                            <input type="hidden" id="editTax{{ $loop->index }}"
+                                                                name="tax" value="{{ $item->tax }}">
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTotal" class="form-label">الإجمالي</label>
-                                                            <input type="number" class="form-control border-primary" name="total" id="editTotal{{ $loop->index }}" value="{{ $item->total }}"
-                                                                step="1" readonly>
+                                                            <input type="number" class="form-control border-primary"
+                                                                name="total" id="editTotal{{ $loop->index }}"
+                                                                value="{{ $item->total }}" step="1" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer d-flex justify-content-start">
-                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
-                                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ
+                                                        التغييرات</button>
+                                                    <button type="button" class="btn btn-secondary fw-bold"
+                                                        data-bs-dismiss="modal">إلغاء</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -266,19 +299,24 @@
                                 </div>
 
                                 <!-- Delete Item Modal -->
-                                <div class="modal fade" id="deleteItemModal{{ $item->id }}" tabindex="-1" aria-labelledby="deleteItemModalLabel{{ $item->id }}" aria-hidden="true">
+                                <div class="modal fade" id="deleteItemModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="deleteItemModalLabel{{ $item->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title text-dark fw-bold" id="deleteItemModalLabel{{ $item->id }}">تأكيد الحذف</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <h5 class="modal-title text-dark fw-bold"
+                                                    id="deleteItemModalLabel{{ $item->id }}">تأكيد الحذف</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center text-dark">
                                                 هل انت متأكد من البند <strong>{{ $item->description }}</strong>؟
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                                <form action="{{ route('transactions.item.delete', $item) }}" method="POST">
+                                                <button type="button" class="btn btn-secondary fw-bold"
+                                                    data-bs-dismiss="modal">إلغاء</button>
+                                                <form action="{{ route('transactions.item.delete', $item) }}"
+                                                    method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger fw-bold">حذف</button>
@@ -329,11 +367,12 @@
                                             <div class="timeline-dot bg-primary"></div>
                                             <h6 class="mb-0 fw-bold">{{ $procedure->name }}</h6>
                                             <small class="text-muted d-block ps-4">
-                                                <i class="fas fa-calendar-days me-1"></i>
+                                                <i class="fas fa-calendar-days me-1 d-none d-md-inline"></i>
                                                 {{ Carbon\Carbon::parse($procedure->created_at)->format('Y/m/d') }}
                                             </small>
                                         </div>
-                                        <a href="#" class="text-danger small" type="button" data-bs-toggle="modal" data-bs-target="#deleteProcedureModal{{ $procedure->id }}">
+                                        <a href="#" class="text-danger small" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#deleteProcedureModal{{ $procedure->id }}">
                                             <i class="fas fa-times"></i>
                                         </a>
                                     </div>
@@ -341,19 +380,24 @@
                             </div>
 
                             <!-- Delete Procedure Modal -->
-                            <div class="modal fade" id="deleteProcedureModal{{ $procedure->id }}" tabindex="-1" aria-labelledby="deleteProcedureModalLabel{{ $procedure->id }}" aria-hidden="true">
+                            <div class="modal fade" id="deleteProcedureModal{{ $procedure->id }}" tabindex="-1"
+                                aria-labelledby="deleteProcedureModalLabel{{ $procedure->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title text-dark fw-bold" id="deleteProcedureModalLabel{{ $procedure->id }}">تأكيد الحذف</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h5 class="modal-title text-dark fw-bold"
+                                                id="deleteProcedureModalLabel{{ $procedure->id }}">تأكيد الحذف</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body text-center text-dark">
-                                            هل انت متأكد من الإجراء <strong>{{ $procedure->name }}</strong>؟
+                                            هل انت متأكد من حذف الإجراء <strong>{{ $procedure->name }}</strong>؟
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                                            <form action="{{ route('transactions.delete.procedure', $procedure) }}" method="POST">
+                                            <button type="button" class="btn btn-secondary fw-bold"
+                                                data-bs-dismiss="modal">إلغاء</button>
+                                            <form action="{{ route('transactions.delete.procedure', $procedure) }}"
+                                                method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger fw-bold">حذف</button>
@@ -373,13 +417,14 @@
                 <!-- Add Procedure Form -->
                 <div class="mt-4 pt-3 border-top">
                     <h6 class="fw-bold mb-3">إضافة إجراء جديد</h6>
-                    <form action="{{ route('transactions.store.procedure', $transaction) }}" method="POST" id="addProcedureForm">
+                    <form action="{{ route('transactions.store.procedure', $transaction) }}" method="POST"
+                        id="addProcedureForm">
                         @csrf
                         <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
                         <div class="input-group">
                             <select class="form-select border-primary" name="name" required>
                                 <option disabled selected>اختر الإجراء...</option>
-                                @foreach($procedures as $procedure)
+                                @foreach ($procedures as $procedure)
                                     <option value="{{ $procedure['name'] }}">{{ $procedure['name'] }}</option>
                                 @endforeach
                             </select>
@@ -410,16 +455,16 @@
         </div>
         <div class="card-body p-0">
             @if (count($transaction->containers) > 0)
-                <div class="table-responsive">
+                <div class="table-container" id="tableContainer">
                     <table class="table table-hover mb-0">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center fw-bold">#</th>
-                                <th class="text-center fw-bold">رقم الحاوية</th>
-                                <th class="text-center fw-bold">نوع الحاوية</th>
-                                <th class="text-center fw-bold">اسم العميل</th>
-                                <th class="text-center fw-bold">الحالة</th>
-                                <th class="text-center fw-bold">الإجرائات</th>
+                                <th class="text-center fw-bold text-nowrap">#</th>
+                                <th class="text-center fw-bold text-nowrap">رقم الحاوية</th>
+                                <th class="text-center fw-bold text-nowrap">نوع الحاوية</th>
+                                <th class="text-center fw-bold text-nowrap">اسم العميل</th>
+                                <th class="text-center fw-bold text-nowrap">الحالة</th>
+                                <th class="text-center fw-bold text-nowrap">الإجرائات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -438,8 +483,8 @@
                                     <td>
                                         <div>{{ $container->customer->name }}</div>
                                     </td>
-                                    <td>
-                                        @if($container->transportOrders->isNotEmpty())
+                                    <td class="text-nowrap">
+                                        @if ($container->transportOrders->isNotEmpty())
                                             <div class="status-available">تم اشعار نقل</div>
                                         @else
                                             <div class="status-danger">في الميناء</div>
@@ -484,14 +529,16 @@
                         <div class="row g-3 mb-3">
                             <div class="col-2">
                                 <label class="form-label">الرقم</label>
-                                <input type="number" name="number" class="form-control border-primary" value="{{ $transaction->items->count() + 1 }}" required>
+                                <input type="number" name="number" class="form-control border-primary"
+                                    value="{{ $transaction->items->count() + 1 }}" required>
                             </div>
                             <div class="col-10">
                                 <label for="description" class="form-label">البند</label>
                                 <select class="form-select border-primary" id="description" name="description" required>
                                     <option disabled selected>اختر البند...</option>
-                                    @foreach($items as $item)
-                                        <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}">{{ $item['name'] }}</option>
+                                    @foreach ($items as $item)
+                                        <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}">
+                                            {{ $item['name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -504,7 +551,8 @@
                             </div>
                             <div class="col">
                                 <label for="tax" class="form-label">الضريبة</label>
-                                <select class="form-select border-primary" id="tax_percentage" onchange="calculateTotal()">
+                                <select class="form-select border-primary" id="tax_percentage"
+                                    onchange="calculateTotal()">
                                     <option disabled selected>نوع الضريبة</option>
                                     <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
                                     <option value="0" data-rate="0">غير خاضع للضريبة</option>
@@ -527,7 +575,7 @@
         </div>
     </div>
 
-    <div class="text-center mt-4 mb-3">
+    <div class="text-center mt-4 mb-5">
         <small class="text-muted">
             تم إنشاء هذه المعاملة بواسطة: {{ $transaction->made_by->name }}
         </small>
@@ -537,10 +585,12 @@
         .timeline {
             position: relative;
         }
+
         .timeline-item {
             position: relative;
             padding-left: 10px;
         }
+
         .timeline-dot {
             width: 12px;
             height: 12px;
@@ -548,18 +598,20 @@
             display: inline-block;
             flex-shrink: 0;
         }
+
         .timeline-content {
             background-color: #f8f9fa;
             padding: 12px 15px;
             border-radius: 0.375rem;
             border-right: 3px solid #0d6efd;
         }
+
         .timeline-content:hover {
             background-color: #e5e6e6;
             transition: all 0.3s ease;
         }
     </style>
-    
+
     <script>
         function calculateTotal() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;

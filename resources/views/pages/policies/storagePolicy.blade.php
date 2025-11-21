@@ -9,15 +9,15 @@
 
 <h2 class="mb-4">إضافة بوليصة تخزين</h2>
 
-<div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
+<div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
     <form action="{{ route('policies.storage.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
         <input type="hidden" name="type" value="تخزين">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
 
-        <div class="row mb-3">
-            <div class="col">
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم العميــل <span class="text-danger">*</span></label>
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
@@ -31,49 +31,47 @@
             </div>
             <input type="hidden" id="contract_id" name="contract_id">
             <input type="hidden" id="customer_id" name="customer_id">
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقــم العميــل</label>
                 <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="{{ old('customer_account') }}" readonly>
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم السائق <span class="text-danger">*</span></label>
                 <input type="text" name="driver_name" class="form-control border-primary" value="{{  old('driver_name') }}">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقــم هوية السائق <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_NID" value="{{ old('driver_NID') }}">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-        </div>
 
-        <div class="row mb-3">
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقم السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_number" value="{{ old('driver_number') }}">
                 @error('driver_number')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">نوع السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_car" value="{{ old('driver_car') }}">
                 @error('driver_car')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">لوحة السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="car_code" value="{{ old('car_code') }}">
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="form-label">البيان الضريبي</label>
                 <input type="text" name="tax_statement" class="form-control border-primary" value="{{ old('tax_statement') }}">
                 @error('tax_statement')
@@ -82,24 +80,25 @@
             </div>
         </div>
 
-        <div class="row mb-3">
+        <div class="row g-3 mb-3">
             <h5 class="mb-3">سعر التخزين</h5>
-            <div class="col">
+            <div class="col-4 col-md-4">
                 <label class="form-label">سعر التخزين <span class="text-danger">*</span></label>
                 <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0" min="0" step="1">
                 @error('storage_price')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-4 col-md-4">
                 <label class="form-label">مدة التخزين <span class="text-danger">*</span></label>
                 <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0" min="0" step="1">
                 @error('storage_duration')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
-                <label class="form-label">غرامة التأخير (لليوم) <span class="text-danger">*</span></label>
+            <div class="col-4 col-md-4">
+                <label class="form-label d-none d-sm-block">غرامة التأخير (لليوم) <span class="text-danger">*</span></label>
+                <label class="form-label d-block d-sm-none">غرامة التأخير<span class="text-danger">*</span></label>
                 <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0" min="0" step="1">
                 @error('late_fee')
                     <div class="text-danger">{{ $message }}</div>
@@ -124,8 +123,8 @@
                         </button>
                     </div>
                     
-                    <div class="row">
-                        <div class="col">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">رقم الحاويــة <span class="text-danger">*</span></label>
                             <input type="hidden" name="containers[0][id]">
                             {{-- <input type="text" class="form-control border-primary" name="containers[0][code]" required> --}}
@@ -140,7 +139,7 @@
                             
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col">
+                        <div class="col-6 col-sm-6 col-lg-3">
                             <label class="form-label">فئة الحاويــة <span class="text-danger">*</span></label>
                             <select class="form-select border-primary" name="containers[0][container_type_id]" required>
                                 <option value="">اختر فئة الحاوية...</option>
@@ -150,12 +149,12 @@
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col">
+                        <div class="col-6 col-sm-6 col-lg-3">
                             <label class="form-label">الموقــع</label>
                             <input type="text" class="form-control border-primary" name="containers[0][location]">
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col">
+                        <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">ملاحظات</label>
                             <input type="text" class="form-control border-primary" name="containers[0][notes]">
                             <div class="invalid-feedback"></div>
@@ -165,8 +164,10 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <button type="submit" class="btn btn-primary fw-bold">حفظ البوليصة</button>
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mt-4">
+            <button type="submit" class="btn btn-primary fw-bold">
+                <i class="fa-solid fa-save me-2"></i><span class="d-inline">حفظ البوليصة</span>
+            </button>
             <span class="text-muted">إجمالي الحاويات: <span id="totalContainers">1</span></span>
         </div>
     </form>

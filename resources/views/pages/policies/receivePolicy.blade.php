@@ -9,15 +9,15 @@
 
 <h2 class="mb-4">إضافة بوليصة تسليم</h2>
 
-<div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
+<div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
     <form action="{{ route('policies.receive.store') }}" method="POST">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
         <input type="hidden" name="type" value="تسليم">
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         
-        <div class="row mb-3">
-            <div class="col">
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم العميــل <span class="text-danger">*</span></label>
                 <select class="form-select border-primary" id="customer_name">
                     <option value="">اختر اسم العميل...</option>
@@ -33,48 +33,45 @@
             </div>
             <input type="hidden" id="contract_id" name="contract_id">
             <input type="hidden" id="customer_id" name="customer_id">
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقــم العميــل</label>
                 <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="" readonly>
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم السائق <span class="text-danger">*</span></label>
                 <input type="text" name="driver_name" class="form-control border-primary">
                 @error('driver_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقــم هوية السائق <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_NID">
                 @error('driver_NID')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-4">
                 <label class="form-label">رقــم السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_number">
                 @error('driver_number')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-4">
                 <label class="form-label">نوع السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="driver_car">
                 @error('driver_car')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col">
+            <div class="col-6 col-md-6 col-lg-4">
                 <label class="form-label">لوحة السيارة <span class="text-danger">*</span></label>
                 <input type="text" class="form-control border-primary" name="car_code">
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col"></div>
         </div>
         
         <!-- Container Selection Section -->
@@ -83,8 +80,8 @@
                 <h5 class="mb-3">اختيار الحاويات</h5>
                 <div class="card border-primary bg-light p-3">
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <label class="form-label">الحاويات المتاحة للتسليم</label>
+                        <div class="d-flex flex-column-reverse flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                            <label class="form-label mb-0">الحاويات المتاحة للتسليم</label>
                             <div class="d-flex">
                                 <div class="input-group input-group-sm w-auto">
                                     <input class="form-control border-primary" type="search" id="container-search" placeholder="إبحث عن حاوية بالكود..." aria-label="Search">
@@ -102,7 +99,9 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary fw-bold">حفظ البوليصة</button>
+        <button type="submit" class="btn btn-primary fw-bold col-12 col-sm-2">
+           حفظ البوليصة
+        </button>
     </form>
 </div>
 
@@ -203,7 +202,7 @@
 
         availableContainers.forEach(container => {
             const containerCard = `
-                <div class="col-md-4 col-sm-6 mb-3 container-item">
+                <div class="col-12 col-sm-6 col-lg-4 mb-3 container-item">
                     <div class="card container-card" data-container-id="${container.id}">
                         <div class="card-body p-3">
                             <div class="form-check">
@@ -314,7 +313,12 @@
         cursor: pointer;
     }
     #container-search {
-        min-width: 250px;
+        min-width: 200px;
+    }
+    @media (max-width: 575px) {
+        #container-search {
+            min-width: 220px;
+        }
     }
 </style>
 
