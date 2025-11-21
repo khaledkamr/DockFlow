@@ -185,24 +185,24 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
-    Route::get('accounting/tree', 'tree')->name('admin.money.tree');
-    Route::post('accounting/tree/create/root', 'createRoot')->name('admin.create.root');
-    Route::patch('accounting/tree/update/{id}', 'updateRoot')->name('admin.update.root');
-    Route::delete('accounting/tree/delete/{id}', 'deleteRoot')->name('admin.delete.root');
+    Route::get('accounting/tree', 'tree')->name('money.tree');
+    Route::post('accounting/tree/create/root', 'createRoot')->name('create.root');
+    Route::patch('accounting/tree/update/{id}', 'updateRoot')->name('update.root');
+    Route::delete('accounting/tree/delete/{id}', 'deleteRoot')->name('delete.root');
 
-    Route::get('accounting/entries', 'entries')->name('admin.money.entries');
+    Route::get('accounting/entries', 'entries')->name('money.entries');
 
-    Route::post('accounting/entries/create/voucher', 'createVoucher')->name('admin.create.voucher');
-    Route::delete('accounting/entries/delete/{id}', 'deleteVoucher')->name('admin.delete.voucher');
-    Route::get('accounting/voucher/{id}/toJournal', 'convertToJournal')->name('admin.voucher.to.journal');
+    Route::post('accounting/entries/create/voucher', 'createVoucher')->name('create.voucher');
+    Route::delete('accounting/entries/delete/{id}', 'deleteVoucher')->name('delete.voucher');
+    Route::get('accounting/voucher/{id}/toJournal', 'convertToJournal')->name('voucher.to.journal');
 
-    Route::post('accounting/entries/create/journal', 'createJournal')->name('admin.create.journal');
-    Route::get('accounting/journal/{journal:uuid}', 'journalDetails')->name('admin.journal.details');
+    Route::post('accounting/entries/create/journal', 'createJournal')->name('create.journal');
+    Route::get('accounting/journal/{journal:uuid}', 'journalDetails')->name('journal.details');
     Route::get('accounting/journal/edit/{journal:uuid}', 'editJournal')->name('journal.edit');
     Route::put('accounting/journal/update/{journal:uuid}', 'updateJournal')->name('journal.update');
     Route::delete('accounting/journal/delete/{journal:uuid}', 'deleteJournal')->name('journal.delete');
 
-    Route::get('accounting/reports', 'reports')->name('admin.money.reports');
+    Route::get('accounting/reports', 'reports')->name('money.reports');
 });
 
 Route::controller(ExportController::class)->group(function () {

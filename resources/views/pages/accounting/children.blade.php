@@ -49,7 +49,7 @@
                         <h5 class="modal-title text-dark fw-bold" id="addRootLabel{{ $child->id }}">إنشاء فرع جديد من {{ $child->name }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('admin.create.root') }}" method="POST">
+                    <form action="{{ route('create.root') }}" method="POST">
                         @csrf
                         <div class="modal-body text-dark">
                             <div class="mb-3">
@@ -86,7 +86,7 @@
                         <h5 class="modal-title text-dark fw-bold" id="deleteRootLabel{{ $child->id }}">تأكيد الحذف</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('admin.delete.root', $child->id) }}" method="POST">
+                    <form action="{{ route('delete.root', $child->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <div class="modal-body text-center text-dark">
@@ -108,7 +108,7 @@
                         <h5 class="modal-title text-dark fw-bold" id="editRootLabel{{ $child->id }}">تعديل مستوى {{ $child->name }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="{{ route('admin.update.root', $child->id) }}" method="POST" onsubmit="saveTreeState()">
+                    <form action="{{ route('update.root', $child->id) }}" method="POST" onsubmit="saveTreeState()">
                         @csrf
                         @method('PATCH')
                         <div class="modal-body text-dark">

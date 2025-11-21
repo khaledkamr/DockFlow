@@ -28,7 +28,7 @@
                         <td class="text-center">{{ Carbon\Carbon::parse($voucher->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $voucher->made_by->name ?? '-' }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('admin.voucher.to.journal', $voucher->id) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('voucher.to.journal', $voucher->id) }}" class="btn btn-sm btn-primary">
                                 ترحيل
                             </a>
                             <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $voucher->id }}">
@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('admin.delete.voucher', $voucher->id) }}" method="POST">
+                                    <form action="{{ route('delete.voucher', $voucher->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">حذف</button>

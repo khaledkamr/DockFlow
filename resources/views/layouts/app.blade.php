@@ -662,25 +662,25 @@
 
             @can('الإدارة المالية')
                 <li class="nav-item mb-1">
-                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['admin.money*']) ? '' : 'collapsed' }}" 
+                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['money*']) ? '' : 'collapsed' }}" 
                     data-bs-toggle="collapse" 
                     href="#money-management" 
                     role="button" 
-                    aria-expanded="{{ request()->routeIs(['admin.money*']) ? 'true' : 'false' }}" 
+                    aria-expanded="{{ request()->routeIs(['money*']) ? 'true' : 'false' }}" 
                     aria-controls="money-management">
                         <i class="fa-solid fa-money-check-dollar ms-2 me-2"></i> الإدارة المـــاليــــة 
                     </a>
-                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['admin.money*']) ? 'show' : '' }}" id="money-management">
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.entries') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('admin.money.entries') }}">
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['money*']) ? 'show' : '' }}" id="money-management">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('money.entries') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('money.entries') }}">
                             <i class="fa-solid fa-money-bill-transfer ms-2 me-2"></i> القيود والسنـدات
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.tree') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('admin.money.tree') }}">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('money.tree') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('money.tree') }}">
                             <i class="fa-solid fa-folder-tree ms-2 me-2"></i> دلـــيل الحسابـــات
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.money.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
-                        href="{{ route('admin.money.reports') }}">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('money.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                        href="{{ route('money.reports') }}">
                             <i class="fa-solid fa-receipt ms-2 me-2"></i> تقاريـــــر القيـــــود
                         </a>
                     </div>

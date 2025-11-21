@@ -45,7 +45,7 @@
                             {{ $journal->modified_by->name ?? 'لم يتم التعديل' }}
                         </td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('admin.journal.details', $journal) }}" 
+                            <a href="{{ route('journal.details', $journal) }}" 
                                 class="btn btn-sm btn-primary">
                                 عرض
                             </a>
@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('admin.delete.voucher', $journal->id) }}" method="POST">
+                                    <form action="{{ route('delete.voucher', $journal->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">حذف</button>

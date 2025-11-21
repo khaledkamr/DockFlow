@@ -265,7 +265,7 @@
             <div class="card-body">
                 <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center text-dark fw-bold mb-4">
                     <div class="mb-2 mb-sm-0">الصندوق</div>
-                    <a href="{{ route('admin.money.entries') }}" class="btn btn-sm btn-primary fw-bold">
+                    <a href="{{ route('money.entries') }}" class="btn btn-sm btn-primary fw-bold">
                         تفاصيل
                     </a>
                 </h5>

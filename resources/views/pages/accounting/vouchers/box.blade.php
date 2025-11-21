@@ -42,7 +42,7 @@
                                     <h5 class="modal-title text-dark fw-bold" id="postLabel{{ $voucher->id }}">تأكيد ترحيل</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <form action="{{ route('admin.create.voucher') }}" method="POST">
+                                <form action="{{ route('create.voucher') }}" method="POST">
                                     @csrf
                                     <div class="modal-body text-dark">
                                         <div>هل انت متاكد من ترحيل السند</div>

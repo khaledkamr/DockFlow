@@ -201,7 +201,7 @@ class AccountingController extends Controller
     public function deleteJournal(JournalEntry $journal) {
         $journal->lines()->delete();
         $journal->delete();
-        return redirect()->route('admin.money.entries')->with('success', 'تم حذف القيد بنجاح');
+        return redirect()->route('money.entries')->with('success', 'تم حذف القيد بنجاح');
     }
 
     public function createVoucher(VoucherRequest $request) {

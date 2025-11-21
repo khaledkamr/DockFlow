@@ -21,7 +21,7 @@ class CompanyController extends Controller
 
     public function company(Company $company) {
         $modules = Module::all();
-        return view('pages.company', compact('company', 'modules'));
+        return view('pages.settings.company', compact('company', 'modules'));
     }
 
     public function updateCompany(CompanyRequest $request, Company $company) {

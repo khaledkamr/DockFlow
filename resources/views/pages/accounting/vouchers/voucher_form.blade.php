@@ -1,4 +1,4 @@
-<form action="{{ route('admin.create.voucher') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
+<form action="{{ route('create.voucher') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
     @csrf
     <div class="row mb-3">
         <div class="col">

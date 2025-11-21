@@ -16,7 +16,7 @@
         line-height: 30px; 
     }
 </style>
-<form action="{{ route('admin.create.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
+<form action="{{ route('create.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
     @csrf
     <div class="row mb-3">
         <div class="col">

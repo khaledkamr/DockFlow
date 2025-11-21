@@ -194,7 +194,7 @@
                                 <h5 class="modal-title text-dark fw-bold" id="addRootLabel{{ $account->id }}">إنشاء فرع جديد من {{ $account->name }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="{{ route('admin.create.root') }}" method="POST" onsubmit="saveTreeState()">
+                            <form action="{{ route('create.root') }}" method="POST" onsubmit="saveTreeState()">
                                 @csrf
                                 <div class="modal-body text-dark">
                                     <div class="mb-3">
@@ -231,7 +231,7 @@
                                 <h5 class="modal-title text-dark fw-bold" id="editRootLabel{{ $account->id }}">تعديل مستوى {{ $account->name }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <form action="{{ route('admin.update.root', $account->id) }}" method="POST" onsubmit="saveTreeState()">
+                            <form action="{{ route('update.root', $account->id) }}" method="POST" onsubmit="saveTreeState()">
                                 @csrf
                                 @method('PATCH')
                                 <div class="modal-body text-dark">
