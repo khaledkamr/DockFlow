@@ -36,9 +36,9 @@
                     <th class="text-center bg-dark text-white">رقم البوليصة</th>
                     <th class="text-center bg-dark text-white">إسم العميل</th>
                     <th class="text-center bg-dark text-white">عدد الحاويات</th>
+                    <th class="text-center bg-dark text-white">الحالة</th>
                     <th class="text-center bg-dark text-white">تاريخ المعاملة</th>
                     <th class="text-center bg-dark text-white">تم بواسطة</th>
-                    <th class="text-center bg-dark text-white">الفاتورة</th>
                     <th class="text-center bg-dark text-white">الإجراءات</th>
                 </tr>
             </thead>
@@ -62,21 +62,19 @@
                             </td>
                             <td class="text-center fw-bold">{{ $transaction->containers->count() }}</td>
                             <td class="text-center">
+                                @if ($transaction->status == 'مغلقة')
+                                    <span class="badge status-delivered">مغلقة</span>
+                                @else
+                                    <span class="badge status-waiting">معلقة</span>
+                                @endif
+                            </td>
+                            <td class="text-center">
                                 {{ Carbon\Carbon::parse($transaction->date ?? $transaction->created_at)->format('Y/m/d') }}
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $transaction->made_by) }}" class="text-dark text-decoration-none">
                                     {{ $transaction->made_by->name ?? "-" }}
                                 </a>
-                            </td>
-                            <td class="text-center">
-                                @if($transaction->containers()->first()->invoices->where('type', 'تخليص')->first())
-                                    <a href="{{ route('invoices.clearance.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}" class="text-decoration-none fw-bold">
-                                        {{ $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()->code }}
-                                    </a>
-                                @else
-                                    <span class="text-muted">-</span>
-                                @endif
                             </td>
                             <td class="action-icons text-center">
                                 <a href="{{ route('transactions.details', $transaction) }}" class="btn btn-sm btn-primary">

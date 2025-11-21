@@ -57,7 +57,7 @@ class ExportController extends Controller
             $status = $request->input('status');
             $customer = $request->input('customer');
 
-            $containers = Container::all();
+            $containers = Container::orderBy('id', 'desc')->get();
             if($from && $to) {
                 $containers = $containers->whereBetween('date', [$from, $to]);
             }
@@ -346,6 +346,47 @@ class ExportController extends Controller
         }
 
         return view('reports.shipping_report', compact('company', 'policies', 'from', 'to'));
+    }
+
+    public function printTransactionReports(Request $request) {
+        $transactions = Transaction::orderBy('code', 'asc')->get();
+        $company = Auth::user()->company;
+
+        $customer_id = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $status = $request->input('status', 'all');
+        $invoice_status = $request->input('invoice_status', 'all');
+
+        if($customer_id !== 'all') {
+            $transactions = $transactions->where('customer_id', $customer_id);
+        }
+        if($from) {
+            $transactions = $transactions->where('date', '>=', $from);
+        }
+        if($to) {
+            $transactions = $transactions->where('date', '<=', $to);
+        }
+        if($status !== 'all') {
+            $transactions = $transactions->where('status', $status);
+        }
+        if($invoice_status !== 'all') {
+            if($invoice_status == 'with_invoice') {
+                $transactions = $transactions->filter(function($transaction) {
+                    return !$transaction->containers->every(function($container) {
+                        return $container->invoices->where('type', 'تخليص')->isEmpty();
+                    });
+                });
+            } elseif($invoice_status == 'without_invoice') {
+                $transactions = $transactions->filter(function($transaction) {
+                    return $transaction->containers->every(function($container) {
+                        return $container->invoices->where('type', 'تخليص')->isEmpty();
+                    });
+                });
+            }
+        }
+
+        return view('reports.transaction_report', compact('company', 'transactions', 'from', 'to'));
     }
 
     public function printInvoiceReports(Request $request) {

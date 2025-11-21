@@ -604,6 +604,10 @@
                                 href="{{ route('transactions.create') }}">
                                 <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة معاملة
                             </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                                href="{{ route('transactions.reports') }}">
+                                <i class="fa-solid fa-chart-line ms-2 me-2"></i> تقارير المعاملات
+                            </a>
                             <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('transactions.transportOrders') ? 'bg-primary text-white' : 'text-dark' }}" 
                                 href="{{ route('transactions.transportOrders') }}">
                                 <i class="fa-solid fa-copy ms-2 me-2"></i> إشعارات النقل

@@ -102,6 +102,7 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::delete('/transactions/item/delete/{item:id}', 'deleteItem')->name('transactions.item.delete');
     Route::post('/transactions/{transaction:uuid}/add/procedure', 'addProcedure')->name('transactions.store.procedure');
     Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteProcedure')->name('transactions.delete.procedure');
+    Route::get('/transaction/reports', 'reports')->name('transactions.reports');
 });
 
 Route::controller(TransportController::class)->middleware('auth')->group(function () {
@@ -218,4 +219,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoice/shipping/{code}', 'printShippingInvoice')->name('print.invoice.shipping');
     Route::get('/print/shipping/reports', 'printShippingReports')->name('print.shipping.reports');
     Route::get('/print/invoices/reports', 'printInvoiceReports')->name('print.invoices.reports');
+    Route::get('/print/transaction/reports', 'printTransactionReports')->name('print.transactions.reports');
 });

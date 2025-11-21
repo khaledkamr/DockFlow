@@ -10,7 +10,7 @@
     <!-- بيانات الاتفاقية -->
     <div class="row g-3 mb-4">
         <div class="col-6">
-            <div class="border rounded-3 p-3 bg-light h-100">
+            <div class="border border-dark rounded-3 p-3 bg-light h-100">
                 <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات العميل</h6>
                 <div class="row">
                     <div class="col">
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="col-6">
-            <div class="border rounded-3 p-3 bg-light h-100">
+            <div class="border border-dark rounded-3 p-3 bg-light h-100">
                 <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات الناقل</h6>
                 <div class="row">
                     <div class="col">
@@ -67,7 +67,7 @@
 
     <div class="mb-4">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover mb-0">
+            <table class="table table-bordered border-dark table-hover mb-0">
                 <thead class="table-dark">
                     <tr class="text-center">
                         <th class="fw-bold">البيان</th>
@@ -92,12 +92,12 @@
 
     <!-- معلومات الوصول والتفريغ -->
     <div class="mb-4">
-        <div class="border rounded p-3 bg-light">
+        <div class="border border-dark rounded p-3 bg-light">
             <h4 class="fw-bold text-center text-dark mb-4">اقرار العميل باستلام الحمولة</h4>
             <div class="d-flex gap-3 mb-4">
                 <h6 class="fw-bold text-dark">تم استلام حميع محتويات البضاعة في المكان والزمان المحدد بدون نقض او تلف</h6>
                 <div class="form-check d-inline-block me-3">
-                    <input class="form-check-input form-check-input-lg" type="checkbox" style="transform: scale(1.5);">
+                    <input class="form-check-input form-check-input-lg border-dark" type="checkbox" style="transform: scale(1.5);">
                 </div>
             </div>
             <div class="row">
@@ -127,7 +127,7 @@
 
     <!-- الملاحظات -->
     <div class="mb-4">
-        <div class="border rounded p-3 bg-light">
+        <div class="border border-dark rounded p-3 bg-light">
             <h4 class="fw-bold text-center text-dark mb-3">الملاحظات</h4>
             <h6 class="fw-bold text-dark mb-3">تم تدوبن الملاحظات ان وجدت بحضور مندوب من الناقل ومندوب من العميل والسائق:</h6>
             <div style="min-height: 80px;"></div>

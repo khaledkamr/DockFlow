@@ -4,11 +4,11 @@
 
 @section('content')
 <div class="text-center mt-4 mb-5">
-    <h2 class="fw-bold">تقرير قيد محاسبي رقم {{ $journal->code }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h2>
+    <h2 class="fw-bold">قيد محاسبي رقم {{ $journal->code }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h2>
 </div>
 
 <div class="table-container">
-    <table class="table table-striped">
+    <table class="table table-bordered border-dark table-striped">
         <thead>
             <tr>
                 <th class="text-center bg-dark text-white">رقم الحساب</th>
@@ -28,7 +28,7 @@
                     <td class="text-center">{{ $line->description }}</td>
                 </tr>
             @endforeach
-            <tr class="table-primary text-center fw-bold">
+            <tr class="table-primary border-dark text-center fw-bold">
                 <td colspan="2" class="fs-6">إجمـــالـــي</td>
                 <td class="fs-6">{{ $journal->totalDebit }}</td>
                 <td class="fs-6">{{ $journal->totalCredit }}</td>

@@ -197,4 +197,58 @@ class TransactionController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
     }
+    
+    public function reports(Request $request) {
+        $transactions = Transaction::orderBy('code', 'asc')->get();
+        $customers = Customer::all();
+
+        $customer_id = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $status = $request->input('status', 'all');
+        $invoice_status = $request->input('invoice_status', 'all');
+
+        if($customer_id !== 'all') {
+            $transactions = $transactions->where('customer_id', $customer_id);
+        }
+        if($from) {
+            $transactions = $transactions->where('date', '>=', $from);
+        }
+        if($to) {
+            $transactions = $transactions->where('date', '<=', $to);
+        }
+        if($status !== 'all') {
+            $transactions = $transactions->where('status', $status);
+        }
+        if($invoice_status !== 'all') {
+            if($invoice_status == 'with_invoice') {
+                $transactions = $transactions->filter(function($transaction) {
+                    return !$transaction->containers->every(function($container) {
+                        return $container->invoices->where('type', 'تخليص')->isEmpty();
+                    });
+                });
+            } elseif($invoice_status == 'without_invoice') {
+                $transactions = $transactions->filter(function($transaction) {
+                    return $transaction->containers->every(function($container) {
+                        return $container->invoices->where('type', 'تخليص')->isEmpty();
+                    });
+                });
+            }
+        }
+
+        $perPage = $request->input('per_page', 100);
+        $transactions = new \Illuminate\Pagination\LengthAwarePaginator(
+            $transactions->forPage(request()->get('page', 1), $perPage),
+            $transactions->count(),
+            $perPage,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('pages.transactions.reports', compact(
+            'transactions',
+            'customers',
+            'perPage'
+        ));
+    }
 }

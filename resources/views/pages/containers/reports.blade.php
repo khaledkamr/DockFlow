@@ -8,6 +8,17 @@
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
         <form method="GET" class="row g-3" id="reportForm">
             <input type="hidden" name="per_page" value="{{ request('per_page', 100) }}">
+            <div class="col-12 col-md-6 col-lg-3">
+                <label class="form-label">العميل</label>
+                <select name="customer" id="customer_id" class="form-select border-primary">
+                    <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
+                            {{ $customer->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-6 col-md-6 col-lg">
                 <label class="form-label">من تاريخ</label>
                 <input type="date" name="from"
@@ -42,17 +53,6 @@
                 </select>
             </div>
             <div class="col-12 col-md-6 col-lg">
-                <label class="form-label">العميل</label>
-                <select name="customer" id="customer_id" class="form-select border-primary">
-                    <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
-                    @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
-                            {{ $customer->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-12 col-md-6 col-lg">
                 <label class="form-label">مفوترة</label>
                 <select name="invoiced" id="invoiced" class="form-select border-primary">
                     <option value="all" {{ request('invoiced') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -72,33 +72,6 @@
                 </button>
             </div>
         </form>
-    </div>
-
-    <div class="row g-3 text-center mb-4">
-        <div class="col-6 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-3 p-3">
-                <h6>إجمالي الحاويات</h6>
-                <h3 class="fw-bold mb-0">{{ $containers->count() }}</h3>
-            </div>
-        </div>
-        <div class="col-6 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-3 p-3">
-                <h6>في الساحة</h6>
-                <h3 class="text-primary fw-bold mb-0">{{ $containers->where('status', 'في الساحة')->count() }}</h3>
-            </div>
-        </div>
-        <div class="col-6 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-3 p-3">
-                <h6>تم تسليمها</h6>
-                <h3 class="text-primary fw-bold mb-0">{{ $containers->where('exit_date', '!=', null)->count() }}</h3>
-            </div>
-        </div>
-        <div class="col-6 col-sm-6 col-lg-3">
-            <div class="card border-0 shadow-sm rounded-3 p-3">
-                <h6>متأخره</h6>
-                <h3 class="text-danger fw-bold mb-0">{{ $lateContainers->count() }}</h3>
-            </div>
-        </div>
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
@@ -121,11 +94,9 @@
             </div>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('export.excel', 'containers') }}">
-                    <input type="hidden" name="type" value="{{ request('type') }}">
-                    <input type="hidden" name="status" value="{{ request('status') }}">
-                    <input type="hidden" name="customer" value="{{ request('customer') }}">
-                    <input type="hidden" name="from" value="{{ request('from') }}">
-                    <input type="hidden" name="to" value="{{ request('to') }}">
+                    @foreach(request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                     <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
                         data-bs-placement="top" title="تصدير Excel">
                         <i class="fa-solid fa-file-excel"></i>
@@ -138,11 +109,9 @@
 
                 <form action="{{ route('print', 'containers') }}" method="POST" target="_blank">
                     @csrf
-                    <input type="hidden" name="from" value="{{ request()->query('from') }}">
-                    <input type="hidden" name="to" value="{{ request()->query('to') }}">
-                    <input type="hidden" name="status" value="{{ request()->query('status') }}">
-                    <input type="hidden" name="type" value="{{ request()->query('type') }}">
-                    <input type="hidden" name="customer" value="{{ request()->query('customer') }}">
+                    @foreach(request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                     <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
                         data-bs-placement="top" title="طباعة">
                         <i class="fa-solid fa-print"></i>
@@ -162,6 +131,7 @@
                         <th class="text-center bg-dark text-white text-nowrap">الحالـــة</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -216,6 +186,15 @@
                                 </td>
                                 <td class="text-center text-nowrap">
                                     {{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}
+                                </td>
+                                <td class="text-center">
+                                    @if ($container->invoices->where('type', 'تخزين')->first())
+                                        <a href="{{ route('invoices.details', $container->invoices->where('type', 'تخزين')->first()) }}" class="text-decoration-none fw-bold">
+                                            {{ $container->invoices->where('type', 'تخزين')->first()->code }}
+                                        </a>
+                                    @else
+                                        -
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

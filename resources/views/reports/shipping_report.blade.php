@@ -6,7 +6,7 @@
 <h5 class="text-center fw-bold mb-4 mt-4">تقرير بوالص الشحن من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
 
 <div class="table-container">
-    <table class="table table-bordered">
+    <table class="table table-bordered border-dark">
         <thead class="table-dark">
             <tr class="text-center">
                 <th>#</th>

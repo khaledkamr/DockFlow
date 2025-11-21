@@ -199,26 +199,11 @@ class ContainerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        $lateContainers = Container::where('status', 'في الساحة')
-            ->whereHas('policies', function($query) {
-            $query->where('type', 'تخزين');
-            })
-            ->get()
-            ->filter(function ($container) {
-            $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-            if(!$storagePolicy) {
-                return false;
-            }
-            $dueDays = $storagePolicy->storage_duration;
-            return $container->days > $dueDays;
-            });
-        
         return view('pages.containers.reports', compact(
             'containers',
             'types',
             'customers',
             'perPage',
-            'lateContainers'
         ));
     }
 

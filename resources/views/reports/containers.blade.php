@@ -6,7 +6,7 @@
 <h5 class="text-center fw-bold mb-4 mt-4">تقرير الحاويات من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
 
 <div class="table-container">
-    <table class="table table-bordered">
+    <table class="table table-bordered border-dark">
         <thead class="table-dark">
             <tr class="text-center">
                 <th>#</th>
@@ -27,10 +27,13 @@
                     </td>
                 </tr>
             @else
-                @foreach ($containers as $index => $container)
+                @php
+                    $index = 1;
+                @endphp
+                @foreach ($containers as $container)
                     <tr>
-                        <td class="text-center">{{ $index + 1 }}</td>
-                        <td class="text-center text-primary fw-bold">{{ $container->code }}</td>
+                        <td class="text-center">{{ $index++ }}</td>
+                        <td class="text-center fw-bold">{{ $container->code }}</td>
                         <td class="text-center">{{ $container->customer->name }}</td>
                         <td class="text-center">{{ $container->containerType->name }}</td>
                         <td class="text-center">{{ $container->location ?? '-' }}</td>

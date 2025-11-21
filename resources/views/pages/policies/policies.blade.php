@@ -88,7 +88,15 @@
                                 </a>
                             @endif
                         </td>
-                        <td class="text-center">{{ $policy->type }}</td>
+                        <td class="text-center">
+                            @if($policy->type == 'تخزين')
+                                <span class="badge status-available">{{ $policy->type }}</span>
+                            @elseif($policy->type == 'تسليم')
+                                <span class="badge status-delivered">{{ $policy->type }}</span>
+                            @elseif($policy->type == 'خدمات')
+                                <span class="badge status-waiting">{{ $policy->type }}</span>
+                            @endif
+                        </td>
                         <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
                         <td class="text-center">

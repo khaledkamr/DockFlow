@@ -33,7 +33,7 @@
 <div class="mb-4">
     <h6 class="fw-bold text-dark mb-3">بيانات الحاويات</h6>
     <div class="table-responsive">
-        <table class="table table-bordered table-hover mb-0">
+        <table class="table table-bordered border-dark table-hover mb-0">
             <thead class="table-dark">
                 <tr class="text-center">
                     <th class="fw-bold">#</th>

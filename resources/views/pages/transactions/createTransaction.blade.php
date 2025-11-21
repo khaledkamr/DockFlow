@@ -7,7 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h1 class="mb-4">إضافة معاملة جديدة</h1>
+<h1 class="mb-4">إضافة معاملة تخليص جديدة</h1>
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
     <form action="{{ route('transactions.store') }}" method="POST">

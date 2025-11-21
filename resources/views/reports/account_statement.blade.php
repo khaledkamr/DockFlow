@@ -7,11 +7,11 @@
 <h5 class="fw-bold text-center">كشف حساب من الفترة ({{ $from }}) للفترة ({{ $to }})</h5>
 
 <div class="bg-white p-3 rounded-3 shadow-sm border-0">
-    <h5>الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
+    <h5 class="mb-4">الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
     <div class="table-container">
-        <table class="table table-bordered">
+        <table class="table table-bordered border-dark">
             <thead>
-                <tr class="table-secondary">
+                <tr class="table-secondary border-dark fw-bold">
                     <th class="text-center">إسم الحساب</th>
                     <th class="text-center">تاريخ</th>
                     <th class="text-center">رقم القيد</th>
