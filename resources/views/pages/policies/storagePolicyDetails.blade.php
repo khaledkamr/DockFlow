@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'تفاصيل الإتفاقية #' . $policy->id)
+@section('title', 'تفاصيل البوليصة')
 
 @section('content')
 <div class="row">
@@ -9,16 +9,18 @@
             <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية التخزين #{{ $policy->code }}
+                    تفاصيل بوليصة التخزين{{ $policy->code }}
                 </h2>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        {{-- <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $policy->customer->contract) }}" class="text-decoration-none">العقد #{{ $policy->contract_id }}</a>
-                        </li> --}}
-                        <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
-                    </ol>
-                </nav>
+                @if($policy->customer->contract)
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('contracts.details', $policy->customer->contract) }}" class="text-decoration-none">العقد #{{ $policy->customer->contract->id }}</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">البوليصة #{{ $policy->code }}</li>
+                        </ol>
+                    </nav>
+                @endif
             </div>
             <div class="d-flex gap-2">
                 <form action="{{ route('print', 'entry_permission') }}" method="POST" target="_blank">
@@ -36,18 +38,18 @@
 
         <div class="row">
             <div class="col-lg-6 d-flex flex-column gap-3 mb-4">
-                <!-- معلومات الإتفاقية -->
+                <!-- معلومات البوليصة -->
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-info-circle me-2"></i>
-                            معلومات الإتفاقية
+                            معلومات البوليصة
                         </h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-4">
                             <div class="col">
-                                <label class="form-label text-muted small">تاريخ الإتفاقية</label>
+                                <label class="form-label text-muted small">تاريخ البوليصة</label>
                                 <div class="fw-bold">{{ $policy->created_at->format('Y/m/d') }}</div>
                             </div>
                             <div class="col">
@@ -159,7 +161,7 @@
                 <div class="d-flex justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-boxes me-2"></i>
-                        الحاويات المشمولة في الإتفاقية
+                        الحاويات المشمولة في البوليصة
                     </h5>
                     <span class="badge bg-light text-dark">{{ count($policy->containers) }} حاوية</span>
                 </div>
@@ -171,9 +173,9 @@
                             <thead class="table-primary">
                                 <tr class="">
                                     <th class="text-center fw-bold">#</th>
-                                    <th class="text-center fw-bold">كود الحاوية</th>
+                                    <th class="text-center fw-bold">رقم الحاوية</th>
                                     <th class="text-center fw-bold">نوع الحاوية</th>
-                                    <th class="text-center fw-bold">صاحب الحاوية</th>
+                                    <th class="text-center fw-bold">العميل</th>
                                     <th class="text-center fw-bold">الحالة</th>
                                     <th class="text-center fw-bold">الموقع</th>
                                     <th class="text-center fw-bold">تم الإستلام بواسطة</th>
@@ -191,7 +193,12 @@
                                         </a>
                                     </td>
                                     <td><div class="fw-bold">{{ $container->containerType->name }}</div></td>
-                                    <td><div>{{ $container->customer->name }}</div></td>
+                                    <td class="text-center">
+                                        <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                            class="text-dark text-decoration-none fw-bold">
+                                            {{ $container->customer->name }}
+                                        </a>
+                                    </td>
                                     <td>
                                         @if($container->status == 'في الساحة')
                                             <div class="status-available">{{ $container->status }}</div>

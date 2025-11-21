@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'تفاصيل الإتفاقية')
+@section('title', 'تفاصيل البوليصة')
 
 @section('content')
 <div class="row">
@@ -9,7 +9,7 @@
             <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية التسليم #{{ $policy->code }}
+                    تفاصيل بوليصة التسليم{{ $policy->code }}
                 </h2>
             </div>
             <div class="d-flex gap-2">
@@ -40,7 +40,7 @@
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col">
-                                        <label class="form-label text-muted small">تاريخ الإتفاقية</label>
+                                        <label class="form-label text-muted small">تاريخ البوليصة</label>
                                         <div class="fw-bold">{{ $policy->created_at->format('Y/m/d') }}</div>
                                     </div>
                                     <div class="col">
@@ -95,7 +95,7 @@
                 <div class="d-flex justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-boxes me-2"></i>
-                        الحاويات المشمولة في الإتفاقية
+                        الحاويات المشمولة في البوليصة
                     </h5>
                     <span class="badge bg-light text-dark">{{ count($policy->containers) }} حاوية</span>
                 </div>
@@ -107,8 +107,9 @@
                             <thead class="table-primary">
                                 <tr>
                                     <th class="border-0 text-center fw-bold">#</th>
-                                    <th class="border-0 text-center fw-bold">كود الحاوية</th>
+                                    <th class="border-0 text-center fw-bold">رقم الحاوية</th>
                                     <th class="border-0 text-center fw-bold">نوع الحاوية</th>
+                                    <th class="border-0 text-center fw-bold">العميل</th>
                                     <th class="border-0 text-center fw-bold">تاريخ الدخول</th>
                                     <th class="border-0 text-center fw-bold">تاريخ الخروج</th>
                                     <th class="border-0 text-center fw-bold">تم الإستلام بواسطة</th>
@@ -126,6 +127,12 @@
                                             </a>
                                         </td>
                                         <td class="fw-bold">{{ $container->containerType->name }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                                class="text-dark text-decoration-none fw-bold">
+                                                {{ $container->customer->name }}
+                                            </a>
+                                        </td>
                                         <td>{{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
                                         <td>{{ $container->received_by }}</td>

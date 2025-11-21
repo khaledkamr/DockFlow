@@ -6,15 +6,15 @@
     <h3 class="fw-bold text-dark mb-2">إذن خدمات</h3>
 </div>
 
-<!-- بيانات الاتفاقية -->
+<!-- بيانات البوليصة -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="border border-dark rounded p-3 bg-light">
-            <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">بيانات الاتفاقية</h6>
+            <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">بيانات البوليصة</h6>
             <div class="row">
                 <div class="col-md-6">
                     <div class="row mb-2">
-                        <div class="col-5 fw-bold text-end">رقم الإتفاقية:</div>
+                        <div class="col-5 fw-bold text-end">رقم البوليصة:</div>
                         <div class="col-7 text-dark fw-bold">{{ $policy->code }}</div>
                     </div>
                     <div class="row mb-2">
@@ -22,7 +22,7 @@
                         <div class="col-7">{{ $policy->customer->name }}</div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-5 fw-bold text-end">تاريخ الإتفاقية:</div>
+                        <div class="col-5 fw-bold text-end">تاريخ البوليصة:</div>
                         <div class="col-7">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</div>
                     </div>
                     <div class="row mb-2">
@@ -110,7 +110,7 @@
                 @foreach($policyContainers as $index => $container)
                 <tr class="text-center">
                     <td class="fw-bold">{{ $index + 1 }}</td>
-                    <td class="fw-bold text-primary">{{ $container->code }}</td>
+                    <td class="fw-bold">{{ $container->code }}</td>
                     <td>{{ $container->customer->name }}</td>
                     <td>{{ $container->containerType->name }}</td>
                     <td class="fw-bold">{{ $container->services->first()->description }}</td>

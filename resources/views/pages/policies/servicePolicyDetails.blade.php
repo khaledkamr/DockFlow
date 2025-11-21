@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'تفاصيل الإتفاقية')
+@section('title', 'تفاصيل البوليصة')
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <div class="mb-4">
+            <div>
                 <h2 class="h3 text-primary mb-1">
                     <i class="fas fa-clipboard-list me-2"></i>
-                    تفاصيل إتفاقية الخدمات #{{ $policy->code }}
+                    تفاصيل بوليصة الخدمات #{{ $policy->code }}
                 </h2>
-                @if($policy->customer_id && $policy->customer && $policy->customer->contract)
+                @if($policy->customer && $policy->customer->contract)
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
                                 <a href="{{ route('contracts.details', $policy->customer->contract) }}" class="text-decoration-none">العقد #{{ $policy->customer->contract->id }}</a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">الإتفاقية #{{ $policy->id }}</li>
+                            <li class="breadcrumb-item active" aria-current="page">البوليصة #{{ $policy->code }}</li>
                         </ol>
                     </nav>
                 @endif
@@ -95,7 +95,7 @@
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0">
                             <i class="fas fa-info-circle me-2"></i>
-                            معلومات الإتفاقية
+                            معلومات البوليصة
                         </h5>
                     </div>
                     <div class="card-body">
@@ -105,7 +105,7 @@
                                     
                                     <div class="row">
                                         <div class="col">
-                                            <label class="form-label text-muted small">تاريخ الإتفاقية</label>
+                                            <label class="form-label text-muted small">تاريخ البوليصة</label>
                                             <div class="fw-bold fs-5">{{ $policy->created_at->format('Y/m/d') }}</div>
                                         </div>
                                         <div class="col">
@@ -129,10 +129,6 @@
                         <div class="row g-4">
                             <div class="col-12">
                                 <div>
-                                    <h6 class="text-muted mb-2">
-                                        <i class="fas fa-truck me-2"></i>
-                                        بيانات السائق والمركبة
-                                    </h6>
                                     <div class="row">
                                         <div class="col">
                                             <label class="form-label text-muted small">اسم السائق</label>
@@ -216,7 +212,7 @@
                 <div class="d-flex justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-boxes me-2"></i>
-                        الحاويات المشمولة في الإتفاقية
+                        الحاويات المشمولة في البوليصة
                     </h5>
                     <span class="badge bg-light text-dark">{{ count($policy->containers) }} حاوية</span>
                 </div>

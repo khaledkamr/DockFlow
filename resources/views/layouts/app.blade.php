@@ -560,24 +560,24 @@
                         role="button" 
                         aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}" 
                         aria-controls="policy-management">
-                            <i class="fa-solid fa-file ms-2 me-2"></i> إدارة الإتفاقيــــــات
+                            <i class="fa-solid fa-file ms-2 me-2"></i> بوالـص التخزيـــــــن
                         </a>
                         <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}" id="policy-management">
                             <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies') ? 'bg-primary text-white' : 'text-dark' }}" 
                                 href="{{ route('policies') }}">
-                                <i class="fa-solid fa-file-contract ms-2 me-2"></i> الإتفاقيـــــات
+                                <i class="fa-solid fa-file-contract ms-2 me-2"></i> بوالص التخزين
                             </a>
                             <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.storage.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                                 href="{{ route('policies.storage.create') }}">
-                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تخزين
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة تخزين
                             </a>
                             <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.receive.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                                 href="{{ route('policies.receive.create') }}">
-                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية تسليم
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة تسليم
                             </a>
                             <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('policies.services.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                                 href="{{ route('policies.services.create') }}">
-                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة إتفاقية خدمات
+                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة خدمات
                             </a>
                         </div>
                     </li>

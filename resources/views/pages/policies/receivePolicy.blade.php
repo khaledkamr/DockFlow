@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة إتفاقية إستلام')
+@section('title', 'إضافة بوليصة إستلام')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h2 class="mb-4">إضافة إتفاقية تسليم</h2>
+<h2 class="mb-4">إضافة بوليصة تسليم</h2>
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
     <form action="{{ route('policies.receive.store') }}" method="POST">
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary fw-bold">حفظ الإتفاقية</button>
+        <button type="submit" class="btn btn-primary fw-bold">حفظ البوليصة</button>
     </form>
 </div>
 

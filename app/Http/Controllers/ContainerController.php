@@ -227,6 +227,7 @@ class ContainerController extends Controller
         $transportOrder = $container->transportOrders->first();
         $storagePolicy = $container->policies->where('type', 'تخزين')->first();
         $receivePolicy = $container->policies->where('type', 'تسليم')->first();
+        $servicePolicy = $container->policies->where('type', 'خدمات')->first();
 
         $clearanceInvoice = $container->invoices->where('type', 'تخليص')->first();
         $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
@@ -238,6 +239,7 @@ class ContainerController extends Controller
             'transaction', 
             'storagePolicy', 
             'receivePolicy', 
+            'servicePolicy',
             'clearanceInvoice',
             'storageInvoice',
             'serviceInvoice'

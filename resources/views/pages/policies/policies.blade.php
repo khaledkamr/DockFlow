@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'إتفاقيات التخزين')
+@section('title', 'بوالص التخزين')
 
 @section('content')
-<h1 class="mb-4">إتفاقيات التخزين و التسليم</h1>
+<h1 class="mb-4">بوالص التخزين و التسليم</h1>
 
 <div class="row mb-4">
     <div class="col-md-5">
         <form method="GET" action="" class="d-flex flex-column">
-            <label for="search" class="form-label text-dark fw-bold">بحث عن إتفاقية:</label>
+            <label for="search" class="form-label text-dark fw-bold">بحث عن بوليصة:</label>
             <div class="d-flex">
-                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن إتفاقية بإسم العميل او بتاريخ الإتفاقية... "
+                <input type="text" name="search" class="form-control border-primary" placeholder=" ابحث عن بوليصة بإسم العميل او بتاريخ البوليصة... "
                     value="{{ request()->query('search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span>بحث</span>
@@ -26,13 +26,13 @@
                 <select id="typeFilter" name="type" class="form-select border-primary" onchange="this.form.submit()">
                     <option value="all"
                         {{ request()->query('type') === 'all' || !request()->query('type') ? 'selected' : '' }}>
-                        جميع الإتفاقيات</option>
+                        جميع البوالص</option>
                     <option value="تخزين" {{ request()->query('type') === 'تخزين' ? 'selected' : '' }}>
-                        إتفاقية تخزين</option>
+                        بوليصة تخزين</option>
                     <option value="تسليم" {{ request()->query('type') === 'تسليم' ? 'selected' : '' }}>
-                        إتفاقية تسليم</option>
+                        بوليصة تسليم</option>
                     <option value="خدمات" {{ request()->query('type') === 'خدمات' ? 'selected' : '' }}>
-                        إتفاقية خدمات</option>
+                        بوليصة خدمات</option>
                 </select>
                 @if (request()->query('search'))
                     <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -43,13 +43,13 @@
     <div class="col-md-2 d-flex align-items-end">
         <a href="{{ route('policies.storage.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            إتفاقية تخزين
+            بوليصة تخزين
         </a>
     </div>
     <div class="col-md-2 d-flex align-items-end">
         <a href="{{ route('policies.receive.create') }}" class="btn btn-primary w-100 fw-bold">
             <i class="fa-solid fa-file-circle-plus pe-1"></i>
-            إتفاقية تسليم
+            بوليصة تسليم
         </a>
     </div>
 </div>
@@ -58,10 +58,10 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">كود الإتفاقية</th>
+                <th class="text-center bg-dark text-white">رقم البوليصة</th>
                 <th class="text-center bg-dark text-white">إسم العميل</th>
-                <th class="text-center bg-dark text-white">نوع الإتفاقية</th>
-                <th class="text-center bg-dark text-white">تاريخ الإتفاقية</th>
+                <th class="text-center bg-dark text-white">نوع البوليصة</th>
+                <th class="text-center bg-dark text-white">تاريخ البوليصة</th>
                 <th class="text-center bg-dark text-white">عدد الحاويات</th>
                 <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
@@ -71,7 +71,7 @@
             @if ($policies->isEmpty())
                 <tr>
                     <td colspan="9" class="text-center">
-                        <div class="status-danger fs-6">لم يتم العثور على اي إتفاقيات!</div>
+                        <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
                     </td>
                 </tr>
             @else

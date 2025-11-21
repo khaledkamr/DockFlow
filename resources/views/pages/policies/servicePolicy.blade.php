@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة إتفاقية خدمات')
+@section('title', 'إضافة بوليصة خدمات')
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-<h2 class="mb-4">إضافة إتفاقية خدمات</h2>
+<h2 class="mb-4">إضافة بوليصة خدمات</h2>
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-4">
     <form action="{{ route('policies.services.store') }}" method="POST">
@@ -134,7 +134,7 @@
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-4">
-            <button type="submit" class="btn btn-primary fw-bold">حفظ الإتفاقية</button>
+            <button type="submit" class="btn btn-primary fw-bold">حفظ البوليصة</button>
             <span class="text-muted">إجمالي الحاويات: <span id="totalContainers">1</span></span>
         </div>
     </form>

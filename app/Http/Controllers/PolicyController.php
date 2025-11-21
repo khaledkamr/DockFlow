@@ -102,7 +102,7 @@ class PolicyController extends Controller
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
 
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض الاتفاقية؟</a>');
+        return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض البوليصة؟</a>');
     }
     
     public function createReceivePolicy() {
@@ -133,7 +133,7 @@ class PolicyController extends Controller
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
 
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض الاتفاقية؟</a>');
+        return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض البوليصة؟</a>');
     }
 
     public function storagePolicyDetails(Policy $policy) {
@@ -231,7 +231,7 @@ class PolicyController extends Controller
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
 
-        return redirect()->back()->with('success', 'تم إنشاء إتفاقية جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.services.details', $policy).'">عرض الاتفاقية؟</a>');
+        return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.services.details', $policy).'">عرض البوليصة؟</a>');
     }
 
     public function servicePolicyDetails(Policy $policy) {
