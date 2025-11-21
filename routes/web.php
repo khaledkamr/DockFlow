@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
@@ -21,8 +22,15 @@ use App\Models\invoice;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Mailer\Transport;
 
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/login', 'loginForm')->name('login.form');
+    Route::post('/login', 'login')->name('login');
+    Route::post('/logout', 'logout')->name('logout');
+});
+
+Route::get('/', [DashboardController::class, 'handle'])->middleware('auth')->name('dashboard');
+
 Route::controller(AdminController::class)->middleware('auth')->group(function() {
-    Route::get('/', 'dashboard')->name('dashboard');
     Route::get('users', 'users')->name('admin.users');
     Route::post('users/store', 'storeUser')->name('admin.users.store');
     Route::get('users/{user:uuid}', 'userProfile')->name('admin.user.profile');
@@ -37,12 +45,6 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
     Route::post('permissions/store', 'storePermission')->name('admin.permissions.store');
     Route::get('settings', 'settings')->name('settings');
-});
-
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'loginForm')->name('login.form');
-    Route::post('/login', 'login')->name('login');
-    Route::post('/logout', 'logout')->name('logout');
 });
 
 Route::controller(CustomerController::class)->middleware('auth')->group(function () {

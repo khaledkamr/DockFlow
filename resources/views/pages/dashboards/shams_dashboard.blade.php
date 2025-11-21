@@ -94,56 +94,64 @@
 <!-- Statistics Cards Row -->
 <div class="row mb-4">
     <div class="col-12 col-sm-6 col-lg-3 stats-card">
-        <div class="card rounded-3 border-0 shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="card-title">إجمالي العمـــلاء</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $customers }}</h6>
-                </div>
-                <div>
-                    <i class="fa-solid fa-users fa-xl"></i>
+        <a href="{{ route('relation.customers') }}" class="text-decoration-none">
+            <div class="card rounded-3 border-0 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">إجمالي العمـــلاء</h6>
+                        <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $customers }}</h6>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-users fa-xl"></i>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-12 col-sm-6 col-lg-3 stats-card">
-        <div class="card rounded-3 border-0 shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="card-title">إجمالي المستخدمين</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $users }}</h6>
-                </div>
-                <div>
-                    <i class="fa-solid fa-users fa-xl"></i>
+        <a href="{{ route('admin.users') }}" class="text-decoration-none">
+            <div class="card rounded-3 border-0 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">إجمالي المستخدمين</h6>
+                        <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $users }}</h6>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-users fa-xl"></i>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-12 col-sm-6 col-lg-3 stats-card">
-        <div class="card rounded-3 border-0 shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="card-title">إجمالي العقود</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $contracts }}</h6>
-                </div>
-                <div>
-                    <i class="fa-solid fa-file-circle-check fa-xl"></i>
+        <a href="{{ route('contracts') }}" class="text-decoration-none">
+            <div class="card rounded-3 border-0 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">إجمالي العقود</h6>
+                        <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $contracts }}</h6>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-file-circle-check fa-xl"></i>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-12 col-sm-6 col-lg-3 stats-card">
-        <div class="card rounded-3 border-0 shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="card-title">إجمالي الفواتير</h6>
-                    <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $invoices }}</h6>
-                </div>
-                <div>
-                    <i class="fa-solid fa-scroll fa-xl"></i>
+        <a href="{{ route('invoices') }}" class="text-decoration-none">
+            <div class="card rounded-3 border-0 shadow-sm">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">إجمالي الفواتير</h6>
+                        <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $invoices }}</h6>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-scroll fa-xl"></i>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 

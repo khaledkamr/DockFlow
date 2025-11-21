@@ -30,69 +30,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function dashboard(Request $request) {
-        $customers = Customer::all()->count();
-        $users = User::all()->count();
-        $contracts = Contract::all()->count();
-        $invoices = Invoice::all()->count();
-        $containers = Container::all();
-
-        $date = $request->input('date', Carbon::now()->format('Y-m-d'));
-        $availableContainers = $containers->where('date', '<=', $date)->where('status', 'في الساحة')->count();
-        
-        $receivedContainers = $containers->where('date', $date)->count();
-        $deliveredContainers = $containers->where('exit_date', $date)->count();
-        
-        $policies = Policy::where('date', $date)->get();
-        
-        $containersEnteredTrend = [];
-        $containersExitTrend = [];
-        for($i = 6; $i >= 0; $i--) {
-            $day = Carbon::parse($date)->subDays($i);
-            $containersEnteredTrend[$day->format('l')] = $containers->where('date', $day->format('Y-m-d'))->count();
-            $containersExitTrend[$day->format('l')] = $containers->where('exit_date', $day->format('Y-m-d'))->count();
-        }
-
-        $containersTypes = Container_type::all();
-        $containersDistribution = [];
-        foreach($containersTypes as $type) {
-            $containersDistribution[$type->name] = $containers->where('container_type_id', $type->id)->where('status', 'في الساحة')->count();
-        }
-
-        $receipt_vouchers_amount = $policies->where('type', 'سند صرف نقدي')->sum('amount');
-        $payment_vouchers_amount = $policies->where('type', 'سند قبض نقدي')->sum('amount');
-        
-        $balanceBox = 0;
-        $vouchersBox = Voucher::where('type', 'سند قبض نقدي')
-            ->orWhere('type', 'سند صرف نقدي')
-            ->get();
-
-        foreach($vouchersBox as $voucher) {
-            if($voucher->type == 'سند قبض نقدي') {
-                $balance += $voucher->amount;
-            } elseif($voucher->type == 'سند صرف نقدي') {
-                $balance -= $voucher->amount;
-            }
-        }
-
-        return view('pages.home', compact(
-            'customers', 
-            'users',
-            'contracts', 
-            'invoices', 
-            'containers',
-            'availableContainers',
-            'receivedContainers',
-            'deliveredContainers',
-            'containersEnteredTrend',
-            'containersExitTrend',
-            'containersDistribution',
-            'receipt_vouchers_amount',
-            'payment_vouchers_amount',
-            'balanceBox'
-        ));
-    }
-
     public function users(Request $request) {
         $users = User::all();
         $roles = Role::all();
