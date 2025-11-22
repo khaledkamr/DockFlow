@@ -256,11 +256,11 @@
                 // Trying to check a container
                 const currentSelectedCount = $('.container-checkbox:checked').length;
                 
-                if (hasUnpaidInvoices && currentSelectedCount > maxSelectableContainers) {
-                    $(this).prop('checked', false);
-                    showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');
-                    return;
-                }
+                // if (hasUnpaidInvoices && currentSelectedCount > maxSelectableContainers) {
+                //     $(this).prop('checked', false);
+                //     showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');
+                //     return;
+                // }
             }
             
             updateContainerCardStyle($(this).closest('.container-card'), isChecked);
