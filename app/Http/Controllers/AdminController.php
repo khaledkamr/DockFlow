@@ -19,6 +19,7 @@ use App\Models\Permission;
 use App\Models\Policy;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserLog;
 use App\Models\Vehicle;
 use App\Models\Voucher;
 use Carbon\Carbon;
@@ -31,6 +32,10 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
     public function users(Request $request) {
+        if(Gate::denies('إدارة المستخدمين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى إدارة المستخدمين');
+        }
+
         $users = User::all();
         $roles = Role::all();
 
@@ -181,5 +186,21 @@ class AdminController extends Controller
 
     public function settings() {
         return view('pages.settings.settings');
+    }
+    
+    public function logs(Request $request) {
+        $logs = UserLog::query()
+            ->when($request->action, fn($q) => $q->where('action', $request->action))
+            ->when($request->user_id, fn($q) => $q->where('user_id', $request->user_id))
+            ->when($request->from, fn($q) => $q->whereDate('created_at', '>=', $request->from))
+            ->when($request->to, fn($q) => $q->whereDate('created_at', '<=', $request->to))
+            ->where('company_id', Auth::user()->company_id)
+            ->orderBy('id', 'desc')
+            ->paginate(15);
+
+        $actions = UserLog::select('action')->distinct()->pluck('action');
+        $users = User::all();
+
+        return view('pages.users.logs', compact('logs', 'actions', 'users'));
     }
 }

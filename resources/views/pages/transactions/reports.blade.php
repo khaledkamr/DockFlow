@@ -93,7 +93,7 @@
                     @endforeach
                     <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top"
                         title="طباعة">
-                        <i class="fa-solid fa-print me-1"></i><span class="d-none d-sm-inline">طباعة</span>
+                        <i class="fa-solid fa-print"></i>
                     </button>
                 </form>
             </div>

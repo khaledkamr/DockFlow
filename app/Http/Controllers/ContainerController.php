@@ -91,10 +91,15 @@ class ContainerController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الحاوية');
         }
 
+        $old = $container->toArray();
+
         $container->code = $request->code;
         $container->location = $request->location;
         $container->notes = $request->notes;
         $container->save();
+
+        $new = $container->toArray();
+        logActivity('تعديل حاوية', "تم تعديل بيانات الحاوية رقم " . $container->code, $old, $new);
         
         return redirect()->back()->with('success', "تم تعديل بيانات الحاوية بنجاح");
     }
@@ -108,8 +113,11 @@ class ContainerController extends Controller
         if(Gate::denies('إضافة نوع حاوية')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإضافة نوع حاوية');
         }
+
         $validated = $request->validated();
-        Container_type::create($validated);
+        $new = Container_type::create($validated);
+        logActivity('إضافة نوع حاوية', "تم إضافة نوع حاوية جديد " . $new->name, null, $new->toArray());
+        
         return redirect()->back()->with('success', 'تم إضافة نوع حاوية جديد بنجاح');
     }
 
@@ -118,8 +126,13 @@ class ContainerController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل نوع حاوية');
         }
         $containerType = Container_type::findOrFail($id);
+        $old = $containerType->toArray();
         $validated = $request->validated();
         $containerType->update($validated);
+
+        $new = $containerType->toArray();
+        logActivity('تعديل نوع حاوية', "تم تعديل نوع الحاوية " . $containerType->name, $old, $new);
+
         return redirect()->back()->with('success', 'تم تحديث بيانات الفئــة بنجاح');
     }
 
@@ -128,11 +141,16 @@ class ContainerController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف نوع حاوية');
         }
         $containerType = Container_type::findOrFail($id);
+        $old = $containerType->toArray();
+
         if($containerType->containers()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا النوع لوجود حاويات مرتبطة به');
         }
         $name = $containerType->name;
         $containerType->delete();
+
+        logActivity('حذف نوع حاوية', "تم حذف نوع الحاوية " . $name, $old, null);
+
         return redirect()->back()->with('success', 'تم حذف ' . $name . ' بنجاح');
     }
 
@@ -212,6 +230,7 @@ class ContainerController extends Controller
         $serviceId = $request->input('service_id');
         $price = $request->input('price', 0);
         $notes = $request->input('notes', '');
+
         if($container->services->contains($serviceId)) {
             return redirect()->back()->with('error', 'هذه الخدمة مضافة مسبقاً لهذه الحاوية');
         }
@@ -219,6 +238,10 @@ class ContainerController extends Controller
             'price' => $price,
             'notes' => $notes
         ]);
+
+        $serviceName = $container->services()->where('service_id', $serviceId)->first()->name;
+        logActivity('إضافة خدمة إلى حاوية', "تم إضافة خدمة " . $serviceName . " إلى الحاوية رقم " . $container->code . " بسعر " . $price);
+
         return redirect()->back()->with('success', 'تم إضافة الخدمة الى الحاوية بنجاح');
     }
 

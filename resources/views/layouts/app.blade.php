@@ -464,6 +464,10 @@
                             href="{{ route('admin.roles') }}">
                             <i class="fa-solid fa-shield-halved ms-2 me-2"></i> الصلاحيات
                         </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('admin.logs') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('admin.logs') }}">
+                            <i class="fa-solid fa-file-lines ms-2 me-2"></i> السجـــلات
+                        </a>
                     </div>
                 </li>
             @endcan
@@ -725,8 +729,76 @@
                     </form>
 
                     <div class="d-flex align-items-center gap-3 ms-auto">
-                        <i class="fa-solid fa-globe fa-xl text-secondary"></i>
-                        <i class="fa-solid fa-bell fa-xl text-secondary"></i>
+                        <!-- Language Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-link p-0 border-0" type="button" id="languageDropdown" 
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-globe fa-xl text-secondary"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                                <li><h6 class="dropdown-header">اختر اللغة</h6></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <img src="https://flagcdn.com/w20/sa.png" alt="Arabic" class="me-2" style="width: 20px;">
+                                        العربية
+                                        <i class="fa-solid fa-check text-success ms-auto" style="display: {{ app()->getLocale() == 'ar' ? 'inline' : 'none' }}"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Notifications Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn btn-link p-0 border-0 position-relative" type="button" id="notificationsDropdown" 
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-bell fa-xl text-secondary"></i>
+                                <!-- Notification Badge -->
+                                {{-- <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                    5
+                                </span> --}}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                                <li>
+                                    <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                                        الإشعارات
+                                        <span class="badge bg-primary rounded-pill">0</span>
+                                    </h6>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                
+                                <!-- Notification Items -->
+                                {{-- <li>
+                                    <a class="dropdown-item py-2 px-3" href="#">
+                                        <div class="d-flex align-items-start">
+                                            <div class="bg-primary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; min-width: 35px;">
+                                                <i class="fa-solid fa-file-invoice text-white" style="font-size: 14px;"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold" style="font-size: 13px;">فاتورة جديدة</div>
+                                                <div class="text-muted" style="font-size: 12px;">تم إنشاء فاتورة رقم #1234</div>
+                                                <small class="text-muted">منذ 5 دقائق</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li> --}}
+
+                                <li>
+                                    <div class="dropdown-item text-center py-4">
+                                        <i class="fa-solid fa-bell-slash text-muted fa-2x mb-2"></i>
+                                        <div class="text-muted">لا توجد إشعارات</div>
+                                    </div>
+                                </li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-center py-2 fw-bold text-primary" href="#">
+                                        <i class="fa-solid fa-eye me-1"></i>
+                                        عرض جميع الإشعارات
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         
                         <!-- Settings Dropdown -->
                         <div class="dropdown">

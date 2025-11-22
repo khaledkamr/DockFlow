@@ -5,14 +5,16 @@
 @section('content')
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <h1 class="mb-0">الصلاحيات والوظائف</h1>
-        <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+        <div class="d-flex flex-row gap-2">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
                 <i class="fa-solid fa-plus me-2"></i>
-                إضافة صلاحية جديدة
+                <span class="d-none d-md-inline">إضافة صلاحية جديدة</span>
+                <span class="d-inline d-md-none">إضافة صلاحية</span>
             </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">
                 <i class="fa-solid fa-plus me-2"></i>
-                إضافة وظيفة جديدة
+                <span class="d-none d-md-inline">إضافة وظيفة جديدة</span>
+                <span class="d-inline d-md-none">إضافة وظيفة</span>
             </button>
         </div>
     </div>

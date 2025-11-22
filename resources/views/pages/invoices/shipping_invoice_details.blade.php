@@ -20,7 +20,7 @@
                         @endif
                     </span>
                 </div>
-                <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto">
+                <div class="d-flex flex-column flex-sm-row gap-2">
                     <a href="{{ route('print.invoice.shipping', $invoice->code) }}" target="_blank"
                         class="btn btn-outline-primary">
                         <i class="fas fa-print me-2"></i>طباعة الفاتورة

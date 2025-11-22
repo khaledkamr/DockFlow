@@ -154,7 +154,9 @@
                             <select class="form-select border-primary" name="vehicle_id" required>
                                 <option value="" disabled selected>اختر الشاحنة</option>
                                 @foreach ($vehiclesWithoutDriver as $vehicle)
-                                    <option value="{{ $vehicle->id }}">{{ $vehicle->plate_number . ' - ' . $vehicle->type }}</option>
+                                    <option value="{{ $vehicle->id }}">
+                                        {{ $vehicle->plate_number . ' - ' . $vehicle->type }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -256,6 +258,11 @@
                                                 <select class="form-select border-primary" name="vehicle_id" required>
                                                     <option value="" disabled>اختر الشاحنة</option>
                                                     <option value="{{ null }}">لا يوجد</option>
+                                                    @if($driver->vehicle)
+                                                        <option value="{{ $driver->vehicle->id }}" selected>
+                                                            {{ $driver->vehicle->plate_number . ' - ' . $driver->vehicle->type }}
+                                                        </option>
+                                                    @endif
                                                     @foreach ($vehiclesWithoutDriver as $vehicle)
                                                         <option value="{{ $vehicle->id }}" {{ $driver->vehicle && $driver->vehicle->id === $vehicle->id ? 'selected' : '' }}>
                                                             {{ $vehicle->plate_number . ' - ' . $vehicle->type }}

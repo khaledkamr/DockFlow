@@ -102,6 +102,9 @@ class PolicyController extends Controller
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
 
+        $new = $policy->load('containers')->toArray();
+        logActivity('إنشاء بوليصة تخزين', "تم إنشاء بوليصة تخزين جديدة برقم " . $policy->code, null, $new);
+
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض البوليصة؟</a>');
     }
     
@@ -132,6 +135,9 @@ class PolicyController extends Controller
         $validated = $request->validated();
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
+
+        $new = $policy->load('containers')->toArray();
+        logActivity('إنشاء بوليصة استلام', "تم إنشاء بوليصة استلام جديدة برقم " . $policy->code, null, $new);
 
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض البوليصة؟</a>');
     }
@@ -230,6 +236,9 @@ class PolicyController extends Controller
 
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
+
+        $new = $policy->load('containers')->toArray();
+        logActivity('إنشاء بوليصة خدمات', "تم إنشاء بوليصة خدمات جديدة برقم " . $policy->code, null, $new);
 
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.services.details', $policy).'">عرض البوليصة؟</a>');
     }

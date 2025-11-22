@@ -90,6 +90,9 @@ class ShippingController extends Controller
                 'credit' => 0,
                 'description' => 'بوليصة شحن رقم '.$policy->code
             ]);
+
+            $new = $journal->load('lines')->toArray();
+            logActivity('إنشاء قيد', "تم إنشاء قيد جديد برقم " . $journal->code, null, $new);
         }
 
         if($policy->from && $policy->to) {
@@ -104,6 +107,9 @@ class ShippingController extends Controller
             ]);
         }
 
+        $new = $policy->load('goods')->toArray();
+        logActivity('إنشاء بوليصة شحن', "تم إنشاء بوليصة شحن جديدة برقم " . $policy->code, null, $new);
+
         return redirect()->back()->with('success', 'تم إنشاء بوليصة شحن جديدة, <a class="text-white fw-bold" href="'.route('shipping.policies.details', $policy).'">عرض البوليصة؟</a>');
     } 
 
@@ -112,7 +118,10 @@ class ShippingController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $old = $policy->toArray();
         $policy->update($request->only('notes'));
+        $new = $policy->toArray();
+        logActivity('تحديث بيانات بوليصة شحن', "تم تحديث بيانات بوليصة الشحن برقم " . $policy->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات بوليصة الشحن بنجاح');
     }
@@ -124,6 +133,8 @@ class ShippingController extends Controller
     public function toggleReceiveStatus(ShippingPolicy $policy) {
         $policy->is_received = !$policy->is_received;
         $policy->save();
+
+        logActivity('تحديث حالة استلام بوليصة شحن', "تم تحديث حالة الاستلام لبوليصة الشحن برقم " . $policy->code . " إلى " . ($policy->is_received ? 'تم التسليم' : 'في الانتظار'));
 
         return redirect()->back()->with('success', 'تم تحديث حالة الاستلام بنجاح');
     }

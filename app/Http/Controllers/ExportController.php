@@ -41,6 +41,8 @@ class ExportController extends Controller
                     return $line->journal->date >= $from && $line->journal->date <= $to;
                 });
             }
+            $filters = $request->all();
+            logActivity('طباعة كشف حساب', "تم طباعة كشف الحساب بتصفية: ", $filters);
             return view('reports.account_statement', compact('statement', 'company', 'from', 'to'));
         } elseif($reportType == 'journal_entries') {
             $entries = JournalEntry::all();
@@ -52,6 +54,8 @@ class ExportController extends Controller
             if($from && $to) {
                 $entries = $entries->whereBetween('date', [$from, $to]);
             }
+            $filters = $request->all();
+            logActivity('طباعة قيود يومية', "تم طباعة قيود يومية بتصفية: ", $filters);
             return view('reports.journal_entries', compact('entries', 'company', 'from', 'to'));
         } elseif ($reportType == 'containers') {
             $status = $request->input('status');
@@ -70,7 +74,8 @@ class ExportController extends Controller
             if($customer && $customer !== 'all') {
                 $containers = $containers->where('customer_id', $customer);
             }
-
+            $filters = $request->all();
+            logActivity('طباعة تقرير حاويات', "تم طباعة تقرير الحاويات بتصفية: ", $filters);
             return view('reports.containers', compact('company', 'containers', 'from', 'to', 'status', 'type', 'customer'));
         } elseif ($reportType == 'entry_permission') {
             $policyContainers = [];
@@ -78,7 +83,10 @@ class ExportController extends Controller
                 $policyContainers[] = Container::findOrFail($container);
             }
             $policy = $policyContainers[0]->policies->where('type', 'تخزين')->first();
-            
+            $containers = implode(', ', array_map(function($c) {
+                return $c->code;
+            }, $policyContainers)); 
+            logActivity('طباعة إذن دخول', "تم طباعة إذن الدخول للحاويات: " . $containers . " من البوليصة رقم " . $policy->code);
             return view('reports.entry_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'exit_permission') {
             $policyContainers = [];
@@ -86,7 +94,10 @@ class ExportController extends Controller
                 $policyContainers[] = Container::findOrFail($container);
             }
             $policy = $policyContainers[0]->policies->where('type', 'تسليم')->first();
-
+            $containers = implode(', ', array_map(function($c) {
+                return $c->code;
+            }, $policyContainers));
+            logActivity('طباعة إذن خروج', "تم طباعة إذن الخروج للحاويات: " . $containers . " من البوليصة رقم " . $policy->code);
             return view('reports.exit_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'service_permission') {
             $policyContainers = [];
@@ -94,10 +105,14 @@ class ExportController extends Controller
                 $policyContainers[] = Container::findOrFail($container);
             }
             $policy = $policyContainers[0]->policies->where('type', 'خدمات')->first();
-
+            $containers = implode(', ', array_map(function($c) {
+                return $c->code;
+            }, $policyContainers));
+            logActivity('طباعة إذن خدمات', "تم طباعة إذن الخدمات للحاويات: " . $containers . " من البوليصة رقم " . $policy->code);
             return view('reports.service_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'journal_entry') {
             $journal = JournalEntry::findOrFail($request->journal_id);
+            logActivity('طباعة قيد يومي', "تم طباعة القيد اليومي رقم " . $journal->code);
             return view('reports.journal_entry', compact('company', 'journal'));
         }
     }
@@ -109,6 +124,7 @@ class ExportController extends Controller
         $end = Carbon::parse($contract->end_date);
         $months = $start->diffInMonths($end);
         $days = $start->copy()->addMonths($months)->diffInDays($end);
+        logActivity('طباعة عقد', "تم طباعة عقد رقم " . $contract->id);
         return view('reports.contract', compact('contract', 'company', 'months', 'days'));
     }
 
@@ -159,6 +175,8 @@ class ExportController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
+        logActivity('طباعة فاتورة التخزين', "تم طباعة فاتورة التخزين رقم " . $invoice->code);
+
         return view('reports.invoice', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
     }
     
@@ -196,6 +214,8 @@ class ExportController extends Controller
             number_format($invoice->total, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
+
+        logActivity('طباعة فاتورة خدمات', "تم طباعة فاتورة الخدمات رقم " . $invoice->code);
 
         return view('reports.invoiceServices', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
     }
@@ -237,6 +257,8 @@ class ExportController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
+        logActivity('طباعة فاتورة تخليص', "تم طباعة فاتورة التخليص رقم " . $invoice->code);
+
         return view('reports.clearanceInvoice', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
@@ -260,6 +282,8 @@ class ExportController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
+        logActivity('طباعة فاتورة شحن', "تم طباعة فاتورة الشحن رقم " . $invoice->code);
+
         return view('reports.shipping_invoice', compact('company', 'invoice', 'discountValue', 'hatching_total', 'qrCode'));
     }
 
@@ -272,17 +296,21 @@ class ExportController extends Controller
         $company = $invoiceStatement->company;
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
 
+        logActivity('طباعة مطالبة', "تم طباعة مطالبة رقم " . $invoiceStatement->code);
+
         return view('reports.invoiceStatement', compact('company', 'invoiceStatement', 'hatching_total'));
     }
 
     public function printTransportOrder(TransportOrder $transportOrder) {
         $company = $transportOrder->company;
+        logActivity('طباعة اشعار نقل', "تم طباعة اشعار النقل رقم " . $transportOrder->code);
         return view('reports.transportOrder', compact('company', 'transportOrder'));
     }
 
     public function printShippingPolicy($policyId) {
         $policy = ShippingPolicy::with('goods')->findOrFail($policyId);
         $company = $policy->company;
+        logActivity('طباعة بوليصة شحن', "تم طباعة بوليصة الشحن رقم " . $policy->code);
         return view('reports.shipping_policy', compact('company', 'policy'));
     }
 
@@ -345,6 +373,9 @@ class ExportController extends Controller
             $policies = $policies->where('to', $delivery_location);
         }
 
+        $filters = $request->all();
+        logActivity('طباعة تقرير بوالص الشحن', "تم طباعة تقرير بوالص الشحن بتصفية: ", $filters);
+
         return view('reports.shipping_report', compact('company', 'policies', 'from', 'to'));
     }
 
@@ -386,6 +417,9 @@ class ExportController extends Controller
             }
         }
 
+        $filters = $request->all();
+        logActivity('طباعة تقرير معاملات التخليص', "تم طباعة تقرير معاملات التخليص بتصفية: ", $filters);
+
         return view('reports.transaction_report', compact('company', 'transactions', 'from', 'to'));
     }
 
@@ -416,18 +450,24 @@ class ExportController extends Controller
             $invoices = $invoices->where('payment_method', $payment_method);
         }
 
+        $filters = $request->all();
+        logActivity('طباعة تقرير الفواتير', "تم طباعة تقرير الفواتير بتصفية: ", $filters);
+
         return view('reports.invoice_report', compact('company', 'invoices', 'from', 'to'));
     }
 
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
+            logActivity('تصدير تقرير الحاويات الى اكسيل', "تم تصدير تقرير الحاويات بتصفية: ", $filters);
             return Excel::download(new ContainersExport($filters), 'تقرير الحاويات.xlsx');
         } elseif($reportType == 'account_statement') {
             $filters = $request->all();
+            logActivity('تصدير تقرير كشف الحساب الى اكسيل', "تم تصدير تقرير كشف الحساب بتصفية: ", $filters);
             return Excel::download(new AccountStatementExport($filters), 'تقرير كشف الحساب.xlsx');
         } elseif($reportType == 'journal_entries') {
             $filters = $request->all();
+            logActivity('تصدير تقرير القيود اليومية الى اكسيل', "تم تصدير تقرير القيود اليومية الى اكسيل بتصفية: ", $filters);
             return Excel::download(new JournalEntryExport($filters), 'تقرير القيود اليومية.xlsx');
         }
 

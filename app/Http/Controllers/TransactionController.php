@@ -69,6 +69,9 @@ class TransactionController extends Controller
         $transaction = Transaction::create($validated);
         $transaction->containers()->attach($transaction_containers);
 
+        $new = $transaction->load('containers')->toArray();
+        logActivity('إنشاء معاملة تخليص', "تم إنشاء معاملة تخليص جديدة برقم " . $transaction->code, null, $new);
+
         return redirect()->back()->with('success', 'تم إنشاء معاملة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('transactions.details', $transaction).'">عرض المعاملة؟</a>');
     }
 
@@ -76,6 +79,8 @@ class TransactionController extends Controller
         if(Gate::denies('تعديل معاملة تخليص')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات المعاملة');
         }
+        
+        $old = $transaction->toArray();
 
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
@@ -90,6 +95,9 @@ class TransactionController extends Controller
             'customs_declaration' => $validated['customs_declaration'],
             'customs_declaration_date' => $validated['customs_declaration_date'],
         ]);
+
+        $new = $transaction->toArray();
+        logActivity('تعديل معاملة تخليص', "تم تعديل بيانات المعاملة برقم " . $transaction->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات المعاملة بنجاح');
     }
@@ -175,7 +183,8 @@ class TransactionController extends Controller
         }
 
         $validated = $request->validated();
-        TransactionItem::create($validated);
+        $new = TransactionItem::create($validated);
+        logActivity('إنشاء بند في المعاملة', "تم إضافة بند جديد للمعاملة رقم " . $new->transaction->code, null, $new->toArray());
 
         return redirect()->back()->with('success', 'تم إضافة بند جديد للمعاملة');
     }
@@ -185,8 +194,11 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بند في المعاملة');
         }
 
+        $old = $item->toArray();
         $validated = $request->validated();
         $item->update($validated);
+        $new = $item->toArray();
+        logActivity('تعديل بند في المعاملة', "تم تعديل بند في المعاملة رقم " . $item->transaction->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تعديل بيانات البند');
     }
@@ -195,8 +207,9 @@ class TransactionController extends Controller
         if(Gate::denies('حذف بند من المعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية حذف بند من المعاملة');
         }
-
+        $old = $item->toArray();
         $item->delete();
+        logActivity('حذف بند من المعاملة', "تم حذف بند من المعاملة رقم " . $item->transaction->code, $old, null);
         return redirect()->back()->with('success', 'تم حذف البند بنجاح');
     }
 
@@ -213,6 +226,8 @@ class TransactionController extends Controller
             'name' => $request->name,
         ]);
 
+        logActivity('إضافة إجراء للمعاملة', "تم إضافة إجراء جديد للمعاملة رقم " . $transaction->code . ": " . $request->name);
+
         return redirect()->back()->with('success', 'تم إضافة إجراء جديد للمعاملة');
     }
 
@@ -222,7 +237,9 @@ class TransactionController extends Controller
         }
 
         $procedure = Procedure::findOrFail($procedureId);
+        $old = $procedure->toArray();
         $procedure->delete();
+        logActivity('حذف إجراء من المعاملة', "تم حذف إجراء من المعاملة رقم " . $procedure->transaction->code . ": " . $procedure->name, $old, null);
 
         return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
     }

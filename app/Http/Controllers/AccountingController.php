@@ -26,9 +26,12 @@ class AccountingController extends Controller
         if(Gate::denies('إنشاء مستوى حساب')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء مستويات حساب');
         }
+
         $validated = $request->validated();
         $name = $validated['name'];
-        Account::create($validated);
+        $new = Account::create($validated);
+
+        logActivity('إنشاء حساب', "تم إنشاء حساب جديد بإسم: " . $name . " بمستوى " . $validated['level'] . " في دليل الحسابات", null, $new->toArray());
         return redirect()->back()->with('success', "تم إنشاء الفرع '$name' بنجاح");
     }
 
@@ -38,9 +41,12 @@ class AccountingController extends Controller
         }
 
         $root = Account::findOrFail($id);
+        $old = $root->toArray();
         $name = $request->input('name');
         $root->update($request->all());
+        $new = $root->toArray();
 
+        logActivity('تعديل حساب', "تم تعديل الحساب '" . $name . "' في دليل الحسابات", $old, $new);
         return redirect()->back()->with('success', "تم تعديل المستوى '$name' بنجاح");
     }
 
@@ -57,9 +63,11 @@ class AccountingController extends Controller
             return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود قيود مرتبطة به');
         }
 
+        $old = $root->toArray();
         $name = $root->name;
         $root->delete();
 
+        logActivity('حذف حساب', "تم حذف الحساب '" . $name . "' من دليل الحسابات", $old, null);
         return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");
     }
 
@@ -156,6 +164,9 @@ class AccountingController extends Controller
             ]);
         }
 
+        $new = $journalEntry->load('lines')->toArray();
+        logActivity('إنشاء قيد', "تم إنشاء قيد جديد برقم " . $journalEntry->code, null, $new);
+
         return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
     }
 
@@ -171,6 +182,7 @@ class AccountingController extends Controller
 
     public function updateJournal(Request $request, JournalEntry $journal) {
         $journal->lines()->delete();
+        $old = $journal->load('lines')->toArray();
 
         $journal->update([
             'date' => $request->date,
@@ -178,6 +190,10 @@ class AccountingController extends Controller
             'totalCredit' => $request->creditSum,
             'modifier_id' => Auth::user()->id,
         ]);
+
+        $new = $journal->load('lines')->toArray();
+        logActivity('تعديل قيد', "تم تعديل القيد رقم " . $journal->code, $old, $new);
+        
 
         foreach ($request->account_id as $index => $accountId) {
             JournalEntryLine::create([
@@ -199,8 +215,12 @@ class AccountingController extends Controller
     }
 
     public function deleteJournal(JournalEntry $journal) {
+        $old = $journal->load('lines')->toArray();
+
         $journal->lines()->delete();
         $journal->delete();
+        
+        logActivity('حذف قيد', "تم حذف القيد رقم " . $journal->code, $old, null);
         return redirect()->route('money.entries')->with('success', 'تم حذف القيد بنجاح');
     }
 
@@ -213,13 +233,18 @@ class AccountingController extends Controller
         $validated = $request->validated();
         $account = Account::where('code', $code)->first();
         $validated['account_id'] = $account->id;
-        Voucher::create($validated);
+
+        $new = Voucher::create($validated);
+        logActivity('إنشاء سند', "تم إنشاء سند جديد برقم " . $new->code, null, $new->toArray());
+
         return redirect()->back()->with('success', 'تم إنشاء سند بنجاح');
     }
 
     public function deleteVoucher($id) {
         $voucher = Voucher::findOrFail($id);
+        $old = $voucher->toArray();
         $voucher->delete();
+        logActivity('حذف سند', "تم حذف السند رقم " . $voucher->code, $old, null);
         return redirect()->back()->with('success', 'تم حذف السند بنجاح');
     }
 
@@ -265,6 +290,9 @@ class AccountingController extends Controller
             'credit' => $voucher->amount,
             'description' => $voucher->description
         ]);
+
+        $new = $journal->load('lines')->toArray();
+        logActivity('ترحيل سند إلى قيد', "تم ترحيل السند رقم " . $voucher->code . " إلى القيد رقم " . $journal->code, null, $new);
 
         return redirect()->back()->with('success', 'تم ترحيل السند الى قيد بنجاح');
     }   

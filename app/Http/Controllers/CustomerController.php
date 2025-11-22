@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
 use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class CustomerController extends Controller
@@ -28,6 +29,7 @@ class CustomerController extends Controller
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
+
         return view('pages.customers.customers', compact('customers'));
     }
 
@@ -59,11 +61,13 @@ class CustomerController extends Controller
             'type_id' => 1,
             'level' => 5
         ]);
+        logActivity('إنشاء حساب', "تم إنشاء حساب جديد في دليل الحسابات بإسم: " . $request->name . " برقم: " . $code);
 
         $validated = $request->validated();
         $validated['account_id'] = $account->id;
 
-        Customer::create($validated);
+        $new = Customer::create($validated);
+        logActivity('إنشاء عميل', "تم إنشاء عميل جديد: " . $request->name, null, $new->toArray());
         
         return redirect()->back()->with('success', 'تم إنشاء عميل جديد بنجاح');
     }
@@ -72,8 +76,13 @@ class CustomerController extends Controller
         if(Gate::allows('تعديل عميل') == false) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل بيانات عميل');
         }
+        $old = $customer->toArray();
+
         $validated = $request->validated();
         $customer->update($validated);
+
+        $new = $customer->toArray();
+        logActivity('تعديل عميل', "تم تعديل بيانات العميل: " . $request->name, $old, $new);
 
         $customer->account()->update([
             'name' => $request->name,
@@ -89,8 +98,12 @@ class CustomerController extends Controller
         if($customer->invoices()->exists() || $customer->contract()->exists() || $customer->containers()->exists()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذا العميل لوجود تعاملات مرتبطة به');
         }
+
         $name = $customer->name;
+        $old = $customer->toArray();
         $customer->delete();
+        logActivity('حذف عميل', "تم حذف العميل: " . $name, $old, null);
+
         return redirect()->back()->with('success', 'تم حذف العميل ' . $name . ' بنجاح');
     }
 

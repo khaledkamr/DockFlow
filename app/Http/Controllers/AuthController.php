@@ -21,14 +21,21 @@ class AuthController extends Controller
         if($valid) {
             $user = Auth::user();
             session(['company_id' => $user->company_id]);
+            logActivity('تسجيل دخول', "$user->name قام بتسجيل الدخول إلى النظام");
+
             return redirect()->intended('/')->with('success', "$user->name, مربحاً بك من جديد");
         } 
         else {
+            logActivity('فشل تسجيل دخول', "محاولة تسجيل دخول فاشلة للبريد الإلكتروني: " . $request->email);
+            
             return redirect(route('login.form'))->with('error', 'البريد الإلكتروني او كلمة السر غير صحيحة');
         }
     }
 
     public function logout(Request $request) {
+        $user = Auth::user();
+        logActivity('تسجيل خروج', "$user->name قام بتسجيل الخروج من النظام");
+
         Auth::logout();
         $request->session()->invalidate(); 
         return redirect(route('login.form'))->with('success', 'تم تسجيل الخروج من الحساب');

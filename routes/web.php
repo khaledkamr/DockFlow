@@ -45,6 +45,7 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::delete('roles/delete/{role:id}', 'deleteRole')->name('admin.roles.delete');
     Route::post('permissions/store', 'storePermission')->name('admin.permissions.store');
     Route::get('settings', 'settings')->name('settings');
+    Route::get('logs', 'logs')->name('admin.logs');
 });
 
 Route::controller(CustomerController::class)->middleware('auth')->group(function () {

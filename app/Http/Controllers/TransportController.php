@@ -64,8 +64,11 @@ class TransportController extends Controller
             $container->save();
         }
         $transportOrder->containers()->attach($containers);
-
         $transaction = Transaction::find($transportOrder->transaction_id);
+        
+        $new = $transportOrder->load('containers')->toArray();
+        logActivity('إنشاء إشعار نقل', "تم إنشاء إشعار نقل جديد برقم " . $transportOrder->code . " للمعاملة رقم " . $transaction->code, null, $new);
+
         $isFullyTransported = true;
         foreach($transaction->containers as $container) {
             if($container->transportOrders->isEmpty()) {
@@ -77,6 +80,7 @@ class TransportController extends Controller
         if($isFullyTransported) {
             $transaction->status = 'مغلقة';
             $transaction->save();
+            logActivity('تحديث حالة المعاملة', "تم تحديث حالة المعاملة رقم " . $transaction->code . " إلى مغلقة بعد إنشاء إشعار النقل رقم " . $transportOrder->code);
         }
 
         if($transportOrder->type == 'ناقل خارجي') {
@@ -106,6 +110,9 @@ class TransportController extends Controller
                 'credit' => 0,
                 'description' => 'بوليصة شحن رقم '.$transportOrder->code
             ]);
+
+            $new = $journal->load('lines')->toArray();
+            logActivity('إنشاء قيد', "تم إنشاء قيد يومي برقم " . $journal->code . "من بوليصة شحن رقم " . $transportOrder->code, null, $new);
         }
 
         return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
@@ -116,7 +123,10 @@ class TransportController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        $old = $transportOrder->toArray();
         $transportOrder->update($request->only('notes'));
+        $new = $transportOrder->toArray();
+        logActivity('تحديث ملاحظات اشعار النقل', "تم تحديث ملاحظات اشعار النقل رقم " . $transportOrder->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات اشعار النقل بنجاح');
     }
@@ -177,14 +187,20 @@ class TransportController extends Controller
 
         $validated = $request->validated();
         $validated['account_id'] = $account->id;
-        Driver::create($validated);
+        $new = Driver::create($validated);
+        logActivity('إنشاء سائق', "تم إنشاء سائق جديد باسم " . $new->name, null, $new->toArray());
 
         return redirect()->back()->with('success', 'تم إضافة سائق جديد بنجاح');
     }
 
     public function updateDriver(DriverRequest $request, Driver $driver) {
+        $old = $driver->toArray();
+
         $validated = $request->validated();
         $driver->update($validated);
+
+        $new = $driver->toArray();
+        logActivity('تعديل سائق', "تم تعديل بيانات السائق باسم " . $driver->name, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات السائق بنجاح');
     }
@@ -194,7 +210,9 @@ class TransportController extends Controller
             return redirect()->back()->with('error', 'لا يمكن حذف هذا السائق لوجود بيانات مرتبطة به.');
         }
 
+        $old = $driver->toArray();
         $driver->delete();
+        logActivity('حذف سائق', "تم حذف السائق باسم " . $driver->name, $old, null);
 
         return redirect()->back()->with('success', 'تم حذف السائق بنجاح');
     }
@@ -219,14 +237,18 @@ class TransportController extends Controller
 
         $validated = $request->validated();
         $validated['account_id'] = $account->id;
-        Vehicle::create($validated);
+        $new = Vehicle::create($validated);
+        logActivity('إنشاء شاحنة', "تم إنشاء شاحنة جديدة برقم اللوحة " . $new->plate_number, null, $new->toArray());
 
         return redirect()->back()->with('success', 'تم إضافة شاحنة جديدة بنجاح');
     }
 
     public function updateVehicle(VehicleRequest $request, Vehicle $vehicle) {
+        $old = $vehicle->toArray();
         $validated = $request->validated();
         $vehicle->update($validated);
+        $new = $vehicle->toArray();
+        logActivity('تعديل شاحنة', "تم تعديل بيانات الشاحنة برقم اللوحة " . $vehicle->plate_number, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات الشاحنة بنجاح');
     }
@@ -236,7 +258,9 @@ class TransportController extends Controller
             return redirect()->back()->with('error', 'لا يمكن حذف هذه الشاحنة لوجود بيانات مرتبطة بها.');
         }
 
+        $old = $vehicle->toArray();
         $vehicle->delete();
+        logActivity('حذف شاحنة', "تم حذف الشاحنة برقم اللوحة " . $vehicle->plate_number, $old, null);
 
         return redirect()->back()->with('success', 'تم حذف الشاحنة بنجاح');
     }

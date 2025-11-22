@@ -193,7 +193,7 @@
                 <tbody>
                     @if ($policies->isEmpty() || !request()->hasAny(['customer','from','to','type','status','invoice_status','supplier','driver','vehicle','loading_location','delivery_location',]))
                         <tr>
-                            <td colspan="12" class="text-center">
+                            <td colspan="14" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
                             </td>
                         </tr>

@@ -50,21 +50,32 @@ class SupplierController extends Controller
             'type_id' => 1,
             'level' => 5
         ]);
+        logActivity('إنشاء حساب', "تم إنشاء حساب مورد جديد باسم " . $account->name, null, $account->toArray());
 
         $validated = $request->validated();
         $validated['account_id'] = $account->id;
-        Supplier::create($validated);
+        $new = Supplier::create($validated);
+        logActivity('إنشاء مورد', "تم إنشاء مورد جديد باسم " . $new->name, null, $new->toArray());
 
         return redirect()->back()->with('success', 'تم إنشاء مورد جديد بنجاح');
     }
 
     public function updateSupplier(SupplierRequest $request, Supplier $supplier) {
+        $old = $supplier->toArray();
+
         $validated = $request->validated();
         $supplier->update($validated);
+        
+        $new = $supplier->toArray();
+        logActivity('تحديث مورد', "تم تحديث مورد باسم " . $supplier->name, $old, $new);
         return redirect()->back()->with('success', 'تم تحديث بيانات المورد بنجاح');
     }
 
     public function deleteSupplier(Supplier $supplier) {
-        //
+        
+        $old = $supplier->toArray();
+        $supplier->delete();
+        logActivity('حذف مورد', "تم حذف مورد باسم " . $supplier->name, $old, null);
+        return redirect()->back()->with('success', 'تم حذف المورد بنجاح');
     }
 }

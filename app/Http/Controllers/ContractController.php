@@ -68,6 +68,7 @@ class ContractController extends Controller
     public function storeContract(ContractRequest $request) {
         $validated = $request->validated();
         $contract = Contract::create($validated);
+        logActivity('إضافة عقد', "تم إنشاء عقد جديد للعميل " . $contract->customer->name . " برقم عقد: " . $contract->id);
 
         if($request->has('services')) {
             foreach($request->services as $service) {
@@ -86,6 +87,8 @@ class ContractController extends Controller
         if(Gate::denies('تعديل بيانات العقد') == true) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية التعديل على بيانات العقد');
         }
+
+        $old = $contract->toArray();
 
         if($request->has('start_date')) {
             $contract->start_date = $request->start_date;
@@ -120,6 +123,9 @@ class ContractController extends Controller
             }
         }
 
+        $new = $contract->toArray();
+        logActivity('تعديل عقد', "تم تعديل بيانات العقد رقم " . $contract->id, $old, $new);
+
         return redirect()->back()->with('success', 'تم تحديث بيانات العقد بنجاح');
     }
 
@@ -145,7 +151,10 @@ class ContractController extends Controller
         if(!$request->description) {
             return redirect()->back()->with('error', 'وصف الخدمة مطلوب');
         }
-        Service::create(['description' => $request->description]);
+
+        $new = Service::create(['description' => $request->description]);
+        logActivity('إضافة خدمة', "تم إضافة خدمة جديدة: " . $new->description, null, $new->toArray());
+
         return redirect()->back()->with('success', 'تم إضافة خدمة جديدة بنجاح');
     }
 
@@ -157,8 +166,13 @@ class ContractController extends Controller
             return redirect()->back()->with('error', 'وصف الخدمة مطلوب');
         }
         $service = Service::findOrFail($id);
+        $old = $service->toArray();
         $service->description = $request->description;
         $service->save();
+
+        $new = $service->toArray();
+        logActivity('تعديل خدمة', "تم تعديل الخدمة: " . $service->description, $old, $new);
+
         return redirect()->back()->with('success', 'تم تحديث الخدمة بنجاح');
     }
 
@@ -166,11 +180,17 @@ class ContractController extends Controller
         if(Gate::allows('حذف خدمة') == false) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف الخدمة');
         }
+
         $service = Service::findOrFail($id);
+        $old = $service->toArray();
+
         if($service->type == 'primary') {
             return redirect()->back()->with('error', 'لا يمكنك حذف هذه الخدمة');
         }
+
         $service->delete();
+        logActivity('حذف خدمة', "تم حذف الخدمة: " . $service->description, $old, null);
+
         return redirect()->back()->with('success', 'تم حذف الخدمة بنجاح');
     }
 
@@ -194,9 +214,12 @@ class ContractController extends Controller
                 'file_type' => $file->getClientMimeType(),
                 'user_id' => Auth::user()->id,
             ]);
-            
+
+            logActivity('إرفاق مستند إلى العقد', "تم إرفاق مستند " . $fileName . " إلى العقد رقم: " . $contract->id);
             return redirect()->back()->with('success', 'تم إرفاق الملف بنجاح');
         }
+
+        logActivity('فشل إرفاق مستند إلى العقد', "محاولة فاشلة لإرفاق مستند إلى العقد رقم: " . $contract->id);
 
         return redirect()->back()->with('error', 'لم يتم إرفاق أي ملف');
     }
@@ -210,8 +233,10 @@ class ContractController extends Controller
             Storage::disk('public')->delete($attachment->file_path);
         }
 
+        $old = $attachment;
         $attachment->delete();
 
+        logActivity('حذف مستند من العقد', "تم حذف المرفق " . $old->file_name . " من العقد رقم: " . $old->contract_id);
         return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
 }

@@ -128,6 +128,8 @@ class InvoiceController extends Controller
         $invoice->total_amount = $amount;
         $invoice->save();
 
+        logActivity('إنشاء فاتورة خدمات', "تم إنشاء فاتورة خدمات رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
     }
 
@@ -292,6 +294,8 @@ class InvoiceController extends Controller
         $invoice->total_amount = $totalAmount;
         $invoice->save();
 
+        logActivity('إنشاء فاتورة تخليص', "تم إنشاء فاتورة تخليص رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
     }
 
@@ -369,6 +373,8 @@ class InvoiceController extends Controller
         $invoice->total_amount = $amount;
         $invoice->save();
 
+        logActivity('إنشاء فاتورة تخزين', "تم إنشاء فاتورة تخزين رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
     } 
 
@@ -424,6 +430,8 @@ class InvoiceController extends Controller
         }
         $invoice->isPaid = $request->isPaid;
         $invoice->save();
+
+        logActivity('تحديث فاتورة', "تم تحديث حالة الفاتورة رقم " . $invoice->code . " إلى " . $invoice->isPaid);
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
     }
 
@@ -477,6 +485,9 @@ class InvoiceController extends Controller
 
         $invoice->is_posted = true;
         $invoice->save();
+
+        $new = $journal->load('lines')->toArray();
+        logActivity('ترحيل فاتورة', "تم ترحيل الفاتورة رقم " . $invoice->code . " إلى القيد رقم " . $journal->code, null, $new);
 
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
@@ -585,6 +596,9 @@ class InvoiceController extends Controller
         $invoice->is_posted = true;
         $invoice->save();
 
+        $new = $journal->load('lines')->toArray();
+        logActivity('ترحيل فاتورة', "تم ترحيل الفاتورة رقم " . $invoice->code . " إلى القيد رقم " . $journal->code, null, $new);
+
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
 
@@ -643,6 +657,10 @@ class InvoiceController extends Controller
             $invoice->save();
         }
 
+        $new = $invoiceStatement->toArray();
+        $statementInvoices = implode(', ', array_map(fn($invoice) => $invoice->code, $invoices));
+        logActivity('إنشاء مطالبة فاتورة', "تم إنشاء مطالبة فاتورة رقم " . $invoiceStatement->code . "للعميل " . $invoiceStatement->customer->name . "للفواتير " . $statementInvoices, null, $new);
+
         return redirect()->back()->with('success', 'تم إنشاء مطالبة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.statements.details', $invoiceStatement).'">عرض المطالبة</a>');
     }
 
@@ -694,6 +712,8 @@ class InvoiceController extends Controller
         $invoice->amount_after_discount = $amountAfterDiscount;
         $invoice->total_amount = $amount;
         $invoice->save();
+
+        logActivity('إنشاء فاتورة شحن', "تم إنشاء فاتورة شحن رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
 
         return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
     }
@@ -790,6 +810,8 @@ class InvoiceController extends Controller
         $invoice->clearanceInvoiceItems()->delete();
         $invoice->shippingPolicies()->detach();
         $invoice->delete();
+
+        logActivity('حذف فاتورة', "تم حذف الفاتورة رقم " . $name, null, $invoice->toArray());
 
         return redirect()->back()->with('success', 'تم حذف الفاتورة ' . $name . ' بنجاح');
     }
