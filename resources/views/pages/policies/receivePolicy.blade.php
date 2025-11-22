@@ -238,10 +238,10 @@
 
                 console.log(currentSelectedCount, maxSelectableContainers, hasUnpaidInvoices);
                 
-                if (hasUnpaidInvoices && currentSelectedCount >= maxSelectableContainers) {
-                    showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');
-                    return;
-                }
+                // if (hasUnpaidInvoices && currentSelectedCount >= maxSelectableContainers) {
+                //     showToast('العميل لديه فواتير غير مدفوعة، لا يمكن سحب جميع الحاويات', 'danger');
+                //     return;
+                // }
             }
             
             checkbox.prop('checked', !isCurrentlyChecked);
