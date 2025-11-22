@@ -182,28 +182,16 @@
                         <th class="text-center bg-dark text-white text-nowrap">المورد</th>
                         <th class="text-center bg-dark text-white text-nowrap">السائق</th>
                         <th class="text-center bg-dark text-white text-nowrap">السيارة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
+                        <th class="text-center bg-dark text-white text-nowrap">البيان</th>
+                        <th class="text-center bg-dark text-white">مكان التحميل</th>
+                        <th class="text-center bg-dark text-white">مكان التسليم</th>
                         <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                         <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (
-                        $policies->isEmpty() ||
-                            !request()->hasAny([
-                                'customer',
-                                'from',
-                                'to',
-                                'type',
-                                'status',
-                                'invoice_status',
-                                'supplier',
-                                'driver',
-                                'vehicle',
-                                'loading_location',
-                                'delivery_location',
-                            ]))
+                    @if ($policies->isEmpty() || !request()->hasAny(['customer','from','to','type','status','invoice_status','supplier','driver','vehicle','loading_location','delivery_location',]))
                         <tr>
                             <td colspan="12" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
@@ -235,6 +223,7 @@
                                 <td class="text-center">
                                     {{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}
                                 </td>
+                                <td class="text-center">{{ $policy->goods->first()->description }}</td>
                                 <td class="text-center">{{ $policy->from }}</td>
                                 <td class="text-center">{{ $policy->to }}</td>
                                 <td class="text-center">
@@ -244,6 +233,7 @@
                                         <div class="badge status-waiting">تحت التسليم</div>
                                     @endif
                                 </td>
+                                <td class="text-center">{{ $policy->total_cost }}</td>
                                 <td class="text-center">
                                     @if($policy->invoices->where('type', 'شحن')->isEmpty())
                                         -

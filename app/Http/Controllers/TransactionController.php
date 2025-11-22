@@ -72,7 +72,31 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء معاملة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('transactions.details', $transaction).'">عرض المعاملة؟</a>');
     }
 
+    public function updateTransaction(Request $request, Transaction $transaction) {
+        if(Gate::denies('تعديل معاملة تخليص')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات المعاملة');
+        }
+
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'policy_number' => 'required|string',
+            'customs_declaration' => 'nullable|string',
+            'customs_declaration_date' => 'nullable|date',
+        ]);
+
+        $transaction->update([
+            'customer_id' => $validated['customer_id'],
+            'policy_number' => $validated['policy_number'],
+            'customs_declaration' => $validated['customs_declaration'],
+            'customs_declaration_date' => $validated['customs_declaration_date'],
+        ]);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات المعاملة بنجاح');
+    }
+
     public function transactionDetails(Transaction $transaction) {
+        $customers = Customer::all();
+
         $items = [
             [
                 'name' => 'رسوم اذن التسليم - DELIVERY ORDER',
@@ -137,7 +161,12 @@ class TransactionController extends Controller
             ['name' => 'لم تفرغ الحاوية فى الايداع - The container was not emptied at the deposit'],
         ];
 
-        return view('pages.transactions.transactionDetails', compact('transaction', 'items', 'procedures'));
+        return view('pages.transactions.transactionDetails', compact(
+            'transaction', 
+            'items', 
+            'procedures',
+            'customers'
+        ));
     }
 
     public function storeItem(ItemRequest $request) {

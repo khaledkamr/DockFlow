@@ -96,6 +96,7 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::get('/transactions', 'transactions')->name('transactions');
     Route::get('/transactions/create', 'createTransaction')->name('transactions.create');
     Route::post('/transactions/store', 'storeTransaction')->name('transactions.store');
+    Route::patch('/transactions/update/{transaction:uuid}', 'updateTransaction')->name('transactions.update');
     Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
     Route::post('/transactions/item/store', 'storeItem')->name('transactions.item.store');
     Route::put('/transactions/item/update/{item:id}', 'updateItem')->name('transactions.item.update');

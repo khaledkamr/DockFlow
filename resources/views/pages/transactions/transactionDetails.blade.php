@@ -10,9 +10,9 @@
                 <span class="d-none d-md-inline">تفاصيل المعاملة {{ $transaction->code }}</span>
                 <span class="d-inline d-md-none">المعاملة {{ $transaction->code }}</span>
                 @if ($transaction->status == 'معلقة')
-                    <span class="badge status-waiting text-dark ms-2 d-inline d-md-none">معلقة</span>
+                    <span class="badge status-waiting ms-2">معلقة</span>
                 @elseif($transaction->status == 'مغلقة')
-                    <span class="badge status-delivered ms-2 d-inline d-md-none">مغلقة</span>
+                    <span class="badge status-delivered ms-2">مغلقة</span>
                 @endif
             </h2>
             <nav aria-label="breadcrumb">
@@ -23,38 +23,27 @@
                                 class="text-decoration-none">العقد #{{ $transaction->customer->contract->id }}</a>
                         </li>
                     @endif
-                    <li class="breadcrumb-item d-none d-md-inline">
-                        <a href="" class="text-decoration-none">
-                            المعاملات
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active d-none d-md-inline" aria-current="page">
-                        المعاملة #{{ $transaction->code }}
-                        @if ($transaction->status == 'معلقة')
-                            <span class="badge bg-warning text-dark ms-2">معلقة</span>
-                        @elseif($transaction->status == 'مغلقة')
-                            <span class="badge bg-success ms-2">مغلقة</span>
-                        @endif
-                    </li>
+                </ol>
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if (
-                $transaction->containers->first()->invoices &&
-                    $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
+            @if ($transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
                     <i class="fas fa-scroll me-1"></i>
-                    <span class="d-inline">عرض الفاتورة</span>
+                    عرض الفاتورة
                 </a>
             @endif
             @if ($transaction->containers->first()->invoices->isEmpty())
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
-                    data-bs-target="#createInvoice">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#createInvoice">
                     <i class="fas fa-scroll me-1"></i>
-                    <span class="d-inline">إنشاء فاتورة</span>
+                    إنشاء فاتورة
                 </button>
             @endif
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editTransactionModal">
+                <i class="fas fa-edit me-1"></i>
+                تعديل المعاملة
+            </button>
         </div>
     </div>
 
@@ -100,6 +89,55 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark fw-bold" id="editTransactionModalLabel">تعديل بيانات المعاملة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('transactions.update', $transaction) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-body text-dark">
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">العميل</label>
+                                <select class="form-select border-primary" name="customer_id" required>
+                                    <option disabled selected>اختر العميل...</option>
+                                    @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}" {{ $transaction->customer_id == $customer->id ? 'selected' : '' }}>
+                                            {{ $customer->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">رقم البوليصة</label>
+                                <input type="text" name="policy_number" class="form-control border-primary"
+                                    value="{{ $transaction->policy_number }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">البيان الجمركي</label>
+                                <input type="text" name="customs_declaration" class="form-control border-primary"
+                                    value="{{ $transaction->customs_declaration }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">تاريخ البيان الجمركي</label>
+                                <input type="date" name="customs_declaration_date" class="form-control border-primary"
+                                    value="{{ $transaction->customs_declaration_date ? Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y-m-d') : '' }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Transaction Information Section -->
     <div class="row">
         <div class="col-lg-6 d-flex flex-column gap-3 mb-4">
@@ -128,7 +166,7 @@
                                     <div class="col-4 col-sm-6 col-lg-4">
                                         <label class="form-label text-muted small">تاريخ البيان الجمركي</label>
                                         <div class="fw-bold fs-6">
-                                            {{ Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y/m/d') ?? 'N/A' }}
+                                            {{ $transaction->customs_declaration_date ? Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y/m/d') : 'N/A' }}
                                         </div>
                                     </div>
                                 </div>
@@ -141,30 +179,30 @@
 
         <div class="col-lg-6 mb-4">
             <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-money-bill-wave me-2"></i>
-                        اطراف المعاملة
+                        بيانات العميل
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-4">
                         <div class="col-12 col-sm-6">
                             <h6 class="text-muted mb-2">
-                                <i class="fas fa-building me-2"></i>
-                                الطرف الأول
+                                <i class="fas fa-user-tie me-2"></i>
+                                اسم العميل
                             </h6>
                             <div class="">
-                                <div class="fw-bold">{{ $transaction->made_by->company->name }}</div>
+                                <div class="fw-bold">{{ $transaction->customer->name }}</div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6">
                             <h6 class="text-muted mb-2">
-                                <i class="fas fa-user-tie me-2"></i>
-                                الطرف الثاني
+                                <i class="fas fa-receipt me-2"></i>
+                                الرقم الضريبي
                             </h6>
                             <div class="">
-                                <div class="fw-bold">{{ $transaction->customer->name }}</div>
+                                <div class="fw-bold">{{ $transaction->customer->vatNumber }}</div>
                             </div>
                         </div>
                     </div>

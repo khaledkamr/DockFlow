@@ -17,9 +17,11 @@
                 <th>المورد</th>
                 <th>السائق</th>
                 <th>السيارة</th>
+                <th>البيان</th>
                 <th>مكان التحميل</th>
                 <th>مكان التسليم</th>
                 <th>الحالة</th>
+                <th>المبلغ</th>
                 <th>الفاتورة</th>
             </tr>
         </thead>
@@ -44,6 +46,7 @@
                         <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
                         <td class="text-center">{{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
                         <td class="text-center">{{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}</td>
+                        <td class="text-center">{{ $policy->goods->first()->description }}</td>
                         <td class="text-center">{{ $policy->from }}</td>
                         <td class="text-center">{{ $policy->to }}</td>
                         <td class="text-center">
@@ -53,6 +56,7 @@
                                 <div class="status-delivered">تحت التسليم</div>
                             @endif
                         </td>
+                        <td class="text-center">{{ $policy->total_cost }}</td>
                         <td class="text-center">{{ $policy->invoices->where('type', 'شحن')->first()->code ?? '-' }}</td>
                     </tr>
                 @endforeach
