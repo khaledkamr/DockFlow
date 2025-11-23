@@ -13,7 +13,25 @@ if (!function_exists('logActivity')) {
             if (is_array($old) && is_array($new)) {
                 $diff = [];
                 foreach ($old as $key => $value) {
-                    if (array_key_exists($key, $new) && $new[$key] != $value) {
+                    if (is_array($value)) {
+                        foreach ($value as $subKey => $subValue) {
+                            if(is_array($subValue)) {
+                                foreach($subValue as $subSubKey => $subSubValue) {
+                                    if (isset($new[$key][$subKey][$subSubKey]) && $new[$key][$subKey][$subSubKey] != $subSubValue) {
+                                        $diff["$key.$subKey.$subSubKey"] = [
+                                            'old' => $subSubValue,
+                                            'new' => $new[$key][$subKey][$subSubKey],
+                                        ];
+                                    }
+                                }
+                            } elseif (isset($new[$key][$subKey]) && $new[$key][$subKey] != $subValue) {
+                                $diff["$key.$subKey"] = [
+                                    'old' => $subValue,
+                                    'new' => $new[$key][$subKey],
+                                ];
+                            }
+                        }
+                    } elseif (array_key_exists($key, $new) && $new[$key] != $value) {
                         $diff[$key] = [
                             'old' => $value,
                             'new' => $new[$key],
