@@ -203,4 +203,37 @@ class AdminController extends Controller
 
         return view('pages.users.logs', compact('logs', 'actions', 'users'));
     }
+
+    public function deleteLogs(Request $request) {
+        $logs = UserLog::where('company_id', Auth::user()->company_id);
+
+        if($request->action) {
+            $logs->where('action', $request->action);
+        }
+        if($request->user_id) {
+            $logs->where('user_id', $request->user_id);
+        }
+        if($request->from) {
+            $logs->whereDate('created_at', '>=', $request->from);
+        }
+        if($request->to) {
+            $logs->whereDate('created_at', '<=', $request->to);
+        }
+            
+        $logs->delete();
+
+        return redirect()->back()->with('success', 'تم حذف السجلات بنجاح');
+    }
+
+    public function updateTimezone(Request $request) {
+        $request->validate([
+            'timezone' => 'required|string|in:Africa/Cairo,Asia/Riyadh',
+        ]);
+
+        $user = Auth::user();
+        $user->timezone = $request->timezone;
+        $user->save();
+
+        return redirect()->back()->with('success', 'تم تحديث المنطقة الزمنية بنجاح');
+    }
 }

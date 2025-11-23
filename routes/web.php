@@ -46,6 +46,7 @@ Route::controller(AdminController::class)->middleware('auth')->group(function() 
     Route::post('permissions/store', 'storePermission')->name('admin.permissions.store');
     Route::get('settings', 'settings')->name('settings');
     Route::get('logs', 'logs')->name('admin.logs');
+    Route::delete('logs/delete/', 'deleteLogs')->name('admin.logs.delete');
     Route::post('settings/timezone/update', 'updateTimezone')->name('settings.timezone.update');
 });
 
