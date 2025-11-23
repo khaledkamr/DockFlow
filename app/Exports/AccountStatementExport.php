@@ -31,8 +31,8 @@ class AccountStatementExport implements FromCollection, WithHeadings
         $to = $this->filters['to'] ?? null;
 
         if ($from && $to) {
-            $query = $query->filter(function($line) use($from, $to) {
-                return $line->journal->date >= $from && $line->journal->date <= $to;
+            $query->whereHas('journal', function ($q) use ($from, $to) {
+                $q->whereBetween('date', [$from, $to]);
             });
         }
 
