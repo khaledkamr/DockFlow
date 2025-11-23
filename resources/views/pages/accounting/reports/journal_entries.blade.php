@@ -94,7 +94,7 @@
                 @forelse($entries as $entry)
                     <tr>
                         <td colspan="7" class="text-start table-secondary fw-bold">
-                            <a href="{{ route('journal.details', $entry->id) }}" class="text-decoration-none">
+                            <a href="{{ route('journal.details', $entry) }}" class="text-decoration-none">
                                 قيد - {{ $entry->voucher->type ?? 'قيد يومي' }} - بتاريخ {{ $entry->date }}
                             </a>
                         </td>

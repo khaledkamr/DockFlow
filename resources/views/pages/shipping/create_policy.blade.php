@@ -89,7 +89,7 @@
                         <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
                     </div>
 
-                    <div class="col-6 col-md-6 col-lg-4 external-field" style="display: none">
+                    <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
                         <label class="form-label d-block">إســم المورد</label>
                         <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
                             <option value="">اختر المورد...</option>
@@ -101,18 +101,18 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-6 col-md-6 col-lg-4 external-field" style="display: none">
+                    <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
                         <label class="form-label">إسم السائق</label>
                         <input type="text" class="form-control border-primary" name="driver_name" id="driver_name">
                     </div>
-                    <div class="col-6 col-md-6 col-lg-4 external-field" style="display: none">
+                    <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
                         <label class="form-label">لوحة السيارة</label>
                         <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate">
                     </div>
                 </div>
 
                 <div class="row g-3 mb-4">
-                    <div class="col-6 col-sm-6 col-md-4 col-lg-2 external-field">
+                    <div class="col-6 col-sm-6 col-md-4 col-lg external-field">
                         <label class="form-label">مصاريف المورد</label>
                         <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
                             value="{{ old('supplier_cost') ?? 0 }}">
@@ -120,7 +120,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 col-sm-6 col-md-3 internal-field">
+                    <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
                         <label class="form-label">مصاريف الديزل</label>
                         <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
                             value="{{ old('diesel_cost') ?? 0 }}">
@@ -128,7 +128,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 col-sm-6 col-md-3 internal-field">
+                    <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
                         <label class="form-label">عمولة السائق</label>
                         <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
                             value="{{ old('driver_wage') ?? 0 }}">
@@ -136,7 +136,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 col-sm-6 col-md-3">
+                    <div class="col-6 col-sm-6 col-md-3 col-lg">
                         <label class="form-label">مصاريف أخرى</label>
                         <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
                             value="{{ old('other_expenses') ?? 0 }}">
@@ -144,7 +144,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 col-sm-6 col-md-3">
+                    <div class="col-6 col-sm-6 col-md-3 col-lg">
                         <label class="form-label">سعر العميل</label>
                         <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
                             value="{{ old('client_cost') ?? 0 }}">

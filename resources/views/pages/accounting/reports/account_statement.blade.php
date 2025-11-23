@@ -80,7 +80,11 @@
                     <tr class="text-center">
                         <td>{{ $line->account->name }}</td>
                         <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
-                        <td>{{ $line->journal->code }}</td>
+                        <td class="fw-bold">
+                            <a href="{{ route('journal.details', $line->journal) }}" class="text-decoration-none text-dark">
+                                {{ $line->journal->code }}
+                            </a>
+                        </td>
                         <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
                         <td>{{ $line->description }}</td>
                         <td>{{ $line->debit }}</td>

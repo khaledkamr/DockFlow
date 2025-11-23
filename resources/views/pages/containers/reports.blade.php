@@ -150,7 +150,11 @@
                                         {{ $container->code }}
                                     </a>
                                 </td>
-                                <td class="text-center text-nowrap">{{ $container->customer->name }}</td>
+                                <td class="text-center fw-bold text-nowrap">
+                                    <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-decoration-none text-dark">
+                                        {{ $container->customer->name }}
+                                    </a>
+                                </td>
                                 <td class="text-center text-nowrap">{{ $container->containerType->name }}</td>
                                 <td class="text-center text-nowrap">{{ $container->location ?? '-' }}</td>
                                 <td class="text-center text-nowrap">
