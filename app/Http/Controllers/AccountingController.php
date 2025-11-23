@@ -181,8 +181,8 @@ class AccountingController extends Controller
     }
 
     public function updateJournal(Request $request, JournalEntry $journal) {
-        $journal->lines()->delete();
         $old = $journal->load('lines')->toArray();
+        $journal->lines()->delete();
 
         $journal->update([
             'date' => $request->date,
@@ -190,10 +190,6 @@ class AccountingController extends Controller
             'totalCredit' => $request->creditSum,
             'modifier_id' => Auth::user()->id,
         ]);
-
-        $new = $journal->load('lines')->toArray();
-        logActivity('تعديل قيد', "تم تعديل القيد رقم " . $journal->code, $old, $new);
-        
 
         foreach ($request->account_id as $index => $accountId) {
             JournalEntryLine::create([
@@ -204,6 +200,9 @@ class AccountingController extends Controller
                 'description'      => $request->description[$index],
             ]);
         }
+
+        $new = $journal->load('lines')->toArray();
+        logActivity('تعديل قيد', "تم تعديل القيد رقم " . $journal->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تعديل القيد بنجاح');
     }
