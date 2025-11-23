@@ -70,7 +70,7 @@ class TransactionController extends Controller
         $transaction->containers()->attach($transaction_containers);
 
         $new = $transaction->load('containers')->toArray();
-        logActivity('إنشاء معاملة تخليص', "تم إنشاء معاملة تخليص جديدة برقم " . $transaction->code, null, $new);
+        logActivity('إنشاء معاملة تخليص', "تم إنشاء معاملة تخليص جديدة برقم " . $transaction->code . "للعميل " . $transaction->customer->name, null, $new);
 
         return redirect()->back()->with('success', 'تم إنشاء معاملة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('transactions.details', $transaction).'">عرض المعاملة؟</a>');
     }

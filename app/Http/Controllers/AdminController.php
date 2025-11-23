@@ -196,7 +196,7 @@ class AdminController extends Controller
             ->when($request->to, fn($q) => $q->whereDate('created_at', '<=', $request->to))
             ->where('company_id', Auth::user()->company_id)
             ->orderBy('id', 'desc')
-            ->paginate(15);
+            ->paginate(100);
 
         $actions = UserLog::select('action')->distinct()->pluck('action');
         $users = User::all();
