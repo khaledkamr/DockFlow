@@ -182,6 +182,7 @@ class AccountingController extends Controller
 
     public function updateJournal(Request $request, JournalEntry $journal) {
         $old = $journal->load('lines')->toArray();
+        
         $journal->lines()->delete();
 
         $journal->update([

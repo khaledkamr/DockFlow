@@ -509,9 +509,9 @@
                                         <h5 class="mb-0 fs-6">إنشاء فاتورة تخزين</h5>
                                         <small class="d-flex flex-wrap align-items-center text-secondary">
                                             <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($storageInvoice->created_at)->format('d M Y') }}</span>
+                                            <span>{{ $storageInvoice->created_at->format('d M Y') }}</span>
                                             <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($storageInvoice->created_at)->format('h:i A') }}
+                                                {{ $storageInvoice->created_at->timezone(auth()->user()->timezone)->format('h:i A') }}
                                             </span>
                                         </small>
                                     </div>

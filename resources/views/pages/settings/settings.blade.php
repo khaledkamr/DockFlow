@@ -24,11 +24,20 @@
 
                 <div class="setting-item d-flex justify-content-between align-items-center mb-3">
                     <div>
-                        <h6>النسخ الاحتياطي التلقائي</h6>
-                        <small class="text-muted">إنشاء نسخة احتياطية يومياً</small>
+                        <h6>المنطقة الزمنية</h6>
+                        <small class="text-muted">اختر المنطقة الزمنية المفضلة</small>
                     </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="autoBackup">
+                    <div>
+                        <form action="{{ route('settings.timezone.update') }}" method="POST">
+                            @csrf
+                            <select name="timezone" class="form-select border-primary" onchange="this.form.submit()">
+                                @foreach(['Africa/Cairo', 'Asia/Riyadh'] as $timezone)
+                                    <option value="{{ $timezone }}" {{ auth()->user()->timezone == $timezone ? 'selected' : '' }}>
+                                        {{ $timezone }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
                     </div>
                 </div>
 

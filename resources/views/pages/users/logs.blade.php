@@ -73,9 +73,9 @@
                     <span class="fw-semibold text-muted">{{ $log->user->name }}</span>
                 </div>
                 <small class="d-flex flex-wrap align-items-center text-secondary">
-                    <span>{{ \Carbon\Carbon::parse($log->created_at)->format('d M Y') }}</span>
+                    <span>{{ $log->created_at->format('d M Y') }}</span>
                     <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                        {{ \Carbon\Carbon::parse($log->created_at)->format('h:i A') }}
+                        {{ $log->created_at->timezone(auth()->user()->timezone)->format('h:i A') }}
                     </span>
                 </small>
             </div>
@@ -94,9 +94,21 @@
                         @foreach ($log->diff as $key => $data)
                             <li class="mb-2">
                                 <strong class="text-secondary">{{ $key }}:</strong>
-                                <span class="badge bg-danger bg-opacity-10 text-danger mx-1">"{{ $data['old'] }}"</span>
+                                <span class="badge bg-danger bg-opacity-10 text-danger mx-1">
+                                    @if(is_array($data['old']))
+                                        <pre dir="ltr" style="text-align: left;">{{ json_encode($data['old'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                    @else
+                                        "{{ $data['old'] }}"
+                                    @endif
+                                </span>
                                 <i class="fas fa-right-long text-muted mx-1"></i>
-                                <span class="badge bg-success bg-opacity-10 text-success mx-1">"{{ $data['new'] }}"</span>
+                                <span class="badge bg-success bg-opacity-10 text-success mx-1">
+                                    @if(is_array($data['new']))
+                                        <pre dir="ltr" style="text-align: left;">{{ json_encode($data['new'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                    @else
+                                        "{{ $data['new'] }}"
+                                    @endif
+                                </span>
                             </li>
                         @endforeach
                     </ul>
