@@ -27,8 +27,13 @@ class AccountStatementExport implements FromCollection, WithHeadings
             $query->where('account_id', $this->filters['account']);
         }
 
-        if (!empty($this->filters['from']) && !empty($this->filters['to'])) {
-            $query->whereBetween('date', [$this->filters['from'], $this->filters['to']]);
+        $from = $this->filters['from'] ?? null;
+        $to = $this->filters['to'] ?? null;
+
+        if ($from && $to) {
+            $query = $query->filter(function($line) use($from, $to) {
+                return $line->journal->date >= $from && $line->journal->date <= $to;
+            });
         }
 
         return $query->get()->map(function ($line) use($balance) {
