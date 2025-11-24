@@ -139,6 +139,17 @@ class ShippingController extends Controller
         return redirect()->back()->with('success', 'تم تحديث حالة الاستلام بنجاح');
     }
 
+    public function deletePolicy(ShippingPolicy $policy) {
+        $old = $policy->load('goods')->toArray();
+
+        $policy->goods()->delete();
+        $policy->delete();
+        
+        logActivity('حذف بوليصة شحن', "تم حذف بوليصة الشحن برقم " . $policy->code, $old, null);
+
+        return redirect()->route('shipping.policies')->with('success', 'تم حذف بوليصة الشحن بنجاح');
+    }
+
     public function reports(Request $request) {
         $policies = ShippingPolicy::all();
         $customers = Customer::all();
