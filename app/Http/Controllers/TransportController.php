@@ -100,7 +100,7 @@ class TransportController extends Controller
                 'account_id' => $supplierAccount ? $supplierAccount->id : null,
                 'debit' => 0,
                 'credit' => $transportOrder->supplier_cost,
-                'description' => 'بوليصة شحن رقم '.$transportOrder->code
+                'description' => 'اشعار نقل رقم '.$transportOrder->code
             ]);
 
             JournalEntryLine::create([
@@ -108,11 +108,11 @@ class TransportController extends Controller
                 'account_id' => $creditAccount ? $creditAccount->id : null,
                 'debit' => $transportOrder->supplier_cost,
                 'credit' => 0,
-                'description' => 'بوليصة شحن رقم '.$transportOrder->code
+                'description' => 'اشعار نقل رقم '.$transportOrder->code
             ]);
 
             $new = $journal->load('lines')->toArray();
-            logActivity('إنشاء قيد', "تم إنشاء قيد يومي برقم " . $journal->code . "من بوليصة شحن رقم " . $transportOrder->code, null, $new);
+            logActivity('إنشاء قيد', "تم إنشاء قيد يومي برقم " . $journal->code . "من اشعار نقل رقم " . $transportOrder->code, null, $new);
         }
 
         return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
