@@ -101,7 +101,7 @@
                     @foreach ($policies as $policy)
                         <tr>
                             <td class="text-center text-primary fw-bold text-nowrap">{{ $policy->code }}</td>
-                            <td class="text-center text-nowrap">
+                            <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $policy->customer) }}"
                                     class="text-dark text-decoration-none fw-bold">
                                     {{ $policy->customer->name }}
