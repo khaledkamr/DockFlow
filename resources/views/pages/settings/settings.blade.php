@@ -43,6 +43,25 @@
 
                 <div class="setting-item d-flex justify-content-between align-items-center mb-3">
                     <div>
+                        <h6>سنة البيانات</h6>
+                        <small class="text-muted">اختر السنة لعرض بياناتها</small>
+                    </div>
+                    <div>
+                        <form action="" method="POST">
+                            @csrf
+                            <select name="data_year" class="form-select border-primary" onchange="this.form.submit()">
+                                @for($year = date('Y'); $year >= date('Y') - 10; $year--)
+                                    <option value="{{ $year }}" {{ (session('data_year', date('Y')) == $year) ? 'selected' : '' }}>
+                                        {{ $year }}
+                                    </option>
+                                @endfor
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="setting-item d-flex justify-content-between align-items-center mb-3">
+                    <div>
                         <h6>منع اذن الخروج للعملاء المديونين</h6>
                         <small class="text-muted">منع إذن الخروج لاخر حاوية للعملاء الذين لديهم فواتير غير مدفوعة</small>
                     </div>

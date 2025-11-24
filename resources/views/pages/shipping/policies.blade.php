@@ -136,6 +136,38 @@
                                 <a href="{{ route('shipping.policies.details', $policy) }}" class="btn btn-sm btn-primary">
                                     عرض
                                 </a>
+                                @if(auth()->user()->roles()->first()->name === 'Super Admin')
+                                    <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal{{ $policy->id }}">
+                                        حذف
+                                    </button>
+                                @endif
+
+                                <!-- Delete Modal -->
+                                <div class="modal fade" id="deleteModal{{ $policy->id }}" tabindex="-1" 
+                                     aria-labelledby="deleteModalLabel{{ $policy->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ $policy->id }}">تأكيد الحذف</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                        <i class="fas fa-exclamation-triangle text-warning fs-1 mb-3"></i>
+                                        <p class="mb-3">هل أنت متأكد من حذف بوليصة الشحن رقم <strong>{{ $policy->code }}</strong>؟</p>
+                                        <p class="text-muted">لا يمكن التراجع عن هذا الإجراء</p>
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                        <form method="POST" action="{{ route('shipping.policies.delete', $policy) }}" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">حذف البوليصة</button>
+                                        </form>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
