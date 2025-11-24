@@ -137,7 +137,7 @@
                         <div class="row mb-4">
                             <div class="col-12 col-sm-6 mb-2 mb-sm-0">
                                 <div class="form-check">
-                                    <input class="form-check-input border border-2 border-primary" type="checkbox" id="remember">
+                                    <input class="form-check-input border border-2 border-primary" type="checkbox" name="remember" id="remember">
                                     <label class="form-check-label fw-bold small text-muted" for="remember">
                                         تذكرني
                                     </label>
