@@ -99,6 +99,84 @@
             </tbody>
         </table>
     </div>
+
+    <div class="row g-3 mt-4 pt-2 border-top">
+        <div class="col-md-6">
+            <div class="card border-primary border-2 p-2 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-2">
+                            <i class="fa-solid fa-user-plus text-primary"></i>
+                        </div>
+                        <h6 class="card-title text-primary mb-0 fw-bold">معلومات الإنشاء</h6>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted d-block mb-1">تم الإنشاء بواسطة</small>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2">
+                                    {{ $journal->made_by ? $journal->made_by->name : 'غير محدد' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block mb-1">تاريخ الإنشاء</small>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="text-dark fw-semibold">
+                                    {{ $journal->created_at ? $journal->created_at->timezone(auth()->user()->timezone)->format('Y/m/d') : 'غير محدد' }}
+                                </span>
+                                @if($journal->created_at)
+                                    <span class="badge bg-primary rounded-pill">
+                                        {{ $journal->created_at->timezone(auth()->user()->timezone)->format('h:i A') }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card border-info border-2 p-2 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-2">
+                            <i class="fa-solid fa-pen-to-square text-info"></i>
+                        </div>
+                        <h6 class="card-title text-info mb-0 fw-bold">آخر تعديل</h6>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted d-block mb-1">تم التعديل بواسطة</small>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-info bg-opacity-10 text-info rounded-pill px-3 py-2">
+                                    {{ $journal->modified_by ? $journal->modified_by->name : 'لا يوجد تعديل' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block mb-1">تاريخ التعديل</small>
+                            <div class="d-flex align-items-center gap-2">
+                                @if($journal->updated_at && $journal->updated_at != $journal->created_at)
+                                <span class="text-dark fw-semibold">
+                                    {{ $journal->updated_at->timezone(auth()->user()->timezone)->format('Y/m/d') }}
+                                </span>
+                                <span class="badge bg-info rounded-pill">
+                                    {{ $journal->updated_at->timezone(auth()->user()->timezone)->format('h:i A') }}
+                                </span>
+                                @else
+                                <span class="text-muted fst-italic">لا يوجد تعديل</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
