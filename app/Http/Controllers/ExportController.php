@@ -175,7 +175,7 @@ class ExportController extends Controller
 
         logActivity('طباعة فاتورة خدمات', "تم طباعة فاتورة الخدمات رقم " . $invoice->code);
 
-        return view('reports.invoiceServices', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
+        return view('reports.invoiceServices', compact('company', 'invoice', 'discountValue', 'qrCode', 'hatching_total'));
     }
 
     public function printClearanceInvoice($code) {
