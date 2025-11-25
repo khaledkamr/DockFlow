@@ -72,6 +72,7 @@ class DashboardController extends Controller
         $receipt_vouchers_amount = $policies->where('type', 'سند صرف نقدي')->sum('amount');
         $payment_vouchers_amount = $policies->where('type', 'سند قبض نقدي')->sum('amount');
         
+        $balance = 0;
         $balanceBox = 0;
         $vouchersBox = Voucher::where('type', 'سند قبض نقدي')
             ->orWhere('type', 'سند صرف نقدي')

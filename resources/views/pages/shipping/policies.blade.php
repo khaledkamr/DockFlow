@@ -146,26 +146,25 @@
                                 <!-- Delete Modal -->
                                 <div class="modal fade" id="deleteModal{{ $policy->id }}" tabindex="-1" 
                                      aria-labelledby="deleteModalLabel{{ $policy->id }}" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                        <h5 class="modal-title" id="deleteModalLabel{{ $policy->id }}">تأكيد الحذف</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold" id="deleteModalLabel{{ $policy->id }}">تأكيد الحذف</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <i class="fas fa-exclamation-triangle text-warning fs-1 mb-3"></i>
+                                                <p class="mb-3">هل أنت متأكد من حذف بوليصة الشحن رقم <strong>{{ $policy->code }}</strong>؟</p>
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                                <form method="POST" action="{{ route('shipping.policies.delete', $policy) }}" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">حذف البوليصة</button>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <div class="modal-body text-center">
-                                        <i class="fas fa-exclamation-triangle text-warning fs-1 mb-3"></i>
-                                        <p class="mb-3">هل أنت متأكد من حذف بوليصة الشحن رقم <strong>{{ $policy->code }}</strong>؟</p>
-                                        <p class="text-muted">لا يمكن التراجع عن هذا الإجراء</p>
-                                        </div>
-                                        <div class="modal-footer justify-content-center">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                        <form method="POST" action="{{ route('shipping.policies.delete', $policy) }}" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">حذف البوليصة</button>
-                                        </form>
-                                        </div>
-                                    </div>
                                     </div>
                                 </div>
                             </td>
@@ -180,6 +179,8 @@
         <i class="fa-solid fa-arrows-left-right me-1"></i>
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>
+
+    <div class="mb-5"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

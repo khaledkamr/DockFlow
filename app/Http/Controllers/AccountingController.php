@@ -113,10 +113,19 @@ class AccountingController extends Controller
             $vouchers = $vouchers->where('type', 'سند صرف بشيك');
         }
         elseif(request()->query('view') == 'الصندوق') {
-            $vouchers = $vouchers->where('type', 'سند قبض نقدي')->orWhere('type', 'سند صرف نقدي');
+            $vouchers = $vouchers->filter(function($voucher) {
+                return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
+            });
         }
         
-        return view('pages.accounting.entries', compact('accounts', 'vouchers', 'balance', 'journals', 'balanceArray', 'company'));
+        return view('pages.accounting.entries', compact(
+            'accounts', 
+            'vouchers', 
+            'balance', 
+            'journals', 
+            'balanceArray', 
+            'company'
+        ));
     }
 
     public function createJournal(JournalRequest $request) {

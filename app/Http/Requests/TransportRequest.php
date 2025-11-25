@@ -28,12 +28,12 @@ class TransportRequest extends FormRequest
             'to' => 'required|string',
             'duration' => 'nullable|string',
             'client_cost' => 'required|numeric|min:0',
-            'notes' => 'nullable|string',
             'supplier_cost' => 'nullable|numeric|min:0',
             'diesel_cost' => 'nullable|numeric|min:0',
             'driver_wage' => 'nullable|numeric|min:0',
             'other_expenses' => 'nullable|numeric|min:0',
             'user_id' => 'required|exists:users,id',
+            'notes' => 'nullable|string',
         ];
     }
 }

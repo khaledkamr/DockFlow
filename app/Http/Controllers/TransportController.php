@@ -118,6 +118,32 @@ class TransportController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
     }
 
+    public function updateTransportOrder(Request $request, TransportOrder $transportOrder) {
+        $validated = $request->validate([
+            'from' => 'required|string',
+            'to' => 'required|string',
+            'type' => 'required|string',
+            'driver_id' => 'required_if:type,ناقل داخلي|nullable|exists:drivers,id',
+            'vehicle_id' => 'required_if:type,ناقل داخلي|nullable|exists:vehicles,id',
+            'supplier_id' => 'required_if:type,ناقل خارجي|nullable|exists:suppliers,id',
+            'driver_name' => 'nullable|string',
+            'driver_contact' => 'nullable|string',
+            'vehicle_plate' => 'nullable|string',
+            'client_cost' => 'required|numeric|min:0',
+            'supplier_cost' => 'nullable|numeric|min:0',
+            'diesel_cost' => 'nullable|numeric|min:0',
+            'driver_wage' => 'nullable|numeric|min:0',
+            'other_expenses' => 'nullable|numeric|min:0',
+        ]);
+
+        $old = $transportOrder->toArray();
+        $transportOrder->update($validated);
+        $new = $transportOrder->toArray();
+        logActivity('تحديث اشعار النقل', "تم تحديث بيانات اشعار النقل رقم " . $transportOrder->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات اشعار النقل بنجاح');
+    }
+
     public function updateNotes(Request $request, TransportOrder $transportOrder) {
         $request->validate([
             'notes' => 'nullable|string',
@@ -133,7 +159,13 @@ class TransportController extends Controller
 
     public function transportOrderDetails(TransportOrder $transportOrder) {
         $transportOrder->load('driver', 'vehicle', 'containers.containerType');
-        return view('pages.transportOrders.transportOrderDetails', compact('transportOrder'));
+        $drivers = Driver::all();
+        $suppliers = Supplier::all();
+        return view('pages.transportOrders.transportOrderDetails', compact(
+            'transportOrder',
+            'drivers',
+            'suppliers'
+        ));
     }
 
     public function driversAndVehicles(Request $request) {

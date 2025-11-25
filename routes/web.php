@@ -8,6 +8,7 @@ use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpenseInvoiceController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
@@ -113,6 +114,7 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::get('/transport/orders', 'transportOrders')->name('transactions.transportOrders');
     Route::get('/transport/orders/create', 'createTransportOrder')->name('transactions.transportOrders.create');
     Route::post('/transport/orders/store', 'storeTransportOrder')->name('transportOrders.store');
+    Route::patch('/transport/orders/update/{transportOrder:uuid}', 'updateTransportOrder')->name('transportOrders.update');
     Route::patch('/transport/orders/{transportOrder:uuid}/update-notes', 'updateNotes')->name('transportOrders.notes');
     Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
     Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('relation.drivers.vehicles');
@@ -189,6 +191,15 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoices/shipping/{invoice:uuid}', 'shippingInvoiceDetails')->name('invoices.shipping.details');
     
     Route::get('/invoices/reports', 'invoicesReports')->name('invoices.reports');
+});
+
+Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(function () {
+    Route::get('/expense/invoices', 'invoices')->name('expense.invoices');
+    Route::get('/expense/invoices/create', 'createInvoice')->name('expense.invoices.create');
+    Route::post('/expense/invoices/store', 'storeInvoice')->name('expense.invoices.store');
+    Route::get('/expense/invoice/{invoice:uuid}', 'invoiceDetails')->name('expense.invoices.details');
+    Route::delete('/expense/invoice/delete/{invoice:uuid}', 'deleteInvoice')->name('expense.invoices.delete');
+    Route::get('/expense/invoices/reports', 'reports')->name('expense.invoices.reports');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
