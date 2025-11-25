@@ -1,5 +1,5 @@
 <div class="row g-3 mb-4">
-    <div class="col-12 col-lg-6">
+    <div class="col-12 col-md-6">
         <form method="GET" action="" class="d-flex flex-column h-100">
             <div class="d-flex flex-grow-1">
                 <input type="text" name="journal_search" class="form-control border-primary"
@@ -10,6 +10,24 @@
                 </button>
             </div>
         </form>
+    </div>
+    <div class="col-12 col-md-4 d-none d-sm-block">
+        <form method="GET" action="" class="d-flex flex-column">
+            <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
+                <option value="all" {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
+                    جميع القيود
+                </option>
+            </select>
+            @if (request()->query('search'))
+                <input type="hidden" name="search" value="{{ request()->query('search') }}">
+            @endif
+        </form>
+    </div>
+    <div class="col-12 col-md-2">
+        <a href="{{ route('money.create.journal') }}" class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-plus me-2"></i>
+            <span>إضافة قيد</span>
+        </a>
     </div>
 </div>
 
@@ -48,9 +66,6 @@
                             <a href="{{ route('journal.details', $journal) }}" 
                                 class="btn btn-sm btn-primary">
                                 عرض
-                            </a>
-                            <a class="btn btn-sm btn-secondary">
-                                طباعة
                             </a>
                             <a href="{{ route('journal.edit', $journal) }}" class="btn btn-sm btn-success" type="button">
                                 تعديل

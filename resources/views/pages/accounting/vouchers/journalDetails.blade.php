@@ -9,9 +9,9 @@
     <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
         <h5 class="fw-bold">{{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
-            <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
+            {{-- <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                 <i class="fa-solid fa-file-excel"></i>
-            </button>
+            </button> --}}
 
             <form action="{{ route('print', 'journal_entry') }}" method="POST" target="_blank">
                 @csrf

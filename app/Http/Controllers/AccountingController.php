@@ -128,7 +128,12 @@ class AccountingController extends Controller
         ));
     }
 
-    public function createJournal(JournalRequest $request) {
+    public function createJournal() {
+        $accounts = Account::where('level', 5)->get();
+        return view('pages.accounting.create_journal', compact('accounts'));
+    }
+
+    public function storeJournal(JournalRequest $request) {
         if(Gate::denies('إنشاء قيود وسندات')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء قيود');
         }
@@ -176,7 +181,7 @@ class AccountingController extends Controller
         $new = $journalEntry->load('lines')->toArray();
         logActivity('إنشاء قيد', "تم إنشاء قيد جديد برقم " . $journalEntry->code, null, $new);
 
-        return redirect()->back()->with('success', 'تم إضافة القيد بنجاح');
+        return redirect()->back()->with('success', 'تم إنشاء قيد جديد بنجاح, <a class="text-white fw-bold" href="'.route('journal.details', $journalEntry).'">عرض القيد</a>');
     }
 
     public function editJournal(JournalEntry $journal) {

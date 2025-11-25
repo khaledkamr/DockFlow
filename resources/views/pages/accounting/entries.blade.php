@@ -6,7 +6,6 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <style>
     .select2-container .select2-selection {
         height: 38px;       
@@ -19,12 +18,13 @@
     }
 </style>
 
-@if(request()->query('view', 'قيود يومية') == 'قيود يومية')
+<h1 class="mb-4">القيود والسندات</h1>
+
+{{-- @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
     @include('pages.accounting.vouchers.journal_form')
 @else
     @include('pages.accounting.vouchers.voucher_form')
-@endif
-
+@endif --}}
 
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
@@ -60,6 +60,8 @@
 @elseif(request()->query('view') == 'الصندوق')
     @include('pages.accounting.vouchers.box')
 @endif
+
+<div class="mb-5"></div>
 
 <script>
     $('#account_name').select2({
