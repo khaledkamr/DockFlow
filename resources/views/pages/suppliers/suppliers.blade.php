@@ -114,18 +114,6 @@
                 <option value="all" {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
                     جميع الموردين
                 </option>
-                <option value="professor" {{ request()->query('role') === 'professor' ? 'selected' : '' }}>
-                    Professors
-                </option>
-                <option value="admin" {{ request()->query('role') === 'admin' ? 'selected' : '' }}>
-                    Admins
-                </option>
-                <option value="student" {{ request()->query('role') === 'student' ? 'selected' : '' }}>
-                    Students
-                </option>
-                <option value="parent" {{ request()->query('role') === 'parent' ? 'selected' : '' }}>
-                    Parents
-                </option>
             </select>
             @if (request()->query('search'))
                 <input type="hidden" name="search" value="{{ request()->query('search') }}">
@@ -167,22 +155,6 @@
                             @enderror
                         </div>
                         <div class="col-12 col-md-6">
-                            <label for="account_id" class="form-label">نوع المورد</label>
-                            <select name="account_id" class="form-select border-primary">
-                                <option value="">اختر نوع المورد</option>
-                                @foreach ($supplierAccounts as $account)
-                                    <option value="{{ $account->id }}" {{ old('account_id') == $account->id ? 'selected' : '' }}>
-                                        {{ $account->code }} - {{ $account->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('account_id')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
                             <label for="CR" class="form-label">السجل التجاري</label>
                             <input type="text" class="form-control border-primary" id="CR" name="CR"
                                 value="{{ old('CR') }}">
@@ -198,9 +170,7 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6">
                             <label for="national_address" class="form-label">العنوان الوطني</label>
                             <input type="text" class="form-control border-primary" id="national_address"
                                 name="national_address" value="{{ old('national_address') }}">
@@ -208,7 +178,7 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6">
                             <label for="phone" class="form-label">رقم الهاتف</label>
                             <input type="text" class="form-control border-primary" id="phone" name="phone"
                                 value="{{ old('phone') }}">
@@ -216,7 +186,7 @@
                                 <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6">
                             <label for="email" class="form-label">البريد الإلكتروني</label>
                             <input type="text" class="form-control border-primary" id="email" name="email"
                                 value="{{ old('email') }}">

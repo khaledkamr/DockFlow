@@ -31,11 +31,11 @@ class SupplierController extends Controller
     }
 
     public function storeSupplier(SupplierRequest $request) {
-        if(Account::where('name', 'الموردين')->doesntExist()) {
-            return redirect()->back()->with('error', 'يرجى إنشاء حساب الموردين أولاً من شاشة الحسابات');
+        if(Account::where('name', 'حسابات دائنة تحت التسوية')->doesntExist()) {
+            return redirect()->back()->with('error', 'يرجى إنشاء حساب حسابات دائنة تحت التسوية أولاً من شاشة الحسابات');
         }
 
-        $accountId = Account::where('id', $request->account_id)->first()->id;
+        $accountId = Account::where('name', 'حسابات دائنة تحت التسوية')->where('level', 4)->first()->id;
         $lastSupplier = Account::where('parent_id', $accountId)->latest('id')->first();
         if($lastSupplier) {
             $code = (string)((int)$lastSupplier->code + 1);
@@ -44,7 +44,7 @@ class SupplierController extends Controller
             $code = $code . '0001';
         }
         $account = Account::create([
-            'name' => $request->name,
+            'name' => $request->name . " - تحت التسوية",
             'code' => $code,
             'parent_id' => $accountId,
             'type_id' => 1,
