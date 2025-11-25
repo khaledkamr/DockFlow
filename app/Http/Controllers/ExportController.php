@@ -188,30 +188,15 @@ class ExportController extends Controller
         $invoice = Invoice::with('containers')->where('code', $code)->first();
         $company = $invoice->company;
 
-        $amountBeforeTax = 0;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        foreach($invoice->containers as $container) {
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
-            $container->total = $services;
-            $amountBeforeTax += $container->total;  
-        }
-
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
-
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
@@ -243,7 +228,7 @@ class ExportController extends Controller
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
