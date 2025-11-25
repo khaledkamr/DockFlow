@@ -93,7 +93,7 @@
 <div class="border border-dark border-2 border-dark rounded-3 p-4 bg-light mt-4">
     <div class="d-flex justify-content-between align-items-center py-2">
         <span class="fw-semibold text-secondary">الإجمالي قبل الضريبة</span>
-        <span class="fw-bold text-dark">{{ number_format($invoice->subtotal, 2) }} ر.س</span>
+        <span class="fw-bold text-dark">{{ number_format($invoice->amount_before_tax, 2) }} ر.س</span>
     </div>
     <div class="d-flex justify-content-between align-items-center py-2">
         <span class="fw-semibold text-secondary">الضريبة المضافة (15%)</span>
