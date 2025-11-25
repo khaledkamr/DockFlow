@@ -235,19 +235,9 @@ class ExportController extends Controller
             })
             ->first();
 
-        $amountBeforeTax = 0;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        foreach($transaction->items as $item) {
-            $amountBeforeTax += $item->total;
-        }
-
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
-
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
