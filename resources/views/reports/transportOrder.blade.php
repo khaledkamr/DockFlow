@@ -10,7 +10,7 @@
 <!-- بيانات الاتفاقية -->
 <div class="row g-3 mb-4">
     <div class="col-12">
-        <div class="border rounded-3 p-3 bg-light h-100">
+        <div class="border border-dark rounded-3 p-3 bg-light h-100">
             <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات العميل</h6>
             <div class="row">
                 <div class="col">
@@ -61,7 +61,7 @@
 <div class="mb-5">
     <h6 class="fw-bold text-dark mb-3">جميع الردود</h6>
     <div class="table-responsive">
-        <table class="table table-bordered table-hover mb-0">
+        <table class="table table-bordered border-dark table-hover mb-0">
             <thead class="table-dark">
                 <tr class="text-center">
                     <th class="fw-bold">#</th>
@@ -91,7 +91,7 @@
 
 <!-- الشروط والأحكام -->
 <div class="mb-4">
-    <div class="border rounded p-3 bg-light">
+    <div class="border border-dark rounded p-3 bg-light">
         <h6 class="fw-bold text-dark mb-3">الشروط والأحكام</h6>
         <ul class="list-unstyled mb-0">
             <li class="mb-2">• المحتوبات المشار إليها أعله تقع على مسؤولية العميل ولا تقع على مسؤولية الناقل.</li>
@@ -102,7 +102,7 @@
 
 <!-- معلومات الوصول والتفريغ -->
 <div class="mb-4">
-    <div class="border rounded p-3 bg-light">
+    <div class="border border-dark rounded p-3 bg-light">
         <h6 class="fw-bold text-dark mb-3">معلومات الوصول والتفريغ</h6>
         <div class="row">
             <div class="col-md-6 text-start">
