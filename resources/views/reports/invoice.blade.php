@@ -81,7 +81,7 @@
                         <td class="text-center small">{{ number_format($container->storage_price, 2) }}</td>
                         <td class="text-center small">{{ $container->late_days }}</td>
                         <td class="text-center small">{{ number_format($container->late_fee, 2) }}</td>
-                        <td class="text-center small">{{ number_format($services, 2) }}</td>
+                        <td class="text-center small">{{ number_format($container->total_services, 2) }}</td>
                         <td class="text-center small fw-semibold">{{ number_format($container->total, 2) }}</td>
                     </tr>
                 @endforeach

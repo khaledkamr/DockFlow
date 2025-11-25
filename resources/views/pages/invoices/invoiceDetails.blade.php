@@ -215,7 +215,7 @@
                                     <td class="text-center fw-bold">{{ number_format($container->storage_price, 2) }}</td>
                                     <td class="text-center fw-bold">{{ $container->late_days }}</td>
                                     <td class="text-center fw-bold">{{ number_format($container->late_fee, 2) }}</td>
-                                    <td class="text-center fw-bold">{{ number_format($services, 2) }}</td>
+                                    <td class="text-center fw-bold">{{ number_format($container->total_services, 2) }}</td>
                                     <td class="text-center text-primary fw-bold">{{ number_format($container->total, 2) }}
                                         <i data-lucide="saudi-riyal"></i></td>
                                 </tr>

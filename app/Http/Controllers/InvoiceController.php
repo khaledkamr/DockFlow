@@ -399,6 +399,7 @@ class InvoiceController extends Controller
             foreach($container->services as $service) {
                 $services += $service->pivot->price;
             }
+            $container->total_services = $services;
             $container->total = $container->storage_price + $container->late_fee + $services;
             $amountBeforeTax += $container->total;  
         }
