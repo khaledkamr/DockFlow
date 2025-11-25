@@ -136,6 +136,29 @@ class ExportController extends Controller
         $invoice = Invoice::with('containers')->where('code', $code)->first();
         $company = $invoice->company;
 
+        $amountBeforeTax = 0;
+
+        foreach($invoice->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+            if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
+                    ->diffInDays(Carbon::parse($container->exit_date));
+                $container->late_days = $days;
+                $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+            } else {
+                $container->late_days = 'لا يوجد';
+                $container->late_fee = 0;
+            }
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total = $container->storage_price + $container->late_fee + $services;
+            $amountBeforeTax += $container->total;  
+        }
+
         $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
