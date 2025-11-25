@@ -124,7 +124,7 @@
 <div class="border border-2 border-dark rounded-3 p-4 bg-light mt-4">
     <div class="d-flex justify-content-between align-items-center py-2">
         <span class="fw-semibold text-secondary">الإجمالي قبل الضريبة</span>
-        <span class="fw-bold text-dark">{{ number_format($invoice->subtotal, 2) }} ر.س</span>
+        <span class="fw-bold text-dark">{{ number_format($invoice->amount_before_tax, 2) }} ر.س</span>
     </div>
     <div class="d-flex justify-content-between align-items-center py-2">
         <span class="fw-semibold text-secondary">الضريبة المضافة (15%)</span>
@@ -136,7 +136,7 @@
     </div>
     <div class="d-flex justify-content-between align-items-center py-2 mt-3 pt-3 summary-total">
         <span class="fw-bold fs-5 text-dark">الإجمالي بعد الضريبة</span>
-        <span class="fw-bold fs-4 text-dark">{{ number_format($invoice->total, 2) }} ر.س</span>
+        <span class="fw-bold fs-4 text-dark">{{ number_format($invoice->total_amount, 2) }} ر.س</span>
     </div>
     <div class="text-center mt-3 pt-3 border-top">
         <span class="text-muted fst-italic">{{ $hatching_total }}</span>
