@@ -36,6 +36,10 @@ class Account extends Model
         return $this->hasMany(JournalEntryLine::class, 'account_id');
     }
 
+    public function customer() {
+        return $this->hasOne(Customer::class, 'account_id');
+    }
+
     public function calculateBalance($from = null, $to = null) {
         $ids = $this->getAllChildrenIds();
         $ids[] = $this->id;

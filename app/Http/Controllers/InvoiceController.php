@@ -451,7 +451,7 @@ class InvoiceController extends Controller
         } else {
             $incomeAccount = Account::where('name', 'ايرادات متنوعة')->where('level', 5)->first();
         }
-        $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+        $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من الايرادات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
             'date' => Carbon::now(),
@@ -507,7 +507,7 @@ class InvoiceController extends Controller
         $transport_revenue_Account = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
         $labor_revenue_Account = Account::where('name', 'ايرادات اجور عمال')->where('level', 5)->first();
         $saber_revenue_Account = Account::where('name', 'ايرادات خدمات سابر')->where('level', 5)->first();
-        $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+        $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من الايرادات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
             'date' => Carbon::now(),

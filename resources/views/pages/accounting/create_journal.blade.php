@@ -3,7 +3,12 @@
 @section('title', 'إنشاء قيد يومي')
 
 @section('content')
-<h1 class="mb-4">إنشاء قيد يومي</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>إنشاء قيد يومي</h1>
+    <a href="{{ route('money.entries') }}" class="btn btn-outline-secondary">
+        العودة للقيود <i class="fas fa-arrow-left"></i> 
+    </a>
+</div>
 
 <style>
     .bg-unbalanced {
@@ -45,10 +50,10 @@
             <thead>
                 <tr class="table-secondary">
                     <th class="text-center" width="25%">اسم الحساب</th>
-                    <th class="text-center" width="20%">رقم الحساب</th>
-                    <th class="text-center" width="10%">مديــن</th>
-                    <th class="text-center" width="10%">دائــن</th>
-                    <th class="text-center" width="30%">البيـــان</th>
+                    <th class="text-center" width="15%">رقم الحساب</th>
+                    <th class="text-center" width="15%">مديــن</th>
+                    <th class="text-center" width="15%">دائــن</th>
+                    <th class="text-center" width="25%">البيـــان</th>
                     <th class="text-center" width="5%">إجراءات</th>
                 </tr>
             </thead>
@@ -68,7 +73,7 @@
                         <td><input type="text" name="account_code[]" class="form-control account_code"></td>
                         <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center"></td>
                         <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center"></td>
-                        <td><input type="text" name="description[]" class="form-control"></td>
+                        <td><textarea name="description[]" class="form-control" rows="1" style="resize: none; overflow: hidden;" onInput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea></td>
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm remove-row">حذف</button>
                         </td>
