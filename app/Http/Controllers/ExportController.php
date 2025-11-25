@@ -136,42 +136,15 @@ class ExportController extends Controller
         $invoice = Invoice::with('containers')->where('code', $code)->first();
         $company = $invoice->company;
 
-        $amountBeforeTax = 0;
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
-        foreach($invoice->containers as $container) {
-            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
-            if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
-                $days = (int) Carbon::parse($container->date)
-                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
-                    ->diffInDays(Carbon::parse($container->exit_date));
-                $container->late_days = $days;
-                $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
-            } else {
-                $container->late_days = 'لا يوجد';
-                $container->late_fee = 0;
-            }
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
-            $container->total = $container->storage_price + $container->late_fee + $services;
-            $amountBeforeTax += $container->total;  
-        }
-
-        $invoice->subtotal = $amountBeforeTax;
-        $invoice->tax = $amountBeforeTax * 0.15;
-        $invoice->total = $amountBeforeTax + $invoice->tax;
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->total;
-        $invoice->total -= $discountValue;
-
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total, 2));
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
             $invoice->company->name,
             $invoice->company->vatNumber,
             $invoice->created_at->toIso8601String(),
-            number_format($invoice->total, 2, '.', ''),
+            number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
 
