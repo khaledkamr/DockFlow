@@ -142,9 +142,12 @@
                             </td>
                         </tr>
                     @else
-                        @foreach ($containers as $index => $container)
+                        @php
+                            $index = 1;
+                        @endphp
+                        @foreach ($containers as $container)
                             <tr>
-                                <td class="text-center text-nowrap">{{ $index + 1 }}</td>
+                                <td class="text-center text-nowrap">{{ $index++ }}</td>
                                 <td class="text-center fw-bold text-nowrap">
                                     <a href="{{ route('container.details', $container) }}" class="text-decoration-none">
                                         {{ $container->code }}
