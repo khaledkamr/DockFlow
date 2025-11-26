@@ -26,8 +26,11 @@ class ShippingController extends Controller
                 $matchCode = stripos($policy->code, $search) !== false;
                 $matchCustomer = stripos($policy->customer->name, $search) !== false;
                 $matchDate = stripos($policy->date, $search) !== false;
+                $matchContainer = $policy->goods->filter(function($good) use ($search) {
+                    return stripos($good->description, $search) !== false;
+                })->isNotEmpty();
 
-                return $matchCode || $matchCustomer || $matchDate;
+                return $matchCode || $matchCustomer || $matchDate || $matchContainer;
             });
         }
 
