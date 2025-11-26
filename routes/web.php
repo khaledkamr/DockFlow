@@ -191,6 +191,9 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('/invoices/shipping/{invoice:uuid}', 'shippingInvoiceDetails')->name('invoices.shipping.details');
     
     Route::get('/invoices/reports', 'invoicesReports')->name('invoices.reports');
+
+    Route::post('/invoices/{invoice:uuid}/add/file', 'attachFile')->name('invoices.add.file');
+    Route::delete('/invoices/file/delete/{attachment:id}', 'deleteAttachment')->name('invoices.delete.file');
 });
 
 Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(function () {

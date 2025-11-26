@@ -7,6 +7,7 @@ use App\Helpers\QrHelper;
 use App\Http\Requests\ClaimRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Account;
+use App\Models\Attachment;
 use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
@@ -20,6 +21,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
@@ -815,5 +817,37 @@ class InvoiceController extends Controller
         logActivity('حذف فاتورة', "تم حذف الفاتورة رقم " . $name, null, $invoice->toArray());
 
         return redirect()->back()->with('success', 'تم حذف الفاتورة ' . $name . ' بنجاح');
+    }
+
+    public function attachFile(Request $request, Invoice $invoice) {
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/invoices/' . $invoice->id, $fileName, 'public');
+            
+            $invoice->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+
+            logActivity('إرفاق ملف بالفاتورة', "تم إرفاق مستند " . $fileName . " إلى الفاتورة رقم: " . $invoice->code);
+
+            return redirect()->back()->with('success', 'تم إرفاق الملف بنجاح');
+        }
+
+        return redirect()->back()->with('error', 'لم يتم إرفاق أي ملف' );
+    }
+
+    public function deleteAttachment(Attachment $attachment) {
+        if (Storage::disk('public')->exists($attachment->file_path)) {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
+        $attachment->delete();
+
+        logActivity('حذف ملف من الفاتورة', "تم حذف الملف " . $attachment->original_name . " من الفاتورة رقم " . $attachment->attachable->code);
+
+        return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
     }
 }

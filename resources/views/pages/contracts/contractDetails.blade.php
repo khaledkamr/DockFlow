@@ -626,43 +626,43 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
-
-                        <!-- Delete Attachment Modal -->
-                        <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
-                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title text-dark fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
-                                            تأكيد حذف المرفق
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body text-dark">
-                                        <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
-                                        <div class="alert alert-warning">
-                                            <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <strong>{{ $attachment->file_name }}</strong>
-                                            <br>
-                                            <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
+                                
+                                <!-- Delete Attachment Modal -->
+                                <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
+                                    aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title text-dark fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                                    تأكيد حذف المرفق
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-dark">
+                                                <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
+                                                <div class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                                    <strong>{{ $attachment->file_name }}</strong>
+                                                    <br>
+                                                    <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                <form action="{{ route('contracts.delete.attachment', $attachment) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
+                                                        حذف المرفق
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
+                                                    إلغاء
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
-                                        <form action="{{ route('contracts.delete.attachment', $attachment) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
-                                                حذف المرفق
-                                            </button>
-                                        </form>
-                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
-                                            إلغاء
-                                        </button>
-                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
                         </div>
                     @else
                         <div class="text-center py-4">

@@ -58,6 +58,10 @@ class Invoice extends Model
         return $this->hasMany(ClearanceInvoiceItem::class, 'invoice_id');
     }
 
+    public function attachments() {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     protected static function booted()
     {
         static::creating(function ($invoice) {
@@ -71,6 +75,15 @@ class Invoice extends Model
                 $newNumber = 1;
             }
             $invoice->code = $year . $prefix . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        });
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($model) {
+            $model->attachments()->delete();
         });
     }
 }
