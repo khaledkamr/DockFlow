@@ -10,8 +10,10 @@ use App\Models\Account;
 use App\Http\Requests\RootRequest;
 use App\Http\Requests\JournalRequest;
 use App\Http\Requests\VoucherRequest;
+use App\Models\Attachment;
 use App\Models\Company;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
@@ -178,6 +180,21 @@ class AccountingController extends Controller
             ]);
         }
 
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/journal_entries/' . $journalEntry->id, $fileName, 'public');
+
+            $attachment = $journalEntry->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id'   => Auth::user()->id,
+            ]);
+
+            logActivity('إضافة مرفق', "تم إضافة مرفق جديد للقيد رقم " . $journalEntry->code, null, $attachment->toArray());
+        }
+
         $new = $journalEntry->load('lines')->toArray();
         logActivity('إنشاء قيد', "تم إنشاء قيد جديد برقم " . $journalEntry->code, null, $new);
 
@@ -236,6 +253,47 @@ class AccountingController extends Controller
         
         logActivity('حذف قيد', "تم حذف القيد رقم " . $journal->code, $old, null);
         return redirect()->route('money.entries')->with('success', 'تم حذف القيد بنجاح');
+    }
+
+    public function attachFileToJournal(Request $request, JournalEntry $journal) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإضافة مرفقات للقيود');
+        }
+
+        $request->validate([
+            'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+        ]);
+
+        $file = $request->file('attachment');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('attachments/journal_entries/' . $journal->id, $fileName, 'public');
+
+        $attachment = $journal->attachments()->create([
+            'file_path' => $filePath,
+            'file_name' => $fileName,
+            'file_type' => $file->getClientMimeType(),
+            'user_id'   => Auth::user()->id,
+        ]);
+
+        logActivity('إضافة مرفق', "تم إضافة مرفق جديد للقيد رقم " . $journal->code, null, $attachment->toArray());
+
+        return redirect()->back()->with('success', 'تم إضافة المرفق بنجاح');
+    }
+
+    public function deleteJournalAttachment(Attachment $attachment) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف مرفقات القيود');
+        }
+
+        if (Storage::disk('public')->exists($attachment->file_path)) {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
+
+        $attachment->delete();
+
+        logActivity('حذف مرفق', "تم حذف المرفق " . $attachment->file_name . " من القيد" . $attachment->attachable->code);
+
+        return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
 
     public function createVoucher(VoucherRequest $request) {

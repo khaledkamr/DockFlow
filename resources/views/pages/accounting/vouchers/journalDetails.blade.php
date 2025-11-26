@@ -5,7 +5,7 @@
 @section('content')
 <h1 class="mb-4">تفاصيل القيد {{ $journal->code }}</h1>
 
-<div class="bg-white p-3 rounded-3 shadow-sm border-0">
+<div class="bg-white p-3 rounded-3 shadow-sm border-0 mb-5">
     <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
         <h5 class="fw-bold">{{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
@@ -173,6 +173,143 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-4 pt-2 border-top">
+        <div class="col-12">
+            <div class="card border-primary border-2 p-2 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-2">
+                                <i class="fa-solid fa-paperclip text-primary"></i>
+                            </div>
+                            <h6 class="card-title text-primary mb-0 fw-bold">المرفقات</h6>
+                        </div>
+                        <form action="{{ route('journal.add.attachment', $journal) }}" method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+                            @csrf
+                            <input type="file" name="attachment" class="form-control form-control-sm border-primary" style="width: auto;" required>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-plus"></i> إضافة
+                            </button>
+                        </form>
+                    </div>
+                    
+                    @if($journal->attachments && $journal->attachments->count() > 0)
+                        <div class="row g-3">
+                            @foreach($journal->attachments as $attachment)
+                                <div class="col-12 col-lg-6">
+                                    <div class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                @php
+                                                    $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
+                                                    $iconClass = 'fas fa-file';
+                                                    $iconColor = 'text-secondary';
+
+                                                    switch (strtolower($extension)) {
+                                                        case 'pdf':
+                                                            $iconClass = 'fas fa-file-pdf';
+                                                            $iconColor = 'text-danger';
+                                                            break;
+                                                        case 'doc':
+                                                        case 'docx':
+                                                            $iconClass = 'fas fa-file-word';
+                                                            $iconColor = 'text-primary';
+                                                            break;
+                                                        case 'xls':
+                                                        case 'xlsx':
+                                                            $iconClass = 'fas fa-file-excel';
+                                                            $iconColor = 'text-success';
+                                                            break;
+                                                        case 'jpg':
+                                                        case 'jpeg':
+                                                        case 'png':
+                                                        case 'gif':
+                                                            $iconClass = 'fas fa-file-image';
+                                                            $iconColor = 'text-info';
+                                                            break;
+                                                        case 'txt':
+                                                            $iconClass = 'fas fa-file-alt';
+                                                            $iconColor = 'text-dark';
+                                                            break;
+                                                    }
+                                                @endphp
+                                                <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1 alert-heading">{{ $attachment->file_name }}</h6>
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    أرفق بواسطة {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }} في 
+                                                    {{ $attachment->created_at->format('Y/m/d') }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ asset('storage/' . $attachment->file_path) }}"
+                                                download="{{ $attachment->file_name }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                type="button" data-bs-toggle="modal" data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
+                                                title="حذف المرفق">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Attachment Modal -->
+                                <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
+                                    aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title text-dark fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                                    تأكيد حذف المرفق
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-dark">
+                                                <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
+                                                <div class="alert alert-warning">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                                    <strong>{{ $attachment->file_name }}</strong>
+                                                    <br>
+                                                    <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                <form action="{{ route('contracts.delete.attachment', $attachment) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
+                                                        حذف المرفق
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
+                                                    إلغاء
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-3">
+                            <i class="fa-solid fa-paperclip fs-1 mb-2 text-muted"></i>
+                            <p class="mb-0">لا توجد مرفقات لهذا القيد</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

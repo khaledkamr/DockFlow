@@ -544,7 +544,7 @@
                                 @csrf
                                 <div class="flex-grow-1">
                                     <input type="file" name="attachment" class="form-control"
-                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls">
+                                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls" required>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-upload me-1"></i>
@@ -561,19 +561,10 @@
                     @if ($contract->attachments && $contract->attachments->count() > 0)
                         <div class="row g-3">
                             @foreach ($contract->attachments as $attachment)
-                                <div class="col-12 col-sm-6 col-lg-4">
-                                    <div class="attachment-card bg-light border rounded p-3 h-100 position-relative">
-                                        <form action="{{ route('contracts.delete.attachment', $attachment) }}"
-                                            method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2"
-                                                type="submit" title="حذف المرفق">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </form>
-                                        <div class="d-flex align-items-start">
-                                            <div class="file-icon me-3">
+                                <div class="col-12 col-lg-6">
+                                    <div class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
                                                 @php
                                                     $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
                                                     $iconClass = 'fas fa-file';
@@ -607,40 +598,71 @@
                                                             break;
                                                     }
                                                 @endphp
-                                                <i class="{{ $iconClass }} {{ $iconColor }}"
-                                                    style="font-size: 2rem;"></i>
+                                                <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
                                             </div>
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1 text-truncate" title="{{ $attachment->file_name }}">
-                                                    {{ Str::limit($attachment->file_name, 25) }}
-                                                </h6>
-                                                <small class="text-muted">
-                                                    <i
-                                                        class="fas fa-user me-1"></i>{{ $attachment->made_by->name ?? 'مستخدم محذوف' }}
-                                                </small>
-                                                <br>
-                                                <small class="text-muted">
-                                                    <i
-                                                        class="fas fa-calendar me-1"></i>{{ $attachment->created_at->format('Y/m/d H:i') }}
+                                            <div>
+                                                <h6 class="mb-1 alert-heading">{{ $attachment->file_name }}</h6>
+                                                <small class="text-muted" style="font-size: 0.75rem;">
+                                                    أرفق بواسطة {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }} في 
+                                                    {{ $attachment->created_at->format('Y/m/d') }}
                                                 </small>
                                             </div>
                                         </div>
-                                        <div class="mt-3 d-flex gap-2">
+                                        <div class="d-flex gap-2">
                                             <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
-                                                class="btn btn-sm btn-outline-primary flex-grow-1">
-                                                <i class="fas fa-eye me-1"></i>
-                                                عرض
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ asset('storage/' . $attachment->file_path) }}"
                                                 download="{{ $attachment->file_name }}"
-                                                class="btn btn-sm btn-outline-success flex-grow-1">
-                                                <i class="fas fa-download me-1"></i>
-                                                تحميل
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fas fa-download"></i>
                                             </a>
+                                            <button class="btn btn-sm btn-outline-danger"
+                                                type="button" data-bs-toggle="modal" data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
+                                                title="حذف المرفق">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+
+                        <!-- Delete Attachment Modal -->
+                        <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
+                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-dark fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                            تأكيد حذف المرفق
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-dark">
+                                        <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong>{{ $attachment->file_name }}</strong>
+                                            <br>
+                                            <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                        <form action="{{ route('contracts.delete.attachment', $attachment) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
+                                                حذف المرفق
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
+                                            إلغاء
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @else
                         <div class="text-center py-4">

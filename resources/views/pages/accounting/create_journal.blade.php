@@ -20,8 +20,8 @@
 
     .select2-container .select2-selection {
         height: 38px;       
-        border-radius: 8px; 
-        border: 1px solid #dddddd;
+        border-radius: 6px; 
+        border: 2px solid #dddddd;
         padding: 5px;
     }
     .select2-container .select2-selection__rendered {
@@ -29,26 +29,26 @@
     }
 </style>
 
-<form action="{{ route('store.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
+<form action="{{ route('store.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm" enctype="multipart/form-data">
     @csrf
     <div class="row mb-3">
         <div class="col">
-            <label class="form-label">الشركة</label>
-            <input type="text" class="form-control" value="{{ auth()->user()->company->name }}" disabled>
+            <label class="form-label"><i class="fas fa-building me-2"></i>الشركة</label>
+            <input type="text" class="form-control border-primary" value="{{ auth()->user()->company->name }}" disabled>
         </div>
         <div class="col">
-            <label class="form-label">الفرع</label>
-            <input type="text" class="form-control" value="{{ auth()->user()->company->branch }}" disabled>
+            <label class="form-label"><i class="fas fa-paperclip me-2"></i>المرفق</label>
+            <input type="file" name="attachment" class="form-control border-primary">
         </div>
         <div class="col">
-            <label class="form-label">تاريخ القيد</label>
-            <input type="date" class="form-control" name="date" value="{{ now()->format('Y-m-d') }}">
+            <label class="form-label"><i class="fas fa-calendar-alt me-2"></i>تاريخ القيد</label>
+            <input type="date" class="form-control border-primary" name="date" value="{{ now()->format('Y-m-d') }}">
         </div>
     </div>
-    <div style="border-radius: 8px; overflow: hidden;" class="mb-2">
+    <div class="table-container mb-2">
         <table class="table" id="journal-entries-table">
             <thead>
-                <tr class="table-secondary">
+                <tr class="table-dark">
                     <th class="text-center" width="25%">اسم الحساب</th>
                     <th class="text-center" width="15%">رقم الحساب</th>
                     <th class="text-center" width="15%">مديــن</th>
@@ -60,7 +60,7 @@
             <tbody>
                 @for($i = 0; $i < 2; $i++)
                     <tr>
-                        <td>
+                        <td class="px-2">
                             <select name="account_id[]" class="form-select account_name journal" style="width: 100%;">
                                 <option value="">-- اختر الحساب --</option>
                                 @foreach($accounts as $account)
@@ -70,20 +70,30 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td><input type="text" name="account_code[]" class="form-control account_code"></td>
-                        <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center"></td>
-                        <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center"></td>
-                        <td><textarea name="description[]" class="form-control" rows="1" style="resize: none; overflow: hidden;" onInput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea></td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-danger btn-sm remove-row">حذف</button>
+                        <td class="px-2">
+                            <input type="text" name="account_code[]" class="form-control account_code border-2">
+                        </td>
+                        <td class="px-2">
+                            <input type="text" name="debit[]" placeholder="0.00" class="form-control text-center border-2">
+                        </td>
+                        <td class="px-2">
+                            <input type="text" name="credit[]" placeholder="0.00" class="form-control text-center border-2">
+                        </td>
+                        <td class="px-2">
+                            <textarea name="description[]" class="form-control border-2" rows="1" style="resize: none; overflow: hidden;" onInput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea>
+                        </td>
+                        <td class="text-center px-2">
+                            <button type="button" class="btn btn-danger btn-sm remove-row">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
                         </td>
                     </tr>
                 @endfor
                 <tr class="table-secondary">
                     <td colspan="2" class="text-center fw-bold fs-5">الفــارق</td>
-                    <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center" value="0.00" readonly></td>
-                    <td><input type="text" id="creditSum" name="creditSum" class="form-control text-center" value="0.00" readonly></td>
-                    <td><input type="text" id="diff" name="diff" class="form-control text-center" value="0.00" readonly></td>
+                    <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center fw-bold" value="0.00" readonly></td>
+                    <td><input type="text" id="creditSum" name="creditSum" class="form-control text-center fw-bold" value="0.00" readonly></td>
+                    <td><input type="text" id="diff" name="diff" class="form-control text-center fw-bold" value="0.00" readonly></td>
                     <td></td>
                 </tr>
             </tbody>

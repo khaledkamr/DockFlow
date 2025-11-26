@@ -221,6 +221,9 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::put('accounting/journal/update/{journal:uuid}', 'updateJournal')->name('journal.update');
     Route::delete('accounting/journal/delete/{journal:uuid}', 'deleteJournal')->name('journal.delete');
 
+    Route::post('accounting/journal/{journal:uuid}/add/attachment', 'attachFileToJournal')->name('journal.add.attachment');
+    Route::delete('accounting/journal/attachment/delete/{attachment:id}', 'deleteJournalAttachment')->name('journal.delete.attachment');
+
     Route::get('accounting/reports', 'reports')->name('money.reports');
 });
 

@@ -206,7 +206,7 @@ class ContractController extends Controller
         if($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('attachments/contracts', $fileName, 'public');
+            $filePath = $file->storeAs('attachments/contracts/' . $contract->id, $fileName, 'public');
 
             $contract->attachments()->create([
                 'file_path' => $filePath,

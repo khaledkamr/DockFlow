@@ -17,10 +17,6 @@ class Attachment extends Model
         return $this->morphTo();
     }
 
-    public function contract() {
-        return $this->belongsTo(Contract::class);
-    }
-
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }

@@ -18,6 +18,7 @@ class JournalRequest extends FormRequest
             'made_by' => 'nullable',
             'modified_by' => 'nullable',
             'voucher_id' => 'nullable',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ];
     }
 }
