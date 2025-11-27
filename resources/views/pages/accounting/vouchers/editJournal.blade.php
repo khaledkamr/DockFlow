@@ -20,7 +20,7 @@
         .select2-container .select2-selection {
             height: 38px;
             border-radius: 8px;
-            border: 1px solid #dddddd;
+            border: 2px solid #dddddd;
             padding: 5px;
         }
 
@@ -42,22 +42,22 @@
         <div class="row mb-3">
             <div class="col">
                 <label class="form-label">الشركة</label>
-                <input type="text" class="form-control" value="{{ auth()->user()->company->name }}" disabled>
+                <input type="text" class="form-control border-primary" value="{{ auth()->user()->company->name }}" disabled>
             </div>
             <div class="col">
                 <label class="form-label">الفرع</label>
-                <input type="text" class="form-control" value="{{ auth()->user()->company->branch }}" disabled>
+                <input type="text" class="form-control border-primary" value="{{ auth()->user()->company->branch }}" disabled>
             </div>
             <div class="col">
                 <label class="form-label">تاريخ القيد</label>
-                <input type="date" class="form-control" name="date"
+                <input type="date" class="form-control border-primary" name="date"
                     value="{{ Carbon\Carbon::parse($journal->date)->format('Y-m-d') }}" required>
             </div>
         </div>
         <div style="border-radius: 8px; overflow: hidden;" class="mb-2">
             <table class="table" id="journal-entries-table">
                 <thead>
-                    <tr class="table-secondary">
+                    <tr class="table-dark">
                         <th class="text-center" width="25%">اسم الحساب</th>
                         <th class="text-center" width="15%">رقم الحساب</th>
                         <th class="text-center" width="15%">مديــن</th>
@@ -69,7 +69,7 @@
                 <tbody>
                     @foreach ($journal->lines as $line)
                         <tr>
-                            <td>
+                            <td class="px-2">
                                 <select name="account_id[]" class="form-select account_name" style="width: 100%;">
                                     <option value="">-- اختر الحساب --</option>
                                     @foreach ($accounts as $account)
@@ -80,28 +80,36 @@
                                     @endforeach
                                 </select>
                             </td>
-                            <td><input type="text" name="account_code[]" class="form-control account_code"
-                                    value="{{ $line->account->code }}"></td>
-                            <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center"
-                                    value="{{ $line->debit }}"></td>
-                            <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center"
-                                    value="{{ $line->credit }}"></td>
-                            <td>
-                                <textarea name="description[]" class="form-control description-field" rows="1"
+                            <td class="px-2">
+                                <input type="text" name="account_code[]" class="form-control account_code border-2"
+                                    value="{{ $line->account->code }}">
+                            </td>
+                            <td class="px-2">
+                                <input type="text" name="debit[]" placeholder="0.00" class="form-control text-center border-2"
+                                    value="{{ $line->debit }}">
+                            </td>
+                            <td class="px-2">
+                                <input type="text" name="credit[]" placeholder="0.00" class="form-control text-center border-2"
+                                    value="{{ $line->credit }}">
+                            </td>
+                            <td class="px-2">
+                                <textarea name="description[]" class="form-control description-field border-2" rows="1"
                                     style="resize: none; overflow: hidden;">{{ $line->description }}</textarea>
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-danger btn-sm remove-row">حذف</button>
+                                <button type="button" class="btn btn-danger btn-sm remove-row">
+                                   <i class="fas fa-trash-can"></i>
+                                </button>
                             </td>
                         </tr>
                     @endforeach
                     <tr class="table-secondary">
                         <td colspan="2" class="text-center fw-bold fs-5">الفــارق</td>
-                        <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center"
+                        <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center fw-bold"
                                 value="0.00" readonly></td>
-                        <td><input type="text" id="creditSum" name="creditSum" class="form-control text-center"
+                        <td><input type="text" id="creditSum" name="creditSum" class="form-control text-center fw-bold"
                                 value="0.00" readonly></td>
-                        <td><input type="text" id="diff" name="diff" class="form-control text-center"
+                        <td><input type="text" id="diff" name="diff" class="form-control text-center fw-bold"
                                 value="0.00" readonly></td>
                         <td></td>
                     </tr>
