@@ -146,8 +146,8 @@
                                     </div>
                                     <div>
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <strong class="text-muted">أعدت بواسطة:</strong>
-                                            <span class="text-muted fw-bold">{{ $invoice->made_by->name ?? '---' }}</span>
+                                            <strong class="text-muted">طريقة الدفع:</strong>
+                                            <span class="fw-bold">{{ $invoice->payment_method ?? '---' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -434,6 +434,12 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="text-center mb-3">
+        <small class="text-muted">
+            تم إنشاء هذه الفاتورة بواسطة: {{ $invoice->made_by->name ?? 'غير محدد' }}
+        </small>
     </div>
 
     <style>

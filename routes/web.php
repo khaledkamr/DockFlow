@@ -201,8 +201,12 @@ Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(fu
     Route::get('/expense/invoices/create', 'createInvoice')->name('expense.invoices.create');
     Route::post('/expense/invoices/store', 'storeInvoice')->name('expense.invoices.store');
     Route::get('/expense/invoice/{invoice:uuid}', 'invoiceDetails')->name('expense.invoices.details');
+    Route::patch('/expense/invoice/update-status/{invoice:uuid}', 'updateInvoiceStatus')->name('expense.invoices.update.status');
+    Route::patch('/expense/invoice/update-notes/{invoice:uuid}', 'updateInvoiceNotes')->name('expense.invoices.update.notes');
     Route::delete('/expense/invoice/delete/{invoice:uuid}', 'deleteInvoice')->name('expense.invoices.delete');
     Route::get('/expense/invoices/reports', 'reports')->name('expense.invoices.reports');
+    Route::post('/expense/invoice/{invoice:uuid}/add/attachment', 'attachFile')->name('expense.invoices.add.attachment');
+    Route::delete('/expense/invoice/attachment/delete/{attachment:id}', 'deleteAttachment')->name('expense.invoices.delete.attachment');
 });
 
 Route::controller(AccountingController::class)->middleware('auth')->group(function () {
@@ -244,4 +248,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/shipping/reports', 'printShippingReports')->name('print.shipping.reports');
     Route::get('/print/invoices/reports', 'printInvoiceReports')->name('print.invoices.reports');
     Route::get('/print/transaction/reports', 'printTransactionReports')->name('print.transactions.reports');
+    Route::get('/print/expense/invoice/{code}', 'printExpenseInvoice')->name('print.expense.invoice');
 });

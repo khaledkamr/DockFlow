@@ -516,7 +516,7 @@
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('shipping.policies.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('shipping.policies.create') }}">
-                            <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة شحن
+                            <i class="fa-solid fa-file-circle-plus ms-1 me-2"></i> إضافة بوليصة شحن
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('shipping.policies.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
                         href="{{ route('shipping.policies.reports') }}">
@@ -663,6 +663,33 @@
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('invoices.statements.create') ? 'bg-primary text-white' : 'text-dark' }}" 
                             href="{{ route('invoices.statements.create') }}">
                             <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء مطالبة
+                        </a>
+                    </div>
+                </li>
+            @endcan
+
+            @can('عرض الفواتير')
+                <li class="nav-item mb-1">
+                    <a class="nav-link parent-link fw-bold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['expense*']) ? '' : 'collapsed' }}" 
+                        data-bs-toggle="collapse" 
+                        href="#expense-management" 
+                        role="button" 
+                        aria-expanded="{{ request()->routeIs(['expense*']) ? 'true' : 'false' }}" 
+                        aria-controls="expense-management">
+                        <i class="fa-solid fa-shopping-cart ms-2 me-2"></i> المشـــــتريــــــــات
+                    </a>
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['expense*']) ? 'show' : '' }}" id="expense-management">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('expense.invoices') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('expense.invoices') }}">
+                            <i class="fa-solid fa-file-invoice-dollar ms-2 me-2"></i> فواتير المصاريف
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('expense.invoices.create') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('expense.invoices.create') }}">
+                            <i class="fa-solid fa-file-circle-plus  me-2"></i> إنشاء فاتورة مصاريف
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2 {{ request()->routeIs('expense.invoices.reports') ? 'bg-primary text-white' : 'text-dark' }}" 
+                            href="{{ route('expense.invoices.reports') }}">
+                            <i class="fa-solid fa-chart-bar  me-2"></i> تقارير الفواتير
                         </a>
                     </div>
                 </li>

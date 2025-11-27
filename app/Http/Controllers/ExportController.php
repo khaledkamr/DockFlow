@@ -18,12 +18,14 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
+use App\Models\ExpenseInvoice;
 use App\Models\InvoiceStatement;
 use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Exp;
 
 class ExportController extends Controller
 {
@@ -426,6 +428,17 @@ class ExportController extends Controller
         logActivity('طباعة تقرير الفواتير', "تم طباعة تقرير الفواتير بتصفية: ", $filters);
 
         return view('reports.invoice_report', compact('company', 'invoices', 'from', 'to'));
+    }
+
+    public function printExpenseInvoice($code) {
+        $invoice = ExpenseInvoice::where('code', $code)->first();
+        $company = $invoice->company;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        logActivity('طباعة فاتورة مصروفات', "تم طباعة فاتورة المصروفات رقم " . $invoice->code);
+
+        return view('reports.expense_invoice', compact('company', 'invoice', 'hatching_total'));
     }
 
     public function excel($reportType, Request $request) {
