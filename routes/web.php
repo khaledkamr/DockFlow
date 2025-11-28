@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\CostCenterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseInvoiceController;
@@ -235,6 +236,13 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::delete('accounting/journal/attachment/delete/{attachment:id}', 'deleteJournalAttachment')->name('journal.delete.attachment');
 
     Route::get('accounting/reports', 'reports')->name('money.reports');
+});
+
+Route::controller(CostCenterController::class)->middleware('auth')->group(function () {
+    Route::get('accounting/cost-centers', 'costCenters')->name('money.cost.centers');
+    Route::post('accounting/cost-centers/store', 'storeCostCenter')->name('cost.centers.store');
+    Route::put('accounting/cost-centers/update/{costCenter:id}', 'updateCostCenter')->name('cost.centers.update');
+    Route::delete('accounting/cost-centers/delete/{costCenter:id}', 'deleteCostCenter')->name('cost.centers.delete');
 });
 
 Route::controller(ExportController::class)->group(function () {

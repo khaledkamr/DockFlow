@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('expense_invoice_id')->constrained()->cascadeOnDelete();
             $table->foreignId('account_id')->constrained()->cascadeOnDelete();
             $table->string('description')->nullable();
-            $table->foreignId('cost_center_id')->nullable()->constrained('accounts')->nullOnDelete();
+            $table->foreignId('cost_center_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('quantity', 15, 2);
             $table->decimal('price', 15, 2);
             $table->decimal('amount', 15, 2);

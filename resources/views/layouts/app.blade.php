@@ -714,8 +714,8 @@
                             href="{{ route('money.tree') }}">
                             <i class="fa-solid fa-folder-tree ms-2 me-2"></i> دلـــيل الحسابـــات
                         </a>
-                        <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
-                            href="{{ route('money.reports') }}">
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.cost.centers') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
+                            href="{{ route('money.cost.centers') }}">
                             <i class="fa-solid fa-code-branch ms-2 me-2"></i> مــراكـــز التكلفـــة
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
