@@ -6,6 +6,7 @@ use App\Helpers\ArabicNumberConverter;
 use App\Http\Requests\ExpenseInvoiceRequest;
 use App\Models\Account;
 use App\Models\Attachment;
+use App\Models\CostCenter;
 use App\Models\ExpenseInvoice;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class ExpenseInvoiceController extends Controller
     public function createInvoice() {
         $suppliers = Supplier::all();
         $accounts = Account::where('level', 5)->get();
-        $costCenters = Account::where('level', 5)->get();
+        $costCenters = CostCenter::doesntHave('children')->get();
         $payment_methods = ['آجل', 'كاش', 'شيك', 'تحويل بنكي'];
 
         return view('pages.expense_invoices.create_invoices', compact(

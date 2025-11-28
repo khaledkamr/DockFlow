@@ -7,7 +7,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
 <h1 class="mb-4">القيود والسندات</h1>
 
 {{-- @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
@@ -32,7 +31,7 @@
 </ul>
 
 @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
-    @include('pages.accounting.vouchers.daily')
+    @include('pages.accounting.journal_entries.journals')
 @elseif(request()->query('view') == 'سندات قبض')
     @include('pages.accounting.vouchers.vouchers_payment')
 @elseif(request()->query('view') == 'سندات صرف')

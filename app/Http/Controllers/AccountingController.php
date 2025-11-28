@@ -132,7 +132,7 @@ class AccountingController extends Controller
 
     public function createJournal() {
         $accounts = Account::where('level', 5)->get();
-        return view('pages.accounting.create_journal', compact('accounts'));
+        return view('pages.accounting.journal_entries.create_journal', compact('accounts'));
     }
 
     public function storeJournal(JournalRequest $request) {
@@ -208,7 +208,7 @@ class AccountingController extends Controller
 
         $accounts = Account::where('level', 5)->get();
 
-        return view('pages.accounting.vouchers.editJournal', compact('journal', 'accounts'));
+        return view('pages.accounting.journal_entries.edit_journal', compact('journal', 'accounts'));
     }
 
     public function updateJournal(Request $request, JournalEntry $journal) {
@@ -240,7 +240,7 @@ class AccountingController extends Controller
     }
 
     public function journalDetails(JournalEntry $journal) {
-        return view('pages.accounting.vouchers.journalDetails', compact(
+        return view('pages.accounting.journal_entries.journal_details', compact(
             'journal'
         ));
     }
@@ -298,12 +298,12 @@ class AccountingController extends Controller
 
     public function createPaymentVoucher() {
         $accounts = Account::where('level', 5)->with('customer')->get();
-        return view('pages.accounting.create_payment_voucher', compact('accounts'));
+        return view('pages.accounting.vouchers.create_payment_voucher', compact('accounts'));
     }
 
     public function createReceiptVoucher() {
         $accounts = Account::where('level', 5)->with('customer')->get();
-        return view('pages.accounting.create_receipt_voucher', compact('accounts'));
+        return view('pages.accounting.vouchers.create_receipt_voucher', compact('accounts'));
     }
 
     public function storeVoucher(VoucherRequest $request) {
