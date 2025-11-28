@@ -14,6 +14,7 @@ use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\Invoice;
+use App\Models\JournalEntry;
 use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Policy;
@@ -105,7 +106,22 @@ class DashboardController extends Controller
     }
 
     public function masar_dashboard() {
-        return view('pages.dashboards.masar_dashboard');
+        $customers = Customer::all()->count();
+        $users = User::all()->count();
+        $contracts = Contract::all()->count();
+        $invoices = Invoice::all()->count();
+
+        $vouchers = Voucher::all()->count();
+        $journals = JournalEntry::all()->count();
+        
+        return view('pages.dashboards.masar_dashboard', compact(
+            'customers', 
+            'users', 
+            'contracts', 
+            'invoices',
+            'vouchers',
+            'journals'
+        ));
     }
 
     public function defaultDashboard() {
