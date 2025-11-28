@@ -75,7 +75,7 @@
         .sidebar .nav-link:hover {
             background: linear-gradient(135deg, #42b3af75 0%, #0b55a9d0 100%);
             color: #ffffff !important;
-            transition: 0.3s;
+            transition: 0.5s;
         }
 
         /* Main content area */
@@ -707,15 +707,19 @@
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['money*']) ? 'show' : '' }}" id="money-management">
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.entries') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
-                        href="{{ route('money.entries') }}">
+                            href="{{ route('money.entries') }}">
                             <i class="fa-solid fa-money-bill-transfer ms-2 me-2"></i> القيود والسنـدات
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.tree') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
-                        href="{{ route('money.tree') }}">
+                            href="{{ route('money.tree') }}">
                             <i class="fa-solid fa-folder-tree ms-2 me-2"></i> دلـــيل الحسابـــات
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
-                        href="{{ route('money.reports') }}">
+                            href="{{ route('money.reports') }}">
+                            <i class="fa-solid fa-code-branch ms-2 me-2"></i> مــراكـــز التكلفـــة
+                        </a>
+                        <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
+                            href="{{ route('money.reports') }}">
                             <i class="fa-solid fa-receipt ms-2 me-2"></i> تقاريـــــر القيـــــود
                         </a>
                     </div>

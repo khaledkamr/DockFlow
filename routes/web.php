@@ -59,6 +59,7 @@ Route::controller(CustomerController::class)->middleware('auth')->group(function
     Route::delete('/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
     Route::get('/customers/{id}/contract', 'getContract')->name('customers.get.contract');
     Route::get('/customers/check-service', 'checkService')->name('customer.check.service');
+    Route::get('/api/customers/account/{accountId}/invoices', 'getCustomerInvoicesByAccount')->name('api.customers.invoices.by.account');
 });
 
 Route::controller(SupplierController::class)->middleware('auth')->group(function () {
@@ -217,8 +218,10 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
 
     Route::get('accounting/entries', 'entries')->name('money.entries');
 
-    Route::post('accounting/entries/create/voucher', 'createVoucher')->name('create.voucher');
-    Route::delete('accounting/entries/delete/{id}', 'deleteVoucher')->name('delete.voucher');
+    Route::get('accounting/entries/create/voucher-payment', 'createPaymentVoucher')->name('voucher.payment.create');
+    Route::get('accounting/entries/create/voucher-receipt', 'createReceiptVoucher')->name('voucher.receipt.create');
+    Route::post('accounting/entries/store/voucher', 'storeVoucher')->name('voucher.store');
+    Route::delete('accounting/entries/delete/{id}', 'deleteVoucher')->name('voucher.delete');
     Route::get('accounting/voucher/{id}/toJournal', 'convertToJournal')->name('voucher.to.journal');
 
     Route::get('accounting/entries/create/journal', 'createJournal')->name('money.create.journal');

@@ -37,7 +37,7 @@ class Account extends Model
     }
 
     public function customer() {
-        return $this->hasOne(Customer::class, 'account_id');
+        return $this->hasOne(Customer::class);
     }
 
     public function calculateBalance($from = null, $to = null) {

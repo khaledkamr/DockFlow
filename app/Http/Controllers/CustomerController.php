@@ -144,4 +144,71 @@ class CustomerController extends Controller
             return response()->json(['exists' => false]);
         }
     }
+
+    public function getCustomerInvoicesByAccount($accountId) {
+        try {
+            // Find the account
+            $account = Account::find($accountId);
+            
+            if (!$account) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'الحساب غير موجود',
+                    'invoices' => []
+                ], 404);
+            }
+
+            // Get the customer associated with this account
+            $customer = $account->customer;
+            
+            if (!$customer) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لا يوجد عميل مرتبط بهذا الحساب',
+                    'invoices' => []
+                ], 404);
+            }
+
+            // Get all invoices for this customer
+            $invoices = $customer->invoices()
+                ->where('isPaid' , '!=', 'تم الدفع')
+                // ->where('is_posted', true)
+                ->orderBy('date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function($invoice) {
+                    return [
+                        'uuid' => $invoice->uuid,
+                        'id' => $invoice->id,
+                        'code' => $invoice->code,
+                        'type' => $invoice->type,
+                        'date' => $invoice->date,
+                        'amount_before_tax' => $invoice->amount_before_tax,
+                        'tax' => $invoice->tax,
+                        'total_amount' => $invoice->total_amount,
+                        'payment_method' => $invoice->payment_method,
+                        'isPaid' => $invoice->isPaid,
+                        'is_posted' => $invoice->is_posted,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'customer' => [
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                ],
+                'invoices' => $invoices
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء جلب الفواتير',
+                'error' => $e->getMessage(),
+                'invoices' => []
+            ], 500);
+        }
+    }
 }
+

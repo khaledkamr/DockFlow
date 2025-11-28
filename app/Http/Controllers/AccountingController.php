@@ -296,7 +296,17 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
 
-    public function createVoucher(VoucherRequest $request) {
+    public function createPaymentVoucher() {
+        $accounts = Account::where('level', 5)->with('customer')->get();
+        return view('pages.accounting.create_payment_voucher', compact('accounts'));
+    }
+
+    public function createReceiptVoucher() {
+        $accounts = Account::where('level', 5)->with('customer')->get();
+        return view('pages.accounting.create_receipt_voucher', compact('accounts'));
+    }
+
+    public function storeVoucher(VoucherRequest $request) {
         if(Gate::denies('إنشاء قيود وسندات')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء سندات');
         }

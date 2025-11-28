@@ -81,11 +81,11 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-dark">
-                                    هل انت متأكد من حذف القيض؟
+                                    هل انت متأكد من حذف القيد؟
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('delete.voucher', $journal->id) }}" method="POST">
+                                    <form action="{{ route('voucher.delete', $journal->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger">حذف</button>

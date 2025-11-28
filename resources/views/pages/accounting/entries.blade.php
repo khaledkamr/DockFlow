@@ -6,17 +6,7 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<style>
-    .select2-container .select2-selection {
-        height: 38px;       
-        border-radius: 8px; 
-        border: 1px solid #0d6efd;
-        padding: 5px;
-    }
-    .select2-container .select2-selection__rendered {
-        line-height: 30px; 
-    }
-</style>
+
 
 <h1 class="mb-4">القيود والسندات</h1>
 
@@ -31,16 +21,10 @@
         <a class="nav-link {{ request()->query('view', 'قيود يومية') === 'قيود يومية' ? 'active' : '' }}" href="?view=قيود يومية">قيود يومية</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'سند قبض نقدي' ? 'active' : '' }}" href="?view=سند قبض نقدي">سند قبض نقدي</a>
+        <a class="nav-link {{ request()->query('view') === 'سندات قبض' ? 'active' : '' }}" href="?view=سندات قبض">سندات قبض</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'سند قبض بشيك' ? 'active' : '' }}" href="?view=سند قبض بشيك">سند قبض بشيك</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'سند صرف نقدي' ? 'active' : '' }}" href="?view=سند صرف نقدي">سند صرف نقدي</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'سند صرف بشيك' ? 'active' : '' }}" href="?view=سند صرف بشيك">سند صرف بشيك</a>
+        <a class="nav-link {{ request()->query('view') === 'سندات صرف' ? 'active' : '' }}" href="?view=سندات صرف">سندات صرف</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {{ request()->query('view') === 'الصندوق' ? 'active' : '' }}" href="?view=الصندوق">الصندوق ({{ $balance }})</a>
@@ -49,14 +33,10 @@
 
 @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
     @include('pages.accounting.vouchers.daily')
-@elseif(request()->query('view') == 'سند قبض نقدي')
-    @include('pages.accounting.vouchers.cash_payment')
-@elseif(request()->query('view') == 'سند قبض بشيك')
-    @include('pages.accounting.vouchers.cheque_payment')
-@elseif(request()->query('view') == 'سند صرف نقدي')
-    @include('pages.accounting.vouchers.cash_receipt')
-@elseif(request()->query('view') == 'سند صرف بشيك')
-    @include('pages.accounting.vouchers.cheque_receipt')
+@elseif(request()->query('view') == 'سندات قبض')
+    @include('pages.accounting.vouchers.vouchers_payment')
+@elseif(request()->query('view') == 'سندات صرف')
+    @include('pages.accounting.vouchers.vouchers_receipt')
 @elseif(request()->query('view') == 'الصندوق')
     @include('pages.accounting.vouchers.box')
 @endif

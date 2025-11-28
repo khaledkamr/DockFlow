@@ -31,8 +31,8 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">تعديل القيد {{ $journal->code }}</h1>
-        <a href="{{ route('money.entries') }}" class="btn btn-outline-secondary">
-            العودة للقيود <i class="fas fa-arrow-left"></i>
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+            العودة <i class="fas fa-arrow-left"></i>
         </a>
     </div>
 
@@ -201,19 +201,19 @@
             addRowBtn.addEventListener("click", function() {
                 let newRow = `
             <tr>
-                <td>
-                    <select name="account_id[]" class="form-select account_name">
+                <td class="px-2">
+                    <select name="account_id[]" class="form-select border-2 account_name">
                         <option value="">-- اختر الحساب --</option>
                         @foreach ($accounts as $account)
                             <option value="{{ $account->id }}" data-code="{{ $account->code }}">{{ $account->name }}</option>
                         @endforeach
                     </select>
                 </td>
-                <td><input type="text" name="account_code[]" class="form-control account_code"></td>
-                <td><input type="text" name="debit[]" placeholder="0.00" class="form-control text-center"></td>
-                <td><input type="text" name="credit[]" placeholder="0.00" class="form-control text-center"></td>
-                <td><textarea name="description[]" class="form-control description-field" rows="1" style="resize: none; overflow: hidden;"></textarea></td>
-                <td class="text-center"><button type="button" class="btn btn-danger btn-sm remove-row">حذف</button></td>
+                <td class="px-2"><input type="text" name="account_code[]" class="form-control border-2 account_code"></td>
+                <td class="px-2"><input type="text" name="debit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
+                <td class="px-2"><input type="text" name="credit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
+                <td class="px-2"><textarea name="description[]" class="form-control border-2 description-field" rows="1" style="resize: none; overflow: hidden;"></textarea></td>
+                <td class="text-center px-2"><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash-can"></i></button></td>
             </tr>
         `;
 
