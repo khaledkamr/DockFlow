@@ -168,7 +168,11 @@
             @else
                 @foreach ($vouchers as $voucher)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $voucher->code }}</td>
+                        <td class="text-center text-primary fw-bold">
+                            <a href="{{ route('voucher.details', $voucher) }}">
+                                {{ $voucher->code }}
+                            </a>
+                        </td>
                         <td class="text-center">{{ $voucher->type }}</td>
                         <td class="text-center">{{ $voucher->credit_account->name }}</td>
                         <td class="text-center">{{ $voucher->credit_account->code }}</td>

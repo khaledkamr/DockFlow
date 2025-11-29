@@ -329,6 +329,10 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء سند جديد بنجاح');
     }
 
+    public function voucherDetails(Voucher $voucher) {
+        return view('pages.accounting.vouchers.voucher_details', compact('voucher'));
+    }
+
     public function deleteVoucher($id) {
         $voucher = Voucher::findOrFail($id);
         $old = $voucher->toArray();
