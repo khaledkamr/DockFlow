@@ -519,7 +519,7 @@ class InvoiceController extends Controller
         $creditAccount = $invoice->customer->account; // مدين
         
         if(Auth::user()->company->name == 'شركة شمس الخليج للتخليص الجمركي') {
-            $expenseAccount = Account::where('name', 'بنك ساب')->where('level', 5)->first();
+            $expenseAccount = Account::where('name', 'بنك ساب 2 -352654552002')->where('level', 5)->first();
         }
         $clearance_revenue_Account = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
         $transport_revenue_Account = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();

@@ -107,7 +107,7 @@ class ExpenseInvoiceController extends Controller
     public function reports(Request $request) {
         $invoices = ExpenseInvoice::all();
         $suppliers = Supplier::all();
-        $costCenters = Account::where('level', 5)->get();
+        $costCenters = CostCenter::doesntHave('children')->get();
 
         $supplier = $request->input('supplier', 'all');
         $from = $request->input('from', null);
