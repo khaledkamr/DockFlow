@@ -16,9 +16,11 @@ class VoucherRequest extends FormRequest
         return [
             'type' => 'required',
             'date' => 'required|date',
+            'credit_account_id' => 'required',
+            'debit_account_id' => 'required',
             'amount' => 'required',
             'hatching' => 'required|string',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'user_id' => 'required',
         ];
     }

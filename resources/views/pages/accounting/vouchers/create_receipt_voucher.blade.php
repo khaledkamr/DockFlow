@@ -16,7 +16,13 @@
         }
     </style>
 
-    <h1 class="mb-4">إنشاء سند صرف</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">إنشاء سند صرف</h1>
+        <a href="{{ route('money.entries') }}?view=سندات%20صرف" class="btn btn-outline-secondary">
+            العودة الى القيود
+            <i class="fas fa-arrow-left ms-2"></i>
+        </a>
+    </div>
 
     <form action="{{ route('voucher.store') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
         @csrf
@@ -40,7 +46,7 @@
             </div>
             <div class="col-3">
                 <label for="account_name" class="mb-2">اسم الحساب المدين</label>
-                <select id="account_name" class="form-select border-primary">
+                <select id="account_name" name="debit_account_id" class="form-select border-primary">
                     <option value="">-- اختر الحساب --</option>
                     @foreach ($accounts as $account)
                         <option value="{{ $account->id }}" data-code="{{ $account->code }}"
@@ -54,10 +60,10 @@
             <div class="col">
                 <label for="account_code" class="form-label">رقم الحســاب المدين</label>
                 <div class="d-flex gap-2 align-items-end">
-                    <input type="text" class="form-control border-primary" id="account_code" name="account_code">
-                    <button type="button" id="customerBtn" class="btn btn-primary d-none" title="هذا الحساب مرتبط بعميل">
+                    <input type="text" class="form-control border-primary" id="account_code">
+                    {{-- <button type="button" id="customerBtn" class="btn btn-primary d-none" title="هذا الحساب مرتبط بعميل">
                         <i class="fas fa-scroll"></i>
-                    </button>
+                    </button> --}}
                 </div>
                 @error('account_code')
                     <div class="text-danger">{{ $message }}</div>
@@ -90,8 +96,8 @@
                 @endif
             </div>
             <div class="col-3">
-                <label for="debit_account_name" class="mb-2">اسم الحساب الدائن</label>
-                <select id="debit_account_name" name="debit_account_name" class="form-select border-primary">
+                <label for="credit_account_name" class="mb-2">اسم الحساب الدائن</label>
+                <select id="credit_account_name" name="credit_account_id" class="form-select border-primary">
                     <option value="">-- اختر الحساب --</option>
                     @foreach ($accounts as $account)
                         <option value="{{ $account->id }}" data-code="{{ $account->code }}">
@@ -99,14 +105,14 @@
                         </option>
                     @endforeach
                 </select>
-                @error('debit_account_name')
+                @error('credit_account_name')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col-3">
-                <label for="debit_account_code" class="form-label">رقم الحساب الدائن</label>
-                <input type="text" class="form-control border-primary" id="debit_account_code" name="debit_account_code">
-                @error('debit_account_code')
+                <label for="credit_account_code" class="form-label">رقم الحساب الدائن</label>
+                <input type="text" class="form-control border-primary" id="credit_account_code">
+                @error('credit_account_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
@@ -178,15 +184,15 @@
             allowClear: true
         });
 
-        $('#debit_account_name').select2({
+        $('#credit_account_name').select2({
             placeholder: "ابحث عن الحساب...",
             allowClear: true
         });
 
-        $('#debit_account_name').on('change', function() {
+        $('#credit_account_name').on('change', function() {
             let selectedOption = $(this).find(':selected');
             let code = selectedOption.data('code');
-            $('#debit_account_code').val(code || '');
+            $('#credit_account_code').val(code || '');
         });
 
         $('#account_name').on('change', function() {

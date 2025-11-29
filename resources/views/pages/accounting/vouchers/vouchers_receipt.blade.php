@@ -11,11 +11,13 @@
                     <div class="d-flex align-items-center gap-2">
                         <h5 class="text-success fw-bold mb-1">نقدي</h5>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success bg-opacity-10 text-success border border-success">{{ $voucherStats['نقدي']['count'] ?? 0 }} سند</span>
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success">
+                                {{ $vouchers->where('type', 'سند صرف نقدي')->count() }} سند
+                            </span>
                         </div>
                     </div>
                     <p class="text-success fw-bold mb-0 mt-1 fs-6">
-                        {{ number_format($voucherStats['نقدي']['total'] ?? 0) }} ريال
+                        {{ number_format($vouchers->where('type', 'سند صرف نقدي')->sum('amount')) }} ريال
                     </p>
                 </div>
             </div>
@@ -33,11 +35,13 @@
                     <div class="d-flex align-items-center gap-2">
                         <h5 class="text-info fw-bold mb-1">بشيك</h5>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-info bg-opacity-10 text-info border border-info">{{ $voucherStats['بشيك']['count'] ?? 0 }} سند</span>
+                            <span class="badge bg-info bg-opacity-10 text-info border border-info">
+                                {{ $vouchers->where('type', 'سند صرف بشيك')->count() }} سند
+                            </span>
                         </div>
                     </div>
                     <p class="text-info fw-bold mb-0 mt-1 fs-6">
-                        {{ number_format($voucherStats['بشيك']['total'] ?? 0) }} ريال
+                        {{ number_format($vouchers->where('type', 'سند صرف بشيك')->sum('amount')) }} ريال
                     </p>
                 </div>
             </div>
@@ -55,11 +59,13 @@
                     <div class="d-flex align-items-center gap-2">
                         <h5 class="text-warning fw-bold mb-1">فيزا</h5>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning">{{ $voucherStats['فيزا']['count'] ?? 0 }} سند</span>
+                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning">
+                                {{ $vouchers->where('type', 'سند صرف فيزا')->count() }} سند
+                            </span>
                         </div>
                     </div>
                     <p class="text-warning fw-bold mb-0 mt-1 fs-6">
-                        {{ number_format($voucherStats['فيزا']['total'] ?? 0) }} ريال
+                        {{ number_format($vouchers->where('type', 'سند صرف فيزا')->sum('amount')) }} ريال
                     </p>
                 </div>
             </div>
@@ -77,11 +83,13 @@
                     <div class="d-flex align-items-center gap-2">
                         <h5 class="text-primary fw-bold mb-1">تحويل بنكي</h5>
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">{{ $voucherStats['تحويل بنكي']['count'] ?? 0 }} سند</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">
+                                {{ $vouchers->where('type', 'سند صرف تحويل بنكي')->count() }} سند
+                            </span>
                         </div>
                     </div>
                     <p class="text-primary fw-bold mb-0 mt-1 fs-6">
-                        {{ number_format($voucherStats['تحويل بنكي']['total'] ?? 0) }} ريال
+                        {{ number_format($vouchers->where('type', 'سند صرف تحويل بنكي')->sum('amount')) }} ريال
                     </p>
                 </div>
             </div>
@@ -92,9 +100,10 @@
 <div class="row g-3 mb-4">
     <div class="col-12 col-md-6">
         <form method="GET" action="" class="d-flex flex-column h-100">
+            <input type="hidden" name="view" value="سندات صرف">
             <div class="d-flex flex-grow-1">
-                <input type="text" name="journal_search" class="form-control border-primary"
-                    placeholder=" ابحث عن سند برقم السند او التاريخ... " value="{{ request()->query('journal_search') }}">
+                <input type="text" name="voucher_search" class="form-control border-primary"
+                    placeholder=" ابحث عن سند برقم السند او التاريخ... " value="{{ request()->query('voucher_search') }}">
                 <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                     <span class="d-none d-sm-inline">بحث</span>
                     <i class="fa-solid fa-magnifying-glass ms-sm-2"></i>
@@ -104,19 +113,26 @@
     </div>
     <div class="col-12 col-md-4 d-none d-sm-block">
         <form method="GET" action="" class="d-flex flex-column">
-            <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
-                <option value="all" {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
+            <input type="hidden" name="view" value="سندات صرف">
+            <select id="statusFilter" name="voucher_type" class="form-select border-primary" onchange="this.form.submit()">
+                <option value="all" {{ request()->query('voucher_type') === 'all' || !request()->query('voucher_type') ? 'selected' : '' }}>
                     جميع السندات
                 </option>
-                <option value="نقدي" {{ request()->query('role') === 'نقدي' ? 'selected' : '' }}>
+                <option value="سند صرف نقدي" {{ request()->query('voucher_type') === 'سند صرف نقدي' ? 'selected' : '' }}>
                     نقدي
                 </option>
-                <option value="بشيك" {{ request()->query('role') === 'بشيك' ? 'selected' : '' }}>
+                <option value="سند صرف بشيك" {{ request()->query('voucher_type') === 'سند صرف بشيك' ? 'selected' : '' }}>
                     بشيك
                 </option>
+                <option value="سند صرف فيزا" {{ request()->query('voucher_type') === 'سند صرف فيزا' ? 'selected' : '' }}>
+                    فيزا
+                </option>
+                <option value="سند صرف تحويل بنكي" {{ request()->query('voucher_type') === 'سند صرف تحويل بنكي' ? 'selected' : '' }}>
+                    تحويل بنكي
+                </option>
             </select>
-            @if (request()->query('search'))
-                <input type="hidden" name="search" value="{{ request()->query('search') }}">
+            @if (request()->query('voucher_search'))
+                <input type="hidden" name="voucher_search" value="{{ request()->query('voucher_search') }}">
             @endif
         </form>
     </div>
@@ -154,8 +170,8 @@
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $voucher->code }}</td>
                         <td class="text-center">{{ $voucher->type }}</td>
-                        <td class="text-center">{{ $voucher->account->name }}</td>
-                        <td class="text-center">{{ $voucher->account->code }}</td>
+                        <td class="text-center">{{ $voucher->debit_account->name }}</td>
+                        <td class="text-center">{{ $voucher->debit_account->code }}</td>
                         <td class="text-center text-success fw-bold">{{ (int) $voucher->amount }} ريال</td>
                         <td class="text-center">{{ Carbon\Carbon::parse($voucher->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $voucher->made_by->name ?? '-' }}</td>

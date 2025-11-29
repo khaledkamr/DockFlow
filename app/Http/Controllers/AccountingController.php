@@ -102,21 +102,30 @@ class AccountingController extends Controller
             }
         }
         
-        if(request()->query('view') == 'سند قبض نقدي') {
-            $vouchers = $vouchers->where('type', 'سند قبض نقدي');
+        if(request()->query('view') == 'سندات قبض') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return str_starts_with($voucher->type, 'سند قبض');
+            });
         }
-        elseif(request()->query('view') == 'سند قبض بشيك') {
-            $vouchers = $vouchers->where('type', 'سند قبض بشيك');
-        }
-        elseif(request()->query('view') == 'سند صرف نقدي') {
-            $vouchers = $vouchers->where('type', 'سند صرف نقدي');
-        }
-        elseif(request()->query('view') == 'سند صرف بشيك') {
-            $vouchers = $vouchers->where('type', 'سند صرف بشيك');
+        elseif(request()->query('view') == 'سندات صرف') {
+            $vouchers = $vouchers->filter(function($voucher) {
+                return str_starts_with($voucher->type, 'سند صرف');
+            });
         }
         elseif(request()->query('view') == 'الصندوق') {
             $vouchers = $vouchers->filter(function($voucher) {
                 return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
+            });
+        }
+
+        if($request->query('voucher_type') && $request->query('voucher_type') != 'all') {
+            $vouchers = $vouchers->filter(function($voucher) use($request) {
+                return $voucher->type == $request->query('voucher_type');
+            });
+        }
+        if($request->query('voucher_search')) {
+            $vouchers = $vouchers->filter(function($voucher) use($request) {
+                return str_contains((string)$voucher->code, $request->query('voucher_search')) || str_contains($voucher->date, $request->query('voucher_search'));
             });
         }
         
@@ -307,19 +316,17 @@ class AccountingController extends Controller
     }
 
     public function storeVoucher(VoucherRequest $request) {
+        // return $request;
         if(Gate::denies('إنشاء قيود وسندات')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء سندات');
         }
 
-        $code = $request->account_code;
         $validated = $request->validated();
-        $account = Account::where('code', $code)->first();
-        $validated['account_id'] = $account->id;
-
         $new = Voucher::create($validated);
+
         logActivity('إنشاء سند', "تم إنشاء سند جديد برقم " . $new->code, null, $new->toArray());
 
-        return redirect()->back()->with('success', 'تم إنشاء سند بنجاح');
+        return redirect()->back()->with('success', 'تم إنشاء سند جديد بنجاح');
     }
 
     public function deleteVoucher($id) {

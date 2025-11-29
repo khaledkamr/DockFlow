@@ -157,7 +157,7 @@
 
 <div class="row mb-4">
     <div class="col-12 col-sm-6 col-lg-3">
-        <a href="{{ route('money.entries') }}" class="text-decoration-none">
+        <a href="{{ route('money.entries') }}?view=سندات%20صرف" class="text-decoration-none">
             <div class="card rounded-3 border-0 shadow-sm animate__animated animate__fadeInUp" style="background: var(--gradient);">
                 <div class="card-body d-flex justify-content-between align-items-center text-white">
                     <div>
@@ -172,7 +172,7 @@
         </a>
     </div>
     <div class="col-12 col-sm-6 col-lg-3">
-        <a href="{{ route('money.entries') }}" class="text-decoration-none">
+        <a href="{{ route('money.entries') }}?view=سندات%20قبض" class="text-decoration-none">
             <div class="card rounded-3 border-0 shadow-sm animate__animated animate__fadeInUp" style="background: var(--gradient);">
                 <div class="card-body d-flex justify-content-between align-items-center text-white">
                     <div>
