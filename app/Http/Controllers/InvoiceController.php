@@ -189,33 +189,49 @@ class InvoiceController extends Controller
                 ]);
             }
 
-            if(($contractServices->contains('اجور نقل حاوية فئة 20/40') || 
-               $contractServices->contains('اجور نقل حاوية وزن زائد') ||
-               $contractServices->contains('اجور نقل حاوية مبردة') ||
-               $contractServices->contains('اجور نقل طرود LCL')) && 
-               !$transaction->items->contains('description', 'اجور نقل - TRANSPORT FEES')) {
+            if($contractServices->contains(function($service) {
+                return str_starts_with($service, 'اجور نقل');
+            }) && !$transaction->items->contains('description', 'اجور نقل - TRANSPORT FEES')) {
                 $price = 0;
 
                 foreach($transaction->containers as $container) {
+                    $transportOrder = $container->transportOrders()->where('transaction_id', $transaction->id)->first();
+                    $from = $transportOrder ? $transportOrder->from : null;
+                    $to = $transportOrder ? $transportOrder->to : null;
+                    
                     if ($container->containerType->name == 'حاوية 20' || $container->containerType->name == 'حاوية 40') {
-                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية فئة 20/40')->first()->pivot->price;
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل حاوية فئة 20/40 من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
                     } elseif ($container->containerType->name == 'وزن زائد') {
-                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية وزن زائد')->first()->pivot->price;
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل حاوية وزن زائد من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
                     } elseif ($container->containerType->name == 'حاوية مبرده') {
-                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل حاوية مبردة')->first()->pivot->price;
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل حاوية مبردة من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
                     } elseif ($container->containerType->name == 'طرود LCL') {
-                        $price += $transaction->customer->contract->services->where('description', 'اجور نقل طرود LCL')->first()->pivot->price;
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل طرود LCL من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
                     }
                 }
 
-                $transaction->items()->create([
-                    'number' => $transaction->items()->count() + 1,
-                    'description' => 'اجور نقل - TRANSPORT FEES',
-                    'type' => 'ايراد نقل',
-                    'amount' => $price,
-                    'tax' => $price * 0.15,
-                    'total' => $price * 1.15,
-                ]);
+                if($price > 0) {
+                    $transaction->items()->create([
+                        'number' => $transaction->items()->count() + 1,
+                        'description' => 'اجور نقل - TRANSPORT FEES',
+                        'type' => 'ايراد نقل',
+                        'amount' => $price,
+                        'tax' => $price * 0.15,
+                        'total' => $price * 1.15,
+                    ]);
+                }
             }
 
             if($contractServices->contains('اجور عمال') && !$transaction->items->contains('description', 'اجور عمال - LABOUR')) {

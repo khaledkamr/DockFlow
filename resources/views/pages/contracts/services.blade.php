@@ -3,134 +3,135 @@
 @section('title', 'الخدمات')
 
 @section('content')
-<style>
-    .service-card {
-       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .service-card:hover {
-        transform: translateY(-5px);
-    }
-    .service-number {
-        background: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
-        color: white;
-        font-weight: 600;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-    }
-    .btn-edit, .btn-delete {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .btn-edit:hover, .btn-delete:hover {
-        transform: scale(1.1);
-    }
-</style>
 
-<div class="d-flex justify-content-between align-items-center mb-5">
-    <h1>الخدمـــات</h1>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addService">
-        <i class="fas fa-plus me-2"></i>
-        <span class="">إضافة خدمة جديدة</span>
-    </button>
-</div>
-
-<div class="row">
-    @foreach($services as $index => $service)
-    <div class="col-md-4 mb-4">
-        <div class="card border-0 rounded-3 shadow relative overflow-hidden border-top border-3 border-primary service-card ">
-            <div class="card-header border-bottom p-3 bg-light d-flex justify-content-between align-items-center">
-                <div class="service-number">الخدمة #{{ $index + 1 }}</div>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-edit btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateService{{ $service->id }}" title="تعديل">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button type="button" class="btn btn-delete btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteService{{ $service->id }}" title="حذف">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <p class="fw-medium">{{ $service->description }}.</p>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>الخدمـــات</h1>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addService">
+            <i class="fas fa-plus me-2"></i>
+            <span>إضافة خدمة جديدة</span>
+        </button>
     </div>
-    <div class="modal fade" id="updateService{{ $service->id }}" tabindex="-1" aria-labelledby="updateServiceLabel{{ $service->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold" id="updateServiceLabel{{ $service->id }}">تعديل بيانات الخدمة</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    <div class="row g-3">
+        @forelse($services as $index => $service)
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="border-3 border-start border-primary rounded p-3 bg-white shadow-sm d-flex justify-content-between align-items-center">
+                    <div class="flex-grow-1">
+                        <span>{{ $service->description }}</span>
+                    </div>
+                    <div class="d-flex gap-2 ms-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#updateService{{ $service->id }}" title="تعديل">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteService{{ $service->id }}" title="حذف">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
-                <form action="{{ route('contracts.service.update', $service->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body text-dark">
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label for="description" class="form-label">الوصف</label>
-                                <textarea class="form-control border-primary" name="description" rows="2">{{ $service->description }}</textarea>
+            </div>
+
+            <!-- Update Service Modal -->
+            <div class="modal fade" id="updateService{{ $service->id }}" tabindex="-1"
+                aria-labelledby="updateServiceLabel{{ $service->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-dark fw-bold" id="updateServiceLabel{{ $service->id }}">
+                                تعديل بيانات الخدمة
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('contracts.service.update', $service->id) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body text-dark">
+                                <div class="mb-3">
+                                    <label for="description{{ $service->id }}" class="form-label fw-bold">الوصف</label>
+                                    <textarea class="form-control border-primary" id="description{{ $service->id }}" name="description" rows="3"
+                                        required>{{ $service->description }}</textarea>
+                                </div>
                             </div>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary fw-bold"
+                                    data-bs-dismiss="modal">إلغاء</button>
+                                <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغيرات</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+
+            <!-- Delete Service Modal -->
+            <div class="modal fade" id="deleteService{{ $service->id }}" tabindex="-1"
+                aria-labelledby="deleteServiceLabel{{ $service->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title fw-bold" id="deleteServiceLabel{{ $service->id }}">
+                                <i class="fas fa-exclamation-triangle me-2"></i>حذف الخدمة
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('contracts.service.delete', $service->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <div class="modal-body text-center">
+                                <i class="fas fa-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+                                <p class="mt-3">هل أنت متأكد من حذف الخدمة؟</p>
+                                <p class="fw-bold">{{ $service->description }}</p>
+                                <p class="text-muted small">لا يمكن التراجع عن هذا الإجراء</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary fw-bold"
+                                    data-bs-dismiss="modal">إلغاء</button>
+                                <button type="submit" class="btn btn-danger fw-bold">تأكيد الحذف</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">لا توجد خدمات مضافة</p>
+                </div>
+            </div>
+        @endforelse
     </div>
-    <div class="modal fade" id="deleteService{{ $service->id }}" tabindex="-1" aria-labelledby="deleteServiceLabel{{ $service->id }}" aria-hidden="true">
+
+    <!-- Add Service Modal -->
+    <div class="modal fade" id="addService" tabindex="-1" aria-labelledby="addServiceLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold" id="deleteServiceLabel{{ $service->id }}">حذف الخدمة</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="addServiceLabel">
+                        <i class="fas fa-plus-circle me-2"></i>إضافة خدمة جديدة
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
-                <form action="{{ route('contracts.service.delete', $service->id) }}" method="POST">
+                <form action="{{ route('contracts.service.store') }}" method="POST">
                     @csrf
-                    @method('DELETE')
-                    <div class="modal-body">
-                        هل أنت متأكد من حذف الخدمة <strong>({{$service->description}})</strong> بشكل نهائي؟
+                    <div class="modal-body text-dark">
+                        <div class="mb-3">
+                            <label for="new_description" class="form-label fw-bold">وصف الخدمة</label>
+                            <textarea class="form-control border-primary" id="new_description" name="description" rows="3"
+                                placeholder="اكتب وصف الخدمة هنا..." required></textarea>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-danger fw-bold">تأكيد الحذف</button>
+                        <button type="submit" class="btn btn-primary fw-bold">
+                            <i class="fas fa-check me-1"></i>حفظ الخدمة
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    @endforeach
-</div>
-
-<div class="modal fade" id="addService" tabindex="-1" aria-labelledby="addServiceLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark fw-bold" id="addServiceLabel">إضافة خدمة جديدة</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('contracts.service.store') }}" method="POST">
-                @csrf
-                <div class="modal-body text-dark">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label class="form-label">وصف الخدمة</label>
-                            <textarea class="form-control border-primary" name="description" rows="2" placeholder="اكتب هنا..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary fw-bold">حفظ الخدمة</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 @endsection
-
-
-

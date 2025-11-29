@@ -257,6 +257,12 @@
     <script>
         let serviceCounter = 0;
 
+        $('#service-select').select2({
+            dropdownParent: $('#serviceModal'),
+            placeholder: "اختر الخدمة...",
+            width: '100%'
+        });
+
         $('#customer_name').select2({
             placeholder: "ابحث عن الشركة...",
             allowClear: true
