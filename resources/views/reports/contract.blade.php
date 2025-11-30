@@ -35,7 +35,7 @@
     <li class="mb-3">
         <span class="fw-bold">الخدمات والأسعار:</span>
         <div>
-            <table class="table table-bordered">
+            <table class="table table-bordered border-dark">
                 <thead class="text-center">
                     <tr class="table-dark">
                         <th>الرقم</th>
