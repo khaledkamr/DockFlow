@@ -117,12 +117,16 @@ class CustomerController extends Controller
         $contract = $customer->contract;
         $storageService = $contract?->services->where('description', 'خدمة تخزين الحاوية الواحدة في ساحتنا')->first();
         $lateService = $contract?->services->where('description', 'خدمة تخزين الحاوية بعد المدة المتفق عليها')->first();
+        $late_Service_20ft = $contract?->services->where('description', 'خدمة تخزين حاوية 20 قدم بعد المدة المتفق عليها')->first();
+        $late_Service_40ft = $contract?->services->where('description', 'خدمة تخزين حاوية 40 قدم بعد المدة المتفق عليها')->first();
 
         return response()->json([
             'contract' => $customer->contract,
-            'storage_price' => $storageService?->pivot->price,
-            'storage_duration' => $storageService?->pivot->unit,
-            'late_fee' => $lateService?->pivot->price,
+            'storage_price' => $storageService ? $storageService->pivot->price : 0,
+            'storage_duration' => $storageService ? $storageService->pivot->unit : 0,
+            'late_fee' => $lateService ? $lateService->pivot->price : 0,
+            'late_fee_20ft' => $late_Service_20ft ? $late_Service_20ft->pivot->price : 0,
+            'late_fee_40ft' => $late_Service_40ft ? $late_Service_40ft->pivot->price : 0,
         ]);
     }
 

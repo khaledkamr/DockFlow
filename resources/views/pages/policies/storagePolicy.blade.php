@@ -141,10 +141,12 @@
                         </div>
                         <div class="col-6 col-sm-6 col-lg-3">
                             <label class="form-label">فئة الحاويــة <span class="text-danger">*</span></label>
-                            <select class="form-select border-primary" name="containers[0][container_type_id]" required>
+                            <select class="form-select border-primary" name="containers[0][container_type_id]" id="container_type_id" required>
                                 <option value="">اختر فئة الحاوية...</option>
                                 @foreach ($containerTypes as $type)
-                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                    <option value="{{ $type->id }}" data-type="{{ $type->name }}">
+                                        {{ $type->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             <div class="invalid-feedback"></div>
@@ -206,26 +208,30 @@
             fetch(`/customers/${id}/contract`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.storage_price && data.storage_duration && data.late_fee) {
-                        contract_storage_price = data.storage_price;
-                        contract_storage_duration = data.storage_duration;
-                        contract_late_fee = data.late_fee;
-                        
-                        $('#storage_price').val(contract_storage_price || 0);
-                        $('#storage_price').prop('readonly', true);
-                        $('#storage_duration').val(contract_storage_duration || 0);
-                        $('#storage_duration').prop('readonly', true);
-                        $('#late_fee').val(contract_late_fee || 0);
-                        $('#late_fee').prop('readonly', true);
-                    } else {
-                        $('#storage_price').val(contract_storage_price || 0);
-                        $('#storage_price').prop('readonly', false);
-                        $('#storage_duration').val(contract_storage_duration || 0);
-                        $('#storage_duration').prop('readonly', false);
-                        $('#late_fee').val(contract_late_fee || 0);
-                        $('#late_fee').prop('readonly', false);
-                        
-                        console.log("العميل دا ملوش عقد أو العقد مفيهوش خدمات");
+                    $('#storage_price').val(data.storage_price || 0);
+                    $('#storage_duration').val(data.storage_duration || 0);
+                    $('#late_fee').val(data.late_fee || 0);
+                })
+                .catch(err => console.error(err));
+        }
+    });
+
+    $('#container_type_id').select2({
+        placeholder: "اختر فئة الحاوية...",
+        allowClear: true
+    });
+
+    $('#container_type_id').on('change', function () {
+        let type_name = $(this).find(':selected').data('type');
+        let customer_id = $('#customer_id').val();
+        if(customer_id && type_name) {
+            fetch(`/customers/${customer_id}/contract`)
+                .then(res => res.json())
+                .then(data => {
+                    if(type_name == 'حاوية 20') {
+                        $('#late_fee').val(data.late_fee_20ft || 0);
+                    } else if(type_name == 'حاوية 40') {
+                        $('#late_fee').val(data.late_fee_40ft || 0);
                     }
                 })
                 .catch(err => console.error(err));

@@ -69,6 +69,16 @@ class ServiceSeeder extends Seeder
             //     'company_id' => $company_id
             // ],
             [
+                'description' => 'خدمة تخزين حاوية 20 قدم بعد المدة المتفق عليها',
+                'type' => 'primary',
+                'company_id' => $company_id
+            ],
+            [
+                'description' => 'خدمة تخزين حاوية 40 قدم بعد المدة المتفق عليها',
+                'type' => 'primary',
+                'company_id' => $company_id
+            ],
+            [
                 'description' => 'اجور نقل حاوية فئة 20/40 من الدمام الى الدمام',
                 'type' => 'primary',
                 'company_id' => $company_id
