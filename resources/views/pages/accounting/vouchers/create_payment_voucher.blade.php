@@ -201,6 +201,8 @@
             let customerName = selectedOption.data('customer-name');
             let accountId = selectedOption.val();
 
+            $('#invoice_id').val(''); // Clear previous invoice ID
+
             $('#account_code').val(code || '');
 
             // Show/hide customer button

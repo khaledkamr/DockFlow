@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
             // PrimaryAccountSeeder::class,
             // UserSeeder::class,
             // ContainerTypesSeeder::class,
-            ServiceSeeder::class,
+            // ServiceSeeder::class,
             // RoleSeeder::class,
             // PermissionSeeder::class,
             // UserRoleSeeder::class,

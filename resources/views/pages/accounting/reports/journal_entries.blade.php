@@ -20,13 +20,19 @@
     <input type="hidden" name="view" value="تقارير القيود">
     <div class="col-md-3">
         <label class="form-label">نوع القيد</label>
-        <select name="type" class="form-select border-primary">
-            <option value="all" {{ request()->query('type') == 'all' ? 'selected' : '' }}>الكل</option>
-            <option value="قيد يومي" {{ request()->query('type') == 'قيد يومي' ? 'selected' : '' }}>قيد يومي</option>
-            <option value="سند صرف نقدي" {{ request()->query('type') == 'سند صرف نقدي' ? 'selected' : '' }}>سند صرف نقدي</option>
-            <option value="سند صرف بشيك" {{ request()->query('type') == 'سند صرف بشيك' ? 'selected' : '' }}>سند صرف بشيك</option>
-            <option value="سند قبض نقدي" {{ request()->query('type') == 'سند قبض نقدي' ? 'selected' : '' }}>سند قبض نقدي</option>
-            <option value="سند قبض بشيك" {{ request()->query('type') == 'سند قبض بشيك' ? 'selected' : '' }}>سند قبض بشيك</option>
+        <select name="journal_type" class="form-select border-primary">
+            <option value="all" {{ request()->query('journal_type') === 'all' || !request()->query('journal_type') ? 'selected' : '' }}>
+                جميع القيود
+            </option>
+            <option value="all_journals" {{ request()->query('journal_type') === 'all_journals' ? 'selected' : '' }}>
+                القيود اليومية
+            </option>
+            <option value="all_receipts" {{ request()->query('journal_type') === 'all_receipts' ? 'selected' : '' }}>
+                جميع سندات القبض
+            </option>
+            <option value="all_payments" {{ request()->query('journal_type') === 'all_payments' ? 'selected' : '' }}>
+                جميع سندات الصرف
+            </option>
         </select>
     </div>
     <div class="col-md-3">

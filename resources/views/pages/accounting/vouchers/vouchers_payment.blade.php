@@ -169,7 +169,7 @@
                 @foreach ($vouchers as $voucher)
                     <tr>
                         <td class="text-center text-primary fw-bold">
-                            <a href="{{ route('voucher.details', $voucher) }}">
+                            <a href="{{ route('voucher.details', $voucher) }}" class="text-decoration-none">
                                 {{ $voucher->code }}
                             </a>
                         </td>
@@ -180,9 +180,11 @@
                         <td class="text-center">{{ Carbon\Carbon::parse($voucher->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $voucher->made_by->name ?? '-' }}</td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('voucher.to.journal', $voucher->id) }}" class="btn btn-sm btn-primary">
-                                ترحيل
-                            </a>
+                            @if(!$voucher->is_posted)
+                                <a href="{{ route('post.voucher', $voucher) }}" class="btn btn-sm btn-primary">
+                                    ترحيل
+                                </a>
+                            @endif
                             <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $voucher->id }}">
                                 حذف
                             </button>

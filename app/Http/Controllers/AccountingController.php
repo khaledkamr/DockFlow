@@ -12,6 +12,7 @@ use App\Http\Requests\JournalRequest;
 use App\Http\Requests\VoucherRequest;
 use App\Models\Attachment;
 use App\Models\Company;
+use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +85,22 @@ class AccountingController extends Controller
             $journals = $journals->filter(function($journal) use($journalSearch) {
                 return str_contains((string)$journal->code, $journalSearch) || str_contains($journal->date, $journalSearch);
             });
+        }
+
+        if($request->query('journal_type') && $request->query('journal_type') != 'all') {
+            if($request->query('journal_type') == 'all_journals') {
+                $journals = $journals->filter(function($journal) {
+                    return $journal->type == 'قيد يومي';
+                });
+            } elseif($request->query('journal_type') == 'all_receipts') {
+                $journals = $journals->filter(function($journal) {
+                    return str_starts_with($journal->type, 'سند قبض');
+                });
+            } elseif($request->query('journal_type') == 'all_payments') {
+                $journals = $journals->filter(function($journal) {
+                    return str_starts_with($journal->type, 'سند صرف');
+                });
+            }
         }
 
         $balance = 0;
@@ -324,6 +341,12 @@ class AccountingController extends Controller
         $validated = $request->validated();
         $new = Voucher::create($validated);
 
+        if($request->invoice_id) {
+            $invoice = Invoice::findOrFail($request->invoice_id);
+            $invoice->isPaid = 'تم الدفع';
+            $invoice->save();
+        }
+
         logActivity('إنشاء سند', "تم إنشاء سند جديد برقم " . $new->code, null, $new->toArray());
 
         return redirect()->back()->with('success', 'تم إنشاء سند جديد بنجاح');
@@ -341,24 +364,9 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', 'تم حذف السند بنجاح');
     }
 
-    public function convertToJournal($id) {
+    public function postVoucherToJournal(Voucher $voucher) {
         if(Gate::denies('إنشاء قيود وسندات')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء قيود');
-        }
-
-        $voucher = Voucher::findOrFail($id);
-        if($voucher->type == 'سند صرف نقدي') {
-            $debitAccount = Account::findOrFail($voucher->account_id);
-            $creditAccount = Account::where('name', 'صندوق الساحة')->first();
-        } elseif($voucher->type == 'سند صرف بشيك') {
-            $debitAccount = Account::findOrFail($voucher->account_id);
-            $creditAccount = Account::where('name', 'البنك الاهلي')->first();
-        } elseif($voucher->type == 'سند قبض بشيك') {
-            $debitAccount = Account::where('name', 'البنك الاهلي')->first();
-            $creditAccount = Account::findOrFail($voucher->account_id);
-        } elseif ($voucher->type == 'سند قبض نقدي') {
-            $debitAccount = Account::where('name', 'صندوق الساحة')->first();
-            $creditAccount = Account::findOrFail($voucher->account_id);
         }
 
         $journal = JournalEntry::create([
@@ -369,25 +377,29 @@ class AccountingController extends Controller
             'voucher_id' => $voucher->id
         ]);
 
-        JournalEntryLine::create([
-            'journal_entry_id' => $journal->id,
-            'account_id' => $debitAccount->id,
-            'debit' => $voucher->amount,
-            'credit' => 0.00,
-            'description' => $voucher->description
+        $journal->lines()->createMany([
+            [
+                'account_id' => $voucher->debit_account_id,
+                'debit' => $voucher->amount,
+                'credit' => 0.00,
+                'description' => $voucher->description
+            ], 
+            [
+                'account_id' => $voucher->credit_account_id,
+                'debit' => 0.00,
+                'credit' => $voucher->amount,
+                'description' => $voucher->description
+            ]
         ]);
-        JournalEntryLine::create([
-            'journal_entry_id' => $journal->id,
-            'account_id' => $creditAccount->id,
-            'debit' => 0.00,
-            'credit' => $voucher->amount,
-            'description' => $voucher->description
+
+        $voucher->update([
+            'is_posted' => true
         ]);
 
         $new = $journal->load('lines')->toArray();
         logActivity('ترحيل سند إلى قيد', "تم ترحيل السند رقم " . $voucher->code . " إلى القيد رقم " . $journal->code, null, $new);
 
-        return redirect()->back()->with('success', 'تم ترحيل السند الى قيد بنجاح');
+        return redirect()->back()->with('success', 'تم ترحيل السند الى قيد بنجاح, <a class="text-white fw-bold" href="'.route('journal.details', $journal).'">عرض القيد</a>');
     }   
 
     public function reports(Request $request) {
@@ -407,10 +419,20 @@ class AccountingController extends Controller
             $to = $request->input('to');
             $entries = JournalEntry::all();
 
-            if($type && $type !== 'all') {
-                $entries = $entries->filter(function($entry) use($type) {
-                    return ($entry->voucher->type ?? 'قيد يومي') == $type;
-                });
+            if($request->query('journal_type') && $request->query('journal_type') != 'all') {
+                if($request->query('journal_type') == 'all_journals') {
+                    $entries = $entries->filter(function($journal) {
+                        return $journal->type == 'قيد يومي';
+                    });
+                } elseif($request->query('journal_type') == 'all_receipts') {
+                    $entries = $entries->filter(function($journal) {
+                        return str_starts_with($journal->type, 'سند قبض');
+                    });
+                } elseif($request->query('journal_type') == 'all_payments') {
+                    $entries = $entries->filter(function($journal) {
+                        return str_starts_with($journal->type, 'سند صرف');
+                    });
+                }
             }
 
             if($from && $to) {

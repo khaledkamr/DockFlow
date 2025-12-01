@@ -224,7 +224,7 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::post('accounting/entries/store/voucher', 'storeVoucher')->name('voucher.store');
     Route::get('accounting/entries/{voucher:uuid}', 'voucherDetails')->name('voucher.details');
     Route::delete('accounting/entries/delete/{id}', 'deleteVoucher')->name('voucher.delete');
-    Route::get('accounting/voucher/{id}/toJournal', 'convertToJournal')->name('voucher.to.journal');
+    Route::get('accounting/post-voucher/{voucher:uuid}/toJournal', 'postVoucherToJournal')->name('post.voucher');
 
     Route::get('accounting/entries/create/journal', 'createJournal')->name('money.create.journal');
     Route::post('accounting/entries/create/journal', 'storeJournal')->name('store.journal');

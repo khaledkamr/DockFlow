@@ -13,9 +13,19 @@
     </div>
     <div class="col-12 col-md-4 d-none d-sm-block">
         <form method="GET" action="" class="d-flex flex-column">
-            <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
-                <option value="all" {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
+            <input type="hidden" name="view" value="قيود يومية">
+            <select id="statusFilter" name="journal_type" class="form-select border-primary" onchange="this.form.submit()">
+                <option value="all" {{ request()->query('journal_type') === 'all' || !request()->query('journal_type') ? 'selected' : '' }}>
                     جميع القيود
+                </option>
+                <option value="all_journals" {{ request()->query('journal_type') === 'all_journals' ? 'selected' : '' }}>
+                    القيود اليومية
+                </option>
+                <option value="all_receipts" {{ request()->query('journal_type') === 'all_receipts' ? 'selected' : '' }}>
+                    جميع سندات القبض
+                </option>
+                <option value="all_payments" {{ request()->query('journal_type') === 'all_payments' ? 'selected' : '' }}>
+                    جميع سندات الصرف
                 </option>
             </select>
             @if (request()->query('search'))
@@ -55,7 +65,7 @@
                 @foreach ($journals as $journal)
                     <tr>
                         <td class="text-center text-primary fw-bold">{{ $journal->code }}</td>
-                        <td class="text-center fw-bold">{{ $journal->voucher->type ?? 'قيد يومي' }}</td>
+                        <td class="text-center fw-bold">{{ $journal->type }}</td>
                         <td class="text-center fw-bold">{{ $journal->totalDebit }} <i data-lucide="saudi-riyal"></i></td>
                         <td class="text-center">{{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</td>
                         <td class="text-center">{{ $journal->made_by->name ?? '-' }}</td>
