@@ -86,7 +86,7 @@
                                     {{ $line->journal->code }}
                                 </a>
                             </td>
-                            <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
+                            <td>{{ $line->journal->type }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>

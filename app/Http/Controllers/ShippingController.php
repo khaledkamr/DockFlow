@@ -130,7 +130,39 @@ class ShippingController extends Controller
     }
 
     public function policyDetails(ShippingPolicy $policy) {
-        return view('pages.shipping.policy_details', compact('policy'));
+        $drivers = Driver::all();
+        $suppliers = Supplier::all();
+        return view('pages.shipping.policy_details', compact(
+            'policy',
+            'drivers',
+            'suppliers'
+        ));
+    }
+
+    public function updatePolicy(Request $request, ShippingPolicy $policy) {
+        $validated = $request->validate([
+            'from' => 'required|string',
+            'to' => 'required|string',
+            'type' => 'required|string',
+            'driver_id' => 'required_if:type,ناقل داخلي|nullable|exists:drivers,id',
+            'vehicle_id' => 'required_if:type,ناقل داخلي|nullable|exists:vehicles,id',
+            'supplier_id' => 'required_if:type,ناقل خارجي|nullable|exists:suppliers,id',
+            'driver_name' => 'nullable|string',
+            'driver_contact' => 'nullable|string',
+            'vehicle_plate' => 'nullable|string',
+            'client_cost' => 'required|numeric|min:0',
+            'supplier_cost' => 'nullable|numeric|min:0',
+            'diesel_cost' => 'nullable|numeric|min:0',
+            'driver_wage' => 'nullable|numeric|min:0',
+            'other_expenses' => 'nullable|numeric|min:0',
+        ]);
+
+        $old = $policy->toArray();
+        $policy->update($validated);
+        $new = $policy->toArray();
+        logActivity('تحديث بوليصة الشحن', 'تم تحديث بيانات بوليصة شحن رقم ' . $policy->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تعديل بيانات بوليصة الشحن بنجاح');
     }
 
     public function toggleReceiveStatus(ShippingPolicy $policy) {

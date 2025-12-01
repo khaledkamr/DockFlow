@@ -32,7 +32,7 @@
                     <h5 class="modal-title text-dark fw-bold" id="editPolicyModalLabel">تعديل بيانات بوليصة الشحن</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('transportOrders.update', $policy) }}" method="POST">
+                <form action="{{ route('shipping.policy.update', $policy) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <div class="modal-body text-dark">
@@ -364,11 +364,63 @@
         </div>
     </div>
 
+    <script>
+        $('#editPolicyModal').on('shown.bs.modal', function () {
+            $('#driver_id').select2({
+                placeholder: "ابحث عن إسم السائق...",
+                allowClear: true,
+                dropdownParent: $('#editPolicyModal')
+            });
+
+            $('#supplier_id').select2({
+                placeholder: "ابحث عن إسم المورد...",
+                allowClear: true,
+                dropdownParent: $('#editPolicyModal')
+            });
+        });
+
+        $('#driver_id').on('change', function() {
+            let nid = $(this).find(':selected').data('nid');
+            $('#driver_NID').val(nid || '');
+            let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
+            $('#plate_number').val(vehiclePlate || '');
+            let vehicleId = $(this).find(':selected').data('vehicle-id');
+            $('#vehicle_id').val(vehicleId || '');
+        });
+
+        $(document).ready(function() {
+            function toggleFields() {
+                const selected = $('#type').val();
+                $('.internal-field, .external-field').hide();
+
+                if (selected === "ناقل داخلي") {
+                    $('.internal-field').show();
+                    $('#supplier_id').val(null).trigger('change');
+                } else if (selected === "ناقل خارجي") {
+                    $('.external-field').show();
+                    $('#driver_id').val(null).trigger('change');
+                }
+            }
+            $('#type').on('change', toggleFields);
+            toggleFields();
+        });
+    </script>
+
     <style>
         .card {
             border: none;
             border-radius: 10px;
             overflow: hidden;
+        }
+        .select2-container .select2-selection {
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid #0d6efd;
+            padding: 5px;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 30px;
         }
     </style>
 @endsection

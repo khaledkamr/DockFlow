@@ -133,6 +133,7 @@ Route::controller(ShippingController::class)->middleware('auth')->group(function
     Route::get('/shipping/policies/create', 'createPolicy')->name('shipping.policies.create');
     Route::post('/shipping/policies/store', 'storePolicy')->name('shipping.policies.store');
     Route::patch('/shipping/policies/{policy:uuid}/update-notes', 'updateNotes')->name('shipping.policies.notes');
+    Route::patch('/shipping/policies/{policy:uuid}/update', 'updatePolicy')->name('shipping.policy.update');
     Route::get('/shipping/policies/{policy:uuid}', 'policyDetails')->name('shipping.policies.details');
     Route::patch('/shipping/policies/{policy:uuid}/toggle-receive-status', 'toggleReceiveStatus')->name('shipping.policies.toggle');
     Route::delete('/shipping/policies/delete/{policy:uuid}', 'deletePolicy')->name('shipping.policies.delete');
