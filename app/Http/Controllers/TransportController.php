@@ -8,6 +8,7 @@ use App\Http\Requests\VehicleRequest;
 use App\Models\Account;
 use App\Models\Container;
 use App\Models\Container_type;
+use App\Models\CostCenter;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\JournalEntry;
@@ -200,25 +201,24 @@ class TransportController extends Controller
     }
 
     public function storeDriver(DriverRequest $request) {
-        $parentAccount = Account::where('name', 'السائقون')->where('level', 4)->first();
-        $lastChildAccount = Account::where('parent_id', $parentAccount->id)->latest('code')->first();
+        $parentCostCenter = CostCenter::where('name', 'السائقون')->first();
+        $lastChildCostCenter = CostCenter::where('parent_id', $parentCostCenter->id)->latest('code')->first();
 
-        if($lastChildAccount) {
-            $code = (string)((int)($lastChildAccount->code) + 1);
+        if($lastChildCostCenter) {
+            $code = (string)((int)($lastChildCostCenter->code) + 1);
         } else {
-            $code = $parentAccount->code . '0001';
+            $code = $parentCostCenter->code . '0001';
         }
 
-        $account = Account::create([
+        $costCenter = CostCenter::create([
             'name' => $request->name,
             'code' => $code,
-            'type_id' => $parentAccount->type_id,
-            'parent_id' => $parentAccount->id,
-            'level' => 5,
+            'parent_id' => $parentCostCenter->id,
+            'level' => $parentCostCenter->level + 1,
         ]);
 
         $validated = $request->validated();
-        $validated['account_id'] = $account->id;
+        $validated['cost_center_id'] = $costCenter->id;
         $new = Driver::create($validated);
         logActivity('إنشاء سائق', "تم إنشاء سائق جديد باسم " . $new->name, null, $new->toArray());
 
@@ -250,25 +250,24 @@ class TransportController extends Controller
     }
 
     public function storeVehicle(VehicleRequest $request) {
-        $parentAccount = Account::where('name', 'الشاحنات')->where('level', 4)->first();
-        $lastChildAccount = Account::where('parent_id', $parentAccount->id)->latest('code')->first();
+        $parentCostCenter = CostCenter::where('name', 'السيارات')->first();
+        $lastChildCostCenter = CostCenter::where('parent_id', $parentCostCenter->id)->latest('code')->first();
 
-        if($lastChildAccount) {
-            $code = (string)((int)($lastChildAccount->code) + 1);
+        if($lastChildCostCenter) {
+            $code = (string)((int)($lastChildCostCenter->code) + 1);
         } else {
-            $code = $parentAccount->code . '0001';
+            $code = $parentCostCenter->code . '0001';
         }
 
-        $account = Account::create([
+        $costCenter = CostCenter::create([
             'name' => $request->type . ' - ' . $request->plate_number,
             'code' => $code,
-            'parent_id' => $parentAccount->id,
-            'type_id' => $parentAccount->type_id,
-            'level' => 5,
+            'parent_id' => $parentCostCenter->id,
+            'level' => $parentCostCenter->level + 1,
         ]);
 
         $validated = $request->validated();
-        $validated['account_id'] = $account->id;
+        $validated['cost_center_id'] = $costCenter->id;
         $new = Vehicle::create($validated);
         logActivity('إنشاء شاحنة', "تم إنشاء شاحنة جديدة برقم اللوحة " . $new->plate_number, null, $new->toArray());
 

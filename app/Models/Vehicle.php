@@ -12,7 +12,7 @@ class Vehicle extends Model
     protected $fillable = [
         'type', 
         'plate_number',
-        'account_id',
+        'cost_center_id',
         'company_id',
     ];
 
@@ -20,8 +20,8 @@ class Vehicle extends Model
         return $this->hasOne(Driver::class);
     }
 
-    public function account() {
-        return $this->belongsTo(Account::class);
+    public function costCenter() {
+        return $this->belongsTo(CostCenter::class);
     }
 
     public function transportOrders() {

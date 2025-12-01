@@ -176,7 +176,7 @@
     <table class="table table-hover mb-0">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم حساب السائق</th>
+                <th class="text-center bg-dark text-white">مركز التكلفة</th>
                 <th class="text-center bg-dark text-white">إسم السائق</th>
                 <th class="text-center bg-dark text-white">رقم الهوية</th>
                 <th class="text-center bg-dark text-white">رقم الهاتف</th>
@@ -194,7 +194,7 @@
             @else
                 @foreach ($drivers as $driver)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $driver->account->code ?? 'N/A' }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $driver->costCenter->code ?? 'N/A' }}</td>
                         <td class="text-center fw-bold">{{ $driver->name }}</td>
                         <td class="text-center">{{ $driver->NID }}</td>
                         <td class="text-center">{{ $driver->phone ?? '-' }}</td>

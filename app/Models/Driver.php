@@ -14,7 +14,7 @@ class Driver extends Model
         'NID',
         'phone',
         'vehicle_id',
-        'account_id',
+        'cost_center_id',
         'company_id',
     ];
 
@@ -22,8 +22,8 @@ class Driver extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function account() {
-        return $this->belongsTo(Account::class);
+    public function costCenter() {
+        return $this->belongsTo(CostCenter::class);
     }
 
     public function transportOrders() {

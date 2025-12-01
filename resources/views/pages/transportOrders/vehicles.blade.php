@@ -155,7 +155,7 @@
     <table class="table table-hover mb-0">
         <thead>
             <tr>
-                <th class="text-center bg-dark text-white">رقم حساب الشاحنة</th>
+                <th class="text-center bg-dark text-white">مركز التكلفة</th>
                 <th class="text-center bg-dark text-white">رقم اللوحة</th>
                 <th class="text-center bg-dark text-white">النوع</th>
                 <th class="text-center bg-dark text-white">السائق</th>
@@ -172,7 +172,7 @@
             @else
                 @foreach ($vehicles as $vehicle)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $vehicle->account->code ?? 'N/A' }}</td>
+                        <td class="text-center text-primary fw-bold">{{ $vehicle->costCenter->code ?? 'N/A' }}</td>
                         <td class="text-center">{{ $vehicle->plate_number }}</td>
                         <td class="text-center">{{ $vehicle->type }}</td>
                         <td class="text-center">{{ $vehicle->driver->name ?? 'N/A' }}</td>
