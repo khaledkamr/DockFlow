@@ -73,31 +73,39 @@
                 @php
                     $balance = 0;
                 @endphp
-                @forelse($statement as $line)
-                @php
-                    $balance += $line->debit - $line->credit;
-                @endphp
-                    <tr class="text-center">
-                        <td>{{ $line->account->name }}</td>
-                        <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
-                        <td class="fw-bold">
-                            <a href="{{ route('journal.details', $line->journal) }}" class="text-decoration-none text-dark">
-                                {{ $line->journal->code }}
-                            </a>
-                        </td>
-                        <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
-                        <td>{{ $line->description }}</td>
-                        <td>{{ $line->debit }}</td>
-                        <td>{{ $line->credit }}</td>
-                        <td>{{ $balance }}</td>
+                @if($statement)
+                    @foreach($statement as $line)
+                    @php
+                        $balance += $line->debit - $line->credit;
+                    @endphp
+                        <tr class="text-center">
+                            <td>{{ $line->account->name }}</td>
+                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
+                            <td class="fw-bold">
+                                <a href="{{ route('journal.details', $line->journal) }}" class="text-decoration-none text-dark">
+                                    {{ $line->journal->code }}
+                                </a>
+                            </td>
+                            <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
+                            <td>{{ $line->description }}</td>
+                            <td>{{ $line->debit }}</td>
+                            <td>{{ $line->credit }}</td>
+                            <td>{{ $balance }}</td>
+                        </tr>
+                    @endforeach
+                    <tr class="table-primary fw-bold">
+                        <td colspan="5" class="text-center fs-6">الإجماليـــــات</td>
+                        <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>
+                        <td class="text-center">{{ $statement->sum(fn($line) => $line->credit) }}</td>
+                        <td class="text-center">{{ $balance }}</td>
                     </tr>
-                @empty
+                @else
                     <tr>
                         <td colspan="8" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>
-                @endforelse
+                @endif
             </tbody>
         </table>
     </div>

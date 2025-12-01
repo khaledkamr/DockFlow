@@ -5,7 +5,7 @@
 @section('content')
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
         <h1 class="mb-0">
-            <i class="fa-solid fa-truck-fast"></i> <span class="d-none d-md-inline">تفاصيل بوليصة الشحن</span><span class="d-sm-inline d-md-none">بوليصة</span>
+            <i class="fa-solid fa-truck-fast"></i> <span class="d-none d-md-inline">بوليصة الشحن</span><span class="d-sm-inline d-md-none">بوليصة</span>
             {{ $policy->code }}
         </h1>
         <div class="d-flex flex-row gap-2">
@@ -16,8 +16,149 @@
             </a>
             @endif
             <a href="{{ route('export.shipping.policy', $policy->id) }}" target="_blank" class="btn btn-outline-primary flex-fill">
-            <i class="fa-solid fa-print"></i> <span class="d-inline">طباعة البوليصة</span>
+                <i class="fa-solid fa-print"></i> <span class="d-inline">طباعة البوليصة</span>
             </a>
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editPolicyModal">
+                <i class="fas fa-edit me-1"></i>
+                تعديل البوليصة
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editPolicyModal" tabindex="-1" aria-labelledby="editPolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark fw-bold" id="editPolicyModalLabel">تعديل بيانات بوليصة الشحن</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('transportOrders.update', $policy) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-body text-dark">
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">مكان التحميل</label>
+                                <input type="text" class="form-control border-primary" id="from" name="from"
+                                    value="{{ old('from', $policy->from) }}">
+                                @error('from')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">مكان التسليم</label>
+                                <input type="text" class="form-control border-primary" id="to" name="to"
+                                    value="{{ old('to', $policy->to) }}">
+                                @error('to')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">نوع الناقل</label>
+                                <select name="type" id="type" class="form-select border-primary">
+                                    <option value="ناقل داخلي" {{ old('type', $policy->type) == 'ناقل داخلي' ? 'selected' : '' }}>ناقل داخلي</option>
+                                    <option value="ناقل خارجي" {{ old('type', $policy->type) == 'ناقل خارجي' ? 'selected' : '' }}>ناقل خارجي</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 internal-field">
+                                <label class="form-label">إســم السائق</label>
+                                <select name="driver_id" id="driver_id" class="form-select border-primary">
+                                    <option value="">اختر السائق...</option>
+                                    @foreach ($drivers as $driver)
+                                        <option value="{{ $driver->id }}" data-nid="{{ $driver->NID }}"
+                                            data-vehicle-plate="{{ $driver->vehicle ? $driver->vehicle->plate_number : '' }}"
+                                            data-vehicle-type="{{ $driver->vehicle ? $driver->vehicle->type : '' }}"
+                                            data-vehicle-id="{{ $driver->vehicle ? $driver->vehicle->id : '' }}"
+                                            {{ old('driver_id', $policy->driver_id) == $driver->id ? 'selected' : '' }}>
+                                            {{ $driver->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('driver_name')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @endif
+                            </div>
+                            <div class="col-12 col-md-4 internal-field">
+                                <label class="form-label">هوية السائق</label>
+                                <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID"
+                                    value="{{ old('driver_NID', $policy->driver ? $policy->driver->NID : '') }}" readonly>
+                            </div>
+                            <div class="col-12 col-md-4 internal-field">
+                                <label class="form-label">لوحة السيارة</label>
+                                <input type="text" class="form-control border-primary" name="plate_number" id="plate_number"
+                                    value="{{ old('plate_number', $policy->vehicle ? $policy->vehicle->plate_number : '') }}" readonly>
+                                <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id', $policy->vehicle_id) }}">
+                            </div>
+                            <div class="col-12 col-md-4 external-field" style="display: none">
+                                <label class="form-label d-block">إســم المورد</label>
+                                <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
+                                    <option value="">اختر المورد...</option>
+                                    @foreach ($suppliers as $supplier)
+                                        <option value="{{ $supplier->id }}"
+                                            {{ old('supplier_id', $policy->supplier_id) == $supplier->id ? 'selected' : '' }}>
+                                            {{ $supplier->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 external-field" style="display: none">
+                                <label class="form-label">إسم السائق</label>
+                                <input type="text" class="form-control border-primary" name="driver_name" id="driver_name" 
+                                    value="{{ old('driver_name', $policy->driver_name) }}">
+                            </div>
+                            <div class="col-12 col-md-4 external-field" style="display: none">
+                                <label class="form-label">لوحة السيارة</label>
+                                <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate"
+                                    value="{{ old('vehicle_plate', $policy->vehicle_plate) }}">
+                            </div>
+                            <div class="col-12 col-md-4 external-field">
+                                <label class="form-label">مصاريف المورد</label>
+                                <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
+                                    value="{{ old('supplier_cost', $policy->supplier_cost) }}">
+                                @error('supplier_cost')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md internal-field">
+                                <label class="form-label">مصاريف الديزل</label>
+                                <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
+                                    value="{{ old('diesel_cost', $policy->diesel_cost) }}">
+                                @error('diesel_cost')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md internal-field">
+                                <label class="form-label">عمولة السائق</label>
+                                <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
+                                    value="{{ old('driver_wage', $policy->driver_wage) }}">
+                                @error('driver_wage')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md">
+                                <label class="form-label">مصاريف أخرى</label>
+                                <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
+                                    value="{{ old('other_expenses', $policy->other_expenses) }}">
+                                @error('other_expenses')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md">
+                                <label class="form-label">سعر العميل</label>
+                                <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
+                                    value="{{ old('client_cost', $policy->client_cost) }}">
+                                @error('client_cost')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
