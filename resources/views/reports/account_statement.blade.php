@@ -26,31 +26,41 @@
                 @php
                     $balance = 0;
                 @endphp
-                @forelse($statement as $line)
-                @php
-                    if($line->debit > 0) {
-                        $balance += $line->debit;
-                    } else {
-                        $balance -= $line->credit;
-                    }
-                @endphp
-                    <tr class="text-center">
-                        <td>{{ $line->account->name }}</td>
-                        <td>{{ $line->journal->date }}</td>
-                        <td>{{ $line->journal_entry_id }}</td>
-                        <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
-                        <td>{{ $line->description }}</td>
-                        <td>{{ $line->debit }}</td>
-                        <td>{{ $line->credit }}</td>
-                        <td>{{ $balance }}</td>
+                @if($statement)
+                    @foreach($statement as $line)
+                        @php
+                            if($line->debit > 0) {
+                                $balance += $line->debit;
+                            } else {
+                                $balance -= $line->credit;
+                            }
+                        @endphp
+                        <tr class="text-center">
+                            <td>{{ $line->account->name }}</td>
+                            <td>{{ $line->journal->date }}</td>
+                            <td>{{ $line->journal_entry_id }}</td>
+                            <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
+                            <td>{{ $line->description }}</td>
+                            <td>{{ $line->debit }}</td>
+                            <td>{{ $line->credit }}</td>
+                            <td>{{ $balance }}</td>
+                        </tr>
+                    @endforeach
+                    <tr class="fw-bold">
+                        <td colspan="5" class="text-center fs-6">
+                            الإجماليـــــات
+                        </td>
+                        <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>
+                        <td class="text-center">{{ $statement->sum(fn($line) => $line->credit) }}</td>
+                        <td class="text-center">{{ $balance }}</td>
                     </tr>
-                @empty
+                @else
                     <tr>
                         <td colspan="8" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>
-                @endforelse
+                @endif
             </tbody>
         </table>
     </div>
