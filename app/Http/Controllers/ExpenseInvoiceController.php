@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 class ExpenseInvoiceController extends Controller
 {
     public function invoices() {
-        $expenseInvoices = ExpenseInvoice::all();
+        $expenseInvoices = ExpenseInvoice::orderBy('code', 'desc')->get();
         return view('pages.expense_invoices.invoices', compact('expenseInvoices'));
     }
 
@@ -105,7 +105,7 @@ class ExpenseInvoiceController extends Controller
     }
 
     public function reports(Request $request) {
-        $invoices = ExpenseInvoice::all();
+        $invoices = ExpenseInvoice::orderBy('code')->get();
         $suppliers = Supplier::all();
         $costCenters = CostCenter::doesntHave('children')->get();
 

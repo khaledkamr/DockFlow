@@ -417,7 +417,7 @@ class AccountingController extends Controller
             $type = $request->input('type');
             $from = $request->input('from');
             $to = $request->input('to');
-            $entries = JournalEntry::all();
+            $entries = JournalEntry::orderBy('date')->get();
 
             if($request->query('journal_type') && $request->query('journal_type') != 'all') {
                 if($request->query('journal_type') == 'all_journals') {

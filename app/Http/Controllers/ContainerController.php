@@ -155,7 +155,7 @@ class ContainerController extends Controller
     }
 
     public function reports(Request $request) {
-        $containers = Container::orderBy('id', 'desc')->get();
+        $containers = Container::orderBy('date')->get();
         $types = Container_type::all();
         $customers = Customer::all();
 

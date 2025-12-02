@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Gate;
 class TransactionController extends Controller
 {
     public function transactions(Request $request) {
-        $transactions = Transaction::all();
+        $transactions = Transaction::orderBy('date', 'desc')->get();
 
         $search = $request->input('search', null);
         if ($search) {

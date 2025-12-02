@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 class ShippingController extends Controller
 {
     public function policies(Request $request) {
-        $policies = ShippingPolicy::all();
+        $policies = ShippingPolicy::orderBy('code', 'desc')->get();
 
         $search = $request->input('search', null);
         if ($search) {
@@ -186,7 +186,7 @@ class ShippingController extends Controller
     }
 
     public function reports(Request $request) {
-        $policies = ShippingPolicy::all();
+        $policies = ShippingPolicy::orderBy('order')->get();
         $customers = Customer::all();
         $drivers = Driver::with('vehicle')->get();
         $vehicles = Vehicle::all();
