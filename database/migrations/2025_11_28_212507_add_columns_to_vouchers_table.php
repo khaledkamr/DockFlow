@@ -15,7 +15,9 @@ return new class extends Migration
             $table->string('description')->nullable()->change();
 
             // $table->dropForeign(['account_id']);
-            $table->dropColumn('account_id');
+            if (Schema::hasColumn('vouchers', 'account_id')) {
+                $table->dropColumn('account_id');
+            }
 
             $table->foreignId('credit_account_id')->nullable()->after('description')->constrained('accounts')->cascadeOnDelete();
             $table->foreignId('debit_account_id')->nullable()->after('credit_account_id')->constrained('accounts')->cascadeOnDelete();
