@@ -68,7 +68,7 @@ class InvoiceController extends Controller
         $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
         $containers = $containers->filter(function($container) {
             return $container->invoices->filter(function($invoice) {
-                return $invoice->type == 'تخزين';
+                return $invoice->type == 'تخزين' || $invoice->type == 'تخليص';
             })->isEmpty();
         });
 
@@ -263,8 +263,40 @@ class InvoiceController extends Controller
         $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
         $invoice = Invoice::create($validated);
 
+        $storage_price_before_tax = 0;
+
         foreach($transaction->containers as $container) {
-            $invoice->containers()->attach($container->id, ['amount' => 0]);
+            if($container->invoices->isEmpty() 
+                && $container->policies->where('type', 'تخزين')->isNotEmpty() 
+                && $container->status == 'تم التسليم') {
+                $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+                $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+                if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
+                    $days = (int) Carbon::parse($container->date)
+                        ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
+                        ->diffInDays(Carbon::parse($container->exit_date));
+                    $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+                } else {
+                    $late_fee = 0;
+                }
+                $services = 0;
+                foreach($container->services as $service) {
+                    $services += $service->pivot->price;
+                }
+                $storage_price_before_tax += $storage_price + $late_fee + $services;
+            }
+            $invoice->containers()->attach($container->id, ['amount' => $storage_price_before_tax]);
+        }
+
+        if($storage_price_before_tax > 0 && !$transaction->items->contains('description', 'رسوم تخزين - STORAGE FEES')) {
+            $transaction->items()->create([
+                'number' => $transaction->items()->count() + 1,
+                'description' => 'رسوم تخزين - STORAGE FEES',
+                'type' => 'ايراد تخزين',
+                'amount' => $storage_price_before_tax,
+                'tax' => $storage_price_before_tax * 0.15,
+                'total' => $storage_price_before_tax * 1.15,
+            ]);
         }
 
         $transaction->refresh(); // to get latest items
@@ -525,6 +557,7 @@ class InvoiceController extends Controller
         $transport_revenue_Account = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
         $labor_revenue_Account = Account::where('name', 'ايرادات اجور عمال')->where('level', 5)->first();
         $saber_revenue_Account = Account::where('name', 'ايرادات خدمات سابر')->where('level', 5)->first();
+        $storage_revenue_Account = Account::where('name', 'ايرادات التخزين')->where('level', 5)->first();
         $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من الايرادات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
@@ -538,6 +571,7 @@ class InvoiceController extends Controller
         $transport_revenue = 0;
         $labor_revenue = 0;
         $saber_revenue = 0;
+        $storage_revenue = 0;
 
         foreach($invoice->containers->first()->transactions->first()->items->sortBy('number') as $item) {
             if($item->type == 'مصروف') {
@@ -556,6 +590,8 @@ class InvoiceController extends Controller
                 $labor_revenue += $item->amount;
             } elseif($item->type == 'ايراد سابر') {
                 $saber_revenue += $item->amount;
+            } elseif($item->type == 'ايراد تخزين') {
+                $storage_revenue += $item->amount;
             }
         }
 
@@ -593,6 +629,15 @@ class InvoiceController extends Controller
                 'debit' => 0.00,
                 'credit' => $saber_revenue,
                 'description' => 'ايرادات خدمات سابر فاتورة رقم ' . $invoice->code
+            ]);
+        }
+        if($storage_revenue > 0) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $storage_revenue_Account->id,
+                'debit' => 0.00,
+                'credit' => $storage_revenue,
+                'description' => 'ايرادات تخزين فاتورة رقم ' . $invoice->code
             ]);
         }
 

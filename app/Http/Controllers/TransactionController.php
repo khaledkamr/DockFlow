@@ -154,6 +154,10 @@ class TransactionController extends Controller
                 'name' => 'خدمات سابر - SABER FEES',
                 'type' => 'ايراد سابر'
             ],
+            [
+                'name' => 'رسوم تخزين - STORAGE FEES',
+                'type' => 'ايراد تخزين'
+            ]
         ];
 
         $procedures = [

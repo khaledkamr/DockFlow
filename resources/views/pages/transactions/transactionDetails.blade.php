@@ -302,17 +302,17 @@
                                                             <input type="number" class="form-control border-primary"
                                                                 name="amount" id="editAmount{{ $loop->index }}"
                                                                 value="{{ $item->amount }}" step="1" required
-                                                                onchange="calculateEditTotal({{ $loop->index }})">
+                                                                oninput="calculateEditTotal({{ $loop->index }})">
                                                         </div>
                                                         <div class="col">
                                                             <label for="editTax" class="form-label">الضريبة</label>
                                                             <select class="form-select border-primary"
                                                                 id="editTaxPercentage{{ $loop->index }}"
-                                                                onchange="calculateEditTotal({{ $loop->index }})">
+                                                                oninput="calculateEditTotal({{ $loop->index }})">
                                                                 <option disabled selected>نوع الضريبة</option>
-                                                                <option value="15" data-rate="15">خاضع للضريبة (15%)
+                                                                <option value="15" data-rate="15" {{ $item->tax > 0 ? 'selected' : '' }}>خاضع للضريبة (15%)
                                                                 </option>
-                                                                <option value="0" data-rate="0">غير خاضع للضريبة
+                                                                <option value="0" data-rate="0" {{ $item->tax == 0 ? 'selected' : '' }}>غير خاضع للضريبة
                                                                 </option>
                                                             </select>
                                                             <input type="hidden" id="editTax{{ $loop->index }}"
@@ -601,12 +601,12 @@
                             <div class="col">
                                 <label for="amount" class="form-label">المبلغ</label>
                                 <input type="number" class="form-control border-primary" id="amount" name="amount"
-                                    step="0.01" required onchange="calculateTotal()">
+                                    step="0.01" required oninput="calculateTotal()">
                             </div>
                             <div class="col">
                                 <label for="tax" class="form-label">الضريبة</label>
                                 <select class="form-select border-primary" id="tax_percentage"
-                                    onchange="calculateTotal()">
+                                    oninput="calculateTotal()">
                                     <option disabled selected>نوع الضريبة</option>
                                     <option value="15" data-rate="15">خاضع للضريبة (15%)</option>
                                     <option value="0" data-rate="0">غير خاضع للضريبة</option>

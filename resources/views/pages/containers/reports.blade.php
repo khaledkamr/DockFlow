@@ -195,12 +195,23 @@
                                     {{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}
                                 </td>
                                 <td class="text-center">
+                                    @if($container->invoices->isEmpty())
+                                        -
+                                    @endif
                                     @if ($container->invoices->where('type', 'تخزين')->first())
-                                        <a href="{{ route('invoices.details', $container->invoices->where('type', 'تخزين')->first()) }}" class="text-decoration-none fw-bold">
+                                        <a href="{{ route('invoices.details', $container->invoices->where('type', 'تخزين')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
                                             {{ $container->invoices->where('type', 'تخزين')->first()->code }}
                                         </a>
-                                    @else
-                                        -
+                                    @endif
+                                    @if($container->invoices->where('type', 'تخليص')->first())
+                                        <a href="{{ route('invoices.clearance.details', $container->invoices->where('type', 'تخليص')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                            {{ $container->invoices->where('type', 'تخليص')->first()->code }}
+                                        </a>
+                                    @endif
+                                    @if($container->invoices->where('type', 'خدمات')->first())
+                                        <a href="{{ route('invoices.services.details', $container->invoices->where('type', 'خدمات')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                            {{ $container->invoices->where('type', 'خدمات')->first()->code }}
+                                        </a>
                                     @endif
                                 </td>
                             </tr>
