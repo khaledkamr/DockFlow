@@ -391,7 +391,7 @@
                                         تم فوترة الحاوية بموجب فاتورة رقم <a
                                             href="{{ route('invoices.clearance.details', $clearanceInvoice) }}"
                                             class="text-decoration-none fw-bold">{{ $clearanceInvoice->code }}</a> بواسطة
-                                        <strong>{{ $storageInvoice->made_by->name ?? 'N/A' }}</strong>
+                                        <strong>{{ $clearanceInvoice->made_by->name ?? 'N/A' }}</strong>
                                     </p>
                                 </div>
                             </div>
