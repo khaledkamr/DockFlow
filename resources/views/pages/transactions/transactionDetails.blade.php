@@ -89,6 +89,7 @@
         </div>
     </div>
 
+    <!-- Edit Transaction Modal -->
     <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -502,6 +503,7 @@
                                 <th class="text-center fw-bold text-nowrap">نوع الحاوية</th>
                                 <th class="text-center fw-bold text-nowrap">اسم العميل</th>
                                 <th class="text-center fw-bold text-nowrap">الحالة</th>
+                                <th class="text-center fw-bold text-nowrap">اشعار النقل</th>
                                 <th class="text-center fw-bold text-nowrap">الإجرائات</th>
                             </tr>
                         </thead>
@@ -523,9 +525,23 @@
                                     </td>
                                     <td class="text-nowrap">
                                         @if ($container->transportOrders->isNotEmpty())
-                                            <div class="status-available">تم اشعار نقل</div>
+                                            <div class="badge status-available">تم اشعار نقل</div>
                                         @else
-                                            <div class="status-danger">في الميناء</div>
+                                            <div class="badge status-danger">في الميناء</div>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($container->transportOrders->isNotEmpty())
+                                            <div class="fw-bold">
+                                                <a href="{{ route('transactions.transportOrders.details', $container->transportOrders->first()) }}" 
+                                                   class="text-decoration-none">
+                                                    {{ $container->transportOrders->first()->code }}
+                                                </a>
+                                            </div>
+                                        @else
+                                            <div class="fw-bold">
+                                                -
+                                            </div>
                                         @endif
                                     </td>
                                     <td>
