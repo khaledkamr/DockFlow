@@ -14,7 +14,7 @@ return new class extends Migration
 
             $table->string('description')->nullable()->change();
 
-            $table->dropForeign(['account_id']);
+            // $table->dropForeign(['account_id']);
             $table->dropColumn('account_id');
 
             $table->foreignId('credit_account_id')->nullable()->after('description')->constrained('accounts')->cascadeOnDelete();
