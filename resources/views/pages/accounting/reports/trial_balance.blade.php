@@ -2,7 +2,7 @@
     <input type="hidden" name="view" value="ميزان مراجعة">
     <div class="col-md-4">
         <label class="form-label">الحساب</label>
-        <select name="account" class="form-select border-primary">
+        <select class="form-select border-primary">
             <option value="">اختر الحساب</option>
             @foreach($accounts as $account)
                 <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
@@ -30,8 +30,7 @@
 <div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-end align-items-end mb-3">
         <div class="export-buttons d-flex gap-2 align-items-center">
-            <form action="{{ route('export.excel', 'account_statement') }}" method="GET">
-                <input type="hidden" name="account" value="{{ request()->query('account') }}">
+            <form action="{{ route('export.excel', 'trail_balance') }}" method="GET">
                 <input type="hidden" name="from" value="{{ request()->query('from') }}">
                 <input type="hidden" name="to" value="{{ request()->query('to') }}">
                 <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
@@ -39,11 +38,7 @@
                 </button>
             </form>
 
-            <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
-                <i class="fa-solid fa-file-pdf"></i>
-            </button>
-            
-            <form action="{{ route('print', 'account_statement') }}" method="POST" target="_blank">
+            <form action="" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="account" value="{{ request()->query('account') }}">
                 <input type="hidden" name="from" value="{{ request()->query('from') }}">

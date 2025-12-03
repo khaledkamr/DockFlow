@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
 use App\Exports\JournalEntryExport;
+use App\Exports\TrialBalanceExport;
 use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
@@ -454,6 +455,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير القيود اليومية الى اكسيل', "تم تصدير تقرير القيود اليومية الى اكسيل بتصفية: ", $filters);
             return Excel::download(new JournalEntryExport($filters), 'تقرير القيود اليومية.xlsx');
+        } elseif($reportType == 'trail_balance') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير ميزان المراجعة الى اكسيل', "تم تصدير تقرير ميزان المراجعة بتصفية: ", $filters);
+            return Excel::download(new TrialBalanceExport($filters), 'تقرير ميزان المراجعة.xlsx');
         }
 
         abort(404);
