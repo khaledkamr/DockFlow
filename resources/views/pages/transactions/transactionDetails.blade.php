@@ -194,7 +194,9 @@
                                 اسم العميل
                             </h6>
                             <div class="">
-                                <div class="fw-bold">{{ $transaction->customer->name }}</div>
+                                <a href="{{ route('users.customer.profile', $transaction->customer) }}" class="fw-bold text-decoration-none text-dark">
+                                    {{ $transaction->customer->name }}
+                                </a>
                             </div>
                         </div>
                         <div class="col-12 col-sm-4">
@@ -530,7 +532,12 @@
                                         <div class="fw-bold">{{ $container->containerType->name }}</div>
                                     </td>
                                     <td>
-                                        <div>{{ $container->customer->name }}</div>
+                                        <div>
+                                            <a href="{{ route('users.customer.profile', $container->customer) }}" 
+                                               class="fw-bold text-decoration-none text-dark">
+                                                {{ $container->customer->name }}
+                                            </a>
+                                        </div>
                                     </td>
                                     <td class="text-nowrap">
                                         @if ($container->transportOrders->isNotEmpty())
