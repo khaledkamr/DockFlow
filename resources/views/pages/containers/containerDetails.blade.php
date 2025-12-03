@@ -126,8 +126,8 @@
                             </a>
                         </div>
                         <div class="info-item">
-                            <strong class="text-muted">رقم السجل التجاري:</strong>
-                            <span class="text-dark">{{ $container->customer->CR }}</span>
+                            <strong class="text-muted">رقم الحساب:</strong>
+                            <span class="text-dark">{{ $container->customer->account->code }}</span>
                         </div>
                         <div class="info-item">
                             <strong class="text-muted">الرقم الضريبي:</strong>
