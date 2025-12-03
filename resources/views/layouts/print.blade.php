@@ -45,6 +45,9 @@
 
     </style>
 </head>
+@php
+    $company = auth()->user()->company;
+@endphp
 <body onload="initPrint()">
     <div class="position-relative border-bottom border-dark border-2 pb-2 mb-2">
         <div class="position-absolute start-0 top-0">

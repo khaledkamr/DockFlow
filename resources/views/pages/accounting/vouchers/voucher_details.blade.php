@@ -22,7 +22,7 @@
                     </span>
                 </div>
                 <div class="d-flex flex-column flex-sm-row gap-2">
-                    <a href="" target="_blank" class="btn btn-outline-primary">
+                    <a href="{{ route('voucher.print', $voucher) }}" target="_blank" class="btn btn-outline-primary">
                         <i class="fas fa-print me-2"></i>طباعة السند
                     </a>
                     @if (!$voucher->is_posted)

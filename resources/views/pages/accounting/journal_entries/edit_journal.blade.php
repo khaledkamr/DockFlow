@@ -137,12 +137,11 @@
                 $('input[name="credit[]"]').each(function() {
                     let value = parseFloat($(this).val()) || 0;
                     creditSum += value;
-                    
                 });
 
                 let difference = Math.abs(debitSum - creditSum);
                 console.log(`Difference: ${debitSum} - ${creditSum} =`, difference);
-
+                
                 $('#debitSum').val(debitSum.toFixed(2));
                 $('#creditSum').val(creditSum.toFixed(2));
                 $('#diff').val(difference.toFixed(2));

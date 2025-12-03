@@ -59,6 +59,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th class="bg-dark text-center text-white">رقم الحساب</th>
                     <th class="bg-dark text-center text-white">إسم الحساب</th>
                     <th class="bg-dark text-center text-white">تاريخ</th>
                     <th class="bg-dark text-center text-white">رقم القيد</th>
@@ -79,6 +80,7 @@
                         $balance += $line->debit - $line->credit;
                     @endphp
                         <tr class="text-center">
+                            <td>{{ $line->account->code }}</td>
                             <td>{{ $line->account->name }}</td>
                             <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td class="fw-bold">
@@ -94,14 +96,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-primary fw-bold">
-                        <td colspan="5" class="text-center fs-6">الإجماليـــــات</td>
+                        <td colspan="6" class="text-center fs-6">الإجماليـــــات</td>
                         <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>
                         <td class="text-center">{{ $statement->sum(fn($line) => $line->credit) }}</td>
                         <td class="text-center">{{ $balance }}</td>
                     </tr>
                 @else
                     <tr>
-                        <td colspan="8" class="text-center">
+                        <td colspan="9" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>

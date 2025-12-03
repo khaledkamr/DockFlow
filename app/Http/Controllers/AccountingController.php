@@ -356,6 +356,10 @@ class AccountingController extends Controller
         return view('pages.accounting.vouchers.voucher_details', compact('voucher'));
     }
 
+    public function printVoucher(Voucher $voucher) {
+        return view('pages.accounting.vouchers.printed_voucher', compact('voucher'));
+    }
+
     public function deleteVoucher($id) {
         $voucher = Voucher::findOrFail($id);
         $old = $voucher->toArray();
@@ -446,6 +450,10 @@ class AccountingController extends Controller
 
             $account = $request->input('account', null);
             $statement = JournalEntryLine::where('account_id', $account)->get();
+            $statement = $statement->sortBy(function($line) {
+                return $line->journal->date;
+            });
+
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
                     return $line->journal->date >= $from && $line->journal->date <= $to;

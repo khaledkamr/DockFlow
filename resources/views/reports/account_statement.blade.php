@@ -12,6 +12,7 @@
         <table class="table table-bordered border-dark">
             <thead>
                 <tr class="table-secondary border-dark fw-bold">
+                    <th class="text-center">رقم الحساب</th>
                     <th class="text-center">إسم الحساب</th>
                     <th class="text-center">تاريخ</th>
                     <th class="text-center">رقم القيد</th>
@@ -36,6 +37,7 @@
                             }
                         @endphp
                         <tr class="text-center">
+                            <td>{{ $line->account->code }}</td>
                             <td>{{ $line->account->name }}</td>
                             <td>{{ $line->journal->date }}</td>
                             <td>{{ $line->journal_entry_id }}</td>
@@ -47,7 +49,7 @@
                         </tr>
                     @endforeach
                     <tr class="fw-bold">
-                        <td colspan="5" class="text-center fs-6">
+                        <td colspan="6" class="text-center fs-6">
                             الإجماليـــــات
                         </td>
                         <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>
@@ -56,7 +58,7 @@
                     </tr>
                 @else
                     <tr>
-                        <td colspan="8" class="text-center">
+                        <td colspan="9" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>
