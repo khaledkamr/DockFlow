@@ -233,6 +233,7 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::get('accounting/journal/{journal:uuid}', 'journalDetails')->name('journal.details');
     Route::get('accounting/journal/edit/{journal:uuid}', 'editJournal')->name('journal.edit');
     Route::put('accounting/journal/update/{journal:uuid}', 'updateJournal')->name('journal.update');
+    Route::get('accounting/journal/{journal:uuid}/duplicate', 'duplicateJournal')->name('journal.duplicate');
     Route::delete('accounting/journal/delete/{journal:uuid}', 'deleteJournal')->name('journal.delete');
 
     Route::post('accounting/journal/{journal:uuid}/add/attachment', 'attachFileToJournal')->name('journal.add.attachment');

@@ -9,9 +9,11 @@
     <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
         <h5 class="fw-bold">{{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
-            {{-- <button class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
-                <i class="fa-solid fa-file-excel"></i>
-            </button> --}}
+            @if($journal->type == 'قيد يومي')
+                <a href="{{ route('journal.duplicate', $journal) }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تكرار القيد">
+                    <i class="fa-solid fa-copy"></i>
+                </a>
+            @endif
 
             <form action="{{ route('print', 'journal_entry') }}" method="POST" target="_blank">
                 @csrf
@@ -20,7 +22,7 @@
                     <i class="fa-solid fa-print"></i>
                 </button>
             </form>
-
+            
             <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>

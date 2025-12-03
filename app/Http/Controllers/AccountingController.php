@@ -270,6 +270,30 @@ class AccountingController extends Controller
             'journal'
         ));
     }
+    
+    public function duplicateJournal(JournalEntry $journal) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتكرار القيود');
+        }
+
+        $newJournal = $journal->replicate();
+        $newJournal->uuid = null;
+        $newJournal->code = null;
+        $newJournal->date = Carbon::now();
+        $newJournal->modifier_id = null;
+        $newJournal->save();
+
+        foreach ($journal->lines as $line) {
+            $newLine = $line->replicate();
+            $newLine->journal_entry_id = $newJournal->id;
+            $newLine->save();
+        }
+
+        $new = $newJournal->load('lines')->toArray();
+        logActivity('تكرار قيد', "تم تكرار القيد رقم " . $journal->code . " إلى القيد رقم " . $newJournal->code, null, $new);
+
+        return redirect()->route('journal.edit', $newJournal)->with('success', 'تم تكرار القيد بنجاح, يمكنك الآن تعديل البيانات حسب الحاجة.');
+    }
 
     public function deleteJournal(JournalEntry $journal) {
         $old = $journal->load('lines')->toArray();
