@@ -188,7 +188,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-4">
-                        <div class="col-12 col-sm-6">
+                        <div class="col-12 col-sm-4">
                             <h6 class="text-muted mb-2">
                                 <i class="fas fa-user-tie me-2"></i>
                                 اسم العميل
@@ -197,7 +197,16 @@
                                 <div class="fw-bold">{{ $transaction->customer->name }}</div>
                             </div>
                         </div>
-                        <div class="col-12 col-sm-6">
+                        <div class="col-12 col-sm-4">
+                            <h6 class="text-muted mb-2">
+                                <i class="fas fa-credit-card me-2"></i>
+                                رقم الحساب
+                            </h6>
+                            <div class="">
+                                <div class="fw-bold">{{ $transaction->customer->account->code ?? 'N/A' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-4">
                             <h6 class="text-muted mb-2">
                                 <i class="fas fa-receipt me-2"></i>
                                 الرقم الضريبي
