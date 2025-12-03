@@ -45,7 +45,7 @@
             <tbody>
                 @if ($transactions->isEmpty())
                     <tr>
-                        <td colspan="7" class="text-center">
+                        <td colspan="8" class="text-center">
                             <div class="status-danger fs-6">لم يتم العثور على اي معاملات!</div>
                         </td>
                     </tr>
