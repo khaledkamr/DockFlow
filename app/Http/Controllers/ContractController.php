@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 class ContractController extends Controller
 {
     public function contracts(Request $request) {
-        $contracts = Contract::orderBy('date')->get();
+        $contracts = Contract::orderBy('created_at')->get();
 
         $status = $request->input('status', null);
         if($status) {
