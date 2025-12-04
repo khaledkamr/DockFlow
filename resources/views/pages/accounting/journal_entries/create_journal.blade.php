@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         
         let difference = Math.abs(debitSum - creditSum);
+        console.log(`Difference: ${debitSum} - ${creditSum} =`, difference);
         
         $('#debitSum').val(debitSum.toFixed(2));
         $('#creditSum').val(creditSum.toFixed(2));

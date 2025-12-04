@@ -185,10 +185,6 @@ class AccountingController extends Controller
             }
         }
 
-        if ($totalDebit != $totalCredit) {
-            return redirect()->back()->with('error', 'القيد غير متزن يجب أن يتساوى مجموع المدين مع مجموع الدائن');
-        }
-        
         $journalEntry = JournalEntry::create([
             'date' => $request->date,
             'user_id' => Auth::user()->id,
