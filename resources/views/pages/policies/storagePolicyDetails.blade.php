@@ -36,6 +36,50 @@
                                 class="d-inline d-sm-none">طباعة</span>
                         </button>
                     </form>
+                    @if(auth()->user()->roles->contains('name', 'Super Admin'))
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash me-1"></i>
+                            <span class="d-inline">حذف البوليصة</span>
+                        </button>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="deleteModalLabel">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                تأكيد حذف البوليصة
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+                            </div>
+                            <h6 class="mb-3">هل أنت متأكد من حذف هذه البوليصة؟</h6>
+                            <p class="text-muted mb-0">
+                                سيتم حذف بوليصة التسليم <strong>{{ $policy->code }}</strong> نهائياً ولن يمكن استرجاعها.
+                            </p>
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i>
+                                إلغاء
+                            </button>
+                            <form action="{{ route('policy.delete', $policy) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash me-1"></i>
+                                    تأكيد الحذف
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 

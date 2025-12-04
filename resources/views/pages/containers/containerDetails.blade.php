@@ -99,10 +99,59 @@
     <div class="container-fluid">
         <!-- Header Section -->
         <div class="row mb-3 mb-md-4">
-            <div class="col-12">
+            <div class="col-12 d-flex flex-row align-items-center justify-content-between gap-3">
                 <h1 class="h3 h-md-2 mb-0">
                     تفاصيل الحاوية {{ $container->code }}
                 </h1>
+                @if(auth()->user()->roles->contains('name', 'Super Admin'))
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteContainerModal">
+                            <i class="fas fa-trash me-1"></i>
+                            حذف الحاوية
+                        </button>
+                    </div>
+                @endif
+
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteContainerModal" tabindex="-1" aria-labelledby="deleteContainerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="deleteContainerModalLabel">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    تأكيد حذف الحاوية
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center mb-3">
+                                    <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                                </div>
+                                <p class="text-center mb-3">
+                                    هل أنت متأكد من أنك تريد حذف الحاوية <strong>{{ $container->code }}</strong>؟
+                                </p>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    هذا الإجراء لا يمكن التراجع عنه وسيتم حذف جميع البيانات المرتبطة بهذه الحاوية نهائياً.
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i>
+                                    إلغاء
+                                </button>
+                                <form action="{{ route('containers.delete', $container) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-trash me-1"></i>
+                                        حذف الحاوية
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

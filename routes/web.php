@@ -83,6 +83,7 @@ Route::controller(ContainerController::class)->middleware('auth')->group(functio
     Route::get('/yard/containers/reports', 'reports')->name('yard.containers.reports');
     Route::post('/yard/containers/{container:uuid}/add/service', 'addService')->name('containers.add.service');
     Route::get('/yard/container/{container:uuid}', 'containerDetails')->name('container.details');
+    Route::delete('/yard/containers/delete/{container:uuid}', 'deleteContainer')->name('containers.delete');
 });
 
 Route::controller(PolicyController::class)->middleware('auth')->group(function () {
@@ -96,6 +97,7 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/services/create', 'servicePolicy')->name('policies.services.create');
     Route::post('/policies/services/store', 'storeServicePolicy')->name('policies.services.store');
     Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
+    Route::delete('/policies/delete/{policy:uuid}', 'deletePolicy')->name('policy.delete');
 });
 
 Route::controller(TransactionController::class)->middleware('auth')->group(function () {

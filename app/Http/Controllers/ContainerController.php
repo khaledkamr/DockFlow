@@ -108,6 +108,49 @@ class ContainerController extends Controller
         $containerTypes = Container_type::all();
         return view('pages.containers.containersTypes', compact('containerTypes'));
     }
+    
+    public function containerDetails(Container $container) {
+        $transaction = $container->transactions->first();
+        $transportOrder = $container->transportOrders->first();
+        $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+        $receivePolicy = $container->policies->where('type', 'تسليم')->first();
+        $servicePolicy = $container->policies->where('type', 'خدمات')->first();
+
+        $clearanceInvoice = $container->invoices->where('type', 'تخليص')->first();
+        $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
+        $serviceInvoice = $container->invoices->where('type', 'خدمات')->first();
+
+        return view('pages.containers.containerDetails', compact(
+            'container', 
+            'transportOrder', 
+            'transaction', 
+            'storagePolicy', 
+            'receivePolicy', 
+            'servicePolicy',
+            'clearanceInvoice',
+            'storageInvoice',
+            'serviceInvoice'
+        ));
+    }
+
+    public function deleteContainer(Container $container) {
+        if(Gate::denies('حذف حاوية')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف حاوية');
+        }
+        $old = $container->toArray();
+        $code = $container->code;
+
+        $container->services()->detach();
+        $container->invoices()->detach();
+        $container->policies()->detach();
+        $container->transactions()->detach();
+        $container->transportOrders()->detach();
+        $container->delete();
+
+        logActivity('حذف حاوية', "تم حذف الحاوية رقم " . $code, $old, null);
+
+        return redirect()->back()->with('success', 'تم حذف الحاوية بنجاح');
+    }
 
     public function containerTypeStore(ContainerTypesRequest $request) {
         if(Gate::denies('إضافة نوع حاوية')) {
@@ -243,29 +286,5 @@ class ContainerController extends Controller
         logActivity('إضافة خدمة إلى حاوية', "تم إضافة خدمة " . $serviceName . " إلى الحاوية رقم " . $container->code . " بسعر " . $price);
 
         return redirect()->back()->with('success', 'تم إضافة الخدمة الى الحاوية بنجاح');
-    }
-
-    public function containerDetails(Container $container) {
-        $transaction = $container->transactions->first();
-        $transportOrder = $container->transportOrders->first();
-        $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-        $receivePolicy = $container->policies->where('type', 'تسليم')->first();
-        $servicePolicy = $container->policies->where('type', 'خدمات')->first();
-
-        $clearanceInvoice = $container->invoices->where('type', 'تخليص')->first();
-        $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
-        $serviceInvoice = $container->invoices->where('type', 'خدمات')->first();
-
-        return view('pages.containers.containerDetails', compact(
-            'container', 
-            'transportOrder', 
-            'transaction', 
-            'storagePolicy', 
-            'receivePolicy', 
-            'servicePolicy',
-            'clearanceInvoice',
-            'storageInvoice',
-            'serviceInvoice'
-        ));
     }
 }

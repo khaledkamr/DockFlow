@@ -246,4 +246,14 @@ class PolicyController extends Controller
     public function servicePolicyDetails(Policy $policy) {
         return view('pages.policies.servicePolicyDetails', compact('policy'));
     }
+
+    public function deletePolicy(Policy $policy) {
+        $old = $policy->toArray();
+        $policy->containers()->detach();
+        $policy->delete();
+
+        logActivity('حذف بوليصة', "تم حذف بوليصة برقم " . $policy->code, $old, null);
+
+        return redirect()->route('policies')->with('success', 'تم حذف البوليصة بنجاح');
+    }
 }
