@@ -186,7 +186,7 @@ class ShippingController extends Controller
     }
 
     public function reports(Request $request) {
-        $policies = ShippingPolicy::orderBy('order')->get();
+        $policies = ShippingPolicy::orderBy('date')->get();
         $customers = Customer::all();
         $drivers = Driver::with('vehicle')->get();
         $vehicles = Vehicle::all();
