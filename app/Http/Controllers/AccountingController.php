@@ -307,7 +307,7 @@ class AccountingController extends Controller
         }
 
         $request->validate([
-            'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120', // 5MB max
+            'attachment' => 'required|file|mimes:jpg,jpeg,png,pdf,xls,xlsx|max:5120', // 5MB max
         ]);
 
         $file = $request->file('attachment');
