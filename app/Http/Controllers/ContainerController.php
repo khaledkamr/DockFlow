@@ -149,7 +149,7 @@ class ContainerController extends Controller
 
         logActivity('حذف حاوية', "تم حذف الحاوية رقم " . $code, $old, null);
 
-        return redirect()->back()->with('success', 'تم حذف الحاوية بنجاح');
+        return redirect()->route('yard.containers')->with('success', "تم حذف الحاوية رقم " . $code . " بنجاح");
     }
 
     public function containerTypeStore(ContainerTypesRequest $request) {
