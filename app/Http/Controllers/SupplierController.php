@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class SupplierController extends Controller
 {
     public function suppliers(Request $request) {
-        $suppliers = Supplier::orderBy('date', 'desc')->get();
+        $suppliers = Supplier::orderBy('created_at', 'desc')->get();
         
         $search = $request->input('search', null);
         if($search) {
