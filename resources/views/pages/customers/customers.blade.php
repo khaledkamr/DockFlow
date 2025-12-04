@@ -146,10 +146,9 @@
             <tr>
                 <th class="text-center bg-dark text-white text-nowrap">رقم حساب العميل</th>
                 <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
-                <th class="text-center bg-dark text-white text-nowrap">رقم السجل التجاري</th>
+                <th class="text-center bg-dark text-white text-nowrap">السجل التجاري</th>
+                <th class="text-center bg-dark text-white text-nowrap">الرقم الضريبي</th>
                 <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
-                <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
-                <th class="text-center bg-dark text-white text-nowrap">الإيميل</th>
                 <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                 <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
             </tr>
@@ -172,9 +171,8 @@
                             </a>
                         </td>
                         <td class="text-center text-nowrap">{{ $customer->CR }}</td>
-                        <td class="text-center text-nowrap">{{ $customer->national_address }}</td>
-                        <td class="text-center text-nowrap">{{ $customer->phone ?? '-' }}</td>
-                        <td class="text-center text-nowrap">{{ $customer->email ?? '-' }}</td>
+                        <td class="text-center text-nowrap">{{ $customer->vatNumber }}</td>
+                        <td class="text-center">{{ $customer->national_address }}</td>
                         <td class="text-center text-nowrap">
                             <a href="{{ route('admin.user.profile', $customer->made_by) }}" class="text-dark text-decoration-none">
                                 {{ $customer->made_by->name ?? '-' }}
