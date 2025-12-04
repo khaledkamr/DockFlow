@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
         $('#creditSum').val(creditSum.toFixed(2));
         $('#diff').val(difference.toFixed(2));
         
-        if (difference !== 0) {
+        if (difference > 0.009) {
             $('#diff').addClass('bg-unbalanced');
             $('#diff').removeClass('bg-balanced');
             $('#submit').prop('disabled', true);
