@@ -134,9 +134,6 @@ class ContainerController extends Controller
     }
 
     public function deleteContainer(Container $container) {
-        if(Gate::denies('حذف حاوية')) {
-            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف حاوية');
-        }
         $old = $container->toArray();
         $code = $container->code;
 
