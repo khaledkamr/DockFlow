@@ -518,7 +518,7 @@ class InvoiceController extends Controller
             'account_id' => $incomeAccount->id,
             'debit' => 0.00,
             'credit' => $invoice->amount_after_discount,
-            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
+            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' || $invoice->type == 'شحن' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
         ]);
 
         JournalEntryLine::create([
