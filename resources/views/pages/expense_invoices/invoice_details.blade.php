@@ -44,9 +44,9 @@
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-dark fw-bold" id="updateInvoiceLabel">تحديث بيانات الفاتورة</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header bg-primary">
+                            <h5 class="modal-title text-white fw-bold" id="updateInvoiceLabel">تحديث بيانات الفاتورة</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form action="{{ route('expense.invoices.update.status', $invoice) }}" method="POST">
                             @csrf
@@ -393,12 +393,12 @@
                                         aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title text-dark fw-bold"
+                                                <div class="modal-header bg-danger">
+                                                    <h5 class="modal-title text-white fw-bold"
                                                         id="deleteAttachmentModalLabel{{ $attachment->id }}">
                                                         تأكيد حذف المرفق
                                                     </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body text-dark">

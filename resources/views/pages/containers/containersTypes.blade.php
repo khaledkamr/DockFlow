@@ -15,9 +15,9 @@
 <div class="modal fade" id="createContainerTypeModal" tabindex="-1" aria-labelledby="createContainerTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark fw-bold" id="createContainerTypeModalLabel">إنشاء فئة جديدة</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white fw-bold" id="createContainerTypeModalLabel">إنشاء فئة جديدة</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('yard.containers.types.store') }}" method="POST">
                 @csrf
@@ -82,9 +82,9 @@
                     <div class="modal fade" id="editUserModal{{ $containerType->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $containerType->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $containerType->id }}">تعديل بيانات الفئــة</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header bg-primary">
+                                    <h5 class="modal-title text-white fw-bold" id="editUserModalLabel{{ $containerType->id }}">تعديل بيانات الفئــة</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <form action="{{ route('yard.containers.types.update', $containerType->id) }}" method="POST">
                                     @csrf
@@ -118,12 +118,12 @@
                     <div class="modal fade" id="deleteUserModal{{ $containerType->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $containerType->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="deleteUserModalLabel{{ $containerType->id }}">تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white fw-bold" id="deleteUserModalLabel{{ $containerType->id }}">تأكيد الحذف</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center text-dark">
-                                    هل انت متأكد من حذف  <strong>{{ $containerType->name }}</strong>؟
+                                    هل انت متأكد من حذف  <strong>{{ $containerType->name }}</strong>?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>

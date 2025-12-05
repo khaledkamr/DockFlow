@@ -275,11 +275,11 @@
                                     aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title text-dark fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                            <div class="modal-header bg-danger">
+                                                <h5 class="modal-title text-white fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
                                                     تأكيد حذف المرفق
                                                 </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-dark">
                                                 <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>

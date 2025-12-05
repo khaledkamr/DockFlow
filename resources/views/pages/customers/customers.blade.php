@@ -73,9 +73,9 @@
 <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark fw-bold" id="createUserModalLabel">إنشاء عميل جديد</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white fw-bold" id="createUserModalLabel">إنشاء عميل جديد</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('users.customer.store') }}" method="POST">
                 @csrf
@@ -192,9 +192,9 @@
                     <div class="modal fade" id="editUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header bg-primary">
+                                    <h5 class="modal-title text-white fw-bold" id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <form action="{{ route('users.customer.update', $customer) }}" method="POST">
                                     @csrf
@@ -263,9 +263,9 @@
                     <div class="modal fade" id="deleteUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $customer->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold fs-6" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white fw-bold fs-6" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center text-dark px-4 py-4">
                                     هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟

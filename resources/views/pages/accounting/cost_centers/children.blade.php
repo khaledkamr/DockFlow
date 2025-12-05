@@ -46,10 +46,10 @@
             aria-labelledby="addCostCenterLabel{{ $child->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="addCostCenterLabel{{ $child->id }}">إنشاء مركز
+                    <div class="modal-header bg-primary">
+                        <h5 class="modal-title text-white fw-bold" id="addCostCenterLabel{{ $child->id }}">إنشاء مركز
                             تكلفة فرعي من {{ $child->name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('cost.centers.store') }}" method="POST">
                         @csrf
@@ -88,10 +88,10 @@
             aria-labelledby="deleteCostCenterLabel{{ $child->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="deleteCostCenterLabel{{ $child->id }}">تأكيد
+                    <div class="modal-header bg-danger">
+                        <h5 class="modal-title text-white fw-bold" id="deleteCostCenterLabel{{ $child->id }}">تأكيد
                             الحذف</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('cost.centers.delete', $child->id) }}" method="POST">
                         @csrf
@@ -113,10 +113,10 @@
             aria-labelledby="editCostCenterLabel{{ $child->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="editCostCenterLabel{{ $child->id }}">تعديل
+                    <div class="modal-header bg-primary">
+                        <h5 class="modal-title text-white fw-bold" id="editCostCenterLabel{{ $child->id }}">تعديل
                             مركز التكلفة {{ $child->name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
                     <form action="{{ route('cost.centers.update', $child->id) }}" method="POST"

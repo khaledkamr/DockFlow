@@ -54,9 +54,9 @@
     <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold" id="createUserModalLabel">إنشاء مستخدم جديد</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="createUserModalLabel">إنشاء مستخدم جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('admin.users.store') }}" method="POST">
                     @csrf
@@ -203,10 +203,10 @@
                             aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title text-dark fw-bold"
+                                    <div class="modal-header bg-primary">
+                                        <h5 class="modal-title text-white fw-bold"
                                             id="editUserModalLabel{{ $user->id }}">تعديل بيانات المستخدم</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <form action="{{ route('admin.users.update', $user) }}" method="POST">
@@ -274,10 +274,10 @@
                                 aria-labelledby="deleteUserModalLabel{{ $user->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title text-dark fw-bold"
+                                        <div class="modal-header bg-danger">
+                                            <h5 class="modal-title text-white fw-bold"
                                                 id="deleteUserModalLabel{{ $user->id }}">تأكيد الحذف</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body text-center text-dark">

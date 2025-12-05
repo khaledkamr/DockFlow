@@ -74,9 +74,9 @@
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-dark fw-bold" id="editDurationModalLabel">تعديل مدة العقد</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header bg-primary">
+                            <h5 class="modal-title text-white fw-bold" id="editDurationModalLabel">تعديل مدة العقد</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form action="{{ route('contracts.update', $contract) }}" method="POST">
                             @csrf
@@ -253,10 +253,10 @@
                 aria-labelledby="editRepresentativeOneModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-dark fw-bold" id="editRepresentativeOneModalLabel">تعديل بيانات
+                        <div class="modal-header bg-primary">
+                            <h5 class="modal-title text-white fw-bold" id="editRepresentativeOneModalLabel">تعديل بيانات
                                 ممثل الطرف الاول</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <form action="{{ route('contracts.update', $contract) }}" method="POST">
@@ -300,10 +300,10 @@
                 aria-labelledby="editRepresentativeTwoModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-dark fw-bold" id="editRepresentativeTwoModalLabel">تعديل بيانات
+                        <div class="modal-header bg-primary">
+                            <h5 class="modal-title text-white fw-bold" id="editRepresentativeTwoModalLabel">تعديل بيانات
                                 ممثل الطرف الاول</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <form action="{{ route('contracts.update', $contract) }}" method="POST">
@@ -392,9 +392,9 @@
                 aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-dark fw-bold" id="editServicesModalLabel">تعديل خدمات العقد</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        <div class="modal-header bg-primary">
+                            <h5 class="modal-title text-white fw-bold" id="editServicesModalLabel">تعديل خدمات العقد</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <form action="{{ route('contracts.update', $contract) }}" method="POST">
@@ -632,11 +632,11 @@
                                     aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title text-dark fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                            <div class="modal-header bg-danger">
+                                                <h5 class="modal-title text-white fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
                                                     تأكيد حذف المرفق
                                                 </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-dark">
                                                 <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>

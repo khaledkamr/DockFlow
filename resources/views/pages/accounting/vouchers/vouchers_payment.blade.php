@@ -194,9 +194,9 @@
                     <div class="modal fade" id="post{{ $voucher->id }}" tabindex="-1" aria-labelledby="postLabel{{ $voucher->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="postLabel{{ $voucher->id }}">تأكيد ترحيل</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header bg-primary">
+                                    <h5 class="modal-title text-white fw-bold" id="postLabel{{ $voucher->id }}">تأكيد ترحيل</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <form action="" method="POST">
                                     @csrf
@@ -215,9 +215,9 @@
                     <div class="modal fade" id="delete{{ $voucher->id }}" tabindex="-1" aria-labelledby="deleteLabel{{ $voucher->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold" id="deleteLabel{{ $voucher->id }}">تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white fw-bold" id="deleteLabel{{ $voucher->id }}">تأكيد الحذف</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-dark">
                                     هل انت متأكد من حذف السند؟

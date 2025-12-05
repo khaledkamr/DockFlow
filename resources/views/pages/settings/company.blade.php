@@ -229,10 +229,10 @@
                         aria-labelledby="deleteBankModalLabel{{ $bankNumber->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header bg-danger text-white">
                                     <h5 class="modal-title fw-bold" id="deleteBankModalLabel{{ $bankNumber->id }}">تأكيد
                                         الحذف</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -258,10 +258,10 @@
                         aria-labelledby="editBankModalLabel{{ $bankNumber->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header bg-primary text-white">
                                     <h5 class="modal-title fw-bold" id="editBankModalLabel{{ $bankNumber->id }}">تعديل
                                         بيانات حساب البنك</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <form action="{{ route('companies.update.bank', $bankNumber->id) }}" method="POST">
@@ -309,9 +309,9 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title fw-bold" id="addBankModalLabel">إضافة رقم بنك جديد</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('companies.store.bank', $company) }}" method="POST">
                         @csrf
@@ -405,9 +405,9 @@
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title fw-bold" id="addModuleModalLabel">إضافة مديول جديد</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('companies.add.modules', ['company' => $company]) }}" method="POST">
                         @csrf

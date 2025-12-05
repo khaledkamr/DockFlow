@@ -24,9 +24,9 @@
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold" id="addPermissionModalLabel">إضافة صلاحية جديدة</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="addPermissionModalLabel">إضافة صلاحية جديدة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('admin.permissions.store') }}" method="POST">
                     @csrf
@@ -92,12 +92,12 @@
                         aria-labelledby="editPermissionsModalLabel{{ $role->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title fw-bold" id="editPermissionsModalLabel{{ $role->id }}">
-                                        <i class="fa-solid fa-edit text-primary me-2"></i>
+                                <div class="modal-header bg-primary">
+                                    <h5 class="modal-title text-white fw-bold" id="editPermissionsModalLabel{{ $role->id }}">
+                                        <i class="fa-solid fa-edit text-white me-2"></i>
                                         تحديث صلاحيات الوظيفة: <span>{{ $role->name }}</span>
                                     </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <form action="{{ route('admin.roles.update', $role) }}" method="POST"
@@ -177,12 +177,12 @@
                         aria-labelledby="deleteModalLabel{{ $role->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title fw-bold" id="deleteModalLabel{{ $role->id }}">
-                                        <i class="fa-solid fa-exclamation-triangle text-danger me-2"></i>
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white fw-bold" id="deleteModalLabel{{ $role->id }}">
+                                        <i class="fa-solid fa-exclamation-triangle text-white me-2"></i>
                                         تأكيد الحذف
                                     </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center">
@@ -220,12 +220,12 @@
     <div class="modal fade" id="addRoleModal" tabindex="-1" aria-labelledby="addRoleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content overflow-hidden">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="addRoleModalLabel">
-                        <i class="fa-solid fa-plus text-primary me-2"></i>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="addRoleModalLabel">
+                        <i class="fa-solid fa-plus text-white me-2"></i>
                         إضافة وظيفة جديدة
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('admin.roles.store') }}" method="POST" id="addRoleForm">
                     @csrf

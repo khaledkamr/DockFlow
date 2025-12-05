@@ -115,9 +115,9 @@
 <div class="modal fade" id="createVehicleModal" tabindex="-1" aria-labelledby="createVehicleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark fw-bold" id="createVehicleModalLabel">إنشاء شاحنة جديدة</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white fw-bold" id="createVehicleModalLabel">إنشاء شاحنة جديدة</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('relation.vehicle.store') }}" method="POST">
                 @csrf
@@ -193,10 +193,10 @@
                         aria-labelledby="editVehicleModalLabel{{ $vehicle->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold"
+                                <div class="modal-header bg-primary">
+                                    <h5 class="modal-title text-white fw-bold"
                                         id="editVehicleModalLabel{{ $vehicle->id }}">تعديل بيانات الشاحنة</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <form action="{{ route('relation.vehicle.update', $vehicle) }}" method="POST">
@@ -237,10 +237,10 @@
                         aria-labelledby="deleteVehicleModalLabel{{ $vehicle->id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-dark fw-bold fs-6" 
+                                <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white fw-bold fs-6" 
                                         id="deleteVehicleModalLabel{{ $vehicle->id }}">تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center text-dark px-4 py-4">

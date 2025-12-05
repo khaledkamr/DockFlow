@@ -9,12 +9,6 @@
 
 <h1 class="mb-4">القيود والسندات</h1>
 
-{{-- @if(request()->query('view', 'قيود يومية') == 'قيود يومية')
-    @include('pages.accounting.vouchers.journal_form')
-@else
-    @include('pages.accounting.vouchers.voucher_form')
-@endif --}}
-
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
         <a class="nav-link {{ request()->query('view', 'قيود يومية') === 'قيود يومية' ? 'active' : '' }}" href="?view=قيود يومية">قيود يومية</a>

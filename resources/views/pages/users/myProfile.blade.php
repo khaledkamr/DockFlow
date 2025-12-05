@@ -162,12 +162,12 @@
     <div class="modal fade" id="editProfileModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary">
                     <div class="d-flex align-items-center">
-                        <i class="fas fa-user-edit text-primary me-2"></i>
-                        <h5 class="modal-title fw-bold">تعديل الملف الشخصي</h5>
+                        <i class="fas fa-user-edit text-white me-2"></i>
+                        <h5 class="modal-title text-white fw-bold">تعديل الملف الشخصي</h5>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('admin.user.update', $user) }}" method="POST">
                     @csrf
@@ -214,12 +214,12 @@
     <div class="modal fade" id="changePasswordModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary">
                     <div class="d-flex align-items-center">
-                        <i class="fas fa-key text-primary me-2"></i>
-                        <h5 class="modal-title fw-bold">تغيير كلمة المرور</h5>
+                        <i class="fas fa-key text-white me-2"></i>
+                        <h5 class="modal-title text-white fw-bold">تغيير كلمة المرور</h5>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <form action="{{ route('admin.users.update.password', $user) }}" method="POST">
                     @csrf
