@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
 use App\Exports\JournalEntryExport;
+use App\Exports\ShippingPoliciesExport;
 use App\Exports\TrialBalanceExport;
 use App\Models\Account;
 use App\Models\Company;
@@ -459,6 +460,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير ميزان المراجعة الى اكسيل', "تم تصدير تقرير ميزان المراجعة بتصفية: ", $filters);
             return Excel::download(new TrialBalanceExport($filters), 'تقرير ميزان المراجعة.xlsx');
+        } elseif($reportType == 'shipping_policies') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير بوالص الشحن الى اكسيل', "تم تصدير تقرير بوالص الشحن الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new ShippingPoliciesExport($filters), 'تقرير بوالص الشحن.xlsx');
         }
 
         abort(404);

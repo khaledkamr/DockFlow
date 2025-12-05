@@ -65,7 +65,7 @@ class ContainersExport implements FromCollection, WithHeadings
                 $container->status,
                 $container->date,
                 $container->exit_date,
-                $invoices ?? 'N/A'
+                $invoices ?: 'N/A'
             ];
         });
     }
