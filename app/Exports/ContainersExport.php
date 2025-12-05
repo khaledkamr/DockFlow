@@ -20,50 +20,66 @@ class ContainersExport implements FromCollection, WithHeadings
     {
         $query = Container::query();
 
-        if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
-            $query->where('container_type_id', $this->filters['type']);
+        if (!empty($this->filters['from']) && !empty($this->filters['to'])) {
+            $query->whereBetween('date', [$this->filters['from'], $this->filters['to'],]);
         }
 
         if(!empty($this->filters['status']) && $this->filters['status'] !== 'all') {
-            $query->where('status', $this->filters['status']);
+            if($this->filters['status'] == 'متأخر') {
+                $query->where('status', 'في الساحة')
+                    ->whereHas('policies', function ($q) {
+                        $q->where('type', 'تخزين')
+                            ->whereRaw('DATEDIFF(NOW(), containers.date) > policies.storage_duration');
+                    });
+            } else {
+                $query->where('status', $this->filters['status']);
+            }
+        }
+        
+        if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
+            $query->where('container_type_id', $this->filters['type']);
         }
 
         if(!empty($this->filters['customer']) && $this->filters['customer'] !== 'all') {
             $query->where('customer_id', $this->filters['customer']);
         }
 
-        if (!empty($this->filters['from']) && !empty($this->filters['to'])) {
-            $query->whereBetween('date', [$this->filters['from'], $this->filters['to'],]);
+        if (!empty($this->filters['invoiced']) && $this->filters['invoiced'] !== 'all') {
+            if ($this->filters['invoiced'] == 'مع فاتورة') {
+                $query->whereHas('invoices');
+            } elseif ($this->filters['invoiced'] == 'بدون فاتورة') {
+                $query->whereDoesntHave('invoices');
+            }
         }
 
+        $query->with(['customer', 'containerType', 'invoices']);
+
         return $query->get()->map(function ($container) {
+            $invoices = $container->invoices->pluck('code')->implode(' | ');
+
             return [
-                $container->id,
                 $container->code,
                 $container->customer ? $container->customer->name : 'N/A',
                 $container->containerType ? $container->containerType->name : 'N/A',
                 $container->location,
                 $container->status,
-                $container->received_by,
-                $container->delivered_by,
                 $container->date,
                 $container->exit_date,
+                $invoices ?? 'N/A'
             ];
         });
     }
 
     public function headings(): array {
         return [
-            'رقم',
-            'الكود',
-            'صاحب الحاوية',
+            'رقم الحاوية',
+            'العميل',
             'النوع',
             'الموقع',
             'الحالة',
-            'تم الإستلام بواسطة',
-            'تم التسليم بواسطة',
             'تاريخ الدخول',
-            'تاريخ الخروج'
+            'تاريخ الخروج',
+            'الفاتورة'
         ];
     }
 }
