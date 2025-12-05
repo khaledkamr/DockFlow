@@ -187,25 +187,25 @@
 
             addRowBtn.addEventListener("click", function() {
                 let newRow = `
-            <tr>
-                <td class="text-center align-middle px-2">
-                    <span class="row-number fw-bold"></span>
-                </td>
-                <td class="px-2">
-                    <select name="account_id[]" class="form-select account_name">
-                        <option value="">-- اختر الحساب --</option>
-                        @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" data-code="{{ $account->code }}">{{ $account->name }}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td class="px-2"><input type="text" name="account_code[]" class="form-control border-2 account_code"></td>
-                <td class="px-2"><input type="text" name="debit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
-                <td class="px-2"><input type="text" name="credit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
-                <td class="px-2"><input type="text" name="description[]" class="form-control border-2"></td>
-                <td class="text-center px-2"><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash-can"></i></button></td>
-            </tr>
-        `;
+                    <tr>
+                        <td class="text-center align-middle px-2">
+                            <span class="row-number fw-bold"></span>
+                        </td>
+                        <td class="px-2">
+                            <select name="account_id[]" class="form-select account_name">
+                                <option value="">-- اختر الحساب --</option>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}" data-code="{{ $account->code }}">{{ $account->name }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="px-2"><input type="text" name="account_code[]" class="form-control border-2 account_code"></td>
+                        <td class="px-2"><input type="text" name="debit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
+                        <td class="px-2"><input type="text" name="credit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
+                        <td class="px-2"><input type="text" name="description[]" class="form-control border-2"></td>
+                        <td class="text-center px-2"><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash-can"></i></button></td>
+                    </tr>
+                `;
 
                 let rows = tableBody.querySelectorAll('tr');
                 let lastTwoRows = Array.from(rows).slice(-1);

@@ -171,6 +171,9 @@ class InvoiceController extends Controller
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
+        if($transaction->status == 'معلقة') {
+            return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة تخليص على معاملة معلقة');
+        }
 
         if($transaction->customer->contract) {
             $containers_count = $transaction->containers->count();
@@ -550,9 +553,6 @@ class InvoiceController extends Controller
 
         $creditAccount = $invoice->customer->account; // مدين
         
-        if(Auth::user()->company->name == 'شركة شمس الخليج للتخليص الجمركي') {
-            $expenseAccount = Account::where('name', 'بنك ساب 2 -352654552002')->where('level', 5)->first();
-        }
         $clearance_revenue_Account = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
         $transport_revenue_Account = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
         $labor_revenue_Account = Account::where('name', 'ايرادات اجور عمال')->where('level', 5)->first();
@@ -575,12 +575,14 @@ class InvoiceController extends Controller
 
         foreach($invoice->containers->first()->transactions->first()->items->sortBy('number') as $item) {
             if($item->type == 'مصروف') {
+                $itemDescription = explode(' - ', $item->description)[0];
+
                 JournalEntryLine::create([
                     'journal_entry_id' => $journal->id,
-                    'account_id' => $expenseAccount->id,
+                    'account_id' => $item->debitAccount->id,
                     'debit' => 0.00,
                     'credit' => $item->amount,
-                    'description' => 'مصروف ' . $item->description . ' فاتورة رقم ' . $invoice->code
+                    'description' => 'مصروف ' . $itemDescription . ' على معاملة ' . $item->transaction->code . ' فاتورة رقم ' . $invoice->code
                 ]);
             } elseif($item->type == 'ايراد تخليص') {
                 $clearance_revenue += $item->amount;

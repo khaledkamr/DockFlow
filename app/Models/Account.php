@@ -79,4 +79,18 @@ class Account extends Model
         }
         return $ids;
     }
+
+    public function getLeafAccounts() {
+        if ($this->level == 5) {
+            return collect([$this]);
+        }
+
+        $leafs = collect();
+
+        foreach ($this->children as $child) {
+            $leafs = $leafs->merge($child->getLeafAccounts());
+        }
+
+        return $leafs;
+    }
 }

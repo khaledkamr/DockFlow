@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemRequest;
 use App\Http\Requests\TransactionRequest;
+use App\Models\Account;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Customer;
+use App\Models\JournalEntry;
 use App\Models\Procedure;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
@@ -104,59 +106,74 @@ class TransactionController extends Controller
 
     public function transactionDetails(Transaction $transaction) {
         $customers = Customer::all();
+        $parentAccount = Account::where('name', 'النقدية والبنوك')->first();
+        $creditAccounts = $parentAccount ? $parentAccount->getLeafAccounts() : collect();
 
         $items = [
             [
                 'name' => 'رسوم اذن التسليم - DELIVERY ORDER',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'رسوم اذن التسليم - تحت التسوية')->first()->id ?? null,
             ],
             [   
                 'name' => 'رسوم مواني - PORT CHARGE',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'رسوم مواني - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'رسوم الشركه السعوديه للمواني - SAUDI GLOBAL PORT FEES',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'رسوم الشركه السعوديه للمواني - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'اجور السكه الحديد - DRY PORT FEES',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'اجور السكه الحديد - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'رسوم موعد فسح - APPOINTMENT FASAH',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'رسوم موعد فسح - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'رسوم سابر - SABER FEES',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'رسوم سابر - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'رسوم جمركية - CUSTOMS FEES',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'رسوم جمركية - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'ارضيات - DEMURRAGE CHARGE',
-                'type' => 'مصروف'
+                'type' => 'مصروف',
+                'debit_account_id' => Account::where('name', 'ارضيات - تحت التسوية')->first()->id ?? null,
             ],
             [
                 'name' => 'اجور تخليص - CLEARANCE FEES',
-                'type' => 'ايراد تخليص'
+                'type' => 'ايراد تخليص',
+                'debit_account_id' => null,
             ],
             [
                 'name' => 'اجور نقل - TRANSPORT FEES',
-                'type' => 'ايراد نقل'
+                'type' => 'ايراد نقل',
+                'debit_account_id' => null,
             ],
             [
                 'name' => 'اجور عمال - LABOUR',
-                'type' => 'ايراد عمال'
+                'type' => 'ايراد عمال',
+                'debit_account_id' => null,
             ],
             [
                 'name' => 'خدمات سابر - SABER FEES',
-                'type' => 'ايراد سابر'
+                'type' => 'ايراد سابر',
+                'debit_account_id' => null,
             ],
             [
                 'name' => 'رسوم تخزين - STORAGE FEES',
-                'type' => 'ايراد تخزين'
+                'type' => 'ايراد تخزين',
+                'debit_account_id' => null,
             ]
         ];
 
@@ -177,7 +194,8 @@ class TransactionController extends Controller
             'transaction', 
             'items', 
             'procedures',
-            'customers'
+            'customers',
+            'creditAccounts'
         ));
     }
 
@@ -205,6 +223,49 @@ class TransactionController extends Controller
         logActivity('تعديل بند في المعاملة', "تم تعديل بند في المعاملة رقم " . $item->transaction->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تعديل بيانات البند');
+    }
+
+    public function postItem(TransactionItem $item) {
+        if($item->debit_account_id == null) {
+            return redirect()->back()->with('error', 'الحساب المدين للبند غير موجود, يرجى تعيين حساب مدين صالح للبند قبل الترحيل');
+        }
+        if($item->credit_account_id == null) {
+            return redirect()->back()->with('error', 'الحساب الدائن للبند غير موجود, يرجى تعيين حساب دائن صالح للبند قبل الترحيل');
+        }
+        if($item->is_posted) {
+            return redirect()->back()->with('error', 'هذا البند تم ترحيله مسبقاً');
+        }
+
+        $journal = JournalEntry::create([
+            'date' => Carbon::now(),
+            'totalDebit' => $item->amount,
+            'totalCredit' => $item->amount,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        $itemDescription = explode(' - ', $item->description)[0];
+
+        $journal->lines()->createMany([
+            [
+                'account_id' => $item->debit_account_id,
+                'debit' => $item->amount,
+                'credit' => 0,
+                'description' => 'مصروف ' . $itemDescription . ' من معاملة ' . $item->transaction->code,
+            ],
+            [
+                'account_id' => $item->credit_account_id,
+                'debit' => 0,
+                'credit' => $item->amount,
+                'description' => 'صرف ' . $itemDescription . ' من معاملة ' . $item->transaction->code,
+            ],
+        ]);
+
+        $item->is_posted = true;
+        $item->save();
+
+        logActivity('ترحيل بند في المعاملة', "تم ترحيل بند في المعاملة رقم " . $item->transaction->code, null, $item->toArray());
+
+        return redirect()->back()->with('success', 'تم ترحيل البند الى قيد بنجاح, <a class="text-white fw-bold" href="'.route('journal.details', $journal).'">عرض القيد</a>');
     }
 
     public function deleteItem(TransactionItem $item) {

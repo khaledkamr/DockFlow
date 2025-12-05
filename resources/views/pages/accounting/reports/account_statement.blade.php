@@ -59,15 +59,15 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="bg-dark text-center text-white">رقم الحساب</th>
-                    <th class="bg-dark text-center text-white">إسم الحساب</th>
-                    <th class="bg-dark text-center text-white">تاريخ</th>
-                    <th class="bg-dark text-center text-white">رقم القيد</th>
-                    <th class="bg-dark text-center text-white">نوع القيد</th>
-                    <th class="bg-dark text-center text-white">البيان</th>
-                    <th class="bg-dark text-center text-white">مدين</th>
-                    <th class="bg-dark text-center text-white">دائن</th>
-                    <th class="bg-dark text-center text-white">الرصيد</th>
+                    <th class="bg-dark text-center text-white text-nowrap">رقم الحساب</th>
+                    <th class="bg-dark text-center text-white text-nowrap">إسم الحساب</th>
+                    <th class="bg-dark text-center text-white text-nowrap">تاريخ</th>
+                    <th class="bg-dark text-center text-white text-nowrap">رقم القيد</th>
+                    <th class="bg-dark text-center text-white text-nowrap">نوع القيد</th>
+                    <th class="bg-dark text-center text-white text-nowrap">البيان</th>
+                    <th class="bg-dark text-center text-white text-nowrap">مدين</th>
+                    <th class="bg-dark text-center text-white text-nowrap">دائن</th>
+                    <th class="bg-dark text-center text-white text-nowrap">الرصيد</th>
                 </tr>
             </thead>
             <tbody>

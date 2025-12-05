@@ -14,8 +14,10 @@ class ItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'transaction_id' => 'required|exists:transactions,id',
             'number' => 'required|integer|min:1',
+            'transaction_id' => 'required|exists:transactions,id',
+            'credit_account_id' => 'nullable|exists:accounts,id',
+            'debit_account_id' => 'nullable|exists:accounts,id',
             'description' => 'required|string|max:255',
             'type' => 'nullable|string|max:100',
             'amount' => 'required|numeric|min:0',

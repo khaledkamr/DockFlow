@@ -7,7 +7,9 @@
 
 <div class="bg-white p-3 rounded-3 shadow-sm border-0 mb-5">
     <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
-        <h5 class="fw-bold">{{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</h5>
+        <h5 class="fw-bold">
+            {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
+        </h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
             @if($journal->type == 'قيد يومي')
                 <a href="{{ route('journal.duplicate', $journal) }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تكرار القيد">
@@ -35,14 +37,13 @@
         </div>
     </div>
 
-    <div class="modal fade" id="deleteJournalModal" tabindex="-1"
-        aria-labelledby="deleteJournalModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteJournalModal" tabindex="-1" aria-labelledby="deleteJournalModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold"
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title text-white fw-bold"
                         id="deleteJournalModalLabel">تأكيد الحذف</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center text-dark">

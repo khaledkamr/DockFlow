@@ -45,9 +45,9 @@
         <div class="modal fade" id="addRoot{{ $child->id }}" tabindex="-1" aria-labelledby="addRootLabel{{ $child->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="addRootLabel{{ $child->id }}">إنشاء فرع جديد من {{ $child->name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header bg-primary">
+                        <h5 class="modal-title text-white fw-bold" id="addRootLabel{{ $child->id }}">إنشاء فرع جديد من {{ $child->name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('create.root') }}" method="POST">
                         @csrf
@@ -82,9 +82,9 @@
         <div class="modal fade" id="deleteRoot{{ $child->id }}" tabindex="-1" aria-labelledby="deleteRootLabel{{ $child->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="deleteRootLabel{{ $child->id }}">تأكيد الحذف</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header bg-danger">
+                        <h5 class="modal-title text-white fw-bold" id="deleteRootLabel{{ $child->id }}">تأكيد الحذف</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('delete.root', $child->id) }}" method="POST">
                         @csrf
@@ -104,9 +104,9 @@
         <div class="modal fade" id="editRoot{{ $child->id }}" tabindex="-1" aria-labelledby="editRootLabel{{ $child->id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-dark fw-bold" id="editRootLabel{{ $child->id }}">تعديل مستوى {{ $child->name }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header bg-primary">
+                        <h5 class="modal-title text-white fw-bold" id="editRootLabel{{ $child->id }}">تعديل مستوى {{ $child->name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('update.root', $child->id) }}" method="POST" onsubmit="saveTreeState()">
                         @csrf

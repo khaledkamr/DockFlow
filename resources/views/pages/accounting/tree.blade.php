@@ -190,9 +190,9 @@
                 <div class="modal fade" id="addRoot{{ $account->id }}" tabindex="-1" aria-labelledby="addRootLabel{{ $account->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-dark fw-bold" id="addRootLabel{{ $account->id }}">إنشاء فرع جديد من {{ $account->name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white fw-bold" id="addRootLabel{{ $account->id }}">إنشاء فرع جديد من {{ $account->name }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="{{ route('create.root') }}" method="POST" onsubmit="saveTreeState()">
                                 @csrf
@@ -227,9 +227,9 @@
                 <div class="modal fade" id="editRoot{{ $account->id }}" tabindex="-1" aria-labelledby="editRootLabel{{ $account->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title text-dark fw-bold" id="editRootLabel{{ $account->id }}">تعديل مستوى {{ $account->name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white fw-bold" id="editRootLabel{{ $account->id }}">تعديل مستوى {{ $account->name }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="{{ route('update.root', $account->id) }}" method="POST" onsubmit="saveTreeState()">
                                 @csrf

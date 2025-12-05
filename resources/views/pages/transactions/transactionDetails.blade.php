@@ -27,7 +27,9 @@
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if ($transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
+            @if (
+                $transaction->containers->first()->invoices &&
+                    $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
                     <i class="fas fa-scroll me-1"></i>
@@ -35,12 +37,14 @@
                 </a>
             @endif
             @if ($transaction->containers->first()->invoices->isEmpty())
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#createInvoice">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                    data-bs-target="#createInvoice">
                     <i class="fas fa-scroll me-1"></i>
                     إنشاء فاتورة
                 </button>
             @endif
-            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editTransactionModal">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                data-bs-target="#editTransactionModal">
                 <i class="fas fa-edit me-1"></i>
                 تعديل المعاملة
             </button>
@@ -51,9 +55,10 @@
     <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إنشاء فاتورة جديدة</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="createInvoiceLabel">إنشاء فاتورة جديدة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('invoices.clearance.store', $transaction) }}" method="POST">
                     @csrf
@@ -90,12 +95,14 @@
     </div>
 
     <!-- Edit Transaction Modal -->
-    <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-dark fw-bold" id="editTransactionModalLabel">تعديل بيانات المعاملة</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="editTransactionModalLabel">تعديل بيانات المعاملة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('transactions.update', $transaction) }}" method="POST">
                     @csrf
@@ -107,7 +114,8 @@
                                 <select class="form-select border-primary" name="customer_id" required>
                                     <option disabled selected>اختر العميل...</option>
                                     @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}" {{ $transaction->customer_id == $customer->id ? 'selected' : '' }}>
+                                        <option value="{{ $customer->id }}"
+                                            {{ $transaction->customer_id == $customer->id ? 'selected' : '' }}>
                                             {{ $customer->name }}
                                         </option>
                                     @endforeach
@@ -194,7 +202,8 @@
                                 اسم العميل
                             </h6>
                             <div class="">
-                                <a href="{{ route('users.customer.profile', $transaction->customer) }}" class="fw-bold text-decoration-none text-dark">
+                                <a href="{{ route('users.customer.profile', $transaction->customer) }}"
+                                    class="fw-bold text-decoration-none text-dark">
                                     {{ $transaction->customer->name }}
                                 </a>
                             </div>
@@ -226,8 +235,7 @@
     <!-- Transaction Items Section -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-dark text-white">
-            <div
-                class="d-flex flex-row justify-content-between align-items-center gap-2 text-white">
+            <div class="d-flex flex-row justify-content-between align-items-center gap-2 text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-list me-2"></i>
                     بنود المعاملة
@@ -257,20 +265,36 @@
                             @foreach ($transaction->items->sortBy('number') as $item)
                                 <tr class="align-middle" id="item-row-{{ $item->id }}">
                                     <td class="text-center fw-bold">{{ $item->number }}</td>
-                                    <td class="text-center fw-bold" style="min-width: 150px;">{{ $item->description }}</td>
+                                    <td class="text-center fw-bold" style="min-width: 150px;">{{ $item->description }}
+                                    </td>
                                     <td class="text-center">{{ number_format($item->amount, 2) }}</td>
                                     <td class="text-center">{{ number_format($item->tax, 2) }}</td>
                                     <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i
                                             data-lucide="saudi-riyal"></i></td>
-                                    <td class="text-center">
-                                        <a href="#" class="text-primary me-2" type="button"
-                                            data-bs-toggle="modal" data-bs-target="#editItemModal{{ $item->id }}">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="#" class="text-danger" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#deleteItemModal{{ $item->id }}">
-                                            <i class="fas fa-trash-can"></i>
-                                        </a>
+                                    <td class="text-center d-flex justify-content-center align-items-center gap-2">
+                                        @if(!$item->is_posted && $item->type == 'مصروف')
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="ترحيل">
+                                                <button class="btn btn-sm btn-outline-primary" type="button"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#postItemModal{{ $item->id }}">
+                                                    <i class="fas fa-file-export"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                        <div data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
+                                            <button class="btn btn-sm btn-outline-primary" type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editItemModal{{ $item->id }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                        <div data-bs-toggle="tooltip" data-bs-placement="top" title="حذف">
+                                            <button class="btn btn-sm btn-outline-danger" type="button"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteItemModal{{ $item->id }}">
+                                                <i class="fas fa-trash-can"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
 
@@ -279,13 +303,13 @@
                                     aria-labelledby="editItemModalLabel{{ $item->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header">
+                                            <div class="modal-header bg-primary text-white">
                                                 <h5 class="modal-title fw-bold"
                                                     id="editItemModalLabel{{ $item->id }}">
                                                     <i class="fas fa-edit me-2"></i>
                                                     تعديل البند
                                                 </h5>
-                                                <button type="button" class="btn-close btn-close"
+                                                <button type="button" class="btn-close btn-close-white"
                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form action="{{ route('transactions.item.update', $item) }}" method="POST">
@@ -307,7 +331,7 @@
                                                                 readonly>{{ $item->description }}</textarea>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
+                                                    <div class="row g-3 mb-3">
                                                         <div class="col">
                                                             <label class="form-label">المبلغ</label>
                                                             <input type="number" class="form-control border-primary"
@@ -321,9 +345,13 @@
                                                                 id="editTaxPercentage{{ $loop->index }}"
                                                                 oninput="calculateEditTotal({{ $loop->index }})">
                                                                 <option disabled selected>نوع الضريبة</option>
-                                                                <option value="15" data-rate="15" {{ $item->tax > 0 ? 'selected' : '' }}>خاضع للضريبة (15%)
+                                                                <option value="15" data-rate="15"
+                                                                    {{ $item->tax > 0 ? 'selected' : '' }}>خاضع للضريبة
+                                                                    (15%)
                                                                 </option>
-                                                                <option value="0" data-rate="0" {{ $item->tax == 0 ? 'selected' : '' }}>غير خاضع للضريبة
+                                                                <option value="0" data-rate="0"
+                                                                    {{ $item->tax == 0 ? 'selected' : '' }}>غير خاضع
+                                                                    للضريبة
                                                                 </option>
                                                             </select>
                                                             <input type="hidden" id="editTax{{ $loop->index }}"
@@ -336,6 +364,31 @@
                                                                 value="{{ $item->total }}" step="1" readonly>
                                                         </div>
                                                     </div>
+                                                    @if ($item->type == 'مصروف')
+                                                        <div class="row g-3">
+                                                            <div class="col">
+                                                                <label class="form-label">اسم الحساب الدائن</label>
+                                                                <select class="form-select border-primary account-select"
+                                                                    id="credit_account_id" name="credit_account_id"
+                                                                    required>
+                                                                    <option disabled selected>اختر حساب دائن...</option>
+                                                                    @foreach ($creditAccounts as $account)
+                                                                        <option value="{{ $account->id }}"
+                                                                            data-code="{{ $account->code }}"
+                                                                            {{ $item->credit_account_id == $account->id ? 'selected' : '' }}>
+                                                                            {{ $account->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col">
+                                                                <label class="form-label">رقم الحساب الدائن</label>
+                                                                <input type="text" class="form-control border-primary"
+                                                                    id="credit_account_code"
+                                                                    value="{{ $item->creditAccount?->code }}" readonly>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="modal-footer d-flex justify-content-start">
                                                     <button type="submit" class="btn btn-primary fw-bold">حفظ
@@ -353,11 +406,11 @@
                                     aria-labelledby="deleteItemModalLabel{{ $item->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title text-dark fw-bold"
+                                            <div class="modal-header bg-danger">
+                                                <h5 class="modal-title text-white fw-bold"
                                                     id="deleteItemModalLabel{{ $item->id }}">تأكيد الحذف</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center text-dark">
                                                 هل انت متأكد من البند <strong>{{ $item->description }}</strong>؟
@@ -375,6 +428,105 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Post Item Modal -->
+                                <div class="modal fade" id="postItemModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="postItemModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary">
+                                                <h5 class="modal-title text-white fw-bold"
+                                                    id="postItemModalLabel{{ $item->id }}">
+                                                    <i class="fas fa-file-export me-2"></i>
+                                                    ترحيل البند - {{ $item->description }}
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close">
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="alert alert-primary border-primary" role="alert">
+                                                    <h6 class="alert-heading">
+                                                        <i class="fas fa-plus-circle me-2"></i>
+                                                        الحساب المدين
+                                                    </h6>
+                                                    @if ($item->debit_account_id)
+                                                        <div class="row g-3">
+                                                            <div class="col-sm-4">
+                                                                <label class="form-label text-muted small">رقم
+                                                                    الحساب</label>
+                                                                <div class="fw-bold">{{ $item->debitAccount->code }}</div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <label class="form-label text-muted small">اسم
+                                                                    الحساب</label>
+                                                                <div class="fw-bold">{{ $item->debitAccount->name }}</div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <label class="form-label text-muted small">المبلغ
+                                                                    المدين</label>
+                                                                <div class="fw-bold text-success">
+                                                                    {{ number_format($item->total, 2) }} <i
+                                                                        data-lucide="saudi-riyal"></i></div>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="text-center text-danger">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                                            لا يوجد حساب مدين محدد
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <div class="alert alert-success border-success" role="alert">
+                                                    <h6 class="alert-heading">
+                                                        <i class="fas fa-minus-circle me-2"></i>
+                                                        الحساب الدائن
+                                                    </h6>
+                                                    @if ($item->credit_account_id)
+                                                        <div class="row g-3">
+                                                            <div class="col-sm-4">
+                                                                <label class="form-label text-muted small">رقم
+                                                                    الحساب</label>
+                                                                <div class="fw-bold">{{ $item->creditAccount->code }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <label class="form-label text-muted small">اسم
+                                                                    الحساب</label>
+                                                                <div class="fw-bold">{{ $item->creditAccount->name }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <label class="form-label text-muted small">المبلغ
+                                                                    الدائن</label>
+                                                                <div class="fw-bold text-danger">
+                                                                    {{ number_format($item->total, 2) }} <i
+                                                                        data-lucide="saudi-riyal"></i></div>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="text-center text-danger">
+                                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                                            لا يوجد حساب دائن محدد
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex justify-content-start">
+                                                <form action="{{ route('transactions.item.post', $item) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-primary fw-bold">
+                                                        <i class="fas fa-check me-1"></i>
+                                                        ترحيل إلى قيد
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary fw-bold"
+                                                    data-bs-dismiss="modal">إلغاء</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -383,7 +535,9 @@
                                 <td class="text-center">{{ number_format($transaction->items->sum('amount'), 2) }}</td>
                                 <td class="text-center">{{ number_format($transaction->items->sum('tax'), 2) }}</td>
                                 <td class="text-center text-primary">
-                                    {{ number_format($transaction->items->sum('total'), 2) }}</td>
+                                    {{ number_format($transaction->items->sum('total'), 2) }} <i
+                                        data-lucide="saudi-riyal"></i>
+                                </td>
                                 <td></td>
                             </tr>
                         </tfoot>
@@ -403,7 +557,7 @@
             <div class="card-header bg-dark text-white">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-clock me-2"></i>
-                    الخط زمني للإجرائات
+                    الإجرائـــات
                 </h5>
             </div>
             <div class="card-body">
@@ -533,24 +687,32 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <a href="{{ route('users.customer.profile', $container->customer) }}" 
-                                               class="fw-bold text-decoration-none text-dark">
+                                            <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                                class="fw-bold text-decoration-none text-dark">
                                                 {{ $container->customer->name }}
                                             </a>
                                         </div>
                                     </td>
                                     <td class="text-nowrap">
-                                        @if ($container->transportOrders->isNotEmpty())
-                                            <div class="badge status-available">تم اشعار نقل</div>
-                                        @else
-                                            <div class="badge status-danger">في الميناء</div>
+                                        @if ($container->status == 'في الساحة')
+                                            <div class="badge status-available">{{ $container->status }}</div>
+                                        @elseif($container->status == 'تم التسليم')
+                                            <div class="badge status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
+                                        @elseif($container->status == 'متأخر')
+                                            <div class="badge status-danger">{{ $container->status }}</div>
+                                        @elseif($container->status == 'خدمات')
+                                            <div class="badge status-waiting">{{ $container->status }}</div>
+                                        @elseif($container->status == 'في الميناء')
+                                            <div class="badge status-info">{{ $container->status }}</div>
+                                        @elseif($container->status == 'قيد النقل')
+                                            <div class="badge status-purple">{{ $container->status }}</div>
                                         @endif
                                     </td>
                                     <td class="text-center">
                                         @if ($container->transportOrders->isNotEmpty())
                                             <div class="fw-bold">
-                                                <a href="{{ route('transactions.transportOrders.details', $container->transportOrders->first()) }}" 
-                                                   class="text-decoration-none">
+                                                <a href="{{ route('transactions.transportOrders.details', $container->transportOrders->first()) }}"
+                                                    class="text-decoration-none">
                                                     {{ $container->transportOrders->first()->code }}
                                                 </a>
                                             </div>
@@ -583,18 +745,19 @@
     <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="addItemModalLabel">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="addItemModalLabel">
                         <i class="fas fa-plus me-2"></i>
                         إضافة بند جديد
                     </h5>
-                    <button type="button" class="btn-close btn-close" data-bs-dismiss="modal"
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <form id="addItemForm" method="POST" action="{{ route('transactions.item.store') }}">
                     @csrf
                     <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
-                    <input type="hidden" name="type" value="">
+                    <input type="hidden" name="debit_account_id">
+                    <input type="hidden" name="type">
                     <div class="modal-body">
                         <div class="row g-3 mb-3">
                             <div class="col-2">
@@ -604,16 +767,18 @@
                             </div>
                             <div class="col-10">
                                 <label for="description" class="form-label">البند</label>
-                                <select class="form-select border-primary" id="description" name="description" required>
+                                <select class="form-select border-primary item-select" id="description"
+                                    name="description" required>
                                     <option disabled selected>اختر البند...</option>
                                     @foreach ($items as $item)
-                                        <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}">
+                                        <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}"
+                                            data-debit-account-id="{{ $item['debit_account_id'] }}">
                                             {{ $item['name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="row g-3">
+                        <div class="row g-3 mb-3">
                             <div class="col">
                                 <label for="amount" class="form-label">المبلغ</label>
                                 <input type="number" class="form-control border-primary" id="amount" name="amount"
@@ -633,6 +798,25 @@
                                 <label for="total" class="form-label">الإجمالي</label>
                                 <input type="number" class="form-control border-primary" id="total" name="total"
                                     step="0.01" readonly>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col">
+                                <label class="form-label">اسم الحساب الدائن</label>
+                                <select class="form-select border-primary account-select" id="credit_account_id"
+                                    name="credit_account_id" required>
+                                    <option disabled selected>اختر حساب دائن...</option>
+                                    @foreach ($creditAccounts as $account)
+                                        <option value="{{ $account->id }}" data-code="{{ $account->code }}">
+                                            {{ $account->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">رقم الحساب الدائن</label>
+                                <input type="text" class="form-control border-primary" id="credit_account_code"
+                                    readonly>
                             </div>
                         </div>
                     </div>
@@ -680,9 +864,52 @@
             background-color: #e5e6e6;
             transition: all 0.3s ease;
         }
+
+        .select2-container .select2-selection {
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid #0d6efd;
+            padding: 5px;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 30px;
+        }
     </style>
 
     <script>
+        $('.account-select').select2({
+            dropdownParent: $('#addItemModal'),
+            width: '100%',
+            placeholder: 'اختر حساب دائن...',
+            allowClear: true
+        });
+
+        $('#credit_account_id').on('change', function() {
+            let accountCode = $(this).find('option:selected').data('code');
+            $('#credit_account_code').val(accountCode);
+        });
+
+        // Handle credit account change in edit modals
+        $(document).on('change', '.account-select', function() {
+            let accountCode = $(this).find('option:selected').data('code');
+            $(this).closest('.modal-body').find('#credit_account_code').val(accountCode);
+        });
+
+        $('.item-select').select2({
+            dropdownParent: $('#addItemModal'),
+            width: '100%',
+            placeholder: 'اختر البند...',
+            allowClear: true
+        });
+
+        $('.item-select').on('change', function() {
+            let itemType = $(this).find('option:selected').data('type');
+            let debitAccountId = $(this).find('option:selected').data('debit-account-id');
+            $('input[name="type"]').val(itemType);
+            $('input[name="debit_account_id"]').val(debitAccountId);
+        });
+
         function calculateTotal() {
             const amount = parseFloat(document.getElementById('amount').value) || 0;
             const taxPercent = parseFloat(document.getElementById('tax_percentage').value) || 0;
@@ -700,11 +927,5 @@
             document.getElementById('editTax' + index).value = tax.toFixed(2);
             document.getElementById('editTotal' + index).value = total.toFixed(2);
         }
-
-        document.getElementById('description').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const itemType = selectedOption.getAttribute('data-type');
-            document.querySelector('#addItemForm input[name="type"]').value = itemType;
-        });
     </script>
 @endsection
