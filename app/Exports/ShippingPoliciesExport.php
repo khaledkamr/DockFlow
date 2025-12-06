@@ -80,6 +80,11 @@ class ShippingPoliciesExport implements FromCollection, WithHeadings
                 $policy->from,
                 $policy->to,
                 $policy->is_received ? 'تم التسليم' : 'تحت التسليم',
+                $policy->supplier_cost,
+                $policy->diesel_cost,
+                $policy->driver_wage,
+                $policy->other_expenses,
+                $policy->customer_cost,
                 $policy->total_cost,
                 $invoices ?: 'N/A'
             ];
@@ -99,7 +104,12 @@ class ShippingPoliciesExport implements FromCollection, WithHeadings
             'مكان التحميل',
             'مكان التسليم',
             'الحالة',
-            'المبلغ',
+            'تكلفة المورد',
+            'تكلفة الديزل',
+            'أجرة السائق',
+            'مصروفات أخرى',
+            'تكلفة العميل',
+            'التكلفة الإجمالية',
             'الفاتورة'
         ];
     }

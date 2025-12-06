@@ -136,6 +136,15 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <label class="form-label fw-bold">حساب الدفع</label>
+                        <select name="payment_account" id="payment_account" class="form-select border-primary" required>
+                            <option value="">-- اختر حساب الدفع --</option>
+                            @foreach ($accounts as $account)
+                                <option value="{{ $account->id }}">{{ $account->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="col-6 col-sm-6 col-lg-3">
                         <label for="discount" class="form-label fw-bold">
                             نسبة الخصم (%)
@@ -150,12 +159,6 @@
                         </label>
                         <input type="number" name="discount" id="discount" class="form-control border-primary"
                             placeholder="0" min="0" step="0.01" value="0">
-                    </div>
-                    <div class="col-12 col-sm-6 col-lg-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn">
-                            <i class="fas fa-plus me-1"></i>
-                            إنشاء فاتورة
-                        </button>
                     </div>
                 </div>
 
@@ -222,6 +225,10 @@
                 </div>
             </div>
         </div>
+        <button type="submit" class="btn btn-primary px-4 fw-bold" id="create-invoice-btn">
+            <i class="fas fa-plus me-1"></i>
+            إنشاء فاتورة
+        </button>
     </form>
 
     @push('scripts')
