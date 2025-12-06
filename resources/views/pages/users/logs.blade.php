@@ -87,7 +87,15 @@
                     <span class="fw-semibold text-muted">{{ $log->user->name }}</span>
                 </div>
                 <small class="d-flex flex-wrap align-items-center text-secondary">
-                    <span>{{ $log->created_at->format('d M Y') }}</span>
+                    <span>
+                        @if($log->created_at->isToday())
+                            اليوم
+                        @elseif($log->created_at->isYesterday())
+                            أمس
+                        @else
+                            {{ $log->created_at->format('d/m/Y') }}
+                        @endif
+                    </span>
                     <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
                         {{ $log->created_at->timezone(auth()->user()->timezone)->format('h:i A') }}
                     </span>
