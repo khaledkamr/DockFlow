@@ -295,4 +295,72 @@ class TransportController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف الشاحنة بنجاح');
     }
+
+    public function reports(Request $request) {
+        $transportOrders = TransportOrder::orderBy('date')->get();
+        $customers = Customer::all();
+        $drivers = Driver::with('vehicle')->get();
+        $vehicles = Vehicle::all();
+        $suppliers = Supplier::all();
+        $loadingLocations = $transportOrders->pluck('from')->unique();
+        $deliveryLocations = $transportOrders->pluck('to')->unique();
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $supplier = $request->input('supplier', 'all');
+        $driver = $request->input('driver', 'all');
+        $vehicle = $request->input('vehicle', 'all');
+        $loading_location = $request->input('loading_location', 'all');
+        $delivery_location = $request->input('delivery_location', 'all');
+
+        if($customer && $customer != 'all') {
+            $transportOrders = $transportOrders->where('customer_id', $customer);
+        }
+        if($from) {
+            $transportOrders = $transportOrders->where('date', '>=', $from);
+        }
+        if($to) {
+            $transportOrders = $transportOrders->where('date', '<=', $to);
+        }
+        if($type && $type != 'all') {
+            $transportOrders = $transportOrders->where('type', $type);
+        }
+        if($supplier && $supplier != 'all') {
+            $transportOrders = $transportOrders->where('supplier_id', $supplier);
+        }
+        if($driver && $driver != 'all') {
+            $transportOrders = $transportOrders->where('driver_id', $driver);
+        }
+        if($vehicle && $vehicle != 'all') {
+            $transportOrders = $transportOrders->where('vehicle_id', $vehicle);
+        }
+        if($loading_location && $loading_location != 'all') {
+            $transportOrders = $transportOrders->where('from', $loading_location);
+        }
+        if($delivery_location && $delivery_location != 'all') {
+            $transportOrders = $transportOrders->where('to', $delivery_location);
+        }
+
+        $perPage = $request->input('per_page', 100);
+        $transportOrders = new \Illuminate\Pagination\LengthAwarePaginator(
+            $transportOrders->forPage(request()->get('page', 1), $perPage),
+            $transportOrders->count(),
+            $perPage,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+        
+        return view('pages.transportOrders.reports', compact(
+            'transportOrders',
+            'customers',
+            'drivers',
+            'vehicles',
+            'suppliers',
+            'loadingLocations',
+            'deliveryLocations',
+            'perPage'
+        ));
+    }
 }

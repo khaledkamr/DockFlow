@@ -620,6 +620,10 @@
                                 href="{{ route('transactions.transportOrders.create') }}">
                                 <i class="fa-solid fa-truck ms-2 me-2"></i> إضافة إشعار نقل
                             </a>
+                            <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('transactions.transportOrders.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
+                                href="{{ route('transactions.transportOrders.reports') }}">
+                                <i class="fa-solid fa-chart-line ms-2 me-2"></i> تقارير إشعارات النقل
+                            </a>
                         </div>
                     </li>
                 @endcan

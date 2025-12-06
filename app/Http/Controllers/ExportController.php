@@ -6,6 +6,7 @@ use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
 use App\Exports\JournalEntryExport;
 use App\Exports\ShippingPoliciesExport;
+use App\Exports\TransportOrdersExport;
 use App\Exports\TrialBalanceExport;
 use App\Models\Account;
 use App\Models\Company;
@@ -399,6 +400,54 @@ class ExportController extends Controller
         return view('reports.transaction_report', compact('company', 'transactions', 'from', 'to'));
     }
 
+    public function printTransportOrderReports(Request $request) {
+        $transportOrders = TransportOrder::all();
+        $company = Auth::user()->company;
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $supplier = $request->input('supplier', 'all');
+        $driver = $request->input('driver', 'all');
+        $vehicle = $request->input('vehicle', 'all');
+        $loading_location = $request->input('loading_location', 'all');
+        $delivery_location = $request->input('delivery_location', 'all');
+
+        if($customer && $customer != 'all') {
+            $transportOrders = $transportOrders->where('customer_id', $customer);
+        }
+        if($from) {
+            $transportOrders = $transportOrders->where('date', '>=', $from);
+        }
+        if($to) {
+            $transportOrders = $transportOrders->where('date', '<=', $to);
+        }
+        if($type && $type != 'all') {
+            $transportOrders = $transportOrders->where('type', $type);
+        }
+        if($supplier && $supplier != 'all') {
+            $transportOrders = $transportOrders->where('supplier_id', $supplier);
+        }
+        if($driver && $driver != 'all') {
+            $transportOrders = $transportOrders->where('driver_id', $driver);
+        }
+        if($vehicle && $vehicle != 'all') {
+            $transportOrders = $transportOrders->where('vehicle_id', $vehicle);
+        }
+        if($loading_location && $loading_location != 'all') {
+            $transportOrders = $transportOrders->where('from', $loading_location);
+        }
+        if($delivery_location && $delivery_location != 'all') {
+            $transportOrders = $transportOrders->where('to', $delivery_location);
+        }
+
+        $filters = $request->all();
+        logActivity('طباعة تقرير اشعارات النقل', "تم طباعة تقرير اشعارات النقل بتصفية: ", $filters);
+
+        return view('reports.transport_order_report', compact('company', 'transportOrders', 'from', 'to'));
+    }
+
     public function printInvoiceReports(Request $request) {
         $invoices = Invoice::all();
         $company = Auth::user()->company;
@@ -464,6 +513,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير بوالص الشحن الى اكسيل', "تم تصدير تقرير بوالص الشحن الى اكسيل بتصفية: ", $filters);
             return Excel::download(new ShippingPoliciesExport($filters), 'تقرير بوالص الشحن.xlsx');
+        } elseif($reportType == 'transport_orders') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير اشعارات النقل الى اكسيل', "تم تصدير تقرير اشعارات النقل الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new TransportOrdersExport($filters), 'تقرير اشعارات النقل.xlsx');
         }
 
         abort(404);

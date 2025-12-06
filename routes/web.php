@@ -129,6 +129,7 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::post('vehicles/store', 'storeVehicle')->name('relation.vehicle.store');
     Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('relation.vehicle.update');
     Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('relation.vehicle.delete');
+    Route::get('/transport/reports', 'reports')->name('transactions.transportOrders.reports');
 });
 
 Route::controller(ShippingController::class)->middleware('auth')->group(function () {
@@ -267,4 +268,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoices/reports', 'printInvoiceReports')->name('print.invoices.reports');
     Route::get('/print/transaction/reports', 'printTransactionReports')->name('print.transactions.reports');
     Route::get('/print/expense/invoice/{code}', 'printExpenseInvoice')->name('print.expense.invoice');
+    Route::get('/print/transport/reports', 'printTransportOrderReports')->name('print.transport.reports');
 });
