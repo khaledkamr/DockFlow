@@ -47,7 +47,7 @@
                         <td class="text-center">{{ $transportOrder->supplier->name ?? '-' }}</td>
                         <td class="text-center">{{ $transportOrder->supplier ? $transportOrder->driver_name : $transportOrder->driver->name ?? '-' }}</td>
                         <td class="text-center">{{ $transportOrder->supplier ? $transportOrder->vehicle_plate : $transportOrder->vehicle->plate_number ?? '-' }}</td>
-                        <td class="text-center">{{ $transportOrder->containers->first()->code }}</td>
+                        <td class="text-center">{{ $transportOrder->containers->first()->code ?? '-' }}</td>
                         <td class="text-center">{{ $transportOrder->from }}</td>
                         <td class="text-center">{{ $transportOrder->to }}</td>
                         <td class="text-center">

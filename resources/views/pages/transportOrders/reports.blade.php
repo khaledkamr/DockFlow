@@ -230,9 +230,13 @@
                                     {{ $transportOrder->supplier ? $transportOrder->vehicle_plate : $transportOrder->vehicle->plate_number ?? '-' }}
                                 </td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('container.details', $transportOrder->containers->first()) }}" class="text-decoration-none text-dark" target="_blank">
-                                        {{ $transportOrder->containers->first()->code }}
-                                    </a>
+                                    @if($transportOrder->containers->isEmpty())
+                                        -
+                                    @else
+                                        <a href="{{ route('container.details', $transportOrder->containers->first()) }}" class="text-decoration-none text-dark" target="_blank">
+                                            {{ $transportOrder->containers->first()->code }}
+                                        </a>
+                                    @endif
                                 </td>
                                 <td class="text-center">{{ $transportOrder->from }}</td>
                                 <td class="text-center">{{ $transportOrder->to }}</td>
