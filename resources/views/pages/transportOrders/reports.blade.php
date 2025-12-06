@@ -211,7 +211,7 @@
                                     </a>
                                 </td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('transactions.details', $transportOrder) }}" 
+                                    <a href="{{ route('transactions.details', $transportOrder->transaction) }}" 
                                         class="text-decoration-none" target="_blank">
                                         {{ $transportOrder->transaction->code }}
                                     </a>
