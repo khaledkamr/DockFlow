@@ -61,5 +61,6 @@ return [
         'driver_name' => 'اسم السائق',
         'plate_number' => 'رقم اللوحة',
         'attachment' => 'المرفق',
+        'selected_containers' => 'اختيار حاوية',
     ],
 ];

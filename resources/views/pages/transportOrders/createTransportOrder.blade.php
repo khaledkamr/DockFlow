@@ -79,7 +79,7 @@
                     </select>
                     @error('driver_name')
                         <div class="text-danger">{{ $message }}</div>
-                        @endif
+                    @enderror
                     </div>
                     <div class="col-6 col-sm-6 col-md-4 col-lg-3 internal-field">
                         <label class="form-label">هوية السائق</label>
@@ -162,6 +162,9 @@
                 <div class="row mb-4" id="container-section">
                     <div class="col-12">
                         <h5 class="mb-3">اختيار الحاويات</h5>
+                        @error('selected_containers')
+                            <div class="text-danger mb-2">{{ $message }}</div>
+                        @enderror
                         <div class="card border-primary bg-light p-3">
                             <div class="mb-3">
                                 <div
