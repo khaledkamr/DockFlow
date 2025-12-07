@@ -673,9 +673,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $index = 1;
+                            @endphp
                             @foreach ($transaction->containers as $index => $container)
                                 <tr class="text-center">
-                                    <td class="text-center">{{ $container->id }}</td>
+                                    <td class="text-center">{{ $index++ }}</td>
                                     <td>
                                         <a href="{{ route('container.details', $container) }}"
                                             class="fw-bold text-decoration-none">
