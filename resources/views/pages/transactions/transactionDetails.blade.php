@@ -136,6 +136,17 @@
                                 <input type="date" name="customs_declaration_date" class="form-control border-primary"
                                     value="{{ $transaction->customs_declaration_date ? Carbon\Carbon::parse($transaction->customs_declaration_date)->format('Y-m-d') : '' }}">
                             </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label text-nowrap">حالة المعاملة</label>
+                                <select class="form-select border-primary" name="status" required>
+                                    <option value="معلقة" {{ $transaction->status == 'معلقة' ? 'selected' : '' }}>
+                                        معلقة
+                                    </option>
+                                    <option value="مغلقة" {{ $transaction->status == 'مغلقة' ? 'selected' : '' }}>
+                                        مغلقة
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-start">

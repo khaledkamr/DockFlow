@@ -16,6 +16,7 @@ class Transaction extends Model
         'customs_declaration',
         'customs_declaration_date',
         'code',
+        'status',
         'contract_id',
         'customer_id',
         'user_id',
