@@ -507,7 +507,7 @@ class InvoiceController extends Controller
         $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من الايرادات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
-            'date' => Carbon::now(),
+            'date' => $invoice->date,
             'totalDebit' => $invoice->total_amount,
             'totalCredit' => $invoice->total_amount,
             'user_id' => Auth::user()->id,
@@ -561,7 +561,7 @@ class InvoiceController extends Controller
         $taxAccount = Account::where('name', 'ضريبة القيمة المضافة من الايرادات')->where('level', 5)->first();
 
         $journal = JournalEntry::create([
-            'date' => Carbon::now(),
+            'date' => $invoice->date,
             'totalDebit' => $invoice->total_amount,
             'totalCredit' => $invoice->total_amount,
             'user_id' => Auth::user()->id,
