@@ -34,6 +34,7 @@ class TransportRequest extends FormRequest
             'other_expenses' => 'nullable|numeric|min:0',
             'user_id' => 'required|exists:users,id',
             'notes' => 'nullable|string',
+            'selected_containers' => 'required|array',
         ];
     }
 }
