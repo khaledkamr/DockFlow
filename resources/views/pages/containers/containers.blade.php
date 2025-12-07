@@ -180,7 +180,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header bg-primary">
                                         <h5 class="modal-title text-white fw-bold"
-                                            id="editContainerModalLabel{{ $container->id }}">تعديل بيانات الجاوية</h5>
+                                            id="editContainerModalLabel{{ $container->id }}">تعديل بيانات الحاوية</h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>

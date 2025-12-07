@@ -726,11 +726,67 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary">
+                                        <a href="{{ route('container.details', $container) }}" class="btn btn-sm btn-primary">
                                             عرض
-                                        </button>
+                                        </a>
+                                        <a class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#editContainerModal{{ $container->id }}">
+                                            تعديل
+                                        </a>
                                     </td>
                                 </tr>
+
+                                <div class="modal fade" id="editContainerModal{{ $container->id }}" tabindex="-1"
+                                    aria-labelledby="editContainerModalLabel{{ $container->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-primary">
+                                                <h5 class="modal-title text-white fw-bold"
+                                                    id="editContainerModalLabel{{ $container->id }}">تعديل بيانات الحاوية</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('yard.containers.update', $container) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="modal-body text-dark">
+                                                    <div class="row g-3 mb-3">
+                                                        <div class="col-12 col-md-6">
+                                                            <label for="code" class="form-label">رقم الحـــاوية</label>
+                                                            <input type="text" class="form-control border-primary"
+                                                                name="code" value="{{ $container->code }}">
+                                                            @error('code')
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                        <div class="col-12 col-md-6">
+                                                            <label for="location" class="form-label">المـــوقـــع</label>
+                                                            <input type="text" class="form-control border-primary"
+                                                                name="location" value="{{ $container->location }}">
+                                                            @error('location')
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="row g-3">
+                                                        <div class="col-12">
+                                                            <label class="form-label">ملاحظـــات</label>
+                                                            <textarea class="form-control border-primary" name="notes">{{ $container->notes }}</textarea>
+                                                            @error('code')
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ التغيرات</button>
+                                                    <button type="button" class="btn btn-secondary fw-bold"
+                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             @endforeach
                         </tbody>
                     </table>
