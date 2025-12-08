@@ -78,6 +78,7 @@ class TransactionController extends Controller
     }
 
     public function updateTransaction(Request $request, Transaction $transaction) {
+        // return $request;
         if(Gate::denies('تعديل معاملة تخليص')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات المعاملة');
         }
@@ -89,6 +90,7 @@ class TransactionController extends Controller
             'policy_number' => 'required|string',
             'customs_declaration' => 'nullable|string',
             'customs_declaration_date' => 'nullable|date',
+            'status' => 'required',
         ]);
 
         $transaction->update([
@@ -96,6 +98,7 @@ class TransactionController extends Controller
             'policy_number' => $validated['policy_number'],
             'customs_declaration' => $validated['customs_declaration'],
             'customs_declaration_date' => $validated['customs_declaration_date'],
+            'status' => $validated['status'],
         ]);
 
         $new = $transaction->toArray();

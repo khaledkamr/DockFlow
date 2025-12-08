@@ -254,31 +254,36 @@
     <div class="card-body">
         <div class="row g-3">
             @if ($transportOrder->type == 'ناقل داخلي')
-                <div class="col-6 col-sm-6 col-md-3">
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
                     <label class="text-muted small">تكلفة الديزل</label>
                     <p class="fw-bold mb-0">{{ number_format($transportOrder->diesel_cost, 2) }} <i
                             data-lucide="saudi-riyal"></i></p>
                 </div>
-                <div class="col-6 col-sm-6 col-md-3">
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
                     <label class="text-muted small">أجرة السائق</label>
                     <p class="fw-bold mb-0">{{ number_format($transportOrder->driver_wage, 2) }} <i
                             data-lucide="saudi-riyal"></i></p>
                 </div>
             @elseif($transportOrder->type == 'ناقل خارجي')
-                <div class="col-6 col-sm-6 col-md-3">
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
                     <label class="text-muted small">تكلفة المورد</label>
                     <p class="fw-bold mb-0">{{ number_format($transportOrder->supplier_cost, 2) }} <i
                             data-lucide="saudi-riyal"></i></p>
                 </div>
             @endif
-            <div class="col-6 col-sm-6 col-md-3">
+            <div class="col-6 col-sm-4 col-md-3 col-lg">
                 <label class="text-muted small">مصروفات أخرى</label>
                 <p class="fw-bold mb-0">{{ number_format($transportOrder->other_expenses, 2) }} <i
                         data-lucide="saudi-riyal"></i></p>
             </div>
-            <div class="col-6 col-sm-6 col-md-3">
+            <div class="col-6 col-sm-4 col-md-3 col-lg">
                 <label class="text-muted small">سعر العميل</label>
-                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($transportOrder->client_cost, 2) }} <i
+                <p class="fw-bold mb-0 fs-5">{{ number_format($transportOrder->client_cost, 2) }} <i
+                        data-lucide="saudi-riyal"></i></p>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg">
+                <label class="text-muted small">اجمالي سعر العميل</label>
+                <p class="fw-bold text-success mb-0 fs-5">{{ number_format($transportOrder->total_cost, 2) }} <i
                         data-lucide="saudi-riyal"></i></p>
             </div>
         </div>
