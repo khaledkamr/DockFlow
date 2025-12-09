@@ -21,14 +21,16 @@
                     </span>
                 </div>
                 <div class="d-flex flex-column flex-sm-row gap-2">
-                    <a href="{{ route('print.expense.invoice', $invoice->code) }}" target="_blank" class="btn btn-outline-primary">
+                    <a href="{{ route('print.expense.invoice', $invoice->code) }}" target="_blank"
+                        class="btn btn-outline-primary">
                         <i class="fas fa-print me-2"></i>طباعة الفاتورة
                     </a>
                     @if (!$invoice->is_posted)
                         @can('ترحيل فاتورة')
-                            <a href="" class="btn btn-outline-primary">
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#journalPreviewModal">
                                 <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
-                            </a>
+                            </button>
                         @endcan
                     @endif
                     @if (!$invoice->is_paid)
@@ -46,7 +48,8 @@
                     <div class="modal-content">
                         <div class="modal-header bg-primary">
                             <h5 class="modal-title text-white fw-bold" id="updateInvoiceLabel">تحديث بيانات الفاتورة</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <form action="{{ route('expense.invoices.update.status', $invoice) }}" method="POST">
                             @csrf
@@ -69,6 +72,126 @@
                                     data-bs-dismiss="modal">إلغاء</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journal Preview Modal -->
+            <div class="modal fade" id="journalPreviewModal" tabindex="-1" aria-labelledby="journalPreviewModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary">
+                            <h5 class="modal-title text-white fw-bold" id="journalPreviewModalLabel">معاينة قيد اليومية</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-dark p-4">
+                            <div class="table-container">
+                                <table class="table table-bordered border-secondary table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th class="text-center">#</th>
+                                            <th class="text-center">رقم الحساب</th>
+                                            <th class="text-center">اسم الحساب</th>
+                                            <th class="text-center">مدين</th>
+                                            <th class="text-center">دائن</th>
+                                            <th class="text-center">البيان</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php $counter = 1; @endphp
+
+                                        {{-- Invoice Items --}}
+                                        @foreach ($invoice->items as $item)
+                                            <tr>
+                                                <td class="text-center">{{ $counter++ }}</td>
+                                                <td class="text-center">{{ $item->account->code }}</td>
+                                                <td class="text-center fw-semibold">{{ $item->account->name }}</td>
+                                                <td class="text-center fw-bold text-success">{{ number_format($item->amount, 2) }}</td>
+                                                <td class="text-center">0.00</td>
+                                                <td class="text-center">
+                                                    {{ $item->description ?: 'بند فاتورة مصاريف رقم ' . $invoice->code }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
+                                        @if ($invoice->tax > 0)
+                                            <tr>
+                                                <td class="text-center">{{ $counter++ }}</td>
+                                                <td class="text-center">{{ $tax_account->code ?? '-' }}</td>
+                                                <td class="text-center fw-semibold">{{ $tax_account->name ?? '-' }}</td>
+                                                <td class="text-center fw-bold text-success">{{ number_format($invoice->tax, 2) }}</td>
+                                                <td class="text-center">0.00</td>
+                                                <td class="text-center">ضريبة قيمة مضافة فاتورة مصاريف رقم {{ $invoice->code }}</td>
+                                            </tr>
+                                        @endif
+
+                                        <tr class="table-warning border-secondary">
+                                            <td class="text-center">{{ $counter++ }}</td>
+                                            <td class="text-center">{{ $invoice->supplier->account->code ?? '-' }}</td>
+                                            <td class="text-center fw-semibold">{{ $invoice->supplier->name ?? 'مورد' }}</td>
+                                            <td class="text-center">0.00</td>
+                                            <td class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</td>
+                                            <td class="text-center">فاتورة مصاريف رقم {{ $invoice->code }}</td>
+                                        </tr>
+
+                                        @if ($invoice->payment_method !== 'آجل')
+                                            <tr class="table-info border-secondary">
+                                                <td class="text-center">{{ $counter++ }}</td>
+                                                <td class="text-center">{{ $invoice->supplier->account->code ?? '-' }}</td>
+                                                <td class="text-center fw-semibold">{{ $invoice->supplier->name ?? 'مورد' }}</td>
+                                                <td class="text-center fw-bold text-success">{{ number_format($invoice->total_amount, 2) }}</td>
+                                                <td class="text-center">0.00</td>
+                                                <td class="text-center">سداد فاتورة مصاريف رقم {{ $invoice->code }}</td>
+                                            </tr>
+
+                                            <tr class="table-info border-secondary">
+                                                <td class="text-center">{{ $counter++ }}</td>
+                                                <td class="text-center">{{ $invoice->expense_account->code ?? '-' }}</td>
+                                                <td class="text-center fw-semibold">{{ $invoice->expense_account->name ?? '-' }}</td>
+                                                <td class="text-center">0.00</td>
+                                                <td class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</td>
+                                                <td class="text-center">سداد فاتورة مصاريف رقم {{ $invoice->code }}</td>
+                                            </tr>
+                                        @endif
+
+                                        <tr class="table-dark">
+                                            <td class="text-center text-white fw-bold" colspan="3">الإجمالي</td>
+                                            <td class="text-center text-white fw-bold">
+                                                @php
+                                                    $totalDebit = $invoice->items->sum('amount') + $invoice->tax;
+                                                    if ($invoice->payment_method !== 'آجل') {
+                                                        $totalDebit += $invoice->total_amount;
+                                                    }
+                                                @endphp
+                                                {{ number_format($totalDebit, 2) }}
+                                            </td>
+                                            <td class="text-center text-white fw-bold">
+                                                @php
+                                                    $totalCredit = $invoice->total_amount;
+                                                    if ($invoice->payment_method !== 'آجل') {
+                                                        $totalCredit += $invoice->total_amount;
+                                                    }
+                                                @endphp
+                                                {{ number_format($totalCredit, 2) }}
+                                            </td>
+                                            <td class="text-center text-white"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-start">
+                            <form action="{{ route('expense.invoices.post', $invoice) }}" method="GET" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary fw-bold">
+                                    <i class="fas fa-check me-2"></i>تأكيد الترحيل
+                                </button>
+                            </form>
+                            <button type="button" class="btn btn-secondary fw-bold"
+                                data-bs-dismiss="modal">إلغاء</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -193,7 +316,8 @@
                                     </td>
                                     <td class="text-center">{{ (int) $item->quantity }}</td>
                                     <td class="text-center">{{ number_format($item->price, 2) }}</td>
-                                    <td class="text-center" style="min-width: 150px">{{ $item->costCenter->name ?? '---' }}</td>
+                                    <td class="text-center" style="min-width: 150px">
+                                        {{ $item->costCenter->name ?? '---' }}</td>
                                     <td class="text-center">{{ number_format($item->amount, 2) }}</td>
                                     <td class="text-center">{{ number_format($item->tax, 2) }}</td>
                                     <td class="text-center fw-bold">{{ number_format($item->total_amount, 2) }}</td>
@@ -261,7 +385,7 @@
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <label for="notes" class="form-label fw-bold">الملاحظات:</label>
-                                                 <button type="submit" id="saveNotesBtn"
+                                                <button type="submit" id="saveNotesBtn"
                                                     class="btn btn-sm btn-primary align-self-md-end mb-3"
                                                     style="white-space: nowrap; display: none;">
                                                     حفظ الملاحظات
@@ -293,7 +417,8 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-12">
-                                <form action="{{ route('expense.invoices.add.attachment', $invoice) }}" method="POST" enctype="multipart/form-data"
+                                <form action="{{ route('expense.invoices.add.attachment', $invoice) }}" method="POST"
+                                    enctype="multipart/form-data"
                                     class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
                                     @csrf
                                     <div class="flex-grow-1">
@@ -398,8 +523,8 @@
                                                         id="deleteAttachmentModalLabel{{ $attachment->id }}">
                                                         تأكيد حذف المرفق
                                                     </h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body text-dark">
                                                     <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>

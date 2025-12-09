@@ -26,6 +26,7 @@ class ExpenseInvoice extends Model
         'is_paid',
         'user_id',
         'company_id',
+        'expense_account_id',
         'notes',
     ];
 
@@ -47,6 +48,10 @@ class ExpenseInvoice extends Model
 
     public function attachments() {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function expense_account() {
+        return $this->belongsTo(Account::class, 'expense_account_id');
     }
 
     protected static function booted()

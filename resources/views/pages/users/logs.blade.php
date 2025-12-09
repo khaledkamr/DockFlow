@@ -39,7 +39,7 @@
 
                 <div class="col-6 col-md-3">
                     <label class="form-label fw-semibold">الإجراء</label>
-                    <select name="action" class="form-select border-primary">
+                    <select name="action" id="action" class="form-select border-primary">
                         <option value="">جميع الإجراءات</option>
                         @foreach($actions as $action)
                             <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
@@ -194,4 +194,23 @@
     {{ $logs->links() }}
 </div>
 
+<script>
+    $('#action').select2({
+        width: '100%',
+        placeholder: 'اختر الإجراء',
+        allowClear: true
+    });
+</script>
+
+<style>
+    .select2-container .select2-selection {
+        height: 38px;
+        border-radius: 8px;
+        border: 1px solid #0d6efd;
+        padding: 5px;
+    }
+    .select2-container .select2-selection__rendered {
+        line-height: 30px;
+    }
+</style>
 @endsection

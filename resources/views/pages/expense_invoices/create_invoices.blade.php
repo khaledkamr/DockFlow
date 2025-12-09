@@ -138,9 +138,9 @@
                     </div>
                     <div class="col-12 col-sm-6 col-lg-3">
                         <label class="form-label fw-bold">حساب الدفع</label>
-                        <select name="payment_account" id="payment_account" class="form-select border-primary" required>
+                        <select name="expense_account_id" id="expense_account" class="form-select border-primary">
                             <option value="">-- اختر حساب الدفع --</option>
-                            @foreach ($accounts as $account)
+                            @foreach ($expenseAccounts as $account)
                                 <option value="{{ $account->id }}">{{ $account->name }}</option>
                             @endforeach
                         </select>
@@ -225,6 +225,7 @@
                 </div>
             </div>
         </div>
+
         <button type="submit" class="btn btn-primary px-4 fw-bold" id="create-invoice-btn">
             <i class="fas fa-plus me-1"></i>
             إنشاء فاتورة
@@ -236,6 +237,16 @@
             let rowCounter = 0;
             const accounts = @json($accounts);
             const costCenters = @json($costCenters);
+
+            $('#payment_method').select2({
+                placeholder: "ابحث عن طريقة الدفع...",
+                allowClear: true
+            });
+
+            $('#expense_account').select2({
+                placeholder: "ابحث عن حساب الدفع...",
+                allowClear: true
+            });
 
             // Add first row on page load
             document.addEventListener('DOMContentLoaded', function() {

@@ -26,6 +26,7 @@ class ExpenseInvoiceRequest extends FormRequest
             'total_amount' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
             'user_id' => 'nullable|exists:users,id',
+            'expense_account_id' => 'nullable|exists:accounts,id',
         ];
     }
 }

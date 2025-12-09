@@ -210,6 +210,7 @@ Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(fu
     Route::get('/expense/invoice/{invoice:uuid}', 'invoiceDetails')->name('expense.invoices.details');
     Route::patch('/expense/invoice/update-status/{invoice:uuid}', 'updateInvoiceStatus')->name('expense.invoices.update.status');
     Route::patch('/expense/invoice/update-notes/{invoice:uuid}', 'updateInvoiceNotes')->name('expense.invoices.update.notes');
+    Route::get('/expense/invoice/post/{invoice:uuid}', 'postInvoice')->name('expense.invoices.post');
     Route::delete('/expense/invoice/delete/{invoice:uuid}', 'deleteInvoice')->name('expense.invoices.delete');
     Route::get('/expense/invoices/reports', 'reports')->name('expense.invoices.reports');
     Route::post('/expense/invoice/{invoice:uuid}/add/attachment', 'attachFile')->name('expense.invoices.add.attachment');

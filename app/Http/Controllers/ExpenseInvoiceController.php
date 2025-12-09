@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Models\Attachment;
 use App\Models\CostCenter;
 use App\Models\ExpenseInvoice;
+use App\Models\JournalEntry;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,13 +25,16 @@ class ExpenseInvoiceController extends Controller
         $suppliers = Supplier::all();
         $accounts = Account::where('level', 5)->get();
         $costCenters = CostCenter::doesntHave('children')->get();
+        $parentAccount = Account::where('name', 'النقدية والبنوك')->first();
+        $expenseAccounts = $parentAccount ? $parentAccount->getLeafAccounts() : collect();
         $payment_methods = ['آجل', 'كاش', 'شيك', 'تحويل بنكي'];
 
         return view('pages.expense_invoices.create_invoices', compact(
             'suppliers', 
             'accounts', 
             'costCenters',
-            'payment_methods'    
+            'payment_methods',
+            'expenseAccounts' 
         ));
     }
 
@@ -65,8 +69,14 @@ class ExpenseInvoiceController extends Controller
     }
 
     public function invoiceDetails(ExpenseInvoice $invoice) {
+        $invoice->load('items', 'attachments', 'supplier', 'expense_account');
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
-        return view('pages.expense_invoices.invoice_details', compact('invoice', 'hatching_total'));
+        $tax_account = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+        return view('pages.expense_invoices.invoice_details', compact(
+            'invoice', 
+            'hatching_total',
+            'tax_account' 
+        ));
     }
 
     public function updateInvoiceStatus(Request $request, ExpenseInvoice $invoice) {
@@ -97,6 +107,84 @@ class ExpenseInvoiceController extends Controller
         logActivity('تحديث ملاحظات فاتورة مصاريف', 'تم تحديث ملاحظات فاتورة المصاريف برقم ' . $invoice->code, $old, $new);
 
         return redirect()->route('expense.invoices.details', $invoice)->with('success', 'تم تحديث ملاحظات فاتورة المصاريف بنجاح');
+    }
+
+    public function postInvoice(ExpenseInvoice $invoice) {
+        if($invoice->is_posted) {
+            return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
+        }
+
+        $tax_account = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+        if($invoice->tax > 0 && !$tax_account) {
+            return redirect()->back()->with('error', 'لا يوجد حساب ضريبة القيمة المضافة من المصروفات. يرجى إنشاء الحساب أولاً');
+        }
+
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        $journal = JournalEntry::create([
+            'date' => $invoice->date,
+            'totalDebit' => 0,
+            'totalCredit' => 0,
+            'user_id' => Auth::user()->id,
+        ]);
+
+        foreach($invoice->items as $item) {
+            $journal->lines()->create([
+                'account_id' => $item->account_id,
+                'debit' => $item->amount,
+                'credit' => 0,
+                'description' => 'بند فاتورة مصاريف رقم ' . $invoice->code,
+            ]);
+            $totalDebit += $item->amount;
+        }
+
+        if($invoice->tax > 0 && $tax_account) {
+            $journal->lines()->create([
+                'account_id' => $tax_account->id,
+                'debit' => $invoice->tax,
+                'credit' => 0,
+                'description' => 'ضريبة قيمة مضافة على فاتورة مصاريف رقم ' . $invoice->code,
+            ]);
+            $totalDebit += $invoice->tax;
+        }
+
+        $journal->lines()->create([
+            'account_id' => $invoice->supplier->account_id,
+            'debit' => 0,
+            'credit' => $invoice->total_amount,
+            'description' => 'فاتورة مصاريف رقم ' . $invoice->code,
+        ]);
+        $totalCredit += $invoice->total_amount;
+
+        if($invoice->payment_method !== 'آجل') {
+            $journal->lines()->create([
+                'account_id' => $invoice->supplier->account_id,
+                'debit' => $invoice->total_amount,
+                'credit' => 0,
+                'description' => 'سداد فاتورة مصاريف رقم ' . $invoice->code,
+            ]);
+            $totalDebit += $invoice->total_amount;
+            
+            $journal->lines()->create([
+                'account_id' => $invoice->expense_account_id,
+                'debit' => 0,
+                'credit' => $invoice->total_amount,
+                'description' => 'سداد فاتورة مصاريف رقم ' . $invoice->code,
+            ]);
+            $totalCredit += $invoice->total_amount;
+        }
+
+        $journal->totalDebit = $totalDebit;
+        $journal->totalCredit = $totalCredit;
+        $journal->save();
+
+        $invoice->is_posted = true;
+        $invoice->save();
+
+        logActivity('ترحيل فاتورة مصاريف', 'تم ترحيل فاتورة المصاريف برقم ' . $invoice->code . ' إلى قيد اليومية رقم ' . $journal->code);
+
+        return redirect()->route('expense.invoices.details', $invoice)->with('success', "تم ترحيل فاتورة المصاريف بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
 
     public function deleteInvoice(ExpenseInvoice $invoice) {
