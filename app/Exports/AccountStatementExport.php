@@ -59,7 +59,6 @@ class AccountStatementExport implements FromCollection, WithHeadings
             'رقم القيد',
             'نوع القيد',
             'البيان',
-            'البيان',
             'مدين',
             'دائن',
             'الرصيد',
