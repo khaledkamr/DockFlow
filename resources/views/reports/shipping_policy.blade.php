@@ -48,9 +48,11 @@
                     @endif
                 </div>
                 <div class="row">
-                    <div class="col">
-                        <p class="mb-2 small"><strong class="text-secondary">رقم الهوية:</strong><br>{{ $policy->driver->NID }}</p>
-                    </div>
+                    @if($policy->type == 'ناقل داخلي')
+                        <div class="col">
+                            <p class="mb-2 small"><strong class="text-secondary">رقم الهوية:</strong><br>{{ $policy->driver->NID ?? 'N/A' }}</p>
+                        </div>
+                    @endif
                     @if($policy->type == 'ناقل داخلي')
                         <div class="col">
                             <p class="mb-2 small"><strong class="text-secondary">الشاحنة:</strong><br>{{ $policy->vehicle->plate_number . ' - ' . $policy->vehicle->type }}</p>
