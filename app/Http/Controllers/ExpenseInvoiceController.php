@@ -216,7 +216,11 @@ class ExpenseInvoiceController extends Controller
             $invoices = $invoices->where('is_posted', $is_posted);
         }
         if($costCenter !== 'all') {
-            $invoices = $invoices->where('cost_center_id', $costCenter);
+            $invoices = $invoices->filter(function($invoice) use ($costCenter) {
+                foreach($invoice->items as $item) {
+                    return $item->cost_center_id == $costCenter;
+                }
+            });
         }
 
         $perPage = $request->input('per_page', 100);

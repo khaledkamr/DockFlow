@@ -45,8 +45,8 @@
                     <label class="form-label">الترحيل</label>
                     <select name="is_posted" class="form-select border-primary">
                         <option value="all" {{ request('is_posted') == 'all' ? 'selected' : '' }}>الكل</option>
-                        <option value="true" {{ request('is_posted') == 'true' ? 'selected' : '' }}>تم الترحيل</option>
-                        <option value="false" {{ request('is_posted') == 'false' ? 'selected' : '' }}>لم يتم الترحيل
+                        <option value="1" {{ request('is_posted') == '1' ? 'selected' : '' }}>تم الترحيل</option>
+                        <option value="0" {{ request('is_posted') == '0' ? 'selected' : '' }}>لم يتم الترحيل
                         </option>
                     </select>
                 </div>
