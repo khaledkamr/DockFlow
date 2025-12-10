@@ -72,6 +72,7 @@ class ExpenseInvoiceController extends Controller
         $invoice->load('items', 'attachments', 'supplier', 'expense_account');
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
         $tax_account = Account::where('name', 'ضريبة القيمة المضافة من المصروفات')->where('level', 5)->first();
+
         return view('pages.expense_invoices.invoice_details', compact(
             'invoice', 
             'hatching_total',
@@ -156,6 +157,11 @@ class ExpenseInvoiceController extends Controller
             'description' => 'فاتورة مصاريف رقم ' . $invoice->code,
         ]);
         $totalCredit += $invoice->total_amount;
+
+        /**
+         * If payment method is 'آجل' (deferred),stop creating journal lines here
+         * Otherwise, continue with payment journal lines
+         */
 
         if($invoice->payment_method !== 'آجل') {
             $journal->lines()->create([
