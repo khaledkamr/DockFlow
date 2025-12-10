@@ -41,8 +41,8 @@ class AccountStatementExport implements FromCollection, WithHeadings
             return [
                 $line->account->name,
                 $line->journal->date,
-                $line->journal_entry_id,
-                $line->journal->voucher->type ?? 'قيد يومي',
+                $line->journal->code,
+                $line->journal->type,
                 $line->description,
                 $line->debit,
                 $line->credit,
