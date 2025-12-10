@@ -469,12 +469,12 @@ class AccountingController extends Controller
             $to = $request->input('to');
 
             $account = $request->input('account', null);
-            $statement = JournalEntryLine::where('account_id', $account)->get();
-            $statement = $statement->sortBy(function($line) {
-                return $line->journal->date;
-            })->sortBy(function($line) {
-                return $line->journal->code;
-            });
+            $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+                ->select('journal_entry_lines.*')
+                ->where('account_id', $account)
+                ->orderBy('journal_entries.date')
+                ->orderBy('journal_entries.code')
+                ->get();
 
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
