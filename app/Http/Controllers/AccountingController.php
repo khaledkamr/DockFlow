@@ -472,6 +472,8 @@ class AccountingController extends Controller
             $statement = JournalEntryLine::where('account_id', $account)->get();
             $statement = $statement->sortBy(function($line) {
                 return $line->journal->date;
+            })->sortBy(function($line) {
+                return $line->journal->code;
             });
 
             if($from && $to) {
