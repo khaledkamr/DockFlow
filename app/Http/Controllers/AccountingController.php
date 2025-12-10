@@ -478,7 +478,8 @@ class AccountingController extends Controller
 
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
-                    return $line->journal->date->between($from, $to);
+                    $date = Carbon::parse($line->journal->date);
+                    return $date->between($from, $to);
                 });
             }
         } elseif($request->view == 'ميزان مراجعة') {
