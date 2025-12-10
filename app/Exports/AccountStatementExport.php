@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\JournalEntryLine;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -40,7 +41,7 @@ class AccountStatementExport implements FromCollection, WithHeadings
             $balance += $line->debit - $line->credit;
             return [
                 $line->account->name,
-                $line->journal->date,
+                Carbon::parse($line->journal->date)->format('Y/m/d'),
                 $line->journal->code,
                 $line->journal->type,
                 $line->description,
