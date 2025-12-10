@@ -37,7 +37,10 @@ class AccountStatementExport implements FromCollection, WithHeadings
             });
         }
 
-        $query->with(['account', 'journal'])->orderByRelation('journal', 'date')->orderByRelation('journal', 'code');
+        $query->join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+            ->select('journal_entry_lines.*')
+            ->orderBy('journal_entries.date')
+            ->orderBy('journal_entries.code');
 
         return $query->get()->map(function ($line) use($balance) {
             $balance += $line->debit - $line->credit;
