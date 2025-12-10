@@ -37,6 +37,8 @@ class AccountStatementExport implements FromCollection, WithHeadings
             });
         }
 
+        $query->with(['account', 'journal'])->orderByRelation('journal', 'date')->orderByRelation('journal', 'code');
+
         return $query->get()->map(function ($line) use($balance) {
             $balance += $line->debit - $line->credit;
             return [
