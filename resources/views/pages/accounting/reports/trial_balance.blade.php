@@ -1,23 +1,33 @@
 <form method="GET" action="" class="row g-3 bg-white p-3 rounded-3 shadow-sm border-0 mb-4">
     <input type="hidden" name="view" value="ميزان مراجعة">
-    <div class="col-md-4">
-        <label class="form-label">الحساب</label>
-        <select class="form-select border-primary">
-            <option value="">اختر الحساب</option>
-            @foreach($accounts as $account)
-                <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
-                    {{ $account->name }}
-                </option>
-            @endforeach
+    <div class="col-md-2">
+        <label class="form-label">الحركات المدينة</label>
+        <select name="debit_movements" class="form-control border-primary">
+            <option value="1" {{ request('debit_movements') == '1' ? 'selected' : '' }}>عرض</option>
+            <option value="0" {{ request('debit_movements') == '0' ? 'selected' : '' }}>إخفاء</option>
         </select>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
+        <label class="form-label">الحركات الدائنة</label>
+        <select name="credit_movements" class="form-control border-primary">
+            <option value="1" {{ request('credit_movements') == '1' ? 'selected' : '' }}>عرض</option>
+            <option value="0" {{ request('credit_movements') == '0' ? 'selected' : '' }}>إخفاء</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">الحسابات الصفرية</label>
+        <select name="zero_accounts" class="form-control border-primary">
+            <option value="1" {{ request('zero_accounts') == '1' ? 'selected' : '' }}>عرض</option>
+            <option value="0" {{ request('zero_accounts') == '0' ? 'selected' : '' }}>إخفاء</option>
+        </select>
+    </div>
+    <div class="col-md-2">
         <label class="form-label">من تاريخ</label>
         <input type="date" name="from" class="form-control border-primary" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label class="form-label">إلى تاريخ</label>
-        <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->format('Y-m-d')) }}">
+        <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->endOfYear()->format('Y-m-d')) }}">
     </div>
     <div class="col-md-2 d-flex align-items-end">
         <button type="submit" class="btn btn-primary fw-bold w-100" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
@@ -27,7 +37,7 @@
     </div>
 </form>
 
-<div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0">
+<div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0 mb-5">
     <div class="d-flex justify-content-end align-items-end mb-3">
         <div class="export-buttons d-flex gap-2 align-items-center">
             <form action="{{ route('export.excel', 'trail_balance') }}" method="GET">
@@ -73,8 +83,8 @@
                 @foreach($trialBalance as $account)
                     <tr class="table-primary">
                         @php
-                            $from = request()->query('from');
-                            $to = request()->query('to');
+                            $from = request()->query('from', now()->startOfYear()->format('Y-m-d'));
+                            $to = request()->query('to', now()->endOfYear()->format('Y-m-d'));
                         @endphp
                         <td class="text-center">{{ $account->code }}</td>
                         <td class="fw-bold">{{ $account->name }} ({{ $account->level }})</td>
