@@ -21,23 +21,9 @@
     <tr>
         <td class="text-center">{{ $child->code }}</td>
         <td class="fw-bold">
-            @if($child->level == 5)
-                <form action="" method="GET" target="_blank" class="d-inline">
-                    <input type="hidden" name="view" value="كشف حساب">
-                    <input type="hidden" name="account" value="{{ $child->id }}">
-                    <input type="hidden" name="from" value="{{ $from }}">
-                    <input type="hidden" name="to" value="{{ $to }}">
-                    <button type="submit" class="btn btn-link fw-bold p-0 m-0 align-baseline text-decoration-none">
-                        {{ str_repeat(' - ', $child->level) }}
-                        {{ $child->name }}
-                        ({{ $child->level }})
-                    </button>
-                </form>
-            @else
-                {{ str_repeat(' - ', $child->level) }}
-                {{ $child->name }}
-                ({{ $child->level }})
-            @endif
+            {{ str_repeat(' - ', $child->level) }}
+            {{ $child->name }}
+            ({{ $child->level }})
         </td>
         <td class="text-center">{{ $balance->beginning_debit }}</td>
         <td class="text-center">{{ $balance->beginning_credit }}</td>
@@ -47,6 +33,6 @@
         <td class="text-center">{{ $balance->final_credit }}</td>
     </tr>
     @if($child->children->count())
-        @include('pages.accounting.reports.trial_balance_row', ['children' => $child->children])
+        @include('reports.trial_balance_row', ['children' => $child->children])
     @endif
 @endforeach

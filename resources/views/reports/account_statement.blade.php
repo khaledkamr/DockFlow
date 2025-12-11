@@ -14,10 +14,10 @@
     <div class="table-container">
         <table class="table table-bordered border-dark">
             <thead>
-                <tr class="table-secondary border-dark fw-bold">
+                <tr class="table-dark border-dark fw-bold">
+                    <th class="text-center">التاريخ</th>
                     <th class="text-center">رقم القيد</th>
                     <th class="text-center">نوع القيد</th>
-                    <th class="text-center">تاريخ</th>
                     <th class="text-center">البيان</th>
                     <th class="text-center">مدين</th>
                     <th class="text-center">دائن</th>
@@ -38,9 +38,9 @@
                             }
                         @endphp
                         <tr class="text-center">
+                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td>{{ $line->journal->code }}</td>
                             <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
-                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>

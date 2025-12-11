@@ -494,6 +494,22 @@ class ExportController extends Controller
         return view('reports.expense_invoice', compact('company', 'invoice', 'hatching_total'));
     }
 
+    public function printTrialBalance(Request $request) {
+        $company = Auth::user()->company;
+        $trialBalance = Account::where('level', 1)->get();
+
+        $from = $request->input('from', now()->startOfYear()->format('Y-m-d'));
+        $to = $request->input('to', now()->endOfYear()->format('Y-m-d'));
+        $debit_movements = $request->input('debit_movements', '1');
+        $credit_movements = $request->input('credit_movements', '1');
+        $zero_balances = $request->input('zero_balances', '1');
+
+        $filters = $request->all();
+        logActivity('طباعة ميزان المراجعة', "تم طباعة ميزان المراجعة بتصفية: ", $filters);
+
+        return view('reports.trial_balance', compact('company', 'trialBalance', 'from', 'to', 'debit_movements', 'credit_movements', 'zero_balances'));
+    }
+
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
@@ -507,7 +523,7 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير القيود اليومية الى اكسيل', "تم تصدير تقرير القيود اليومية الى اكسيل بتصفية: ", $filters);
             return Excel::download(new JournalEntryExport($filters), 'تقرير القيود اليومية.xlsx');
-        } elseif($reportType == 'trail_balance') {
+        } elseif($reportType == 'trial_balance') {
             $filters = $request->all();
             logActivity('تصدير تقرير ميزان المراجعة الى اكسيل', "تم تصدير تقرير ميزان المراجعة بتصفية: ", $filters);
             return Excel::download(new TrialBalanceExport($filters), 'تقرير ميزان المراجعة.xlsx');

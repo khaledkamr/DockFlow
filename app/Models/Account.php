@@ -44,30 +44,34 @@ class Account extends Model
         $ids = $this->getAllChildrenIds();
         $ids[] = $this->id;
 
-        $query = DB::table('journal_entry_lines as l')
+        $movement_query = DB::table('journal_entry_lines as l')
             ->join('journal_entries as j', 'l.journal_entry_id', '=', 'j.id')
             ->whereIn('l.account_id', $ids);
 
+        $beginning_query = clone $movement_query;
+
         if($from && $to && $from <= $to) {
-            $query->whereBetween('j.date', [$from, $to]);
-        } elseif($from && !$to) {
-            $query->where('j.date', '>=', $from);
-        } elseif(!$from && $to) {
-            $query->where('j.date', '<=', $to);
+            $movement_query->whereBetween('j.date', [$from, $to]);
+            $beginning_query->where('j.date', '<', $from);
         }
     
-        $result = $query->selectRaw("
+        $movement_result = $movement_query->selectRaw("
+            COALESCE(SUM(l.debit),0) as total_debit,
+            COALESCE(SUM(l.credit),0) as total_credit
+        ")->first();
+
+        $beginning_result = $beginning_query->selectRaw("
             COALESCE(SUM(l.debit),0) as total_debit,
             COALESCE(SUM(l.credit),0) as total_credit
         ")->first();
 
         return (object)[
-            'debit'   => $result->total_debit,
-            'credit'  => $result->total_credit,
-            'balance' => [
-                'debit'  => max(0, $result->total_debit - $result->total_credit),
-                'credit' => max(0, $result->total_credit - $result->total_debit)
-            ]
+            'beginning_debit'  => $beginning_result->total_debit,
+            'beginning_credit' => $beginning_result->total_credit,
+            'movement_debit'   => $movement_result->total_debit,
+            'movement_credit'  => $movement_result->total_credit,
+            'final_debit'  => max(0, $movement_result->total_debit + $beginning_result->total_debit - $movement_result->total_credit - $beginning_result->total_credit),
+            'final_credit' => max(0, $movement_result->total_credit + $beginning_result->total_credit - $movement_result->total_debit - $beginning_result->total_debit)
         ];
     }
 

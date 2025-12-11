@@ -26,50 +26,66 @@ class TrialBalanceExport implements FromCollection, WithHeadings
     {
         $rows = collect();
 
-        foreach($this->accounts as $account) {
-            $this->flattenAccount($account, $rows);
-        }
+        $sum_beginning_debit = 0;
+        $sum_beginning_credit = 0;
+        $sum_movement_debit = 0;
+        $sum_movement_credit = 0;
+        $sum_final_debit = 0;
+        $sum_final_credit = 0;
 
-        $totalOpeningDebit = $rows->sum(fn($row) => $row->opening_debit);
-        $totalOpeningCredit = $rows->sum(fn($row) => $row->opening_credit);
-        $totalMovementDebit = $rows->sum(fn($row) => $row->movement_debit);
-        $totalMovementCredit = $rows->sum(fn($row) => $row->movement_credit);
-        $totalClosingDebit = $rows->sum(fn($row) => $row->closing_debit);
-        $totalClosingCredit = $rows->sum(fn($row) => $row->closing_credit);
+        foreach($this->accounts as $account) {
+            $this->flattenAccount($account, $rows, $sum_beginning_debit, $sum_beginning_credit, $sum_movement_debit, $sum_movement_credit, $sum_final_debit, $sum_final_credit);
+        }
 
         $rows->push((object)[
             'code' => '',
             'name' => 'الإجمالي',
-            'opening_debit' => $totalOpeningDebit,
-            'opening_credit' => $totalOpeningCredit,
-            'movement_debit' => $totalMovementDebit,
-            'movement_credit' => $totalMovementCredit,
-            'closing_debit' => $totalClosingDebit,
-            'closing_credit' => $totalClosingCredit,
+            'opening_debit' => $sum_beginning_debit ?? 0,
+            'opening_credit' => $sum_beginning_credit ?? 0,
+            'movement_debit' => $sum_movement_debit ?? 0,
+            'movement_credit' => $sum_movement_credit ?? 0,
+            'closing_debit' => $sum_final_debit ?? 0,
+            'closing_credit' => $sum_final_credit ?? 0,
         ]);
 
         return $rows;
     }
 
-    protected function flattenAccount($account, &$rows)
+    protected function flattenAccount($account, &$rows, &$sum_beginning_debit, &$sum_beginning_credit, &$sum_movement_debit, &$sum_movement_credit, &$sum_final_debit, &$sum_final_credit)
     {
         $balance = $account->calculateBalance($this->filters['from'], $this->filters['to']);
-        $opening = $account->calculateBalance(null, Carbon::parse($this->filters['from'])->subDay());
+
+        if('0' === $this->filters['debit_movements'] && $balance->final_debit > 0) {
+            return;
+        }
+        if('0' === $this->filters['credit_movements'] && $balance->final_credit > 0) {
+            return;
+        }
+        if('0' === $this->filters['zero_balances'] && $balance->final_debit == 0 && $balance->final_credit == 0) {
+            return;
+        }
 
         $rows->push((object)[
             'code' => $account->code,
-            'name' => str_repeat('-', $account->level) . ' ' . $account->name,
-            'opening_debit' => $opening->debit,
-            'opening_credit' => $opening->credit,
-            'movement_debit' => $balance->debit,
-            'movement_credit' => $balance->credit,
-            'closing_debit' => $balance->balance['debit'],
-            'closing_credit' => $balance->balance['credit'],
+            'name' => str_repeat(' - ', $account->level) . ' ' . $account->name,
+            'opening_debit' => $balance->beginning_debit ?? 0,
+            'opening_credit' => $balance->beginning_credit ?? 0,
+            'movement_debit' => $balance->movement_debit ?? 0,
+            'movement_credit' => $balance->movement_credit ?? 0,
+            'closing_debit' => $balance->final_debit ?? 0,
+            'closing_credit' => $balance->final_credit ?? 0,
         ]);
+
+        $sum_beginning_debit += $balance->beginning_debit;
+        $sum_beginning_credit += $balance->beginning_credit;
+        $sum_movement_debit += $balance->movement_debit;
+        $sum_movement_credit += $balance->movement_credit;
+        $sum_final_debit += $balance->final_debit;
+        $sum_final_credit += $balance->final_credit;
 
         if($account->children->count()) {
             foreach($account->children as $child) {
-                $this->flattenAccount($child, $rows);
+                $this->flattenAccount($child, $rows, $sum_beginning_debit, $sum_beginning_credit, $sum_movement_debit, $sum_movement_credit, $sum_final_debit, $sum_final_credit);
             }
         }
     }

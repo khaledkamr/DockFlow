@@ -55,9 +55,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th class="bg-dark text-center text-white text-nowrap">تاريخ</th>
                     <th class="bg-dark text-center text-white text-nowrap">رقم القيد</th>
                     <th class="bg-dark text-center text-white text-nowrap">نوع القيد</th>
-                    <th class="bg-dark text-center text-white text-nowrap">تاريخ</th>
                     <th class="bg-dark text-center text-white text-nowrap">البيان</th>
                     <th class="bg-dark text-center text-white text-nowrap">مدين</th>
                     <th class="bg-dark text-center text-white text-nowrap">دائن</th>
@@ -74,13 +74,13 @@
                         $balance += $line->debit - $line->credit;
                     @endphp
                         <tr class="text-center">
+                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td class="fw-bold">
                                 <a href="{{ route('journal.details', $line->journal) }}" class="text-decoration-none text-dark">
                                     {{ $line->journal->code }}
                                 </a>
                             </td>
                             <td>{{ $line->journal->type }}</td>
-                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>

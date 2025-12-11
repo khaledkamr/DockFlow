@@ -16,18 +16,18 @@
     </div>
     <div class="col-md-2">
         <label class="form-label">الحسابات الصفرية</label>
-        <select name="zero_accounts" class="form-control border-primary">
-            <option value="1" {{ request('zero_accounts') == '1' ? 'selected' : '' }}>عرض</option>
-            <option value="0" {{ request('zero_accounts') == '0' ? 'selected' : '' }}>إخفاء</option>
+        <select name="zero_balances" class="form-control border-primary">
+            <option value="1" {{ request('zero_balances') == '1' ? 'selected' : '' }}>عرض</option>
+            <option value="0" {{ request('zero_balances') == '0' ? 'selected' : '' }}>إخفاء</option>
         </select>
     </div>
     <div class="col-md-2">
         <label class="form-label">من تاريخ</label>
-        <input type="date" name="from" class="form-control border-primary" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}">
+        <input type="date" name="from" class="form-control border-primary" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}" required>
     </div>
     <div class="col-md-2">
         <label class="form-label">إلى تاريخ</label>
-        <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->endOfYear()->format('Y-m-d')) }}">
+        <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->endOfYear()->format('Y-m-d')) }}" required>
     </div>
     <div class="col-md-2 d-flex align-items-end">
         <button type="submit" class="btn btn-primary fw-bold w-100" onclick="this.querySelector('i').className='fas fa-spinner fa-spin ms-1'">
@@ -38,21 +38,21 @@
 </form>
 
 <div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0 mb-5">
-    <div class="d-flex justify-content-end align-items-end mb-3">
+    <div class="d-flex justify-content-end align-items-end mb-2">
         <div class="export-buttons d-flex gap-2 align-items-center">
-            <form action="{{ route('export.excel', 'trail_balance') }}" method="GET">
-                <input type="hidden" name="from" value="{{ request()->query('from') }}">
-                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+            <form action="{{ route('export.excel', 'trial_balance') }}" method="GET">
+                @foreach(request()->query() as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
                 <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
                     <i class="fa-solid fa-file-excel"></i>
                 </button>
             </form>
 
-            <form action="" method="POST" target="_blank">
-                @csrf
-                <input type="hidden" name="account" value="{{ request()->query('account') }}">
-                <input type="hidden" name="from" value="{{ request()->query('from') }}">
-                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+            <form action="{{ route('print.trial.balance') }}" method="GET" target="_blank">
+                @foreach(request()->query() as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
                 <button type="submit" class="btn btn-outline-primary" target="top" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
                     <i class="fa-solid fa-print"></i>
                 </button>
@@ -80,29 +80,46 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $from = request()->query('from', now()->startOfYear()->format('Y-m-d'));
+                    $to = request()->query('to', now()->endOfYear()->format('Y-m-d'));
+
+                    $sum_beginning_debit = 0;
+                    $sum_beginning_credit = 0;
+                    $sum_movement_debit = 0;
+                    $sum_movement_credit = 0;
+                    $sum_final_debit = 0;
+                    $sum_final_credit = 0;
+                @endphp
                 @foreach($trialBalance as $account)
-                    @if('0' === request()->query('debit_movements') && $account->calculateBalance(request()->query('from'), request()->query('to'))->balance['debit'] > 0)
-                        @continue
-                    @endif
-                    @if('0' === request()->query('credit_movements') && $account->calculateBalance(request()->query('from'), request()->query('to'))->balance['credit'] > 0)
-                        @continue
-                    @endif
-                    @if('0' === request()->query('zero_accounts') && $account->calculateBalance(null, request()->query('to'))->balance['debit'] == 0 && $account->calculateBalance(null, request()->query('to'))->balance['credit'] == 0)
-                        @continue
-                    @endif
+                    @php
+                        $balance = $account->calculateBalance($from, $to);
+                        if('0' === request()->query('debit_movements') && $balance->final_debit > 0) {
+                            continue;
+                        }
+                        if('0' === request()->query('credit_movements') && $balance->final_credit > 0) {
+                            continue;
+                        }
+                        if('0' === request()->query('zero_balances') && $balance->final_debit == 0 && $balance->final_credit == 0) {
+                            continue;
+                        }
+
+                        $sum_beginning_debit += $balance->beginning_debit;
+                        $sum_beginning_credit += $balance->beginning_credit;
+                        $sum_movement_debit += $balance->movement_debit;
+                        $sum_movement_credit += $balance->movement_credit;
+                        $sum_final_debit += $balance->final_debit;
+                        $sum_final_credit += $balance->final_credit;
+                    @endphp
                     <tr class="table-primary">
-                        @php
-                            $from = request()->query('from', now()->startOfYear()->format('Y-m-d'));
-                            $to = request()->query('to', now()->endOfYear()->format('Y-m-d'));
-                        @endphp
                         <td class="text-center">{{ $account->code }}</td>
                         <td class="fw-bold">{{ $account->name }} ({{ $account->level }})</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->debit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->credit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->debit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->credit }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->balance['debit'] }}</td>
-                        <td class="text-center fw-bold">{{ $account->calculateBalance($from, $to)->balance['credit'] }}</td>
+                        <td class="text-center fw-bold">{{ $balance->beginning_debit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->beginning_credit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->movement_debit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->movement_credit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->final_debit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->final_credit }}</td>
                     </tr>
                     @if($account->children->count())
                         @include('pages.accounting.reports.trial_balance_row', ['children' => $account->children])
@@ -110,12 +127,12 @@
                 @endforeach
                 <tr class="table-secondary">
                     <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->debit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance(null, Carbon\Carbon::parse($from)->subDay())->credit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->debit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->credit) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->balance['debit']) }}</td>
-                    <td class="text-center fw-bold">{{ $trialBalance->sum(fn($account) => $account->calculateBalance($from, $to)->balance['credit']) }}</td>
+                    <td class="text-center fw-bold">{{ $sum_beginning_debit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_beginning_credit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_movement_debit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_movement_credit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_final_debit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_final_credit }}</td>
                 </tr>
             </tbody>
         </table>
