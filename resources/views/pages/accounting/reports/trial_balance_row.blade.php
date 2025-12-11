@@ -1,4 +1,13 @@
 @foreach ($children as $child)
+    @if('0' === request()->query('debit_movements') && $child->calculateBalance(request()->query('from'), request()->query('to'))->balance['debit'] > 0)
+        @continue
+    @endif
+    @if('0' === request()->query('credit_movements') && $child->calculateBalance(request()->query('from'), request()->query('to'))->balance['credit'] > 0)
+        @continue
+    @endif
+    @if('0' === request()->query('zero_accounts') && $child->calculateBalance(null, request()->query('to'))->balance['debit'] == 0 && $child->calculateBalance(null, request()->query('to'))->balance['credit'] == 0)
+        @continue
+    @endif
     <tr>
         <td class="text-center">{{ $child->code }}</td>
         <td class="fw-bold">

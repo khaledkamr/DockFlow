@@ -81,6 +81,15 @@
             </thead>
             <tbody>
                 @foreach($trialBalance as $account)
+                    @if('0' === request()->query('debit_movements') && $account->calculateBalance(request()->query('from'), request()->query('to'))->balance['debit'] > 0)
+                        @continue
+                    @endif
+                    @if('0' === request()->query('credit_movements') && $account->calculateBalance(request()->query('from'), request()->query('to'))->balance['credit'] > 0)
+                        @continue
+                    @endif
+                    @if('0' === request()->query('zero_accounts') && $account->calculateBalance(null, request()->query('to'))->balance['debit'] == 0 && $account->calculateBalance(null, request()->query('to'))->balance['credit'] == 0)
+                        @continue
+                    @endif
                     <tr class="table-primary">
                         @php
                             $from = request()->query('from', now()->startOfYear()->format('Y-m-d'));
