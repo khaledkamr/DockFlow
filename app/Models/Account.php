@@ -48,14 +48,14 @@ class Account extends Model
             ->join('journal_entries as j', 'l.journal_entry_id', '=', 'j.id')
             ->whereIn('l.account_id', $ids);
 
-        if ($from) {
+        if($from && $to && $from <= $to) {
+            $query->whereBetween('j.date', [$from, $to]);
+        } elseif($from && !$to) {
             $query->where('j.date', '>=', $from);
-        }
-
-        if ($to) {
+        } elseif(!$from && $to) {
             $query->where('j.date', '<=', $to);
         }
-
+    
         $result = $query->selectRaw("
             COALESCE(SUM(l.debit),0) as total_debit,
             COALESCE(SUM(l.credit),0) as total_credit
