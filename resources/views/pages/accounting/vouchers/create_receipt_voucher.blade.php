@@ -36,7 +36,7 @@
                     <option value="سند صرف تحويل بنكي">تحويل بنكي</option>
                 </select>
             </div>
-            <div class="col">
+            <div class="col-3">
                 <label for="date" class="form-label">التاريــخ</label>
                 <input type="date" class="form-control border-primary" id="date" name="date"
                     value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
@@ -44,30 +44,17 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col-3">
+            <div class="col-6">
                 <label for="account_name" class="mb-2">اسم الحساب المدين</label>
                 <select id="account_name" name="debit_account_id" class="form-select border-primary">
                     <option value="">-- اختر الحساب --</option>
                     @foreach ($accounts as $account)
-                        <option value="{{ $account->id }}" data-code="{{ $account->code }}"
-                            data-has-customer="{{ $account->customer ? 'true' : 'false' }}"
+                        <option value="{{ $account->id }}" data-has-customer="{{ $account->customer ? 'true' : 'false' }}"
                             data-customer-name="{{ $account->customer ? $account->customer->name : '' }}">
-                            {{ $account->name }}
+                            {{ $account->name }} ({{ $account->code }})
                         </option>
                     @endforeach
                 </select>
-            </div>
-            <div class="col">
-                <label for="account_code" class="form-label">رقم الحســاب المدين</label>
-                <div class="d-flex gap-2 align-items-end">
-                    <input type="text" class="form-control border-primary" id="account_code">
-                    {{-- <button type="button" id="customerBtn" class="btn btn-primary d-none" title="هذا الحساب مرتبط بعميل">
-                        <i class="fas fa-scroll"></i>
-                    </button> --}}
-                </div>
-                @error('account_code')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
             </div>
         </div>
         <div class="row mb-3">
@@ -95,7 +82,7 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col-3">
+            <div class="col-6">
                 <label for="credit_account_name" class="mb-2">اسم الحساب الدائن</label>
                 <select id="credit_account_name" name="credit_account_id" class="form-select border-primary">
                     <option value="">-- اختر الحساب --</option>
@@ -106,13 +93,6 @@
                     @endforeach
                 </select>
                 @error('credit_account_name')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col-3">
-                <label for="credit_account_code" class="form-label">رقم الحساب الدائن</label>
-                <input type="text" class="form-control border-primary" id="credit_account_code">
-                @error('credit_account_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
@@ -189,20 +169,11 @@
             allowClear: true
         });
 
-        $('#credit_account_name').on('change', function() {
-            let selectedOption = $(this).find(':selected');
-            let code = selectedOption.data('code');
-            $('#credit_account_code').val(code || '');
-        });
-
         $('#account_name').on('change', function() {
             let selectedOption = $(this).find(':selected');
-            let code = selectedOption.data('code');
             let hasCustomer = selectedOption.data('has-customer');
             let customerName = selectedOption.data('customer-name');
             let accountId = selectedOption.val();
-
-            $('#account_code').val(code || '');
 
             // Show/hide customer button
             if (hasCustomer) {

@@ -239,6 +239,7 @@ class AccountingController extends Controller
         $journal->lines()->delete();
 
         $journal->update([
+            'code' => $request->code,
             'date' => $request->date,
             'totalDebit' => $request->debitSum,
             'totalCredit' => $request->creditSum,

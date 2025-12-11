@@ -26,7 +26,7 @@
     <form action="{{ route('voucher.store') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm">
         @csrf
         <div class="row mb-3">
-            <div class="col">
+            <div class="col-3">
                 <label for="type" class="form-label">نوع السنــد</label>
                 <select id="type" name="type" class="form-select border-primary" style="width:100%;">
                     <option value="سند قبض نقدي">نقدي</option>
@@ -35,7 +35,7 @@
                     <option value="سند قبض تحويل بنكي">تحويل بنكي</option>
                 </select>
             </div>
-            <div class="col">
+            <div class="col-3">
                 <label for="date" class="form-label">التاريــخ</label>
                 <input type="date" class="form-control border-primary" id="date" name="date"
                     value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
@@ -43,30 +43,22 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col-3">
+            <div class="col-6">
                 <label for="account_name" class="mb-2">اسم الحساب الدائن</label>
-                <select id="account_name" name="credit_account_id" class="form-select border-primary">
-                    <option value="">-- اختر الحساب --</option>
-                    @foreach ($accounts as $account)
-                        <option value="{{ $account->id }}" data-code="{{ $account->code }}"
-                            data-has-customer="{{ $account->customer ? 'true' : 'false' }}"
-                            data-customer-name="{{ $account->customer ? $account->customer->name : '' }}">
-                            {{ $account->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col">
-                <label for="account_code" class="form-label">رقم الحســاب الدائن</label>
                 <div class="d-flex gap-2 align-items-end">
-                    <input type="text" class="form-control border-primary" id="account_code">
+                    <select id="account_name" name="credit_account_id" class="form-select border-primary">
+                        <option value="">-- اختر الحساب --</option>
+                        @foreach ($accounts as $account)
+                            <option value="{{ $account->id }}" data-has-customer="{{ $account->customer ? 'true' : 'false' }}"
+                                data-customer-name="{{ $account->customer ? $account->customer->name : '' }}">
+                                {{ $account->name }} ({{ $account->code }})
+                            </option>
+                        @endforeach
+                    </select>
                     <button type="button" id="customerBtn" class="btn btn-primary d-none" title="هذا الحساب مرتبط بعميل">
                         <i class="fas fa-scroll"></i>
                     </button>
                 </div>
-                @error('account_code')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
             </div>
         </div>
         <div class="row mb-3">
@@ -94,24 +86,17 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-            <div class="col-3">
+            <div class="col-6">
                 <label for="debit_account_name" class="mb-2">اسم الحساب المدين</label>
                 <select id="debit_account_name" name="debit_account_id" class="form-select border-primary">
                     <option value="">-- اختر الحساب --</option>
                     @foreach ($accounts as $account)
-                        <option value="{{ $account->id }}" data-code="{{ $account->code }}">
-                            {{ $account->name }}
+                        <option value="{{ $account->id }}">
+                            {{ $account->name }} ({{ $account->code }})
                         </option>
                     @endforeach
                 </select>
                 @error('debit_account_name')
-                    <div class="text-danger">{{ $message }}</div>
-                @endif
-            </div>
-            <div class="col-3">
-                <label for="debit_account_code" class="form-label">رقم الحساب المدين</label>
-                <input type="text" class="form-control border-primary" id="debit_account_code">
-                @error('debit_account_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
@@ -188,22 +173,13 @@
             allowClear: true
         });
 
-        $('#debit_account_name').on('change', function() {
-            let selectedOption = $(this).find(':selected');
-            let code = selectedOption.data('code');
-            $('#debit_account_code').val(code || '');
-        });
-
         $('#account_name').on('change', function() {
             let selectedOption = $(this).find(':selected');
-            let code = selectedOption.data('code');
             let hasCustomer = selectedOption.data('has-customer');
             let customerName = selectedOption.data('customer-name');
             let accountId = selectedOption.val();
 
             $('#invoice_id').val(''); // Clear previous invoice ID
-
-            $('#account_code').val(code || '');
 
             // Show/hide customer button
             if (hasCustomer) {

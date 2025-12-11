@@ -45,8 +45,8 @@
                 <input type="text" class="form-control border-primary" value="{{ auth()->user()->company->name }}" disabled>
             </div>
             <div class="col">
-                <label class="form-label">الفرع</label>
-                <input type="text" class="form-control border-primary" value="{{ auth()->user()->company->branch }}" disabled>
+                <label class="form-label">رقم القيد</label>
+                <input type="text" name="code" class="form-control border-primary" value="{{ $journal->code }}">
             </div>
             <div class="col">
                 <label class="form-label">تاريخ القيد</label>
@@ -58,11 +58,10 @@
             <table class="table" id="journal-entries-table">
                 <thead>
                     <tr class="table-dark">
-                        <th class="text-center" width="25%">اسم الحساب</th>
-                        <th class="text-center" width="15%">رقم الحساب</th>
+                        <th class="text-center" width="35%">اسم الحساب</th>
                         <th class="text-center" width="15%">مديــن</th>
                         <th class="text-center" width="15%">دائــن</th>
-                        <th class="text-center" width="25%">البيـــان</th>
+                        <th class="text-center" width="30%">البيـــان</th>
                         <th class="text-center" width="5%">إجراءات</th>
                     </tr>
                 </thead>
@@ -73,16 +72,11 @@
                                 <select name="account_id[]" class="form-select account_name" style="width: 100%;">
                                     <option value="">-- اختر الحساب --</option>
                                     @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}" data-code="{{ $account->code }}"
-                                            {{ $line->account_id == $account->id ? 'selected' : '' }}>
-                                            {{ $account->name }}
+                                        <option value="{{ $account->id }}" {{ $line->account_id == $account->id ? 'selected' : '' }}>
+                                            {{ $account->name }} ({{ $account->code }})
                                         </option>
                                     @endforeach
                                 </select>
-                            </td>
-                            <td class="px-2">
-                                <input type="text" name="account_code[]" class="form-control account_code border-2"
-                                    value="{{ $line->account->code }}">
                             </td>
                             <td class="px-2">
                                 <input type="text" name="debit[]" placeholder="0.00" class="form-control text-center border-2"
@@ -104,7 +98,7 @@
                         </tr>
                     @endforeach
                     <tr class="table-secondary">
-                        <td colspan="2" class="text-center fw-bold fs-5">الفــارق</td>
+                        <td class="text-center fw-bold fs-5">الفــارق</td>
                         <td><input type="text" id="debitSum" name="debitSum" class="form-control text-center fw-bold"
                                 value="0.00" readonly></td>
                         <td><input type="text" id="creditSum" name="creditSum" class="form-control text-center fw-bold"
@@ -171,12 +165,6 @@
                 });
 
                 $('.account_name').off('change.custom');
-
-                $('.account_name').on('change.custom', function() {
-                    let code = $(this).find(':selected').data('code');
-                    let row = $(this).closest('tr');
-                    row.find('.account_code').val(code || '');
-                });
             }
 
             function autoExpandTextareas() {
@@ -206,11 +194,10 @@
                     <select name="account_id[]" class="form-select border-2 account_name">
                         <option value="">-- اختر الحساب --</option>
                         @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" data-code="{{ $account->code }}">{{ $account->name }}</option>
+                            <option value="{{ $account->id }}">{{ $account->name }} ({{ $account->code }})</option>
                         @endforeach
                     </select>
                 </td>
-                <td class="px-2"><input type="text" name="account_code[]" class="form-control border-2 account_code"></td>
                 <td class="px-2"><input type="text" name="debit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
                 <td class="px-2"><input type="text" name="credit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
                 <td class="px-2"><textarea name="description[]" class="form-control border-2 description-field" rows="1" style="resize: none; overflow: hidden;"></textarea></td>
