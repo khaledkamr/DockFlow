@@ -1,21 +1,21 @@
 <form method="GET" action="" class="row g-3 bg-white p-3 rounded-3 shadow-sm border-0 mb-4">
     <input type="hidden" name="view" value="كشف حساب">
-    <div class="col-md-4">
-        <label class="form-label">الحساب</label>
+    <div class="col-md-6">
+        <label class="form-label">اسم الحساب</label>
         <select name="account" id="account_id" class="form-select border-primary" required>
             <option value="">اختر الحساب</option>
             @foreach($accountsLevel5 as $account)
                 <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
-                    {{ $account->name }}
+                    {{ $account->name }} ({{ $account->code }})
                 </option>
             @endforeach
         </select>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label class="form-label">من تاريخ</label>
         <input type="date" name="from" class="form-control border-primary" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}">
     </div>
-    <div class="col-md-3">
+    <div class="col-md-2">
         <label class="form-label">إلى تاريخ</label>
         <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->format('Y-m-d')) }}">
     </div>
@@ -39,10 +39,6 @@
                     <i class="fa-solid fa-file-excel"></i>
                 </button>
             </form>
-
-            <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
-                <i class="fa-solid fa-file-pdf"></i>
-            </button>
             
             <form action="{{ route('print', 'account_statement') }}" method="POST" target="_blank">
                 @csrf
@@ -59,11 +55,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="bg-dark text-center text-white text-nowrap">رقم الحساب</th>
-                    <th class="bg-dark text-center text-white text-nowrap">إسم الحساب</th>
-                    <th class="bg-dark text-center text-white text-nowrap">تاريخ</th>
                     <th class="bg-dark text-center text-white text-nowrap">رقم القيد</th>
                     <th class="bg-dark text-center text-white text-nowrap">نوع القيد</th>
+                    <th class="bg-dark text-center text-white text-nowrap">تاريخ</th>
                     <th class="bg-dark text-center text-white text-nowrap">البيان</th>
                     <th class="bg-dark text-center text-white text-nowrap">مدين</th>
                     <th class="bg-dark text-center text-white text-nowrap">دائن</th>
@@ -80,15 +74,13 @@
                         $balance += $line->debit - $line->credit;
                     @endphp
                         <tr class="text-center">
-                            <td>{{ $line->account->code }}</td>
-                            <td>{{ $line->account->name }}</td>
-                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td class="fw-bold">
                                 <a href="{{ route('journal.details', $line->journal) }}" class="text-decoration-none text-dark">
                                     {{ $line->journal->code }}
                                 </a>
                             </td>
                             <td>{{ $line->journal->type }}</td>
+                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>
@@ -96,7 +88,7 @@
                         </tr>
                     @endforeach
                     <tr class="table-primary fw-bold">
-                        <td colspan="6" class="text-center fs-6">الإجماليـــــات</td>
+                        <td colspan="4" class="text-center fs-6">الإجماليـــــات</td>
                         <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>
                         <td class="text-center">{{ $statement->sum(fn($line) => $line->credit) }}</td>
                         <td class="text-center">{{ $balance }}</td>

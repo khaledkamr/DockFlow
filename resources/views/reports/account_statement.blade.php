@@ -4,19 +4,20 @@
 
 @section('content')
 
-<h5 class="fw-bold text-center">كشف حساب من الفترة ({{ $from }}) للفترة ({{ $to }})</h5>
+<h5 class="fw-bold text-center mt-3">
+    كشف حساب للحساب: {{ $account->name }} ({{ $account->code }})
+</h5>
+<p class="text-center fw-bold">من الفترة ({{ Carbon\Carbon::parse($from)->format('Y/m/d') }}) إلى الفترة ({{ Carbon\Carbon::parse($to)->format('Y/m/d') }})</p>
 
-<div class="bg-white p-3 rounded-3 shadow-sm border-0">
+<div class="p-3">
     <h5 class="mb-4">الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
     <div class="table-container">
         <table class="table table-bordered border-dark">
             <thead>
                 <tr class="table-secondary border-dark fw-bold">
-                    <th class="text-center">رقم الحساب</th>
-                    <th class="text-center">إسم الحساب</th>
-                    <th class="text-center">تاريخ</th>
                     <th class="text-center">رقم القيد</th>
                     <th class="text-center">نوع القيد</th>
+                    <th class="text-center">تاريخ</th>
                     <th class="text-center">البيان</th>
                     <th class="text-center">مدين</th>
                     <th class="text-center">دائن</th>
@@ -37,11 +38,9 @@
                             }
                         @endphp
                         <tr class="text-center">
-                            <td>{{ $line->account->code }}</td>
-                            <td>{{ $line->account->name }}</td>
-                            <td>{{ $line->journal->date }}</td>
-                            <td>{{ $line->journal_entry_id }}</td>
+                            <td>{{ $line->journal->code }}</td>
                             <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
+                            <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>
@@ -49,7 +48,7 @@
                         </tr>
                     @endforeach
                     <tr class="fw-bold">
-                        <td colspan="6" class="text-center fs-6">
+                        <td colspan="4" class="text-center fs-6">
                             الإجماليـــــات
                         </td>
                         <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>

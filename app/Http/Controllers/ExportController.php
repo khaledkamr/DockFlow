@@ -40,6 +40,7 @@ class ExportController extends Controller
         $company = Auth::user()->company;
         
         if ($reportType == 'account_statement') {
+            $account = Account::findOrFail($id);
             $statement = JournalEntryLine::where('account_id', $id)->get();
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
@@ -48,7 +49,8 @@ class ExportController extends Controller
             }
             $filters = $request->all();
             logActivity('طباعة كشف حساب', "تم طباعة كشف الحساب بتصفية: ", $filters);
-            return view('reports.account_statement', compact('statement', 'company', 'from', 'to'));
+
+            return view('reports.account_statement', compact('statement', 'company', 'from', 'to', 'account'));
         } elseif($reportType == 'journal_entries') {
             $entries = JournalEntry::all();
             if($type && $type !== 'all') {

@@ -47,10 +47,9 @@ class AccountStatementExport implements FromCollection, WithHeadings
         return $query->get()->map(function ($line) use(&$balance) {
             $balance += $line->debit - $line->credit;
             return [
-                $line->account->name,
-                Carbon::parse($line->journal->date)->format('Y/m/d'),
                 $line->journal->code,
                 $line->journal->type,
+                Carbon::parse($line->journal->date)->format('Y/m/d'),
                 $line->description,
                 $line->debit,
                 $line->credit,
@@ -62,10 +61,9 @@ class AccountStatementExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'إسم الحساب',
-            'تاريخ',
             'رقم القيد',
             'نوع القيد',
+            'تاريخ',
             'البيان',
             'مدين',
             'دائن',
