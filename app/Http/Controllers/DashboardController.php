@@ -19,6 +19,9 @@ use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Policy;
 use App\Models\Role;
+use App\Models\ShippingPolicy;
+use App\Models\Transaction;
+use App\Models\TransportOrder;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\Voucher;
@@ -60,7 +63,18 @@ class DashboardController extends Controller
         $containersExitTrend = [];
         for($i = 6; $i >= 0; $i--) {
             $day = Carbon::parse($date)->subDays($i);
-            $containersEnteredTrend[$day->format('l')] = $containers->where('date', $day->format('Y-m-d'))->count();
+            $dayMapping = [
+                'Monday' => 'الاثنين',
+                'Tuesday' => 'الثلاثاء',
+                'Wednesday' => 'الأربعاء',
+                'Thursday' => 'الخميس',
+                'Friday' => 'الجمعة',
+                'Saturday' => 'السبت',
+                'Sunday' => 'الأحد'
+            ];
+            $englishDay = $day->format('l');
+            $arabicDay = $dayMapping[$englishDay];
+            $containersEnteredTrend[$arabicDay] = $containers->where('date', $day->format('Y-m-d'))->count();
             $containersExitTrend[$day->format('l')] = $containers->where('exit_date', $day->format('Y-m-d'))->count();
         }
 
@@ -87,6 +101,14 @@ class DashboardController extends Controller
             }
         }
 
+        $topServices = [
+            'خدمات كرين' => Policy::where('type', 'خدمات')->count(),
+            'تخزين' => Policy::where('type', 'تخزين')->count(),
+            'شحن بري' => ShippingPolicy::count(),
+            'اشعار نقل' => TransportOrder::count(),
+            'تخليص جمركي' => Transaction::count()
+        ];
+
         return view('pages.dashboards.shams_dashboard', compact(
             'customers', 
             'users',
@@ -101,7 +123,8 @@ class DashboardController extends Controller
             'containersDistribution',
             'receipt_vouchers_amount',
             'payment_vouchers_amount',
-            'balanceBox'
+            'balanceBox',
+            'topServices'
         ));
     }
 

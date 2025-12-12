@@ -242,19 +242,13 @@
     </div>
     
     <div class="col-12 col-lg-6 mb-3 mb-lg-0 order-1 order-lg-2">
-        <div class="card rounded-3 shadow-sm border-0">
+        <div class="card rounded-3 border-0 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center fw-bold mb-4">
-                    <div class="mb-2 mb-sm-0">
-                        تقارير الإيرادات الشهرية
-                        <i class="fa-solid fa-money-bill-trend-up"></i>
-                    </div>
-                    <button class="btn btn-sm btn-primary fw-bold">
-                        عرض تقارير الإيرادات
-                    </button>
-                </h5>
-                <div class="chart-container" style="position: relative; height:288px;">
-                    <canvas id="profitChart"></canvas>
+                <div class="border-0">
+                    <h5 class="card-title fw-bold mb-3">أفضل الخدمات</h5>
+                </div>
+                <div class="chart-container" style="height: 320px;">
+                    <canvas id="topServicesChart"></canvas>
                 </div>
             </div>
         </div>
@@ -316,8 +310,32 @@
     </div>
 </div>
 
+<div class="row mb-4">
+    <div class="col-12 col-lg-12 mb-3 mb-lg-0 order-1 order-lg-2">
+        <div class="card rounded-3 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center fw-bold mb-4">
+                    <div class="mb-2 mb-sm-0">
+                        تقارير الإيرادات الشهرية
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                    </div>
+                    <button class="btn btn-sm btn-primary fw-bold">
+                        عرض تقارير الإيرادات
+                    </button>
+                </h5>
+                <div class="chart-container" style="position: relative; height:288px;">
+                    <canvas id="profitChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        Chart.defaults.font.family = 'Cairo, sans-serif';
+        Chart.defaults.color = '#6c757d';
+
         // Line Chart - Container Trend
         const containersLineChart = document.getElementById('containersLineChart').getContext('2d');
         new Chart(containersLineChart, {
@@ -461,7 +479,9 @@
         new Chart(profitChart, {
             type: 'bar',
             data: {
-                labels: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul'],
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس',
+                    'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+                ],
                 datasets: [{
                     label: 'students distribution',
                     data: [0, 0, 0, 0, 0, 0, 0],
@@ -518,6 +538,54 @@
             }
         });
 
+        // Top Services Chart
+        const topServicesCtx = document.getElementById('topServicesChart').getContext('2d');
+        const topServicesChart = new Chart(topServicesCtx, {
+            type: 'bar',
+            data: {
+                labels: @json(array_keys($topServices)),
+                datasets: [{
+                    label: 'عدد الطلبات',
+                    data: @json(array_values($topServices)),
+                    backgroundColor: [
+                        'rgba(82, 214, 203, 0.8)',
+                        'rgba(66, 179, 175, 0.8)',
+                        'rgba(44, 172, 189, 0.8)',
+                        'rgba(33, 139, 171, 0.8)',
+                        'rgba(11, 86, 169, 0.8)',
+                    ],
+                    borderColor: [
+                        'rgba(82, 214, 203)',
+                        'rgba(66, 179, 175)',
+                        'rgba(44, 172, 189)',
+                        'rgba(33, 139, 171)',
+                        'rgba(11, 86, 169)',
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 20
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
         // Update charts on window resize
         let resizeTimer;
         window.addEventListener('resize', function() {
@@ -528,5 +596,8 @@
             }, 250);
         });
     });
+
+    
+
 </script>
 @endsection
