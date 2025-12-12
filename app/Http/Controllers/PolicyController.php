@@ -38,9 +38,9 @@ class PolicyController extends Controller
             });
         }
         $policies = new \Illuminate\Pagination\LengthAwarePaginator(
-            $policies->forPage(request()->get('page', 1), 50),
+            $policies->forPage(request()->get('page', 1), 100),
             $policies->count(),
-            50,
+            100,
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );
