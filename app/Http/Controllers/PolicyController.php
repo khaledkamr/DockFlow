@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Gate;
 class PolicyController extends Controller
 {
     public function policies(Request $request) {
-        $policies = Policy::orderBy('date', 'desc')->get();
+        $policies = Policy::orderBy('date', 'desc')->orderBy('code', 'desc')->get();
         $customers = Customer::all();
         $policyFilter = request()->query('type');
         if ($policyFilter && $policyFilter !== 'all') {

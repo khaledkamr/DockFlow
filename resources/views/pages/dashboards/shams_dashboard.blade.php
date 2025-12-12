@@ -439,7 +439,8 @@
                         '#fff',
                         '#fff',
                     ],
-                    borderWidth: 2
+                    borderWidth: 2,
+                    hoverOffset: 10
                 }]
             },
             options: {

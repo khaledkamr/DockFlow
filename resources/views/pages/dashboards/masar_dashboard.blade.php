@@ -4,6 +4,25 @@
 
 @section('content')
     <style>
+        .stats-card,
+        .stats-card:hover .card,
+        .stats-card:hover .card .card-body h6 {
+            transition: all 0.5s ease;
+        }
+
+        .stats-card:hover {
+            transform: scale(1.05);
+        }
+
+        .stats-card:hover .card {
+            background: var(--gradient);
+            color: #fff !important;
+        }
+
+        .stats-card:hover .card .card-body h6 {
+            color: #fff !important;
+        }
+
         /* Responsive cards adjustments */
         @media (max-width: 768px) {
             .stats-card {
@@ -156,65 +175,61 @@
     </div>
 
     <div class="row mb-4">
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-3 stats-card">
             <a href="{{ route('money.entries') }}?view=سندات%20صرف" class="text-decoration-none">
-                <div class="card rounded-3 border-0 shadow-sm animate__animated animate__fadeInUp"
-                    style="background: var(--gradient);">
-                    <div class="card-body d-flex justify-content-between align-items-center text-white">
+                <div class="card rounded-3 border-0 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-title text-white mb-2">سندات الصرف</h6>
-                            <h6 class="text-white fw-bold mb-0" style="font-size: 1.4rem;">{{ $vouchers ?? 0 }}</h6>
+                            <h6 class="card-title">سندات الصرف</h6>
+                            <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $vouchers ?? 0 }}</h6>
                         </div>
                         <div>
-                            <i class="fa-solid fa-money-bill-wave fa-xl text-white opacity-75"></i>
+                            <i class="fa-solid fa-money-bill-wave fa-xl"></i>
                         </div>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-3 stats-card">
             <a href="{{ route('money.entries') }}?view=سندات%20قبض" class="text-decoration-none">
-                <div class="card rounded-3 border-0 shadow-sm animate__animated animate__fadeInUp"
-                    style="background: var(--gradient);">
-                    <div class="card-body d-flex justify-content-between align-items-center text-white">
+                <div class="card rounded-3 border-0 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-title text-white mb-2">سندات القبض</h6>
-                            <h6 class="text-white fw-bold mb-0" style="font-size: 1.4rem;">{{ $vouchers ?? 0 }}</h6>
+                            <h6 class="card-title">سندات القبض</h6>
+                            <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $vouchers ?? 0 }}</h6>
                         </div>
                         <div>
-                            <i class="fa-solid fa-hand-holding-dollar fa-xl text-white opacity-75"></i>
+                            <i class="fa-solid fa-hand-holding-dollar fa-xl"></i>
                         </div>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-3 stats-card">
             <a href="{{ route('money.entries') }}" class="text-decoration-none">
-                <div class="card rounded-3 border-0 shadow-sm animate__animated animate__fadeInUp"
-                    style="background: var(--gradient);">
-                    <div class="card-body d-flex justify-content-between align-items-center text-white">
+                <div class="card rounded-3 border-0 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-title text-white mb-2">قيود يومية</h6>
-                            <h6 class="text-white fw-bold mb-0" style="font-size: 1.4rem;">{{ $journals ?? 0 }}</h6>
+                            <h6 class="card-title">قيود يومية</h6>
+                            <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">{{ $journals ?? 0 }}</h6>
                         </div>
                         <div>
-                            <i class="fa-solid fa-money-bill-transfer fa-xl text-white opacity-75"></i>
+                            <i class="fa-solid fa-money-bill-transfer fa-xl"></i>
                         </div>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-lg-3 stats-card">
             <a href="{{ route('money.reports') }}?view=كشف%20حساب" class="text-decoration-none">
-                <div class="card rounded-3 border-0 shadow-sm animate__animated animate__fadeInUp"
-                    style="background: var(--gradient);">
-                    <div class="card-body d-flex justify-content-between align-items-center text-white">
+                <div class="card rounded-3 border-0 shadow-sm">
+                    <div class="card-body d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-title text-white mb-2">كشف الحساب</h6>
-                            <p class="mb-1 opacity-75" style="font-size: 0.9rem;">عرض كافة الحسابات</p>
+                            <h6 class="card-title">كشف الحساب</h6>
+                            <p class="mb-1" style="font-size: 0.9rem;">عرض كافة الحسابات</p>
                         </div>
                         <div>
-                            <i class="fa-solid fa-receipt fa-xl text-white opacity-75"></i>
+                            <i class="fa-solid fa-receipt fa-xl"></i>
                         </div>
                     </div>
                 </div>
@@ -227,21 +242,10 @@
         <!-- Monthly Revenue Chart -->
         <div class="col-12 col-xl-8">
             <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">الإيرادات الشهرية</h5>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="revenueFilter"
-                            data-bs-toggle="dropdown">
-                            2024
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">2024</a></li>
-                            <li><a class="dropdown-item" href="#">2023</a></li>
-                            <li><a class="dropdown-item" href="#">2022</a></li>
-                        </ul>
-                    </div>
-                </div>
                 <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title fw-bold mb-0">الإيرادات الشهرية</h5>
+                    </div>
                     <div class="chart-container" style="height: 400px;">
                         <canvas id="revenueChart"></canvas>
                     </div>
@@ -249,213 +253,82 @@
             </div>
         </div>
 
-        <!-- Customer Growth Chart -->
+        <!-- invoices bie chart -->
         <div class="col-12 col-xl-4">
             <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">نمو العملاء</h5>
-                </div>
                 <div class="card-body">
-                    <div class="chart-container" style="height: 400px;">
-                        <canvas id="customerGrowthChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <!-- Invoice Status Distribution -->
-        <div class="col-12 col-lg-6">
-            <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">توزيع حالة الفواتير</h5>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="height: 300px;">
-                        <canvas id="invoiceStatusChart"></canvas>
-                    </div>
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="d-flex align-items-center">
-                                <div class="me-2"
-                                    style="width: 12px; height: 12px; background-color: #28a745; border-radius: 50%;">
-                                </div>
-                                <small>مدفوعة</small>
+                    <!-- Sales Invoices Chart -->
+                    <div class="mb-4 position-relative">
+                        <h6 class="text-dark fw-bold mb-3">فواتير المبيعات</h6>
+                        <button class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 z-10">
+                            عرض الفواتير
+                        </button>
+                        <div class="d-flex align-items-center">
+                            <div class="chart-container flex-shrink-0" style="height: 150px; width: 150px;">
+                                <canvas id="salesInvoicesChart"></canvas>
                             </div>
-                            <small class="fw-bold">75%</small>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <div class="d-flex align-items-center">
-                                <div class="me-2"
-                                    style="width: 12px; height: 12px; background-color: #ffc107; border-radius: 50%;">
+                            <div class="ms-3 flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="me-2"
+                                        style="width: 12px; height: 12px; background-color: #0b56a9; border-radius: 50%;">
+                                    </div>
+                                    <span class="text-muted small me-auto">مدفوعة</span>
+                                    <span class="fw-bold small">68%</span>
                                 </div>
-                                <small>معلقة</small>
-                            </div>
-                            <small class="fw-bold">15%</small>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <div class="me-2"
-                                    style="width: 12px; height: 12px; background-color: #dc3545; border-radius: 50%;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="me-2"
+                                        style="width: 12px; height: 12px; background-color: #218bab; border-radius: 50%;">
+                                    </div>
+                                    <span class="text-muted small me-auto">معلقة</span>
+                                    <span class="fw-bold small">32%</span>
                                 </div>
-                                <small>متأخرة</small>
-                            </div>
-                            <small class="fw-bold">10%</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top Services -->
-        <div class="col-12 col-lg-6">
-            <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">أفضل الخدمات</h5>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="height: 300px;">
-                        <canvas id="topServicesChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-4">
-        <!-- Financial Overview -->
-        <div class="col-12">
-            <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">نظرة عامة مالية</h5>
-                    <div class="btn-group" role="group">
-                        <input type="radio" class="btn-check" name="financeFilter" id="finance7days" checked>
-                        <label class="btn btn-sm btn-outline-primary" for="finance7days">7 أيام</label>
-
-                        <input type="radio" class="btn-check" name="financeFilter" id="finance30days">
-                        <label class="btn btn-sm btn-outline-primary" for="finance30days">30 يوم</label>
-
-                        <input type="radio" class="btn-check" name="financeFilter" id="finance90days">
-                        <label class="btn btn-sm btn-outline-primary" for="finance90days">90 يوم</label>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="height: 350px;">
-                        <canvas id="financialOverviewChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activities -->
-    <div class="row mb-4">
-        <div class="col-12 col-lg-8">
-            <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">الأنشطة الأخيرة</h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item border-0 px-0">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-success"
-                                            style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-plus text-white small"></i>
-                                        </div>
+                                {{-- <div class="d-flex align-items-center">
+                                    <div class="me-2"
+                                        style="width: 12px; height: 12px; background-color: #52d6cb; border-radius: 50%;">
                                     </div>
-                                    <div>
-                                        <h6 class="mb-1">عميل جديد</h6>
-                                        <p class="mb-1 text-muted small">تم إضافة عميل جديد: شركة النقل السريع</p>
-                                        <small class="text-muted">منذ 5 دقائق</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="list-group-item border-0 px-0">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-primary"
-                                            style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-file-invoice text-white small"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1">فاتورة جديدة</h6>
-                                        <p class="mb-1 text-muted small">تم إنشاء فاتورة رقم INV-2024-001</p>
-                                        <small class="text-muted">منذ 15 دقيقة</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="list-group-item border-0 px-0">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0 me-3">
-                                        <div class="rounded-circle bg-warning"
-                                            style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-exclamation-triangle text-white small"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1">تنبيه مخزون</h6>
-                                        <p class="mb-1 text-muted small">مخزون الحاويات منخفض</p>
-                                        <small class="text-muted">منذ ساعة</small>
-                                    </div>
-                                </div>
+                                    <span class="text-muted small me-auto">متأخرة</span>
+                                    <span class="fw-bold small">10%</span>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Quick Stats -->
-        <div class="col-12 col-lg-4">
-            <div class="card rounded-3 border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0">
-                    <h5 class="card-title mb-0">إحصائيات سريعة</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="small text-muted">معدل الدفع</span>
-                            <span class="small fw-bold">94%</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-success" style="width: 94%"></div>
-                        </div>
-                    </div>
+                    <hr class="my-4">
 
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="small text-muted">رضا العملاء</span>
-                            <span class="small fw-bold">87%</span>
+                    <!-- Expense Invoices Chart -->
+                    <div class="mb-1 position-relative">
+                        <h6 class="text-dark fw-bold mb-3">فواتير المشتريات</h6>
+                        <button class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 z-10">
+                            عرض الفواتير
+                        </button>
+                        <div class="d-flex align-items-center">
+                            <div class="chart-container flex-shrink-0" style="height: 150px; width: 150px;">
+                                <canvas id="expenseInvoicesChart"></canvas>
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="me-2"
+                                        style="width: 12px; height: 12px; background-color: #0b56a9; border-radius: 50%;">
+                                    </div>
+                                    <span class="text-muted small me-auto">مدفوعة</span>
+                                    <span class="fw-bold small">75%</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="me-2"
+                                        style="width: 12px; height: 12px; background-color: #218bab; border-radius: 50%;">
+                                    </div>
+                                    <span class="text-muted small me-auto">معلقة</span>
+                                    <span class="fw-bold small">25%</span>
+                                </div>
+                                {{-- <div class="d-flex align-items-center">
+                                    <div class="me-2"
+                                        style="width: 12px; height: 12px; background-color: #52d6cb; border-radius: 50%;">
+                                    </div>
+                                    <span class="text-muted small me-auto">متأخرة</span>
+                                    <span class="fw-bold small">7%</span>
+                                </div> --}}
+                            </div>
                         </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-info" style="width: 87%"></div>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="small text-muted">استخدام الحاويات</span>
-                            <span class="small fw-bold">76%</span>
-                        </div>
-                        <div class="progress" style="height: 6px;">
-                            <div class="progress-bar bg-warning" style="width: 76%"></div>
-                        </div>
-                    </div>
-
-                    <hr class="my-3">
-
-                    <div class="text-center">
-                        <h3 class="text-primary mb-1">2,847</h3>
-                        <small class="text-muted">إجمالي المعاملات</small>
                     </div>
                 </div>
             </div>
@@ -483,189 +356,46 @@
                         data: [65000, 78000, 85000, 92000, 88000, 95000, 102000, 98000, 105000,
                             112000, 108000, 125000
                         ],
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        borderColor: '#52d6cb',
+                        backgroundColor: 'rgba(44, 172, 189, 0.1)',
                         fill: true,
                         tension: 0.4,
-                        borderWidth: 3
+                        borderWidth: 2,
+                        pointBackgroundColor: '#52d6cb',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }, {
                         label: 'المصروفات',
                         data: [45000, 52000, 58000, 62000, 59000, 65000, 68000, 66000, 70000, 75000,
                             72000, 80000
                         ],
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        borderColor: '#218bab',
+                        backgroundColor: 'rgba(33, 139, 171, 0.1)',
                         fill: true,
                         tension: 0.4,
-                        borderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value.toLocaleString() + ' ر.س';
-                                }
-                            }
-                        }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    }
-                }
-            });
-
-            // Customer Growth Chart
-            const customerGrowthCtx = document.getElementById('customerGrowthChart').getContext('2d');
-            const customerGrowthChart = new Chart(customerGrowthCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['عملاء جدد', 'عملاء حاليين', 'عملاء غير نشطين'],
-                    datasets: [{
-                        data: [30, 45, 25],
-                        backgroundColor: [
-                            'rgba(40, 167, 69, 0.8)',
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 193, 7, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(40, 167, 69, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 193, 7, 1)'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 15
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Invoice Status Chart
-            const invoiceStatusCtx = document.getElementById('invoiceStatusChart').getContext('2d');
-            const invoiceStatusChart = new Chart(invoiceStatusCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['مدفوعة', 'معلقة', 'متأخرة'],
-                    datasets: [{
-                        data: [75, 15, 10],
-                        backgroundColor: [
-                            'rgba(40, 167, 69, 0.8)',
-                            'rgba(255, 193, 7, 0.8)',
-                            'rgba(220, 53, 69, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(40, 167, 69, 1)',
-                            'rgba(255, 193, 7, 1)',
-                            'rgba(220, 53, 69, 1)'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-
-            // Top Services Chart
-            const topServicesCtx = document.getElementById('topServicesChart').getContext('2d');
-            const topServicesChart = new Chart(topServicesCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['شحن بحري', 'شحن جوي', 'شحن بري', 'تخزين', 'تخليص جمركي'],
-                    datasets: [{
-                        label: 'عدد الطلبات',
-                        data: [45, 32, 28, 25, 18],
-                        backgroundColor: [
-                            'rgba(54, 162, 235, 0.8)',
-                            'rgba(255, 99, 132, 0.8)',
-                            'rgba(255, 205, 86, 0.8)',
-                            'rgba(75, 192, 192, 0.8)',
-                            'rgba(153, 102, 255, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(255, 205, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)'
-                        ],
                         borderWidth: 2,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-
-            // Financial Overview Chart
-            const financialOverviewCtx = document.getElementById('financialOverviewChart').getContext('2d');
-            const financialOverviewChart = new Chart(financialOverviewCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['الأسبوع الأول', 'الأسبوع الثاني', 'الأسبوع الثالث', 'الأسبوع الرابع'],
-                    datasets: [{
-                        label: 'الإيرادات',
-                        data: [25000, 32000, 28000, 35000],
-                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
-                        borderColor: 'rgba(40, 167, 69, 1)',
-                        borderWidth: 2,
-                        borderRadius: 5
-                    }, {
-                        label: 'المصروفات',
-                        data: [18000, 22000, 19000, 24000],
-                        backgroundColor: 'rgba(220, 53, 69, 0.8)',
-                        borderColor: 'rgba(220, 53, 69, 1)',
-                        borderWidth: 2,
-                        borderRadius: 5
+                        pointBackgroundColor: '#218bab',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }, {
                         label: 'الربح',
-                        data: [7000, 10000, 9000, 11000],
-                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        data: [20000, 26000, 27000, 30000, 29000, 30000, 34000, 32000, 35000,
+                            37000, 36000, 45000
+                        ],
+                        borderColor: '#0b56a9',
+                        backgroundColor: 'rgba(11, 86, 169, 0.1)',
+                        fill: true,
+                        tension: 0.4,
                         borderWidth: 2,
-                        borderRadius: 5
+                        pointBackgroundColor: '#0b56a9',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }]
                 },
                 options: {
@@ -685,7 +415,56 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return value.toLocaleString() + ' ر.س';
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+
+            // Sales Invoices Pie Chart
+            const salesInvoicesCtx = document.getElementById('salesInvoicesChart').getContext('2d');
+            const salesInvoicesChart = new Chart(salesInvoicesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['مدفوعة', 'معلقة', 'متأخرة'],
+                    datasets: [{
+                        data: [68, 32,],
+                        backgroundColor: [
+                            '#0b56a9',
+                            '#218bab',
+                            '#52d6cb',
+                        ],
+                        borderColor: [
+                            '#fff',
+                            '#fff',
+                            '#fff'
+                        ],
+                        borderWidth: 3,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
                                 }
                             }
                         }
@@ -693,43 +472,44 @@
                 }
             });
 
-            // Finance Filter Event Listeners
-            document.querySelectorAll('input[name="financeFilter"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    // Update chart data based on selected period
-                    let newData, newLabels;
-
-                    if (this.id === 'finance7days') {
-                        newLabels = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت',
-                            'الأحد'
-                        ];
-                        newData = [
-                            [5000, 6200, 4800, 7500, 6800, 5500, 6000],
-                            [3200, 4100, 3500, 4800, 4200, 3800, 4000],
-                            [1800, 2100, 1300, 2700, 2600, 1700, 2000]
-                        ];
-                    } else if (this.id === 'finance30days') {
-                        newLabels = ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4'];
-                        newData = [
-                            [25000, 32000, 28000, 35000],
-                            [18000, 22000, 19000, 24000],
-                            [7000, 10000, 9000, 11000]
-                        ];
-                    } else {
-                        newLabels = ['الشهر الأول', 'الشهر الثاني', 'الشهر الثالث'];
-                        newData = [
-                            [95000, 110000, 125000],
-                            [68000, 75000, 85000],
-                            [27000, 35000, 40000]
-                        ];
+            // Expense Invoices Pie Chart
+            const expenseInvoicesCtx = document.getElementById('expenseInvoicesChart').getContext('2d');
+            const expenseInvoicesChart = new Chart(expenseInvoicesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['مدفوعة', 'معلقة', 'متأخرة'],
+                    datasets: [{
+                        data: [75, 25,],
+                        backgroundColor: [
+                            '#0b56a9',
+                            '#218bab',
+                            '#52d6cb',
+                        ],
+                        borderColor: [
+                            '#fff',
+                            '#fff',
+                            '#fff'
+                        ],
+                        borderWidth: 3,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
                     }
-
-                    financialOverviewChart.data.labels = newLabels;
-                    financialOverviewChart.data.datasets[0].data = newData[0];
-                    financialOverviewChart.data.datasets[1].data = newData[1];
-                    financialOverviewChart.data.datasets[2].data = newData[2];
-                    financialOverviewChart.update();
-                });
+                }
             });
         });
     </script>
