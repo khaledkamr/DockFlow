@@ -431,8 +431,10 @@ class AccountingController extends Controller
         if(Gate::denies('تقارير القيود')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
+
+        $view = $request->query('view', 'تقارير القيود');
         
-        if($request->view == 'تقارير القيود') {
+        if($view == 'تقارير القيود') {
             $type = $request->input('type');
             $from = $request->input('from');
             $to = $request->input('to');
@@ -459,7 +461,7 @@ class AccountingController extends Controller
             }
 
             return view('pages.accounting.reports', compact('entries'));
-        } elseif($request->view == 'كشف حساب') {
+        } elseif($view == 'كشف حساب') {
             $accounts = Account::where('level', 5)->get();
             $from = $request->input('from');
             $to = $request->input('to');
@@ -495,7 +497,7 @@ class AccountingController extends Controller
                 'statement',
                 'opening_balance'
             ));
-        } elseif($request->view == 'ميزان مراجعة') {
+        } elseif($view == 'ميزان مراجعة') {
             $trialBalance = Account::where('level', 1)->get();
             
             return view('pages.accounting.reports', compact('trialBalance'));
