@@ -391,6 +391,10 @@
                             size: window.innerWidth < 768 ? 11 : 13
                         }
                     }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
                 }
             }
         });
