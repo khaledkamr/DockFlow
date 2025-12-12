@@ -5,12 +5,11 @@
 @section('content')
 
 <h5 class="fw-bold text-center mt-3">
-    كشف حساب للحساب: {{ $account->name }} ({{ $account->code }})
+    كشف حساب: {{ $account->name }} ({{ $account->code }})
 </h5>
 <p class="text-center fw-bold">من الفترة ({{ Carbon\Carbon::parse($from)->format('Y/m/d') }}) إلى الفترة ({{ Carbon\Carbon::parse($to)->format('Y/m/d') }})</p>
 
 <div class="p-3">
-    <h5 class="mb-4">الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
     <div class="table-container">
         <table class="table table-bordered border-dark">
             <thead>
@@ -25,17 +24,22 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-center">الرصيد الافتتاحي</td>
+                    <td class="text-center">{{ $opening_balance < 0 ? $opening_balance : '0.00' }}</td>
+                    <td class="text-center">{{ $opening_balance > 0 ? $opening_balance : '0.00' }}</td>
+                    <td class="text-center">{{ $opening_balance ?? '0.00' }}</td>
+                </tr>
                 @php
-                    $balance = 0;
+                    $balance = $opening_balance ?? 0;
                 @endphp
                 @if($statement)
                     @foreach($statement as $line)
                         @php
-                            if($line->debit > 0) {
-                                $balance += $line->debit;
-                            } else {
-                                $balance -= $line->credit;
-                            }
+                            $balance += $line->debit - $line->credit;
                         @endphp
                         <tr class="text-center">
                             <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
@@ -65,7 +69,6 @@
             </tbody>
         </table>
     </div>
-    <h5 class="mt-4">الرصيد الختامي: <strong>{{ $balance }}</strong></h5>
 </div>
 
 @endsection

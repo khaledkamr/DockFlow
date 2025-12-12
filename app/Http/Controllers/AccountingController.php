@@ -432,12 +432,6 @@ class AccountingController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
         
-        $accountsLevel5 = collect();
-        $accounts = collect();
-        $entries = collect();
-        $statement = collect();
-        $trialBalance = collect();
-
         if($request->view == 'تقارير القيود') {
             $type = $request->input('type');
             $from = $request->input('from');
@@ -463,13 +457,14 @@ class AccountingController extends Controller
             if($from && $to) {
                 $entries = $entries->whereBetween('date', [$from, $to]);
             }
+
+            return view('pages.accounting.reports', compact('entries'));
         } elseif($request->view == 'كشف حساب') {
-            $accountsLevel5 = Account::where('level', 5)->get();
-            $type = $request->input('type');
+            $accounts = Account::where('level', 5)->get();
             $from = $request->input('from');
             $to = $request->input('to');
-
             $account = $request->input('account', null);
+
             $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
                 ->select('journal_entry_lines.*')
                 ->where('account_id', $account)
@@ -477,26 +472,33 @@ class AccountingController extends Controller
                 ->orderBy('journal_entries.code')
                 ->get();
 
+            $opening_balance = 0;
+            if($from) {
+                $opening_lines = $statement->filter(function($line) use($from) {
+                    $date = Carbon::parse($line->journal->date);
+                    return $date->lt(Carbon::parse($from));
+                });
+                foreach($opening_lines as $line) {
+                    $opening_balance += $line->debit - $line->credit;
+                }
+            }
+
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
                     $date = Carbon::parse($line->journal->date);
                     return $date->between($from, $to);
                 });
             }
+
+            return view('pages.accounting.reports', compact(
+                'accounts',
+                'statement',
+                'opening_balance'
+            ));
         } elseif($request->view == 'ميزان مراجعة') {
-            $accounts = Account::all();
             $trialBalance = Account::where('level', 1)->get();
+            
+            return view('pages.accounting.reports', compact('trialBalance'));
         }
-
-        $from = $request->input('from', null);
-        $to = $request->input('to', null);
-
-        return view('pages.accounting.reports', compact(
-            'accountsLevel5', 
-            'entries', 
-            'statement',
-            'accounts',
-            'trialBalance'
-        ));
     }
 }

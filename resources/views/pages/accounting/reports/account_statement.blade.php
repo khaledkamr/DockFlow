@@ -4,7 +4,7 @@
         <label class="form-label">اسم الحساب</label>
         <select name="account" id="account_id" class="form-select border-primary" required>
             <option value="">اختر الحساب</option>
-            @foreach($accountsLevel5 as $account)
+            @foreach($accounts as $account)
                 <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
                     {{ $account->name }} ({{ $account->code }})
                 </option>
@@ -28,8 +28,8 @@
 </form>
 
 <div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0">
-    <div class="d-flex justify-content-between align-items-end mb-3">
-        <h5>الرصيد الافتتاحي: <strong>{{ $opening_balance ?? 0.00 }}</strong></h5>
+    <div class="d-flex justify-content-between align-items-end mb-2">
+        <div></div>
         <div class="export-buttons d-flex gap-2 align-items-center">
             <form action="{{ route('export.excel', 'account_statement') }}" method="GET">
                 <input type="hidden" name="account" value="{{ request()->query('account') }}">
@@ -42,9 +42,9 @@
             
             <form action="{{ route('print', 'account_statement') }}" method="POST" target="_blank">
                 @csrf
-                <input type="hidden" name="account" value="{{ request()->query('account') }}">
-                <input type="hidden" name="from" value="{{ request()->query('from') }}">
-                <input type="hidden" name="to" value="{{ request()->query('to') }}">
+                @foreach(request()->query() as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
                 <button type="submit" class="btn btn-outline-primary" target="top" data-bs-toggle="tooltip" data-bs-placement="top" title="طباعة">
                     <i class="fa-solid fa-print"></i>
                 </button>
@@ -65,8 +65,17 @@
                 </tr>
             </thead>
             <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="fw-bold text-center">الرصيد الافتتاحي</td>
+                    <td class="fw-bold text-center">{{ $opening_balance > 0 ? $opening_balance : '0.00' }}</td>
+                    <td class="fw-bold text-center">{{ $opening_balance < 0 ? abs($opening_balance) : '0.00' }}</td>
+                    <td class="fw-bold text-center">{{ $opening_balance ?? '0.00' }}</td>
+                </tr>
                 @php
-                    $balance = 0;
+                    $balance = $opening_balance ?? 0.00;
                 @endphp
                 @if($statement)
                     @foreach($statement as $line)
@@ -103,7 +112,6 @@
             </tbody>
         </table>
     </div>
-    <h5 class="mt-4">الرصيد الختامي: <strong>{{ $balance }}</strong></h5>
 </div>
 
 

@@ -41,16 +41,42 @@ class ExportController extends Controller
         
         if ($reportType == 'account_statement') {
             $account = Account::findOrFail($id);
-            $statement = JournalEntryLine::where('account_id', $id)->get();
+            $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+                ->select('journal_entry_lines.*')
+                ->where('account_id', $account->id)
+                ->orderBy('journal_entries.date')
+                ->orderBy('journal_entries.code')
+                ->get();
+
+            $opening_balance = 0;
+            if($from) {
+                $opening_lines = $statement->filter(function($line) use($from) {
+                    $date = Carbon::parse($line->journal->date);
+                    return $date->lt(Carbon::parse($from));
+                });
+                foreach($opening_lines as $line) {
+                    $opening_balance += $line->debit - $line->credit;
+                }
+            }
+
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
-                    return $line->journal->date >= $from && $line->journal->date <= $to;
+                    $date = Carbon::parse($line->journal->date);
+                    return $date->between($from, $to);
                 });
             }
+
             $filters = $request->all();
             logActivity('طباعة كشف حساب', "تم طباعة كشف الحساب بتصفية: ", $filters);
 
-            return view('reports.account_statement', compact('statement', 'company', 'from', 'to', 'account'));
+            return view('reports.account_statement', compact(
+                'statement', 
+                'company', 
+                'from', 
+                'to', 
+                'account',
+                'opening_balance'
+            ));
         } elseif($reportType == 'journal_entries') {
             $entries = JournalEntry::all();
             if($type && $type !== 'all') {
