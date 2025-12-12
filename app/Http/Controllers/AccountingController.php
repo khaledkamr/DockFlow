@@ -170,7 +170,7 @@ class AccountingController extends Controller
         $totalCredit = 0;
 
         foreach ($request->account_id as $index => $accountId) {
-            if (!$accountId || !$request->account_code[$index]) {
+            if (!$accountId) {
                 return redirect()->back()->with('error', 'جميع الحسابات مطلوبة');
             }
 
