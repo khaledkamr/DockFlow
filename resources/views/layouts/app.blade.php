@@ -724,7 +724,7 @@
                         </a>
                         <a class="nav-link fw-bold rounded m-1 px-4 py-2" style="{{ request()->routeIs('money.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}" 
                             href="{{ route('money.reports') }}">
-                            <i class="fa-solid fa-receipt ms-2 me-2"></i> تقاريـــــر القيـــــود
+                            <i class="fa-solid fa-receipt ms-2 me-2"></i> التقاريـــــر الماليـــــة
                         </a>
                     </div>
                 </li>

@@ -270,5 +270,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/transaction/reports', 'printTransactionReports')->name('print.transactions.reports');
     Route::get('/print/expense/invoice/{code}', 'printExpenseInvoice')->name('print.expense.invoice');
     Route::get('/print/transport/reports', 'printTransportOrderReports')->name('print.transport.reports');
-    Route::get('/print/trial-balance/reports', 'printTrialBalance')->name('print.trial.balance');
+    Route::get('/print/trial/balance/reports', 'printTrialBalance')->name('print.trial.balance');
 });
