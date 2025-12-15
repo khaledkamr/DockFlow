@@ -40,7 +40,7 @@ class TransportController extends Controller
             });
         }
 
-        return view('pages.transportOrders.transportOrders', compact('transportOrders'));
+        return view('pages.transportOrders.transport_orders', compact('transportOrders'));
     }
 
     public function createTransportOrder() {
@@ -48,7 +48,7 @@ class TransportController extends Controller
         $drivers = Driver::all();
         $suppliers = Supplier::all();
 
-        return view('pages.transportOrders.createTransportOrder', compact(
+        return view('pages.transportOrders.create_transport_order', compact(
             'transactions', 
             'drivers', 
             'suppliers'
@@ -162,7 +162,8 @@ class TransportController extends Controller
         $transportOrder->load('driver', 'vehicle', 'containers.containerType');
         $drivers = Driver::all();
         $suppliers = Supplier::all();
-        return view('pages.transportOrders.transportOrderDetails', compact(
+
+        return view('pages.transportOrders.transport_order_details', compact(
             'transportOrder',
             'drivers',
             'suppliers'
@@ -192,7 +193,7 @@ class TransportController extends Controller
             });
         }
 
-        return view('pages.transportOrders.driversAndVehicles', compact(
+        return view('pages.transportOrders.drivers_and_vehicles', compact(
             'view', 
             'drivers', 
             'vehicles', 

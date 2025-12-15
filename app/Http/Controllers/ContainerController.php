@@ -106,7 +106,7 @@ class ContainerController extends Controller
 
     public function containersTypes() {
         $containerTypes = Container_type::all();
-        return view('pages.containers.containersTypes', compact('containerTypes'));
+        return view('pages.containers.containers_types', compact('containerTypes'));
     }
     
     public function containerDetails(Container $container) {
@@ -120,7 +120,7 @@ class ContainerController extends Controller
         $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
         $serviceInvoice = $container->invoices->where('type', 'خدمات')->first();
 
-        return view('pages.containers.containerDetails', compact(
+        return view('pages.containers.container_details', compact(
             'container', 
             'transportOrder', 
             'transaction', 

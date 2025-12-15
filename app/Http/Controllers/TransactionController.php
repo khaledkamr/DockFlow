@@ -46,7 +46,7 @@ class TransactionController extends Controller
         $customers = Customer::all();
         $containerTypes = Container_type::all();
 
-        return view('pages.transactions.createTransaction', compact(
+        return view('pages.transactions.create_transaction', compact(
             'company', 
             'customers', 
             'containerTypes'
@@ -78,7 +78,6 @@ class TransactionController extends Controller
     }
 
     public function updateTransaction(Request $request, Transaction $transaction) {
-        // return $request;
         if(Gate::denies('تعديل معاملة تخليص')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات المعاملة');
         }
@@ -193,7 +192,7 @@ class TransactionController extends Controller
             ['name' => 'لم تفرغ الحاوية فى الايداع - The container was not emptied at the deposit'],
         ];
 
-        return view('pages.transactions.transactionDetails', compact(
+        return view('pages.transactions.transaction_details', compact(
             'transaction', 
             'items', 
             'procedures',

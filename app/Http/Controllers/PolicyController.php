@@ -57,7 +57,7 @@ class PolicyController extends Controller
         $containerTypes = Container_type::all();
         $containers = Container::where('date', null)->get();
 
-        return view('pages.policies.storagePolicy', compact(
+        return view('pages.policies.storage_policy', compact(
             'company', 
             'customers', 
             'containerTypes', 
@@ -107,6 +107,14 @@ class PolicyController extends Controller
 
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض البوليصة؟</a>');
     }
+
+    public function storagePolicyDetails(Policy $policy) {
+        $services = Service::all();
+        return view('pages.policies.storage_policy_details', compact(
+            'policy',
+            'services'
+        ));
+    }
     
     public function createReceivePolicy() {
         if(Gate::denies('إنشاء اتفاقية')) {
@@ -116,7 +124,7 @@ class PolicyController extends Controller
         $company = Auth::user()->company;
         $customers = Customer::with('contract')->orderBy('name', 'asc')->get();
         
-        return view('pages.policies.receivePolicy', compact('company', 'customers'));
+        return view('pages.policies.receive_policy', compact('company', 'customers'));
     }
 
     public function storeReceivePolicy(PolicyRequest $request) {
@@ -142,16 +150,8 @@ class PolicyController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض البوليصة؟</a>');
     }
 
-    public function storagePolicyDetails(Policy $policy) {
-        $services = Service::all();
-        return view('pages.policies.storagePolicyDetails', compact(
-            'policy',
-            'services'
-        ));
-    }
-
     public function receivePolicyDetails(Policy $policy) {
-        return view('pages.policies.receivePolicyDetails', compact('policy'));
+        return view('pages.policies.receive_policy_details', compact('policy'));
     }
 
     public function servicePolicy() {
@@ -164,7 +164,7 @@ class PolicyController extends Controller
         $containerTypes = Container_type::all();
         $services = Service::all();
 
-        return view('pages.policies.servicePolicy', compact('company', 'customers', 'containerTypes', 'services'));
+        return view('pages.policies.service_Policy', compact('company', 'customers', 'containerTypes', 'services'));
     }
 
     public function storeServicePolicy(Request $request) {
@@ -244,7 +244,7 @@ class PolicyController extends Controller
     }
 
     public function servicePolicyDetails(Policy $policy) {
-        return view('pages.policies.servicePolicyDetails', compact('policy'));
+        return view('pages.policies.service_policy_details', compact('policy'));
     }
 
     public function deletePolicy(Policy $policy) {

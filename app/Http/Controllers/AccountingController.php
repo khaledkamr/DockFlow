@@ -22,7 +22,7 @@ class AccountingController extends Controller
 {
     public function tree() {
         $accounts = Account::where('parent_id', null)->get();
-        return view('pages.accounting.tree', compact('accounts'));
+        return view('pages.accounting.tree.parents', compact('accounts'));
     }
 
     public function createRoot(RootRequest $request) {

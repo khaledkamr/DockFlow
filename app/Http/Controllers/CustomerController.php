@@ -34,7 +34,7 @@ class CustomerController extends Controller
     }
 
     public function customerProfile(Customer $customer) {
-        return view('pages.customers.customerProfile', compact('customer'));
+        return view('pages.customers.customer_profile', compact('customer'));
     }
 
     public function storeCustomer(CustomerRequest $request) {

@@ -59,13 +59,13 @@ class AdminController extends Controller
     public function myProfile(User $user) {
         $roles = Role::all();
         $permissions = Permission::all();
-        return view('pages.users.myProfile', compact('user', 'roles', 'permissions'));
+        return view('pages.users.my_profile', compact('user', 'roles', 'permissions'));
     }
 
     public function userProfile(User $user) {
         $roles = Role::all();
         $permissions = Permission::all();
-        return view('pages.users.userProfile', compact('user', 'roles', 'permissions'));
+        return view('pages.users.user_profile', compact('user', 'roles', 'permissions'));
     }
 
     public function storeUser(Request $request) {

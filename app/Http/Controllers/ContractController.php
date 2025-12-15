@@ -62,7 +62,7 @@ class ContractController extends Controller
             return !$customer->contract;
         });
         $services = Service::all();
-        return view('pages.contracts.createContract', compact('company', 'customers', 'services'));
+        return view('pages.contracts.create_contract', compact('company', 'customers', 'services'));
     }
 
     public function storeContract(ContractRequest $request) {
@@ -136,7 +136,7 @@ class ContractController extends Controller
         $days = $start->copy()->addMonths($months)->diffInDays($end);
         $services = Service::all();
 
-        return view('pages.contracts.contractDetails', compact('contract', 'months', 'days', 'services'));
+        return view('pages.contracts.contract_details', compact('contract', 'months', 'days', 'services'));
     }
 
     public function services() {

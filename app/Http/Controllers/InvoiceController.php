@@ -92,7 +92,104 @@ class InvoiceController extends Controller
             $container->total = $container->storage_price + $container->late_fee + $services;
         }
 
-        return view('pages.invoices.createInvoice', compact('customers', 'containers'));
+        return view('pages.invoices.create_invoice', compact('customers', 'containers'));
+    }
+
+    public function storeInvoice(InvoiceRequest $request) {
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        $validated = $request->validated();
+        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+        $invoice = Invoice::create($validated);
+
+        $containerIds = $request->input('container_ids', []);
+        $containers = Container::whereIn('id', $containerIds)->get();
+        $amountBeforeTax = 0;
+
+        foreach($containers as $container) {
+            $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+            if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
+                    ->diffInDays(Carbon::parse($container->exit_date));
+                $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+            } else {
+                $late_fee = 0;
+            }
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $amountBeforeTax += $storage_price + $late_fee + $services;
+            $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee + $services]);
+        }
+
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax_rate = $request->input('tax_rate', 15) / 100;
+        $tax = $amountAfterDiscount * $tax_rate;
+        $amount = $amountAfterDiscount + $tax;
+
+        $invoice->amount_before_tax = $amountBeforeTax;
+        $invoice->tax_rate = $request->input('tax_rate', 15);
+        $invoice->tax = $tax;
+        $invoice->amount_after_discount = $amountAfterDiscount;
+        $invoice->total_amount = $amount;
+        $invoice->save();
+
+        logActivity('إنشاء فاتورة تخزين', "تم إنشاء فاتورة تخزين رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
+    } 
+    
+    public function invoiceDetails(Invoice $invoice) {
+        $amountBeforeTax = 0;
+        $services = 0;
+
+        foreach($invoice->containers as $container) {
+            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+            $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+            if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
+                $days = (int) Carbon::parse($container->date)
+                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
+                    ->diffInDays(Carbon::parse($container->exit_date));
+                $container->late_days = $days;
+                $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+            } else {
+                $container->late_days = 'لا يوجد';
+                $container->late_fee = 0;
+            }
+            $services = 0;
+            foreach($container->services as $service) {
+                $services += $service->pivot->price;
+            }
+            $container->total_services = $services;
+            $container->total = $container->storage_price + $container->late_fee + $services;
+            $amountBeforeTax += $container->total;  
+        }
+
+        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('pages.invoices.invoice_details', compact(
+            'invoice', 
+            'services', 
+            'discountValue', 
+            'hatching_total', 
+            'qrCode',
+        ));
     }
 
     public function storeServiceInvoice(InvoiceRequest $request) {
@@ -159,7 +256,7 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('pages.invoices.invoiceServicesDetails', compact(
+        return view('pages.invoices.invoice_services_details', compact(
             'invoice', 
             'discountValue', 
             'hatching_total', 
@@ -372,7 +469,7 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('pages.invoices.clearanceInvoiceDetails', compact(
+        return view('pages.invoices.clearance_invoice_details', compact(
             'invoice', 
             'transaction',
             'discountValue', 
@@ -380,8 +477,21 @@ class InvoiceController extends Controller
             'qrCode',
         ));
     }
+    
+    public function createShippingInvoice(Request $request) {
+        $customers = Customer::all(); 
+        $customer_id = $request->input('customer_id');
+        $shippingPolicies = ShippingPolicy::where('is_received', true)->where('customer_id', $customer_id)->get();
+        $shippingPolicies = $shippingPolicies->filter(function($policy) {
+            return $policy->invoices->filter(function($invoice) {
+                return $invoice->type == 'شحن';
+            })->isEmpty();
+        });
 
-    public function storeInvoice(InvoiceRequest $request) {
+        return view('pages.invoices.create_shipping_invoice', compact('customers', 'shippingPolicies'));
+    } 
+
+    public function storeShippingInvoice(InvoiceRequest $request) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
@@ -390,27 +500,13 @@ class InvoiceController extends Controller
         $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
         $invoice = Invoice::create($validated);
 
-        $containerIds = $request->input('container_ids', []);
-        $containers = Container::whereIn('id', $containerIds)->get();
+        $policyIds = $request->input('shipping_policy_ids', []);
+        $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
         $amountBeforeTax = 0;
 
-        foreach($containers as $container) {
-            $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
-            if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
-                $days = (int) Carbon::parse($container->date)
-                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
-                    ->diffInDays(Carbon::parse($container->exit_date));
-                $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
-            } else {
-                $late_fee = 0;
-            }
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
-            $amountBeforeTax += $storage_price + $late_fee + $services;
-            $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee + $services]);
+        foreach($shippingPolicies as $policy) {
+            $amountBeforeTax += $policy->total_cost;
+            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->total_cost]);
         }
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
@@ -426,37 +522,12 @@ class InvoiceController extends Controller
         $invoice->total_amount = $amount;
         $invoice->save();
 
-        logActivity('إنشاء فاتورة تخزين', "تم إنشاء فاتورة تخزين رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+        logActivity('إنشاء فاتورة شحن', "تم إنشاء فاتورة شحن رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
-    } 
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
+    }
 
-    public function invoiceDetails(Invoice $invoice) {
-        $amountBeforeTax = 0;
-        $services = 0;
-
-        foreach($invoice->containers as $container) {
-            $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
-            if($container->period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
-                $days = (int) Carbon::parse($container->date)
-                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
-                    ->diffInDays(Carbon::parse($container->exit_date));
-                $container->late_days = $days;
-                $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
-            } else {
-                $container->late_days = 'لا يوجد';
-                $container->late_fee = 0;
-            }
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
-            $container->total_services = $services;
-            $container->total = $container->storage_price + $container->late_fee + $services;
-            $amountBeforeTax += $container->total;  
-        }
-
+    public function shippingInvoiceDetails(Invoice $invoice) {
         $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
@@ -469,9 +540,8 @@ class InvoiceController extends Controller
             number_format($invoice->tax, 2, '.', '')
         );
 
-        return view('pages.invoices.invoiceDetails', compact(
+        return view('pages.invoices.shipping_invoice_details', compact(
             'invoice', 
-            'services', 
             'discountValue', 
             'hatching_total', 
             'qrCode',
@@ -695,7 +765,7 @@ class InvoiceController extends Controller
         $customer_id = $request->input('customer_id');
         $invoices = Invoice::where('customer_id', $customer_id)->where('isPaid', 'لم يتم الدفع')->get();
 
-        return view('pages.invoices.createStatement', compact('customers', 'invoices'));
+        return view('pages.invoices.create_statement', compact('customers', 'invoices'));
     }
 
     public function storeInvoiceStatement(Request $request) {
@@ -732,77 +802,7 @@ class InvoiceController extends Controller
 
     public function invoiceStatementDetails(InvoiceStatement $invoiceStatement) {
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
-        return view('pages.invoices.statementDetails', compact('invoiceStatement', 'hatching_total'));
-    }
-
-    public function createShippingInvoice(Request $request) {
-        $customers = Customer::all(); 
-        $customer_id = $request->input('customer_id');
-        $shippingPolicies = ShippingPolicy::where('is_received', true)->where('customer_id', $customer_id)->get();
-        $shippingPolicies = $shippingPolicies->filter(function($policy) {
-            return $policy->invoices->filter(function($invoice) {
-                return $invoice->type == 'شحن';
-            })->isEmpty();
-        });
-
-        return view('pages.invoices.create_shipping_invoice', compact('customers', 'shippingPolicies'));
-    } 
-
-    public function storeShippingInvoice(InvoiceRequest $request) {
-        if(Gate::denies('إنشاء فاتورة')) {
-            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
-        }
-
-        $validated = $request->validated();
-        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-        $invoice = Invoice::create($validated);
-
-        $policyIds = $request->input('shipping_policy_ids', []);
-        $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
-        $amountBeforeTax = 0;
-
-        foreach($shippingPolicies as $policy) {
-            $amountBeforeTax += $policy->total_cost;
-            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->total_cost]);
-        }
-
-        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
-        $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax_rate = $request->input('tax_rate', 15) / 100;
-        $tax = $amountAfterDiscount * $tax_rate;
-        $amount = $amountAfterDiscount + $tax;
-
-        $invoice->amount_before_tax = $amountBeforeTax;
-        $invoice->tax_rate = $request->input('tax_rate', 15);
-        $invoice->tax = $tax;
-        $invoice->amount_after_discount = $amountAfterDiscount;
-        $invoice->total_amount = $amount;
-        $invoice->save();
-
-        logActivity('إنشاء فاتورة شحن', "تم إنشاء فاتورة شحن رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
-
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
-    }
-
-    public function shippingInvoiceDetails(Invoice $invoice) {
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
-
-        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
-
-        $qrCode = QrHelper::generateZatcaQr(
-            $invoice->company->name,
-            $invoice->company->vatNumber,
-            $invoice->created_at->toIso8601String(),
-            number_format($invoice->total_amount, 2, '.', ''),
-            number_format($invoice->tax, 2, '.', '')
-        );
-
-        return view('pages.invoices.shipping_invoice_details', compact(
-            'invoice', 
-            'discountValue', 
-            'hatching_total', 
-            'qrCode',
-        ));
+        return view('pages.invoices.statement_details', compact('invoiceStatement', 'hatching_total'));
     }
 
     public function invoicesReports(Request $request) {
