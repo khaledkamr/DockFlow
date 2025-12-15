@@ -108,11 +108,47 @@ class PolicyController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض البوليصة؟</a>');
     }
 
+    public function updateStoragePolicy(Request $request, Policy $policy) {
+        $old = $policy->toArray();
+
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'tax_statement' => 'nullable',
+            'customer_id' => 'required',
+            'driver_name' => 'required',
+            'driver_NID' => 'required',
+            'car_code' => 'required',
+            'storage_price' => 'nullable|numeric',
+            'storage_duration' => 'nullable|numeric',
+            'late_fee' => 'nullable|numeric',
+        ]);
+
+        $policy->update([
+            'date' => $validated['date'],
+            'tax_statement' => $validated['tax_statement'],
+            'customer_id' => $validated['customer_id'],
+            'driver_name' => $validated['driver_name'],
+            'driver_NID' => $validated['driver_NID'],
+            'car_code' => $validated['car_code'],
+            'storage_price' => $validated['storage_price'],
+            'storage_duration' => $validated['storage_duration'],
+            'late_fee' => $validated['late_fee'],
+        ]);
+
+        $new = $policy->toArray();
+        logActivity('تعديل بوليصة تخزين', 'تم تعديل بيانات بوليصة التخزين رقم ' . $policy->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تحديق بيانات البوليصة بنجاح');
+    }
+
     public function storagePolicyDetails(Policy $policy) {
         $services = Service::all();
+        $customers = Customer::all();
+
         return view('pages.policies.storage_policy_details', compact(
             'policy',
-            'services'
+            'services',
+            'customers',
         ));
     }
     

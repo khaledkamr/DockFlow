@@ -89,14 +89,18 @@ Route::controller(ContainerController::class)->middleware('auth')->group(functio
 Route::controller(PolicyController::class)->middleware('auth')->group(function () {
     Route::get('/policies', 'policies')->name('policies');
     Route::get('/policies/storage/create', 'storagePolicy')->name('policies.storage.create');
-    Route::get('/policies/receive/create', 'createReceivePolicy')->name('policies.receive.create');
     Route::post('/policies/storage/store', 'storeStoragePolicy')->name('policies.storage.store');
-    Route::post('/policies/receive/store', 'storeReceivePolicy')->name('policies.receive.store');
     Route::get('/policies/storage/details/{policy:uuid}', 'storagePolicyDetails')->name('policies.storage.details');
+    Route::patch('/policies/storage/update/{policy:uuid}', 'updateStoragePolicy')->name('policies.storage.update');
+
+    Route::get('/policies/receive/create', 'createReceivePolicy')->name('policies.receive.create');
+    Route::post('/policies/receive/store', 'storeReceivePolicy')->name('policies.receive.store');
     Route::get('/policies/receive/details/{policy:uuid}', 'receivePolicyDetails')->name('policies.receive.details');
+    
     Route::get('/policies/services/create', 'servicePolicy')->name('policies.services.create');
     Route::post('/policies/services/store', 'storeServicePolicy')->name('policies.services.store');
     Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
+
     Route::delete('/policies/delete/{policy:uuid}', 'deletePolicy')->name('policy.delete');
 });
 
