@@ -122,11 +122,11 @@ class CustomerController extends Controller
 
         return response()->json([
             'contract' => $customer->contract,
-            'storage_price' => $storageService ? $storageService->pivot->price : 0,
-            'storage_duration' => $storageService ? $storageService->pivot->unit : 0,
-            'late_fee' => $lateService ? $lateService->pivot->price : 0,
-            'late_fee_20ft' => $late_Service_20ft ? $late_Service_20ft->pivot->price : 0,
-            'late_fee_40ft' => $late_Service_40ft ? $late_Service_40ft->pivot->price : 0,
+            'storage_price' => $storageService ? $storageService->pivot->price : null,
+            'storage_duration' => $storageService ? $storageService->pivot->unit : null,
+            'late_fee' => $lateService ? $lateService->pivot->price : null,
+            'late_fee_20ft' => $late_Service_20ft ? $late_Service_20ft->pivot->price : null,
+            'late_fee_40ft' => $late_Service_40ft ? $late_Service_40ft->pivot->price : null,
         ]);
     }
 

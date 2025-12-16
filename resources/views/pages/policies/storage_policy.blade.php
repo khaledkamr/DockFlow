@@ -204,13 +204,17 @@
         let contract_storage_duration = 0;
         let contract_late_fee = 0;
 
+        let storage_price_val = $('#storage_price').val();
+        let storage_duration_val = $('#storage_duration').val();
+        let late_fee_val = $('#late_fee').val();
+
         if (id) {
             fetch(`/customers/${id}/contract`)
                 .then(res => res.json())
                 .then(data => {
-                    $('#storage_price').val(data.storage_price || 0);
-                    $('#storage_duration').val(data.storage_duration || 0);
-                    $('#late_fee').val(data.late_fee || 0);
+                    $('#storage_price').val(data.storage_price || storage_price_val);
+                    $('#storage_duration').val(data.storage_duration || storage_duration_val);
+                    $('#late_fee').val(data.late_fee || late_fee_val);
                 })
                 .catch(err => console.error(err));
         }
@@ -224,14 +228,16 @@
     $('#container_type_id').on('change', function () {
         let type_name = $(this).find(':selected').data('type');
         let customer_id = $('#customer_id').val();
+        let late_fee_val = $('#late_fee').val();
+
         if(customer_id && type_name) {
             fetch(`/customers/${customer_id}/contract`)
                 .then(res => res.json())
                 .then(data => {
                     if(type_name == 'حاوية 20') {
-                        $('#late_fee').val(data.late_fee_20ft || 0);
+                        $('#late_fee').val(data.late_fee_20ft || late_fee_val);
                     } else if(type_name == 'حاوية 40') {
-                        $('#late_fee').val(data.late_fee_40ft || 0);
+                        $('#late_fee').val(data.late_fee_40ft || late_fee_val);
                     }
                 })
                 .catch(err => console.error(err));
