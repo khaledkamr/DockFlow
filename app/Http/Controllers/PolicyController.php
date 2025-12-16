@@ -200,7 +200,7 @@ class PolicyController extends Controller
         $containerTypes = Container_type::all();
         $services = Service::all();
 
-        return view('pages.policies.service_Policy', compact('company', 'customers', 'containerTypes', 'services'));
+        return view('pages.policies.service_policy', compact('company', 'customers', 'containerTypes', 'services'));
     }
 
     public function storeServicePolicy(Request $request) {
