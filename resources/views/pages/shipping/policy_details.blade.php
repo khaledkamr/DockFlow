@@ -38,8 +38,36 @@
                     <div class="modal-body text-dark">
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
+                                <label class="form-label">رقم البوليصة</label>
+                                <input type="text" class="form-control border-primary" id="code" name="code"
+                                    value="{{ old('code', $policy->code) }}">
+                                @error('code')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label d-block">إســم العميل</label>
+                                <select name="customer_id" id="customer_id" class="form-select border-primary" style="width: 100%;">
+                                    <option value="">اختر عميل...</option>
+                                    @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}"
+                                            {{ old('customer_id', $policy->customer_id) == $customer->id ? 'selected' : '' }}>
+                                            {{ $customer->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">تاريخ البوليصة</label>
+                                <input type="date" class="form-control border-primary" id="date" name="date" 
+                                    value="{{ old('date', \Carbon\Carbon::parse($policy->date)->format('Y-m-d')) }}">
+                                @error('date')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
                                 <label class="form-label">مكان التحميل</label>
-                                <input type="text" class="form-control border-primary" id="from" name="from"
+                                <input type="text" class="form-control border-primary" id="from" name="from" 
                                     value="{{ old('from', $policy->from) }}">
                                 @error('from')
                                     <div class="text-danger">{{ $message }}</div>
@@ -173,14 +201,19 @@
                 <div class="card-body">
                     <div class="row g-3 mb-3">
                         <div class="col">
-                            <label class="text-muted small">مكان التحميل</label>
-                            <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i>
-                                {{ $policy->from }}</p>
+                            <label class="text-muted small">مكان التحميل والتسليم</label>
+                            <p class="fw-semibold mb-0">
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }} - 
+                                <i class="fas fa-map-marker-alt text-success"></i> {{ $policy->to }} 
+                            </p>
                         </div>
                         <div class="col">
-                            <label class="text-muted small">مكان التسليم</label>
-                            <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i>
-                                {{ $policy->to }}</p>
+                            <label class="text-muted small">الى العميل</label>
+                            <p class="fw-bold mb-0">
+                                <a href="{{ route('users.customer.profile', $policy->customer) }}" class="text-decoration-none text-dark">
+                                    {{ $policy->customer->name }}
+                                </a>
+                            </p>
                         </div>
                     </div>
                     <div class="row g-3">
@@ -365,6 +398,12 @@
     </div>
 
     <script>
+        $('#customer_id').select2({
+            placeholder: "ابحث عن إسم العميل...",
+            allowClear: true,
+            dropdownParent: $('#editPolicyModal')
+        });
+
         $('#editPolicyModal').on('shown.bs.modal', function () {
             $('#driver_id').select2({
                 placeholder: "ابحث عن إسم السائق...",

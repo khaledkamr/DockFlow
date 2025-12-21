@@ -132,15 +132,21 @@ class ShippingController extends Controller
     public function policyDetails(ShippingPolicy $policy) {
         $drivers = Driver::all();
         $suppliers = Supplier::all();
+        $customers = Customer::all();
+
         return view('pages.shipping.policy_details', compact(
             'policy',
             'drivers',
-            'suppliers'
+            'suppliers',
+            'customers'
         ));
     }
 
     public function updatePolicy(Request $request, ShippingPolicy $policy) {
         $validated = $request->validate([
+            'code' => 'required|string',
+            'customer_id' => 'required|exists:customers,id',
+            'date' => 'required|date',
             'from' => 'required|string',
             'to' => 'required|string',
             'type' => 'required|string',
