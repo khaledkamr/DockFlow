@@ -338,10 +338,16 @@
         </div>
     </div>
 
-    <!-- الحاويات -->
+    <!-- البضائع -->
     <div class="card shadow-sm mb-4">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="fa-solid fa-box"></i> البضائع</h5>
+        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <div>
+                <h5 class="mb-0"><i class="fa-solid fa-box"></i> البضائع</h5>
+            </div>
+            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editGoodsModal">
+                <i class="fas fa-edit me-1"></i>
+                تعديل البضائع
+            </button>
         </div>
         <div class="card-body">
             @if ($policy->goods && count($policy->goods) > 0)
@@ -390,10 +396,98 @@
                 </div>
                 <div class="text-start">
                     <button type="submit" class="btn btn-primary col-12 col-md-2">
-                        <i class="fa-solid fa-save me-2"></i><span class="d-inline">حفظ الملاحظات</span><span
+                        <span class="d-inline">حفظ الملاحظات</span><span
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal لتعديل البضائع -->
+    <div class="modal fade" id="editGoodsModal" tabindex="-1" aria-labelledby="editGoodsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="editGoodsModalLabel">تعديل البضائع</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('shipping.policies.goods.update', $policy) }}" method="POST" id="goodsForm">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-body text-dark">
+                        <div class="table-container">
+                            <table class="table table-bordered" id="goodsTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="text-center" style="width: 30%;">البيان</th>
+                                        <th class="text-center" style="width: 20%;">الكمية</th>
+                                        <th class="text-center" style="width: 20%;">الوزن</th>
+                                        <th class="text-center" style="width: 25%;">ملاحظات</th>
+                                        <th class="text-center" style="width: 5%;">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($policy->goods && count($policy->goods) > 0)
+                                        @foreach ($policy->goods as $index => $good)
+                                            <tr>
+                                                <td>
+                                                    <input type="text" class="form-control" name="goods[{{ $index }}][description]" 
+                                                           value="{{ $good->description }}" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" step="0.01" class="form-control text-center" name="goods[{{ $index }}][quantity]" 
+                                                           value="{{ $good->quantity }}" min="0">
+                                                </td>
+                                                <td>
+                                                    <input type="number" step="0.01" class="form-control text-center" name="goods[{{ $index }}][weight]" 
+                                                           value="{{ $good->weight }}" min="0">
+                                                </td>
+                                                <td>
+                                                    <textarea class="form-control" name="goods[{{ $index }}][notes]" rows="1">{{ $good->notes }}</textarea>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-danger btn-sm delete-row">
+                                                        <i class="fas fa-trash-can"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" name="goods[0][description]" required>
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" class="form-control text-center" name="goods[0][quantity]" min="0">
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" class="form-control text-center" name="goods[0][weight]" min="0">
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" name="goods[0][notes]" rows="1"></textarea>
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm delete-row">
+                                                    <i class="fas fa-trash-can"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-primary rounded-5" id="addGoodRow">
+                                <i class="fas fa-plus me-2"></i>إضافة صف جديد
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -442,6 +536,60 @@
             }
             $('#type').on('change', toggleFields);
             toggleFields();
+
+            // Goods Modal Functionality
+            let goodIndex = {{ $policy->goods ? count($policy->goods) : 1 }};
+
+            // Add new row
+            $('#addGoodRow').on('click', function() {
+                const newRow = `
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" name="goods[${goodIndex}][description]" required>
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" class="form-control text-center" name="goods[${goodIndex}][quantity]" min="0">
+                        </td>
+                        <td>
+                            <input type="number" step="0.01" class="form-control text-center" name="goods[${goodIndex}][weight]" min="0">
+                        </td>
+                        <td>
+                            <textarea class="form-control" name="goods[${goodIndex}][notes]" rows="1"></textarea>
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-danger btn-sm delete-row">
+                                <i class="fas fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                $('#goodsTable tbody').append(newRow);
+                goodIndex++;
+                updateRowIndexes();
+            });
+
+            // Delete row
+            $(document).on('click', '.delete-row', function() {
+                if ($('#goodsTable tbody tr').length > 1) {
+                    $(this).closest('tr').remove();
+                    updateRowIndexes();
+                } else {
+                    alert('يجب وجود صف واحد على الأقل');
+                }
+            });
+
+            // Update row indexes after add/delete
+            function updateRowIndexes() {
+                $('#goodsTable tbody tr').each(function(index) {
+                    $(this).find('input, textarea').each(function() {
+                        const name = $(this).attr('name');
+                        if (name) {
+                            const newName = name.replace(/goods\[\d+\]/, `goods[${index}]`);
+                            $(this).attr('name', newName);
+                        }
+                    });
+                });
+            }
         });
     </script>
 

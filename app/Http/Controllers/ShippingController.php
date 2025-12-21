@@ -180,6 +180,27 @@ class ShippingController extends Controller
         return redirect()->back()->with('success', 'تم تحديث حالة الاستلام بنجاح');
     }
 
+    public function updateGoods(Request $request, ShippingPolicy $policy) {
+        $request->validate([
+            'goods' => 'required|array',
+            'goods.*.description' => 'required|string|max:255',
+            'goods.*.quantity' => 'nullable|numeric|min:0',
+            'goods.*.weight' => 'nullable|numeric|min:0',
+            'goods.*.notes' => 'nullable|string|max:500',
+        ]);
+
+        $old = $policy->load('goods')->toArray();
+        
+        $policy->goods()->delete();
+        
+        $policy->goods()->createMany($request->goods);
+        
+        $new = $policy->load('goods')->toArray();
+        logActivity('تحديث بضائع بوليصة شحن', "تم تحديث بضائع بوليصة الشحن برقم " . $policy->code, $old, $new);
+        
+        return redirect()->back()->with('success', 'تم تحديث بيانات البضائع بنجاح');
+    }
+
     public function deletePolicy(ShippingPolicy $policy) {
         $old = $policy->load('goods')->toArray();
 
