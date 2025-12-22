@@ -222,10 +222,10 @@
                             <p class="fw-bold mb-0">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</p>
                         </div>
                         <div class="col">
-                            <label class="text-muted small">تم الاستلام؟</label>
+                            <label class="text-muted small">تم التسليم؟</label>
                             @if ($policy->is_received)
                                 <span class="badge status-delivered">
-                                    <i class="fa-solid fa-check-circle"></i> تم الاستلام
+                                    <i class="fa-solid fa-check-circle"></i> تم التسليم
                                 </span>
                             @else
                                 <span class="badge status-waiting">

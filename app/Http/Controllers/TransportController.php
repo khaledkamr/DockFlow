@@ -158,6 +158,22 @@ class TransportController extends Controller
         return redirect()->back()->with('success', 'تم تحديث بيانات اشعار النقل بنجاح');
     }
 
+    public function toggleReceiveStatus(TransportOrder $transportOrder) {
+        $transportOrder->is_received = !$transportOrder->is_received;
+        $transportOrder->save();
+
+        $container = $transportOrder->containers()->first();
+        if ($transportOrder->is_received) {
+            $container->status = 'تم التسليم';
+        } else {
+            $container->status = 'قيد النقل';
+        }
+        $container->save();
+
+        logActivity('تحديث حالة تسليم اشعار النقل', "تم تحديث حالة التسليم لاشعار النقل برقم " . $transportOrder->code . " إلى " . ($transportOrder->is_received ? 'تم التسليم' : 'في الانتظار'));
+        return redirect()->back()->with('success', 'تم تحديث حالة التسليم بنجاح');
+    }
+
     public function transportOrderDetails(TransportOrder $transportOrder) {
         $transportOrder->load('driver', 'vehicle', 'containers.containerType');
         $drivers = Driver::all();

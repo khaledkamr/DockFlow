@@ -122,7 +122,7 @@
                                         data-lucide="saudi-riyal"></i></td>
                                 <td>
                                     <span class="badge status-delivered">
-                                        تم الاستلام <i class="fa-solid fa-check"></i>
+                                        تم التسليم <i class="fa-solid fa-check"></i>
                                     </span>
                                 </td>
                             </tr>

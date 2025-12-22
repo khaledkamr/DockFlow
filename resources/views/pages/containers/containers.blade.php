@@ -3,8 +3,6 @@
 @section('title', 'ساحة التخزين')
 
 @section('content')
-    <h1 class="mb-4">ساحة التخزين</h1>
-
     <div class="row g-3 mb-3">
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card rounded-4 border-0 shadow-sm ps-3 pe-3">

@@ -125,6 +125,7 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::post('/transport/orders/store', 'storeTransportOrder')->name('transportOrders.store');
     Route::patch('/transport/orders/update/{transportOrder:uuid}', 'updateTransportOrder')->name('transportOrders.update');
     Route::patch('/transport/orders/{transportOrder:uuid}/update-notes', 'updateNotes')->name('transportOrders.notes');
+    Route::patch('/transport/orders/{transportOrder:uuid}/toggle-receive-status', 'toggleReceiveStatus')->name('transportOrders.toggle'); 
     Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
     Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('relation.drivers.vehicles');
     Route::post('drivers/store', 'storeDriver')->name('relation.driver.store');

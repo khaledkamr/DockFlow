@@ -166,24 +166,12 @@
     <!-- معلومات النقل -->
     <div class="col-12 col-md-6 mb-4">
         <div class="card shadow-sm h-100">
-            <div class="card-header bg-dark text-white">
+            <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
                 <h5 class="mb-0"><i class="fa-solid fa-route"></i> معلومات النقل</h5>
+                <p class="fw-semibold mb-0">{{ \Carbon\Carbon::parse($transportOrder->date)->format('Y/m/d') }}</p>
             </div>
             <div class="card-body">
                 <div class="row g-2 mb-3">
-                    <div class="col-6 col-sm-6">
-                        <label class="text-muted small d-block">رقم المعاملة</label>
-                        <a href="{{ route('transactions.details', $transportOrder->transaction) }}"
-                            class="text-decoration-none text-primary fw-bold">
-                            {{ $transportOrder->transaction->code }}
-                        </a>
-                    </div>
-                    <div class="col-6 col-sm-6">
-                        <label class="text-muted small">التاريخ</label>
-                        <p class="fw-bold mb-0">{{ \Carbon\Carbon::parse($transportOrder->date)->format('Y/m/d') }}</p>
-                    </div>
-                </div>
-                <div class="row g-2">
                     <div class="col-6 col-sm-6">
                         <label class="text-muted small">مكان التحميل والتسليم</label>
                         <p class="fw-semibold mb-0">
@@ -194,12 +182,44 @@
                         </p>
                     </div>
                     <div class="col-6 col-sm-6">
-                        <label class="text-muted small">اسم العميل</label>
+                        <label class="text-muted small">الى العميل</label>
                         <p class="fw-bold mb-0">
                             <a href="{{ route('users.customer.profile', $transportOrder->customer) }}" class="text-decoration-none text-dark">
                                 {{ $transportOrder->customer->name }}
                             </a>
                         </p>
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-6 col-sm-6">
+                        <label class="text-muted small d-block">رقم المعاملة</label>
+                        <a href="{{ route('transactions.details', $transportOrder->transaction) }}"
+                            class="text-decoration-none text-primary fw-bold">
+                            {{ $transportOrder->transaction->code }}
+                        </a>
+                    </div>
+                    <div class="col-6 col-sm-6">
+                        <label class="text-muted small">تم التسليم؟</label>
+                        @if ($transportOrder->is_received)
+                            <span class="badge status-delivered">
+                                <i class="fa-solid fa-check-circle"></i> تم التسليم
+                            </span>
+                        @else
+                            <span class="badge status-waiting">
+                                <i class="fa-solid fa-clock"></i> في الانتظار
+                            </span>
+                        @endif
+                        <form method="POST" action="{{ route('transportOrders.toggle', $transportOrder) }}" class="d-inline mt-2">
+                            @csrf
+                            @method('PATCH')
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="isReceivedToggle"
+                                    {{ $transportOrder->is_received ? 'checked' : '' }} onchange="this.form.submit()">
+                                <label class="form-check-label small" for="isReceivedToggle">
+                                    تغيير الحالة
+                                </label>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
