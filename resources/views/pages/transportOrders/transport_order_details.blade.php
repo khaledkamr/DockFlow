@@ -185,14 +185,21 @@
                 </div>
                 <div class="row g-2">
                     <div class="col-6 col-sm-6">
-                        <label class="text-muted small">مكان التحميل</label>
-                        <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i>
-                            {{ $transportOrder->from }}</p>
+                        <label class="text-muted small">مكان التحميل والتسليم</label>
+                        <p class="fw-semibold mb-0">
+                            <i class="fas fa-map-marker-alt text-danger"></i>
+                            {{ $transportOrder->from }} - 
+                            <i class="fas fa-map-marker-alt text-success"></i>
+                            {{ $transportOrder->to }}</p>
+                        </p>
                     </div>
                     <div class="col-6 col-sm-6">
-                        <label class="text-muted small">مكان التسليم</label>
-                        <p class="fw-semibold mb-0"><i class="fas fa-map-marker-alt text-danger"></i>
-                            {{ $transportOrder->to }}</p>
+                        <label class="text-muted small">اسم العميل</label>
+                        <p class="fw-bold mb-0">
+                            <a href="{{ route('users.customer.profile', $transportOrder->customer) }}" class="text-decoration-none text-dark">
+                                {{ $transportOrder->customer->name }}
+                            </a>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -320,8 +327,7 @@
                                     </a>
                                 </td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('users.customer.profile', $container->customer) }}"
-                                        class="text-decoration-none text-dark">
+                                    <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-decoration-none text-dark">
                                         {{ $container->customer->name }}
                                     </a>
                                 </td>
