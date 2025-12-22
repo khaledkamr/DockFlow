@@ -620,6 +620,11 @@ class InvoiceController extends Controller
         if($invoice->is_posted) {
             return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
         }
+        foreach($invoice->containers()->first()->transactions()->first()->items as $item) {
+            if(!$item->is_posted) {
+                return redirect()->back()->with('error', 'لا يمكن ترحيل فاتورة تخليص قبل ترحيل جميع بنود المعاملة المرتبطة بها');
+            }
+        }
 
         $creditAccount = $invoice->customer->account; // مدين
         
