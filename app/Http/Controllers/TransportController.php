@@ -13,6 +13,8 @@ use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\Places;
+use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
 use App\Models\Vehicle;
@@ -47,11 +49,13 @@ class TransportController extends Controller
         $transactions = Transaction::where('status', 'معلقة')->with('containers.transportOrders')->get();
         $drivers = Driver::all();
         $suppliers = Supplier::all();
+        $destinations = Places::all();
 
         return view('pages.transportOrders.create_transport_order', compact(
             'transactions', 
             'drivers', 
-            'suppliers'
+            'suppliers',
+            'destinations'
         ));
     }
 
@@ -114,6 +118,15 @@ class TransportController extends Controller
 
             $new = $journal->load('lines')->toArray();
             logActivity('إنشاء قيد', "تم إنشاء قيد يومي برقم " . $journal->code . "من اشعار نقل رقم " . $transportOrder->code, null, $new);
+        }
+
+        if($transportOrder->from && $transportOrder->to) {
+            Places::firstOrCreate([
+                'name' => $transportOrder->from,
+            ]);
+            Places::firstOrCreate([
+                'name' => $transportOrder->to,
+            ]);
         }
 
         return redirect()->back()->with('success', 'تم إنشاء إشعار نقل جديد, <a class="text-white fw-bold" href="'.route('transactions.transportOrders.details', $transportOrder).'">عرض الإشعار؟</a>');
@@ -190,6 +203,7 @@ class TransportController extends Controller
         $view = $request->query('view', 'السائقين');
         $drivers = Driver::with('vehicle')->get();
         $vehicles = Vehicle::with('driver')->get();
+        $destinations = Places::all();
 
         $vehiclesWithoutDriver = $vehicles->filter(function($vehicle) {
             return $vehicle->driver == null;
@@ -213,7 +227,8 @@ class TransportController extends Controller
             'view', 
             'drivers', 
             'vehicles', 
-            'vehiclesWithoutDriver'
+            'vehiclesWithoutDriver',
+            'destinations'
         ));
     }
 
@@ -311,6 +326,39 @@ class TransportController extends Controller
         logActivity('حذف شاحنة', "تم حذف الشاحنة برقم اللوحة " . $vehicle->plate_number, $old, null);
 
         return redirect()->back()->with('success', 'تم حذف الشاحنة بنجاح');
+    }
+
+    public function storeDestination(Request $request) {
+        $request->validate([
+            'name' => 'required|string|unique:places,name',
+        ]);
+
+        $new = Places::create([
+            'name' => $request->name,
+        ]);
+        logActivity('إنشاء موقع', "تم إنشاء موقع جديد باسم " . $new->name);
+
+        return redirect()->back()->with('success', 'تم إضافة موقع جديد بنجاح');
+    }
+
+    public function updateDestination(Request $request, Places $destination) {
+        $request->validate([
+            'name' => 'required|string|unique:places,name,'.$destination->id,
+        ]);
+
+        $destination->update([
+            'name' => $request->name,
+        ]);
+        logActivity('تعديل موقع', "تم تعديل اسم الموقع باسم " . $destination->name . "الى " . $request->name);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات الموقع بنجاح');
+    }
+
+    public function deleteDestination(Places $destination) {
+        $destination->delete();
+        logActivity('حذف موقع', "تم حذف الموقع باسم " . $destination->name);
+
+        return redirect()->back()->with('success', 'تم حذف الموقع بنجاح');
     }
 
     public function reports(Request $request) {

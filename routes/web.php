@@ -127,13 +127,21 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::patch('/transport/orders/{transportOrder:uuid}/update-notes', 'updateNotes')->name('transportOrders.notes');
     Route::patch('/transport/orders/{transportOrder:uuid}/toggle-receive-status', 'toggleReceiveStatus')->name('transportOrders.toggle'); 
     Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
+
     Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('relation.drivers.vehicles');
+
     Route::post('drivers/store', 'storeDriver')->name('relation.driver.store');
     Route::put('drivers/update/{driver:id}', 'updateDriver')->name('relation.driver.update');
     Route::delete('drivers/delete/{driver:id}', 'deleteDriver')->name('relation.driver.delete');
+
     Route::post('vehicles/store', 'storeVehicle')->name('relation.vehicle.store');
     Route::put('vehicles/update/{vehicle:id}', 'updateVehicle')->name('relation.vehicle.update');
     Route::delete('vehicles/delete/{vehicle:id}', 'deleteVehicle')->name('relation.vehicle.delete');
+
+    Route::post('/destination/store', 'storeDestination')->name('destination.store');
+    Route::put('/destination/update/{destination:id}', 'updateDestination')->name('destination.update');
+    Route::delete('/destination/delete/{destination:id}', 'deleteDestination')->name('destination.delete');
+
     Route::get('/transport/reports', 'reports')->name('transactions.transportOrders.reports');
 });
 

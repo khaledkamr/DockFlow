@@ -30,16 +30,28 @@
                 </div>
                 <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">مكان التحميل</label>
-                    <input type="text" class="form-control border-primary" id="from" name="from"
-                        value="{{ old('from') }}">
+                    <select class="form-select border-primary" id="from" name="from">
+                        <option value="">اختر مكان التحميل...</option>
+                        @foreach ($destinations as $destination)
+                            <option value="{{ $destination->name }}" {{ old('from') == $destination->name ? 'selected' : '' }}>
+                                {{ $destination->name }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('from')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="col-6 col-md-6 col-lg-3">
                     <label class="form-label">مكان التفريغ</label>
-                    <input type="text" class="form-control border-primary" id="to" name="to"
-                        value="{{ old('to') }}">
+                    <select class="form-select border-primary" id="to" name="to">
+                        <option value="">اختر مكان التفريغ...</option>
+                        @foreach ($destinations as $destination)
+                            <option value="{{ $destination->name }}" {{ old('to') == $destination->name ? 'selected' : '' }}>
+                                {{ $destination->name }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('to')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -220,6 +232,20 @@
             const dropoffInput = document.querySelector('#to');
             const clientPriceInput = document.querySelector('#client_cost');
             const customerId = document.querySelector('#customer_id');
+
+            $(pickupInput).select2({
+                placeholder: "",
+                allowClear: true,
+                width: '100%',
+                tags: true,
+            });
+
+            $(dropoffInput).select2({
+                placeholder: "",
+                allowClear: true,
+                width: '100%',
+                tags: true,
+            });
 
             function checkService() {
                 const pickup = pickupInput.value;

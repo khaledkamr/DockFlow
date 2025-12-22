@@ -55,9 +55,9 @@ class ShippingController extends Controller
         $customers = Customer::all();
         $suppliers = Supplier::all();
         $drivers = Driver::with('vehicle')->get();
-        $places = Places::all();
+        $destinations = Places::all();
 
-        return view('pages.shipping.create_policy', compact('customers', 'suppliers', 'drivers', 'places'));
+        return view('pages.shipping.create_policy', compact('customers', 'suppliers', 'drivers', 'destinations'));
     }
 
     public function storePolicy(ShippingRequest $request) {
@@ -101,12 +101,9 @@ class ShippingController extends Controller
         if($policy->from && $policy->to) {
             Places::firstOrCreate([
                 'name' => $policy->from,
-                'company_id' => Auth::user()->company_id,
             ]);
-
             Places::firstOrCreate([
                 'name' => $policy->to,
-                'company_id' => Auth::user()->company_id,
             ]);
         }
 
