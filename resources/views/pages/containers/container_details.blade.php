@@ -365,6 +365,36 @@
                             </div>
                         @endif
 
+                        @if($transportOrder)
+                            <div class="timeline-state">
+                                <div class="state-connector"></div>
+                                <div class="position-relative" style="z-index: 3;">
+                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
+                                        style="width: 48px; height: 48px;">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div class="state-pulse"></div>
+                                </div>
+                                <div
+                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
+                                    <div
+                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
+                                        <h5 class="mb-0 fs-6">اشعار نقل</h5>
+                                        <small class="d-flex flex-wrap align-items-center text-secondary">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            <span>{{ \Carbon\Carbon::parse($transportOrder->created_at)->format('d M Y') }}</span>
+                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
+                                                {{ \Carbon\Carbon::parse($transportOrder->created_at)->format('h:i A') }}
+                                            </span>
+                                        </small>
+                                    </div>
+                                    <p class="text-muted mb-0 small">
+                                        تم إنشاء اشعار نقل للحاوية من {{ $transportOrder->from }} الى {{ $transportOrder->to }} بواسطة <strong>{{ $transportOrder->made_by->name }}</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
+
                         @if ($transaction)
                             <div class="timeline-state">
                                 <div class="state-connector"></div>
