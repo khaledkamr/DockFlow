@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Gate;
 class ContainerController extends Controller
 {
     public function containers(Request $request) {
+        $containerTypes = Container_type::all();
         $containers = Container::orderBy('id', 'desc')->get();
         $lateContainers = Container::where('status', 'في الساحة')
             ->whereHas('policies', function($query) {
@@ -69,7 +70,7 @@ class ContainerController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('pages.containers.containers', compact('containers', 'lateContainers'));
+        return view('pages.containers.containers', compact('containers', 'lateContainers', 'containerTypes'));
     }
 
     public function containerStore(Request $request) {
@@ -95,6 +96,7 @@ class ContainerController extends Controller
 
         $container->code = $request->code;
         $container->location = $request->location;
+        $container->container_type_id = $request->container_type_id;
         $container->notes = $request->notes;
         $container->save();
 

@@ -185,7 +185,7 @@
 
                         <div class="modal fade" id="editContainerModal{{ $container->id }}" tabindex="-1"
                             aria-labelledby="editContainerModalLabel{{ $container->id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header bg-primary">
                                         <h5 class="modal-title text-white fw-bold"
@@ -198,7 +198,7 @@
                                         @method('PATCH')
                                         <div class="modal-body text-dark">
                                             <div class="row g-3 mb-3">
-                                                <div class="col-12 col-md-6">
+                                                <div class="col-12 col-md">
                                                     <label for="code" class="form-label">رقم الحـــاوية</label>
                                                     <input type="text" class="form-control border-primary"
                                                         name="code" value="{{ $container->code }}">
@@ -206,11 +206,25 @@
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                                <div class="col-12 col-md-6">
+                                                <div class="col-12 col-md">
                                                     <label for="location" class="form-label">المـــوقـــع</label>
                                                     <input type="text" class="form-control border-primary"
                                                         name="location" value="{{ $container->location }}">
                                                     @error('location')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md">
+                                                    <label for="container_type_id" class="form-label">نوع الحاوية</label>
+                                                    <select class="form-select border-primary" name="container_type_id" required>
+                                                        <option value="">اختر نوع الحاوية</option>
+                                                        @foreach($containerTypes as $type)
+                                                            <option value="{{ $type->id }}" {{ $container->container_type_id == $type->id ? 'selected' : '' }}>
+                                                                {{ $type->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('container_type_id')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
