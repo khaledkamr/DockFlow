@@ -190,7 +190,7 @@
                             <i class="fas fa-map-marker-alt text-danger"></i>
                             {{ $transportOrder->from }} - 
                             <i class="fas fa-map-marker-alt text-success"></i>
-                            {{ $transportOrder->to }}</p>
+                            {{ $transportOrder->to }}
                         </p>
                     </div>
                     <div class="col-6 col-sm-6">

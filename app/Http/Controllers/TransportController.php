@@ -23,7 +23,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 class TransportController extends Controller
 {
     public function transportOrders(Request $request) {
-        $transportOrders = TransportOrder::orderBy('date')->get();
+        $transportOrders = TransportOrder::orderBy('code', 'desc')->get();
 
         $search = $request->input('search', null);
         if ($search) {

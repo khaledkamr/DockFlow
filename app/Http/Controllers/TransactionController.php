@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Gate;
 class TransactionController extends Controller
 {
     public function transactions(Request $request) {
-        $transactions = Transaction::orderBy('date', 'desc')->get();
+        $transactions = Transaction::orderBy('code', 'desc')->get();
 
         $search = $request->input('search', null);
         if ($search) {
