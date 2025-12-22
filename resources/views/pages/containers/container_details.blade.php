@@ -437,7 +437,8 @@
                                         </small>
                                     </div>
                                     <p class="text-muted mb-0 small">
-                                        تم إنشاء اشعار نقل للحاوية من {{ $transportOrder->from }} الى {{ $transportOrder->to }} بواسطة <strong>{{ $transportOrder->made_by->name }}</strong>
+                                        تم نقل للحاوية من {{ $transportOrder->from }} الى {{ $transportOrder->to }} بموجب اشعار نقل <a href="{{ route('transactions.transportOrders.details', $transportOrder) }}"
+                                            class="text-decoration-none fw-bold">{{ $transportOrder->code }}</a> بواسطة <strong>{{ $transportOrder->made_by->name }}</strong>
                                     </p>
                                 </div>
                             </div>
@@ -467,8 +468,7 @@
                                         </small>
                                     </div>
                                     <p class="text-muted mb-0 small">
-                                        تم فوترة الحاوية بموجب فاتورة رقم <a
-                                            href="{{ route('invoices.clearance.details', $clearanceInvoice) }}"
+                                        تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.clearance.details', $clearanceInvoice) }}"
                                             class="text-decoration-none fw-bold">{{ $clearanceInvoice->code }}</a> بواسطة
                                         <strong>{{ $clearanceInvoice->made_by->name ?? 'N/A' }}</strong>
                                     </p>
