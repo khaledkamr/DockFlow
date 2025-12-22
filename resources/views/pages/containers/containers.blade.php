@@ -74,11 +74,20 @@
                             {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
                             جميع الحاويات</option>
                         <option value="في الساحة" {{ request()->query('status') === 'في الساحة' ? 'selected' : '' }}>
-                            في الساحة</option>
+                            في الساحة
+                        </option>
                         <option value="تم التسليم" {{ request()->query('status') === 'تم التسليم' ? 'selected' : '' }}>
-                            تم التسليم</option>
+                            تم التسليم
+                        </option>
                         <option value="متأخر" {{ request()->query('status') === 'متأخر' ? 'selected' : '' }}>
-                            متأخر</option>
+                            متأخر
+                        </option>
+                        <option value="قيد النقل" {{ request()->query('status') === 'قيد النقل' ? 'selected' : '' }}>
+                            قيد النقل
+                        </option>
+                        <option value="في الميناء" {{ request()->query('status') === 'في الميناء' ? 'selected' : '' }}>
+                            في الميناء
+                        </option>
                     </select>
                     @if (request()->query('search'))
                         <input type="hidden" name="search" value="{{ request()->query('search') }}">
