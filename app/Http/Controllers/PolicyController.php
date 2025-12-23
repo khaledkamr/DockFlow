@@ -32,7 +32,7 @@ class PolicyController extends Controller
         $search = $request->input('search', null);
         if($search) {
             $policies = $policies->filter(function($policy) use($search) {
-                return stripos($policy->id, $search) !== false 
+                return stripos($policy->code, $search) !== false 
                     || stripos($policy->customer->name, $search) !== false
                     || stripos($policy->date, $search) !== false;
             });
