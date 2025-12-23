@@ -124,11 +124,22 @@
                     </div>
                     
                     <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-lg-2">
+                            <label class="form-label">نوع الإضافة <span class="text-danger">*</span></label>
+                            <select class="form-select border-primary container-type-select" data-row="0">
+                                <option value="new" selected>حاوية جديدة</option>
+                                <option value="existing">حاوية موجودة</option>
+                            </select>
+                        </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">رقم الحاويــة <span class="text-danger">*</span></label>
                             <input type="hidden" name="containers[0][id]">
-                            {{-- <input type="text" class="form-control border-primary" name="containers[0][code]" required> --}}
-                            <select name="containers[0][code]" id="container_code" class="form-select border-primary" required>
+                            
+                            <!-- New Container Input (Default) -->
+                            <input type="text" class="form-control border-primary container-code-input" name="containers[0][code]" placeholder="أدخل رقم الحاوية" required>
+                            
+                            <!-- Existing Container Select (Hidden by default) -->
+                            <select name="containers[0][code_select]" class="form-select border-primary container-code-select" style="display: none;">
                                 <option value="">اختر رقم الحاوية...</option>
                                 @foreach ($containers as $container)
                                     <option value="{{ $container->code }}" data-id="{{ $container->id }}">
@@ -151,7 +162,7 @@
                             </select>
                             <div class="invalid-feedback"></div>
                         </div>
-                        <div class="col-6 col-sm-6 col-lg-3">
+                        <div class="col-6 col-sm-6 col-lg-1">
                             <label class="form-label">الموقــع</label>
                             <input type="text" class="form-control border-primary" name="containers[0][location]">
                             <div class="invalid-feedback"></div>
@@ -176,15 +187,59 @@
 </div>
 
 <script>
-    $('#container_code').select2({
-        placeholder: "ابحث عن رقم الحاوية...",
-        allowClear: true,
-        tags: true
-    });
+    // Initialize select2 for existing container selects
+    function initializeSelect2ForContainer(selectElement) {
+        $(selectElement).select2({
+            placeholder: "ابحث عن رقم الحاوية...",
+            allowClear: true
+        });
 
-    $('#container_code').on('change', function () {
-        let id = $(this).find(':selected').data('id');
-        $(this).closest('.container-row').find('input[name^="containers"][name$="[id]"]').val(id || '');
+        $(selectElement).on('change', function () {
+            let id = $(this).find(':selected').data('id');
+            $(this).closest('.container-row').find('input[name^="containers"][name$="[id]"]').val(id || '');
+        });
+    }
+
+    // Handle container type toggle (new/existing)
+    $(document).on('change', '.container-type-select', function() {
+        const row = $(this).closest('.container-row');
+        const selectedType = $(this).val();
+        const codeInput = row.find('.container-code-input');
+        const codeSelect = row.find('.container-code-select');
+        const hiddenId = row.find('input[name^="containers"][name$="[id]"]');
+
+        console.log('Selected Type:', selectedType);
+        
+        if (selectedType === 'new') {
+            // Show text input for new container
+            codeInput.css('display', 'block').prop('required', true).prop('disabled', false);
+            codeSelect.css('display', 'none').prop('required', false).prop('disabled', true);
+            
+            // Destroy select2 instance if exists
+            if (codeSelect.hasClass('select2-hidden-accessible')) {
+                codeSelect.select2('destroy');
+            }
+            hiddenId.val(''); // Clear container ID
+            
+            // Update name attribute
+            const rowIndex = row.attr('data-row');
+            codeInput.attr('name', `containers[${rowIndex}][code]`);
+            codeSelect.attr('name', `containers[${rowIndex}][code_select]`);
+        } else {
+            // Show select for existing container
+            codeInput.css('display', 'none').prop('required', false).prop('disabled', true);
+            codeSelect.css('display', 'block').prop('required', true).prop('disabled', false);
+            
+            // Update name attribute
+            const rowIndex = row.attr('data-row');
+            codeInput.attr('name', `containers[${rowIndex}][code_input]`);
+            codeSelect.attr('name', `containers[${rowIndex}][code]`);
+            
+            // Initialize select2 if not already initialized
+            if (!codeSelect.hasClass('select2-hidden-accessible')) {
+                initializeSelect2ForContainer(codeSelect);
+            }
+        }
     });
 
     $('#customer_name').select2({
@@ -284,11 +339,37 @@
                 input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
             });
             
-            // Update select names
+            // Update select names and data-row attributes
             newRow.querySelectorAll('select').forEach(select => {
-                select.selectedIndex = 0;
+                if (select.classList.contains('container-type-select')) {
+                    select.value = 'new'; // Reset to default (new container)
+                    select.setAttribute('data-row', index);
+                } else {
+                    select.selectedIndex = 0;
+                }
                 select.name = select.name.replace(/\[\d+\]/, `[${index}]`);
             });
+            
+            // Reset to new container mode (default)
+            const codeInput = newRow.querySelector('.container-code-input');
+            const codeSelect = newRow.querySelector('.container-code-select');
+            
+            if (codeInput && codeSelect) {
+                codeInput.style.display = 'block';
+                codeInput.required = true;
+                codeInput.disabled = false;
+                codeInput.setAttribute('name', `containers[${index}][code]`);
+                
+                codeSelect.style.display = 'none';
+                codeSelect.required = false;
+                codeSelect.disabled = true;
+                codeSelect.setAttribute('name', `containers[${index}][code_select]`);
+                
+                // Destroy select2 instance if exists
+                if ($(codeSelect).hasClass('select2-hidden-accessible')) {
+                    $(codeSelect).select2('destroy');
+                }
+            }
             
             // Show remove button
             const removeBtn = newRow.querySelector('.remove-container');
