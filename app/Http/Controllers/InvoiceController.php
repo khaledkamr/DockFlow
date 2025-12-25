@@ -100,12 +100,20 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
+        $containerIds = $request->input('container_ids', []);
+        $containers = Container::whereIn('id', $containerIds)->get();
+
+        foreach($containers as $container) {
+            if($container->transactions->first()) {
+                return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة تخزين على حاوية مرتبطة بمعاملة تخليص');
+            }
+        }
+
         $validated = $request->validated();
         $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
         $invoice = Invoice::create($validated);
 
-        $containerIds = $request->input('container_ids', []);
-        $containers = Container::whereIn('id', $containerIds)->get();
+        
         $amountBeforeTax = 0;
 
         foreach($containers as $container) {
