@@ -629,7 +629,7 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
         }
         foreach($invoice->containers()->first()->transactions()->first()->items as $item) {
-            if(!$item->is_posted) {
+            if($item->type == 'مصروف' && !$item->is_posted) {
                 return redirect()->back()->with('error', 'لا يمكن ترحيل فاتورة تخليص قبل ترحيل جميع بنود المعاملة المرتبطة بها');
             }
         }
