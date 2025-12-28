@@ -27,9 +27,7 @@
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if (
-                $transaction->containers->first()->invoices &&
-                    $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
+            @if ($transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
                     <i class="fas fa-scroll me-1"></i>

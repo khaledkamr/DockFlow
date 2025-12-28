@@ -52,7 +52,11 @@
                 @else
                     @foreach ($transactions as $transaction)
                         <tr>
-                            <td class="text-center text-primary fw-bold">{{ $transaction->code }}</td>
+                            <td class="text-center text-primary fw-bold">
+                                <a href="{{ route('transactions.details', $transaction) }}" class="text-decoration-none">
+                                    {{ $transaction->code }}
+                                </a>
+                            </td>
                             <td class="text-center text-primary fw-bold">{{ $transaction->policy_number ?? 'N/A' }}</td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $transaction->customer) }}"
