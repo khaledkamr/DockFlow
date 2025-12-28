@@ -81,6 +81,9 @@ class TransactionController extends Controller
         if(Gate::denies('تعديل معاملة تخليص')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات المعاملة');
         }
+        if($request->customer_id != $transaction->customer_id && $transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) {
+            return redirect()->back()->with('error', 'لا يمكن تغيير العميل للمعاملة بعد إصدار فاتورة لها');
+        }
         
         $old = $transaction->toArray();
 
