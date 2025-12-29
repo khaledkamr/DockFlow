@@ -112,7 +112,7 @@
                         </div>
                         <div class="col-12 col-md-4 external-field">
                             <label class="form-label">مصاريف المورد</label>
-                            <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
+                            <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost" min="0" step="any"
                                 value="{{ old('supplier_cost', $transportOrder->supplier_cost) }}">
                             @error('supplier_cost')
                                 <div class="text-danger">{{ $message }}</div>
@@ -120,7 +120,7 @@
                         </div>
                         <div class="col-12 col-md internal-field">
                             <label class="form-label">مصاريف الديزل</label>
-                            <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
+                            <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost" min="0" step="any"
                                 value="{{ old('diesel_cost', $transportOrder->diesel_cost) }}">
                             @error('diesel_cost')
                                 <div class="text-danger">{{ $message }}</div>
@@ -128,7 +128,7 @@
                         </div>
                         <div class="col-12 col-md internal-field">
                             <label class="form-label">عمولة السائق</label>
-                            <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
+                            <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage" min="0" step="any"
                                 value="{{ old('driver_wage', $transportOrder->driver_wage) }}">
                             @error('driver_wage')
                                 <div class="text-danger">{{ $message }}</div>
@@ -136,7 +136,7 @@
                         </div>
                         <div class="col-12 col-md">
                             <label class="form-label">مصاريف أخرى</label>
-                            <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
+                            <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses" min="0" step="any"
                                 value="{{ old('other_expenses', $transportOrder->other_expenses) }}">
                             @error('other_expenses')
                                 <div class="text-danger">{{ $message }}</div>
@@ -144,7 +144,7 @@
                         </div>
                         <div class="col-12 col-md">
                             <label class="form-label">سعر العميل</label>
-                            <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
+                            <input type="number" class="form-control border-primary" id="client_cost" name="client_cost" min="0" step="any"
                                 value="{{ old('client_cost', $transportOrder->client_cost) }}">
                             @error('client_cost')
                                 <div class="text-danger">{{ $message }}</div>
