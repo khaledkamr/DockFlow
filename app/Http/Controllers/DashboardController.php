@@ -128,6 +128,92 @@ class DashboardController extends Controller
         ));
     }
 
+    public function tag_dashboard(Request $request) {
+        $customers = Customer::all()->count();
+        $users = User::all()->count();
+        $contracts = Contract::all()->count();
+        $invoices = Invoice::all()->count();
+        $containers = Container::all();
+        $containerTypes = Container_type::all();
+
+        $date = $request->input('date', Carbon::now()->format('Y-m-d'));
+        $availableContainers = $containers->where('date', '<=', $date)->where('status', 'في الساحة')->count();
+        
+        $receivedContainers = $containers->where('date', $date)->count();
+        $deliveredContainers = $containers->where('exit_date', $date)->count();
+        
+        $policies = Policy::where('date', $date)->get();
+        
+        $containersEnteredTrend = [];
+        $containersExitTrend = [];
+        for($i = 6; $i >= 0; $i--) {
+            $day = Carbon::parse($date)->subDays($i);
+            $dayMapping = [
+                'Monday' => 'الاثنين',
+                'Tuesday' => 'الثلاثاء',
+                'Wednesday' => 'الأربعاء',
+                'Thursday' => 'الخميس',
+                'Friday' => 'الجمعة',
+                'Saturday' => 'السبت',
+                'Sunday' => 'الأحد'
+            ];
+            $englishDay = $day->format('l');
+            $arabicDay = $dayMapping[$englishDay];
+            $containersEnteredTrend[$arabicDay] = $containers->where('date', $day->format('Y-m-d'))->count();
+            $containersExitTrend[$day->format('l')] = $containers->where('exit_date', $day->format('Y-m-d'))->count();
+        }
+
+        $containersTypes = Container_type::all();
+        $containersDistribution = [];
+        foreach($containersTypes as $type) {
+            $containersDistribution[$type->name] = $containers->where('container_type_id', $type->id)->where('status', 'في الساحة')->count();
+        }
+
+        $receipt_vouchers_amount = $policies->where('type', 'سند صرف نقدي')->sum('amount');
+        $payment_vouchers_amount = $policies->where('type', 'سند قبض نقدي')->sum('amount');
+        
+        $balance = 0;
+        $balanceBox = 0;
+        $vouchersBox = Voucher::where('type', 'سند قبض نقدي')
+            ->orWhere('type', 'سند صرف نقدي')
+            ->get();
+
+        foreach($vouchersBox as $voucher) {
+            if($voucher->type == 'سند قبض نقدي') {
+                $balance += $voucher->amount;
+            } elseif($voucher->type == 'سند صرف نقدي') {
+                $balance -= $voucher->amount;
+            }
+        }
+
+        $topServices = [
+            'خدمات كرين' => Policy::where('type', 'خدمات')->count(),
+            'تخزين' => Policy::where('type', 'تخزين')->count(),
+            'شحن بري' => ShippingPolicy::count(),
+            'اشعار نقل' => TransportOrder::count(),
+            'تخليص جمركي' => Transaction::count()
+        ];
+
+        return view('pages.dashboards.tag_dashboard', compact(
+            'customers', 
+            'users',
+            'contracts', 
+            'invoices', 
+            'containers',
+            'containerTypes',
+            'availableContainers',
+            'receivedContainers',
+            'deliveredContainers',
+            'containersEnteredTrend',
+            'containersExitTrend',
+            'containersDistribution',
+            'receipt_vouchers_amount',
+            'payment_vouchers_amount',
+            'balanceBox',
+            'topServices'
+        ));
+    }
+
     public function masar_dashboard() {
         $customers = Customer::all()->count();
         $users = User::all()->count();

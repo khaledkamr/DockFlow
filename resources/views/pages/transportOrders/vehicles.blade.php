@@ -105,7 +105,7 @@
         <label class="form-label d-none d-lg-block opacity-0">.</label>
         <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" 
             type="button" data-bs-toggle="modal" data-bs-target="#createVehicleModal">
-            <i class="fa-solid fa-plus ms-2"></i>
+            <i class="fa-solid fa-plus me-2"></i>
             <span>أضف شاحنة جديدة</span>
         </button>
     </div>
@@ -155,6 +155,7 @@
     <table class="table table-hover mb-0">
         <thead>
             <tr>
+                <th class="text-center bg-dark text-white">#</th>
                 <th class="text-center bg-dark text-white">مركز التكلفة</th>
                 <th class="text-center bg-dark text-white">رقم اللوحة</th>
                 <th class="text-center bg-dark text-white">النوع</th>
@@ -165,13 +166,14 @@
         <tbody>
             @if ($vehicles->isEmpty())
                 <tr>
-                    <td colspan="5" class="text-center py-4">
+                    <td colspan="6" class="text-center py-4">
                         <div class="status-danger fs-6">لم يتم العثور على اي شاحنات!</div>
                     </td>
                 </tr>
             @else
                 @foreach ($vehicles as $vehicle)
                     <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center text-primary fw-bold">{{ $vehicle->costCenter->code ?? 'N/A' }}</td>
                         <td class="text-center">{{ $vehicle->plate_number }}</td>
                         <td class="text-center">{{ $vehicle->type }}</td>

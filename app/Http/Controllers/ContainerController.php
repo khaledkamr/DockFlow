@@ -16,7 +16,7 @@ class ContainerController extends Controller
 {
     public function containers(Request $request) {
         $containerTypes = Container_type::all();
-        $containers = Container::orderBy('id', 'desc')->get();
+        $containers = Container::orderBy('id')->get();
         $lateContainers = Container::where('status', 'في الساحة')
             ->whereHas('policies', function($query) {
             $query->where('type', 'تخزين');
@@ -63,9 +63,9 @@ class ContainerController extends Controller
         }
 
         $containers = new \Illuminate\Pagination\LengthAwarePaginator(
-            $containers->forPage(request()->get('page', 1), 50),
+            $containers->forPage(request()->get('page', 1), 100),
             $containers->count(),
-            50,
+            100,
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );

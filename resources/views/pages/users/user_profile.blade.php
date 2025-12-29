@@ -82,10 +82,10 @@
     </div>
 
     <!-- Account Permissions -->
-    <div class="row mt-4">
+    <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-light">
+                <div class="card-header bg-light py-3">
                     <h6 class="mb-0 fw-bold">
                         <i class="fas fa-shield-alt me-2 text-primary"></i>
                         صلاحيات المستخدم
@@ -107,6 +107,51 @@
                         <div class="text-center text-muted py-4">
                             <i class="fas fa-info-circle me-2"></i>
                             لا توجد صلاحيات محددة لهذا المستخدم
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-light py-3">
+                    <h6 class="mb-0 fw-bold">
+                        <i class="fas fa-history me-2 text-primary"></i>
+                        آخر نشاط
+                    </h6>
+                </div>
+                <div class="card-body">
+                    @if($activities && $activities->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th class="text-center small">النشاط</th>
+                                        <th class="text-center small">التفاصيل</th>
+                                        <th class="text-center small">التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($activities->take(10) as $activity)
+                                        <tr>
+                                            <td>
+                                                <i class="fas fa-circle me-2" style="font-size: 0.5rem; color: #0d6efd;"></i>
+                                                {{ $activity->action }}
+                                            </td>
+                                            <td class="text-center text-muted small">{{ $activity->description ?? '-' }}</td>
+                                            <td class="text-center text-muted small">{{ $activity->created_at->diffForHumans() }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            لا يوجد نشاط مسجل لهذا المستخدم
                         </div>
                     @endif
                 </div>

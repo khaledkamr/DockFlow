@@ -168,7 +168,6 @@
                                 name="payment_grace_period" value="{{ old('payment_grace_period', 7) }}">
                             <select name="payment_grace_period_unit" class="form-select border-primary"
                                 style="max-width: 140px;">
-                                <option value="">وحدة القياس</option>
                                 <option value="يوم" {{ old('payment_grace_period_unit') == 'يوم' ? 'selected' : '' }}>
                                     يوم</option>
                                 <option value="أيام" {{ old('payment_grace_period_unit') == 'أيام' ? 'selected' : '' }}>

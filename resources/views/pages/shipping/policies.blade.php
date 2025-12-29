@@ -81,7 +81,7 @@
                 <tr>
                     <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                     <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
-                    <th class="text-center bg-dark text-white text-nowrap">نوع البوليصة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">نوع الناقل</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ البوليصة</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
@@ -100,7 +100,11 @@
                 @else
                     @foreach ($policies as $policy)
                         <tr>
-                            <td class="text-center text-primary fw-bold text-nowrap">{{ $policy->code }}</td>
+                            <td class="text-center text-primary fw-bold text-nowrap">
+                                <a href="{{ route('shipping.policies.details', $policy) }}" class="text-decoration-none">
+                                    {{ $policy->code }}
+                                </a>
+                            </td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $policy->customer) }}"
                                     class="text-dark text-decoration-none fw-bold">
@@ -180,7 +184,9 @@
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>
 
-    <div class="mb-5"></div>
+    <div class="mt-4">
+        {{ $policies->links('components.pagination') }}
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

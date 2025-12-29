@@ -10,10 +10,10 @@ class AccountsSeeder extends Seeder
 {
     public function run(): void
     {
-        $company_id = 2;
+        $company_id = 3;
 
         $roots = [
-             [
+            [
                 "name" => "الأصول",
                 "code" => "1",
                 "parent_id" => null,

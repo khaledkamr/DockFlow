@@ -65,7 +65,8 @@ class AdminController extends Controller
     public function userProfile(User $user) {
         $roles = Role::all();
         $permissions = Permission::all();
-        return view('pages.users.user_profile', compact('user', 'roles', 'permissions'));
+        $activities = UserLog::where('user_id', $user->id)->orderBy('created_at', 'desc')->limit(100)->get();
+        return view('pages.users.user_profile', compact('user', 'roles', 'permissions', 'activities'));
     }
 
     public function storeUser(Request $request) {

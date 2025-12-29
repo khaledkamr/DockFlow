@@ -10,7 +10,7 @@ class PlacesSeeder extends Seeder
 {
     public function run(): void
     {
-        $company_id = 1;
+        $company_id = 3;
         $places = [
             [
                 'name' => 'الميناء',

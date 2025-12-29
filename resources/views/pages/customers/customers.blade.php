@@ -144,6 +144,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
+                <th class="text-center bg-dark text-white text-nowrap">#</th>
                 <th class="text-center bg-dark text-white text-nowrap">رقم حساب العميل</th>
                 <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
                 <th class="text-center bg-dark text-white text-nowrap">السجل التجاري</th>
@@ -156,13 +157,14 @@
         <tbody>
             @if ($customers->isEmpty())
                 <tr>
-                    <td colspan="8" class="text-center py-4">
+                    <td colspan="9" class="text-center py-4">
                         <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
                     </td>
                 </tr>
             @else
                 @foreach ($customers as $customer)
                     <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center text-primary fw-bold text-nowrap">{{ $customer->account->code }}</td>
                         <td class="text-center">
                             <a href="{{ route('users.customer.profile', $customer) }}"
@@ -180,10 +182,10 @@
                         </td>
                         <td class="text-center text-nowrap">
                             <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-pen-to-square text-primary fs-5 fs-md-6" title="تعديل العميل"></i>
+                                <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>
                             </button>
                             <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-user-xmark text-danger fs-5 fs-md-6" title="حذف العميل"></i>
+                                <i class="fa-solid fa-user-xmark text-danger" title="حذف العميل"></i>
                             </button>
                         </td>
                     </tr>

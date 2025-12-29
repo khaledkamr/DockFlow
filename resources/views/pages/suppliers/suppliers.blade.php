@@ -126,7 +126,7 @@
         <label class="form-label d-none d-lg-block opacity-0">.</label>
         <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center"
             type="button" data-bs-toggle="modal" data-bs-target="#createSupplierModal">
-            <i class="fa-solid fa-user-plus ms-2"></i>
+            <i class="fa-solid fa-user-plus me-2"></i>
             <span>أضف مورد</span>
         </button>
     </div>
@@ -210,12 +210,12 @@
     <table class="table table-hover mb-0">
         <thead>
             <tr>
+                <th class="text-center bg-dark text-white">#</th>
                 <th class="text-center bg-dark text-white">رقم حساب المورد</th>
                 <th class="text-center bg-dark text-white">إسم المورد</th>
-                <th class="text-center bg-dark text-white">رقم السجل التجاري</th>
+                <th class="text-center bg-dark text-white">السجل التجاري</th>
+                <th class="text-center bg-dark text-white">الرقم الضريبي</th>
                 <th class="text-center bg-dark text-white">العنوان الوطني</th>
-                <th class="text-center bg-dark text-white">رقم الهاتف</th>
-                <th class="text-center bg-dark text-white">الإيميل</th>
                 <th class="text-center bg-dark text-white">تم بواسطة</th>
                 <th class="text-center bg-dark text-white">الإجراءات</th>
             </tr>
@@ -223,13 +223,14 @@
         <tbody>
             @if ($suppliers->isEmpty())
                 <tr>
-                    <td colspan="8" class="text-center py-4">
+                    <td colspan="9" class="text-center py-4">
                         <div class="status-danger fs-6">لم يتم العثور على اي موردين!</div>
                     </td>
                 </tr>
             @else
                 @foreach ($suppliers as $supplier)
                     <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center text-primary fw-bold">{{ $supplier->account->code }}</td>
                         <td class="text-center">
                             <a href="{{ route('users.supplier.profile', $supplier) }}"
@@ -238,9 +239,8 @@
                             </a>
                         </td>
                         <td class="text-center">{{ $supplier->CR }}</td>
+                        <td class="text-center">{{ $supplier->vat_number }}</td>
                         <td class="text-center">{{ $supplier->national_address }}</td>
-                        <td class="text-center">{{ $supplier->phone ?? '-' }}</td>
-                        <td class="text-center">{{ $supplier->email ?? '-' }}</td>
                         <td class="text-center">{{ $supplier->made_by->name ?? '-' }}</td>
                         <td class="action-icons text-center">
                             <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal"

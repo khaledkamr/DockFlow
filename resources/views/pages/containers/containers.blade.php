@@ -130,15 +130,13 @@
                                     {{ $container->code }}
                                 </a>
                             </td>
-                            <td class="text-nowrap">
+                            <td class="">
                                 @if ($container->customer)
-                                    <a href="{{ route('users.customer.profile', $container->customer) }}"
-                                        class="text-dark text-decoration-none fw-bold">
+                                    <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-dark text-decoration-none fw-bold">
                                         {{ $container->customer->name }}
                                     </a>
                                 @else
-                                    <span
-                                        class="text-dark fw-bold">{{ $container->policies->first()->external_customer }}</span>
+                                    <span class="text-dark fw-bold">{{ $container->policies->first()->external_customer }}</span>
                                 @endif
                             </td>
                             <td class="text-nowrap">{{ $container->containerType->name }}</td>
@@ -258,7 +256,7 @@
     </div>
     
     <div class="mt-4">
-        {{ $containers->appends(request()->query())->onEachSide(1)->links() }}
+        {{ $containers->links('components.pagination') }}
     </div>
 
     <script>

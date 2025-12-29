@@ -191,7 +191,7 @@
                                                 name="goods[0][quantity]" min="0">
                                         </td>
                                         <td>
-                                            <input type="number" step="1" class="form-control"
+                                            <input type="number" step="any" class="form-control"
                                                 name="goods[0][weight]" min="0">
                                         </td>
                                         <td>
@@ -214,15 +214,14 @@
 
                         <div class="text-center">
                             <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 mt-3" id="add-goods-row">
-                                <i class="fas fa-plus"></i> <span class="d-none d-sm-inline">إضافة صف</span><span
-                                    class="d-inline d-sm-none">إضافة</span>
+                                <i class="fas fa-plus"></i> <span>إضافة صف</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary fw-bold col-12 col-sm-2">
-                    <i class="fas fa-save me-2"></i><span class="d-sm-inline">حفظ البوليصة</span><span
+                    <span class="d-sm-inline">حفظ البوليصة</span>
                 </button>
             </form>
         </div>

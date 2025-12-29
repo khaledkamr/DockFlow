@@ -74,7 +74,7 @@
         </div>
         <div class="logo-section text-center">
             @if($company->logo)
-                @if($company->name == 'شركة شمس الخليج للتخليص الجمركي')
+                @if($company->name == 'شركة شمس الخليج للتخليص الجمركي' || $company->name == 'شركة تاج الأعمال للخدمات اللوجستية')
                     <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 100px;">
                 @else
                     <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 150px;">

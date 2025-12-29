@@ -105,7 +105,7 @@
         <label class="form-label d-none d-lg-block opacity-0">.</label>
         <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" 
             type="button" data-bs-toggle="modal" data-bs-target="#createDriverModal">
-            <i class="fa-solid fa-user-plus ms-2"></i>
+            <i class="fa-solid fa-user-plus me-2"></i>
             <span>أضف سائق جديد</span>
         </button>
     </div>
@@ -176,6 +176,7 @@
     <table class="table table-hover mb-0">
         <thead>
             <tr>
+                <th class="text-center bg-dark text-white">#</th>
                 <th class="text-center bg-dark text-white">مركز التكلفة</th>
                 <th class="text-center bg-dark text-white">إسم السائق</th>
                 <th class="text-center bg-dark text-white">رقم الهوية</th>
@@ -187,13 +188,14 @@
         <tbody>
             @if ($drivers->isEmpty())
                 <tr>
-                    <td colspan="6" class="text-center py-4">
+                    <td colspan="7" class="text-center py-4">
                         <div class="status-danger fs-6">لم يتم العثور على اي سائقين!</div>
                     </td>
                 </tr>
             @else
                 @foreach ($drivers as $driver)
                     <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center text-primary fw-bold">{{ $driver->costCenter->code ?? 'N/A' }}</td>
                         <td class="text-center fw-bold">{{ $driver->name }}</td>
                         <td class="text-center">{{ $driver->NID }}</td>

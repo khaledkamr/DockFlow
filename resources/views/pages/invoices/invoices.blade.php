@@ -119,7 +119,8 @@
                                 </a>
                             </td>
                             <td class="text-center">{{ $invoice->type ?? '-' }}</td>
-                            <td class="text-center fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i>
+                            <td class="text-center fw-bold text-nowrap">
+                                {{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i>
                             </td>
                             <td class="text-center">{{ $invoice->payment_method }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>

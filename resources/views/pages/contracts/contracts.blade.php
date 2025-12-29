@@ -71,7 +71,7 @@
                 @else
                     @foreach ($contracts as $contract)
                         <tr>
-                            <td class="text-center text-primary fw-bold text-nowrap">{{ $contract->id }}</td>
+                            <td class="text-center text-primary fw-bold text-nowrap">{{ $loop->iteration }}</td>
                             <td class="text-center fw-bold text-nowrap">
                                 <a href="{{ route('users.customer.profile', $contract->customer) }}"
                                     class="text-dark text-decoration-none">

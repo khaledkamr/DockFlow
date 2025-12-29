@@ -366,7 +366,7 @@
                                 <tr>
                                     <td class="text-center fw-bold">{{ $good->description }}</td>
                                     <td class="text-center">{{ $good->quantity ?? '---' }}</td>
-                                    <td class="text-center">{{ $good->weight ?? '---' }}</td>
+                                    <td class="text-center">{{ $good->weight ?? '---' }} {{ $good->weight ? 'طن' : '' }}</td>
                                     <td class="text-center text-muted">{{ $good->notes ?? '---' }}</td>
                                 </tr>
                             @endforeach

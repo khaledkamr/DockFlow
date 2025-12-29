@@ -150,7 +150,7 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th class="text-center bg-dark text-white text-nowrap">رقم المستخدم</th>
+                    <th class="text-center bg-dark text-white text-nowrap">#</th>
                     <th class="text-center bg-dark text-white text-nowrap">إسم المستخدم</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإيميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
@@ -167,9 +167,9 @@
                         </td>
                     </tr>
                 @else
-                    @foreach ($users as $index => $user)
+                    @foreach ($users as $user)
                         <tr>
-                            <td class="text-center text-primary fw-bold text-nowrap">{{ $index + 1 }}</td>
+                            <td class="text-center text-primary fw-bold text-nowrap">{{ $loop->iteration }}</td>
                             <td class="text-center text-nowrap">
                                 <a href="{{ route('admin.user.profile', $user) }}"
                                     class="text-dark fw-bold text-decoration-none">
@@ -180,7 +180,7 @@
                             <td class="text-center text-nowrap">{{ $user->phone ?? '-' }}</td>
                             <td class="text-center text-nowrap">
                                 <span class="badge bg-primary">
-                                    {{ $user->roles->first()->name }}
+                                    {{ $user->roles->first()->name ?? 'N/A' }}
                                 </span>
                             </td>
                             <td class="text-center text-nowrap">{{ $user->created_at->format('Y/m/d') }}</td>
@@ -245,7 +245,7 @@
                                                     <select class="form-select border-primary" name="role" required>
                                                         @foreach ($roles as $role)
                                                             <option value="{{ $role->id }}"
-                                                                {{ $user->roles->first()->id === $role->id ? 'selected' : '' }}>
+                                                                {{ ($user->roles->first()->id ?? '') === $role->id ? 'selected' : '' }}>
                                                                 {{ $role->name }}
                                                             </option>
                                                         @endforeach

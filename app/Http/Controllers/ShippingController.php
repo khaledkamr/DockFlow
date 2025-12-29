@@ -48,6 +48,14 @@ class ShippingController extends Controller
             }
         }
 
+        $policies = new \Illuminate\Pagination\LengthAwarePaginator(
+            $policies->forPage(request()->get('page', 1), 100),
+            $policies->count(),
+            100,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('pages.shipping.policies', compact('policies'));
     }
 

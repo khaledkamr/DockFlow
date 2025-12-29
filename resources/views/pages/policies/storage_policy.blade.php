@@ -81,7 +81,7 @@
         </div>
 
         <div class="row g-3 mb-3">
-            <h5 class="mb-3">سعر التخزين</h5>
+            <h5 class="mb-2">سعر التخزين</h5>
             <div class="col-4 col-md-4">
                 <label class="form-label">سعر التخزين <span class="text-danger">*</span></label>
                 <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0" min="0" step="1">
@@ -179,7 +179,7 @@
 
         <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mt-4">
             <button type="submit" class="btn btn-primary fw-bold">
-                <i class="fa-solid fa-save me-2"></i><span class="d-inline">حفظ البوليصة</span>
+                <span class="d-inline">حفظ البوليصة</span>
             </button>
             <span class="text-muted">إجمالي الحاويات: <span id="totalContainers">1</span></span>
         </div>

@@ -13,7 +13,7 @@ class UserRoleSeeder extends Seeder
     {
         $superAdmin = Role::where('name', 'Super Admin')->where('company_id', 3)->first();
         $userRoles = [
-            ['user_id' => 14, 'role_id' => $superAdmin->id],
+            ['user_id' => 5, 'role_id' => $superAdmin->id],
             // ['user_id' => 2, 'role_id' => $admin->id],
             // ['user_id' => 3, 'role_id' => $admin->id],
         ];
