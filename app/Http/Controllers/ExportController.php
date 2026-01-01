@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
+use App\Exports\InvoicesExport;
 use App\Exports\JournalEntryExport;
 use App\Exports\ShippingPoliciesExport;
 use App\Exports\TransportOrdersExport;
@@ -561,6 +562,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير اشعارات النقل الى اكسيل', "تم تصدير تقرير اشعارات النقل الى اكسيل بتصفية: ", $filters);
             return Excel::download(new TransportOrdersExport($filters), 'تقرير اشعارات النقل.xlsx');
+        } elseif($reportType == 'invoices') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير الفواتير الى اكسيل', "تم تصدير تقرير الفواتير الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new InvoicesExport($filters), 'تقرير الفواتير.xlsx');
         }
 
         abort(404);

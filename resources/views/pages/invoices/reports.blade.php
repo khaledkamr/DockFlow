@@ -90,6 +90,15 @@
                 </form>
             </div>
             <div class="d-flex gap-2">
+                <form method="GET" action="{{ route('export.excel', 'invoices') }}">
+                    @foreach(request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="تصدير Excel">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </button>
+                </form>
                 <form action="{{ route('print.invoices.reports') }}" method="GET" target="_blank">
                     @csrf
                     @foreach (request()->except('page', 'per_page') as $key => $value)
@@ -97,7 +106,7 @@
                     @endforeach
                     <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top"
                         title="طباعة">
-                        <i class="fa-solid fa-print me-1"></i><span class="d-none d-sm-inline">طباعة</span>
+                        <i class="fa-solid fa-print"></i>
                     </button>
                 </form>
             </div>
