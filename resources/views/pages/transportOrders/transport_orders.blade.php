@@ -98,7 +98,9 @@
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>
 
-    <div class="mb-5"></div>
+    <div class="mt-4">
+        {{ $transportOrders->links('components.pagination') }}
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

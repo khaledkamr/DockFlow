@@ -175,7 +175,7 @@
         </div>
 
         <div class="mt-4">
-            {{ $invoices->appends(request()->query())->onEachSide(1)->links() }}
+            {{ $invoices->links('components.pagination') }}
         </div>
     </div>
 

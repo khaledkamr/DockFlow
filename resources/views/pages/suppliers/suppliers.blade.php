@@ -373,10 +373,9 @@
     اسحب الجدول لليمين أو اليسار لرؤية المزيد
 </div>
 
-<!-- Pagination -->
-{{-- <div class="mt-3 mt-md-4 d-flex justify-content-center">
-    {{ $suppliers->appends(request()->query())->onEachSide(1)->links() }}
-</div> --}}
+<div class="mt-4">
+    {{ $suppliers->links('components.pagination') }}
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

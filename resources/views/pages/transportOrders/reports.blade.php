@@ -257,7 +257,7 @@
         </div>
 
         <div class="mt-4">
-            {{ $transportOrders->appends(request()->query())->onEachSide(1)->links() }}
+            {{ $transportOrders->links('components.pagination') }}
         </div>
     </div>
 

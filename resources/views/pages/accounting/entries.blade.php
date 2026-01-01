@@ -34,8 +34,6 @@
     @include('pages.accounting.vouchers.box')
 @endif
 
-<div class="mb-5"></div>
-
 <script>
     $('#account_name').select2({
         placeholder: "ابحث عن الحساب...",

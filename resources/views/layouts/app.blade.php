@@ -317,8 +317,6 @@
             display: inline-block;
         }
 
-    
-
         /* Nav tabs */
         .nav-tabs .nav-link {
             color: #495057;

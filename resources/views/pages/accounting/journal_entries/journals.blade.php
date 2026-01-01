@@ -109,3 +109,7 @@
         </tbody>
     </table>
 </div>
+
+<div class="mt-4">
+    {{ $journals->links('components.pagination') }}
+</div>

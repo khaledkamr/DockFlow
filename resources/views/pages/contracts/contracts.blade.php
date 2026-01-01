@@ -110,7 +110,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $contracts->appends(request()->query())->onEachSide(1)->links() }}
+        {{ $contracts->links('components.pagination') }}
     </div>
 
     <script>

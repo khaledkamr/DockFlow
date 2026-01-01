@@ -163,7 +163,9 @@
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
     </div>
 
-    <div class="mb-5"></div>
+    <div class="mt-4">
+        {{ $invoices->links('components.pagination') }}
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -38,6 +38,14 @@ class TransactionController extends Controller
             });
         }
 
+        $transactions = new \Illuminate\Pagination\LengthAwarePaginator(
+            $transactions->forPage(request()->get('page', 1), 100),
+            $transactions->count(),
+            100,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('pages.transactions.transactions', compact('transactions'));
     } 
 

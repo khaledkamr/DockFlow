@@ -295,7 +295,7 @@
 
 <!-- Pagination -->
 <div class="mt-3 mt-md-4 d-flex justify-content-center">
-    {{ $customers->appends(request()->query())->onEachSide(1)->links() }}
+    {{ $customers->links('components.pagination') }}
 </div>
 
 <script>

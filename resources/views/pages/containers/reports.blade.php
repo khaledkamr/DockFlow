@@ -223,7 +223,7 @@
         </div>
         
         <div class="mt-4">
-            {{ $containers->appends(request()->query())->onEachSide(1)->links() }}
+            {{ $containers->links('components.pagination') }}
         </div>
     </div>
 

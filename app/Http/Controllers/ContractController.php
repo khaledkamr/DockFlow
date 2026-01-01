@@ -42,9 +42,9 @@ class ContractController extends Controller
         }
 
         $contracts = new \Illuminate\Pagination\LengthAwarePaginator(
-            $contracts->forPage(request()->get('page', 1), 50),
+            $contracts->forPage(request()->get('page', 1), 100),
             $contracts->count(),
-            50,
+            100,
             request()->get('page', 1),
             ['path' => request()->url(), 'query' => request()->query()]
         );

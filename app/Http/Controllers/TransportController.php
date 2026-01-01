@@ -42,6 +42,14 @@ class TransportController extends Controller
             });
         }
 
+        $transportOrders = new \Illuminate\Pagination\LengthAwarePaginator(
+            $transportOrders->forPage(request()->get('page', 1), 100),
+            $transportOrders->count(),
+            100,
+            request()->get('page', 1),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('pages.transportOrders.transport_orders', compact('transportOrders'));
     }
 

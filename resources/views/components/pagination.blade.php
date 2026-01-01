@@ -52,7 +52,7 @@
         .custom-pagination .page-item.disabled .page-link {
             color: #6c757d;
             background-color: #e9ecef;
-            border-color: #dee2e6;
+            border-color: #6c757d;
             pointer-events: none;
             cursor: not-allowed;
             opacity: 0.6;

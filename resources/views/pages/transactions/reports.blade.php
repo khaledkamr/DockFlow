@@ -174,7 +174,7 @@
         </div>
 
         <div class="mt-4">
-            {{ $transactions->appends(request()->query())->onEachSide(1)->links() }}
+            {{ $transactions->links('components.pagination') }}
         </div>
     </div>
 

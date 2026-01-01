@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 class ExpenseInvoiceController extends Controller
 {
     public function invoices() {
-        $expenseInvoices = ExpenseInvoice::orderBy('code', 'desc')->get();
+        $expenseInvoices = ExpenseInvoice::orderBy('code', 'desc')->paginate(100);
         return view('pages.expense_invoices.invoices', compact('expenseInvoices'));
     }
 

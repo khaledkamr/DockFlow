@@ -137,7 +137,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $policies->appends(request()->query())->onEachSide(1)->links() }}
+        {{ $policies->links('components.pagination') }}
     </div>
 
     <script>

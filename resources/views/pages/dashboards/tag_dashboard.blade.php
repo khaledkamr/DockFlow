@@ -161,10 +161,9 @@
             <div class="card rounded-3 shadow-sm border-0">
                 <div class="card-body">
                     <h5 class="card-title text-center fw-bold mb-4">توزيع الحاويات في الساحة</h5>
-                    <div class="chart-container d-flex justify-content-between align-items-center"
-                        style="position: relative; height:176px;">
+                    <div class="chart-container d-flex justify-content-around align-items-center" style="position: relative; height:176px;">
                         <canvas id="containersDistribution"></canvas>
-                        <div class="ms-3 flex-grow-1">
+                        <div class="ms-3">
                             @foreach ($containerTypes as $type)
                                 <div class="d-flex align-items-center mb-2">
                                     <div class="me-2"
