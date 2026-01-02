@@ -25,11 +25,7 @@ class TrialBalanceExport implements FromCollection, WithHeadings
         $this->filters = $filters;
         
         if(isset($this->filters['type']) && $this->filters['type'] != 'all') {
-            if($this->filters['type'] == 'customers') {
-                $this->accounts = Account::where('name', 'عملاء التشغيل')->get();
-            } else {
-                $this->accounts = Account::where('level', 1)->get();
-            }
+            $this->accounts = Account::where('name', $this->filters['type'])->get();
         } else {
             $this->accounts = Account::where('level', 1)->get();
         }

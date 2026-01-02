@@ -1,11 +1,15 @@
 <form method="GET" action="" class="row g-3 bg-white p-3 rounded-3 shadow-sm border-0 mb-4">
     <input type="hidden" name="view" value="ميزان مراجعة">
     <div class="row">
-        <div class="col">
-            <label class="form-label">النوع</label>
-            <select name="type" class="form-control border-primary">
+        <div class="col-md-3">
+            <label class="form-label">نوع الميزان</label>
+            <select name="type" id="type" class="form-control border-primary">
                 <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>شامل</option>
-                <option value="customers" {{ request('type') == 'customers' ? 'selected' : '' }}>عملاء</option>
+                @foreach($accounts as $account)
+                    <option value="{{ $account->name }}" {{ request('type') == $account->name ? 'selected' : '' }}>
+                        {{ $account->name }} ({{ $account->level }})
+                    </option>
+                @endforeach
             </select>
         </div>
         <div class="col">
@@ -37,7 +41,9 @@
                 <option value="0" {{ request('zero_balances') == '0' ? 'selected' : '' }}>إخفاء</option>
             </select>
         </div>
-        <div class="col">
+    </div>
+    <div class="row mt-3">
+        <div class="col-2">
             <label class="form-label">كشف بأرصدة</label>
             <select name="with_balances" class="form-control border-primary">
                 <option value="0" {{ request('with_balances') == '0' ? 'selected' : '' }}>لا</option>
@@ -164,3 +170,23 @@
         </table>
     </div>
 </div>
+
+<script>
+    $('#type').select2({
+        width: '100%',
+        placeholder: 'اختر النوع',
+        allowClear: true
+    });
+</script>
+
+<style>
+    .select2-container .select2-selection {
+        height: 38px;
+        border-radius: 8px;
+        border: 1px solid #0d6efd;
+        padding: 5px;
+    }
+    .select2-container .select2-selection__rendered {
+        line-height: 30px;
+    }
+</style>

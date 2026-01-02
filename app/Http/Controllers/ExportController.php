@@ -524,11 +524,7 @@ class ExportController extends Controller
     public function printTrialBalance(Request $request) {
         $company = Auth::user()->company;
         if($request->has('type') && $request->input('type') != 'all') {
-            if($request->input('type') == 'customers') {
-                $trialBalance = Account::where('name', 'عملاء التشغيل')->get();
-            } else {
-                $trialBalance = Account::where('level', 1)->get();
-            }
+            $trialBalance = Account::where('name', $request->input('type'))->get();
         } else {
             $trialBalance = Account::where('level', 1)->get();
         }
