@@ -78,7 +78,7 @@ class AccountingController extends Controller
         $company = Company::first();
         $accounts = Account::where('level', 5)->get();
         $vouchers = Voucher::all();
-        $journals = JournalEntry::orderBy('code', 'desc')->paginate(100);
+        $journals = JournalEntry::orderBy('code', 'desc')->get();
 
         $journalSearch = $request->query('journal_search');
         if($journalSearch) {
