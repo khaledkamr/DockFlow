@@ -25,10 +25,12 @@
             {{ $child->name }}
             ({{ $child->level }})
         </td>
-        <td class="text-center">{{ $balance->beginning_debit }}</td>
-        <td class="text-center">{{ $balance->beginning_credit }}</td>
-        <td class="text-center">{{ $balance->movement_debit }}</td>
-        <td class="text-center">{{ $balance->movement_credit }}</td>
+        @if($with_balances == '0')
+            <td class="text-center">{{ $balance->beginning_debit }}</td>
+            <td class="text-center">{{ $balance->beginning_credit }}</td>
+            <td class="text-center">{{ $balance->movement_debit }}</td>
+            <td class="text-center">{{ $balance->movement_credit }}</td>
+        @endif
         <td class="text-center">{{ $balance->final_debit }}</td>
         <td class="text-center">{{ $balance->final_credit }}</td>
     </tr>

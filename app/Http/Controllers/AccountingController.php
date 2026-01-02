@@ -498,7 +498,15 @@ class AccountingController extends Controller
                 'opening_balance'
             ));
         } elseif($view == 'ميزان مراجعة') {
-            $trialBalance = Account::where('level', 1)->get();
+            if($request->query('type') && $request->query('type') != 'all') {
+                if($request->query('type') == 'customers') {
+                    $trialBalance = Account::where('name', 'عملاء التشغيل')->get();
+                } else {
+                    $trialBalance = Account::where('level', 1)->get();
+                }
+            } else {
+                $trialBalance = Account::where('level', 1)->get();
+            }
             
             return view('pages.accounting.reports', compact('trialBalance'));
         }

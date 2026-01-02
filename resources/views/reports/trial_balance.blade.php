@@ -15,17 +15,21 @@
         <thead>
             <tr>
                 <th colspan="2" class="text-center">الحساب</th>
-                <th colspan="2" class="text-center">رصيد اول المدة</th>
-                <th colspan="2" class="text-center">الحركة</th>
+                @if($with_balances == '0')
+                    <th colspan="2" class="text-center">رصيد اول المدة</th>
+                    <th colspan="2" class="text-center">الحركة</th>
+                @endif
                 <th colspan="2" class="text-center">رصيد اخر المدة</th>
             </tr>
             <tr>
                 <th class="text-center">الرقم</th>
                 <th class="text-center">الاسم</th>
-                <th class="text-center">مدين</th>
-                <th class="text-center">دائن</th>
-                <th class="text-center">مدين</th>
-                <th class="text-center">دائن</th>
+                @if($with_balances == '0')
+                    <th class="text-center">مدين</th>
+                    <th class="text-center">دائن</th>
+                    <th class="text-center">مدين</th>
+                    <th class="text-center">دائن</th>
+                @endif
                 <th class="text-center">مدين</th>
                 <th class="text-center">دائن</th>
             </tr>
@@ -62,10 +66,12 @@
                 <tr class="table-primary border-dark">
                     <td class="text-center">{{ $account->code }}</td>
                     <td class="fw-bold">{{ $account->name }} ({{ $account->level }})</td>
-                    <td class="text-center fw-bold">{{ $balance->beginning_debit }}</td>
-                    <td class="text-center fw-bold">{{ $balance->beginning_credit }}</td>
-                    <td class="text-center fw-bold">{{ $balance->movement_debit }}</td>
-                    <td class="text-center fw-bold">{{ $balance->movement_credit }}</td>
+                    @if($with_balances == '0')
+                        <td class="text-center fw-bold">{{ $balance->beginning_debit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->beginning_credit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->movement_debit }}</td>
+                        <td class="text-center fw-bold">{{ $balance->movement_credit }}</td>
+                    @endif
                     <td class="text-center fw-bold">{{ $balance->final_debit }}</td>
                     <td class="text-center fw-bold">{{ $balance->final_credit }}</td>
                 </tr>
@@ -75,10 +81,12 @@
             @endforeach
             <tr class="table-secondary border-dark">
                 <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                <td class="text-center fw-bold">{{ $sum_beginning_debit }}</td>
-                <td class="text-center fw-bold">{{ $sum_beginning_credit }}</td>
-                <td class="text-center fw-bold">{{ $sum_movement_debit }}</td>
-                <td class="text-center fw-bold">{{ $sum_movement_credit }}</td>
+                @if($with_balances == '0')
+                    <td class="text-center fw-bold">{{ $sum_beginning_debit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_beginning_credit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_movement_debit }}</td>
+                    <td class="text-center fw-bold">{{ $sum_movement_credit }}</td>
+                @endif
                 <td class="text-center fw-bold">{{ $sum_final_debit }}</td>
                 <td class="text-center fw-bold">{{ $sum_final_credit }}</td>
             </tr>

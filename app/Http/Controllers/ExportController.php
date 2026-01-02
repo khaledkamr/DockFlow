@@ -523,18 +523,27 @@ class ExportController extends Controller
 
     public function printTrialBalance(Request $request) {
         $company = Auth::user()->company;
-        $trialBalance = Account::where('level', 1)->get();
+        if($request->has('type') && $request->input('type') != 'all') {
+            if($request->input('type') == 'customers') {
+                $trialBalance = Account::where('name', 'عملاء التشغيل')->get();
+            } else {
+                $trialBalance = Account::where('level', 1)->get();
+            }
+        } else {
+            $trialBalance = Account::where('level', 1)->get();
+        }
 
         $from = $request->input('from', now()->startOfYear()->format('Y-m-d'));
         $to = $request->input('to', now()->endOfYear()->format('Y-m-d'));
         $debit_movements = $request->input('debit_movements', '1');
         $credit_movements = $request->input('credit_movements', '1');
         $zero_balances = $request->input('zero_balances', '1');
+        $with_balances = $request->input('with_balances', '0');
 
         $filters = $request->all();
         logActivity('طباعة ميزان المراجعة', "تم طباعة ميزان المراجعة بتصفية: ", $filters);
 
-        return view('reports.trial_balance', compact('company', 'trialBalance', 'from', 'to', 'debit_movements', 'credit_movements', 'zero_balances'));
+        return view('reports.trial_balance', compact('company', 'trialBalance', 'from', 'to', 'debit_movements', 'credit_movements', 'zero_balances', 'with_balances'));
     }
 
     public function excel($reportType, Request $request) {
