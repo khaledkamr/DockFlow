@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'إنشاء قيد يومي')
+@section('title', 'إنشاء قيد يومية')
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>إنشاء قيد يومي</h1>
+        <h1>إنشاء قيد يومية</h1>
         <a href="javascript:history.back()" class="btn btn-outline-secondary">
             العودة <i class="fas fa-arrow-left"></i>
         </a>

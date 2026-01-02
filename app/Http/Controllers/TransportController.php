@@ -101,7 +101,7 @@ class TransportController extends Controller
             $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
 
             $journal = JournalEntry::create([
-                'type' => 'قيد يومي',
+                'type' => 'قيد يومية',
                 'date' => $transportOrder->date,
                 'totalDebit' => $transportOrder->supplier_cost,
                 'totalCredit' => $transportOrder->supplier_cost,
@@ -125,7 +125,7 @@ class TransportController extends Controller
             ]);
 
             $new = $journal->load('lines')->toArray();
-            logActivity('إنشاء قيد', "تم إنشاء قيد يومي برقم " . $journal->code . "من اشعار نقل رقم " . $transportOrder->code, null, $new);
+            logActivity('إنشاء قيد', "تم إنشاء قيد يومية برقم " . $journal->code . "من اشعار نقل رقم " . $transportOrder->code, null, $new);
         }
 
         if($transportOrder->from && $transportOrder->to) {

@@ -90,7 +90,7 @@ class AccountingController extends Controller
         if($request->query('journal_type') && $request->query('journal_type') != 'all') {
             if($request->query('journal_type') == 'all_journals') {
                 $journals = $journals->filter(function($journal) {
-                    return $journal->type == 'قيد يومي';
+                    return $journal->type == 'قيد يومية';
                 });
             } elseif($request->query('journal_type') == 'all_receipts') {
                 $journals = $journals->filter(function($journal) {
@@ -443,7 +443,7 @@ class AccountingController extends Controller
             if($request->query('journal_type') && $request->query('journal_type') != 'all') {
                 if($request->query('journal_type') == 'all_journals') {
                     $entries = $entries->filter(function($journal) {
-                        return $journal->type == 'قيد يومي';
+                        return $journal->type == 'قيد يومية';
                     });
                 } elseif($request->query('journal_type') == 'all_receipts') {
                     $entries = $entries->filter(function($journal) {

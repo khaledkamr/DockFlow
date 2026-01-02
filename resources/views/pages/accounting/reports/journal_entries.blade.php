@@ -101,7 +101,7 @@
                     <tr>
                         <td colspan="7" class="text-start table-secondary fw-bold">
                             <a href="{{ route('journal.details', $entry) }}" class="text-decoration-none">
-                                قيد - {{ $entry->voucher->type ?? 'قيد يومي' }} - بتاريخ {{ $entry->date }}
+                                قيد - {{ $entry->voucher->type ?? 'قيد يومية' }} - بتاريخ {{ $entry->date }}
                             </a>
                         </td>
                     </tr>

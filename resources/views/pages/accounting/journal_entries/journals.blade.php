@@ -73,8 +73,7 @@
                             {{ $journal->modified_by->name ?? 'لم يتم التعديل' }}
                         </td>
                         <td class="action-icons text-center">
-                            <a href="{{ route('journal.details', $journal) }}" 
-                                class="btn btn-sm btn-primary">
+                            <a href="{{ route('journal.details', $journal) }}" class="btn btn-sm btn-primary">
                                 عرض
                             </a>
                             <a href="{{ route('journal.edit', $journal) }}" class="btn btn-sm btn-success" type="button">

@@ -82,7 +82,7 @@ class ExportController extends Controller
             $entries = JournalEntry::all();
             if($type && $type !== 'all') {
                 $entries = $entries->filter(function($entry) use($type) {
-                    return ($entry->voucher->type ?? 'قيد يومي') == $type;
+                    return ($entry->voucher->type ?? 'قيد يومية') == $type;
                 });
             }
             if($from && $to) {
@@ -146,7 +146,7 @@ class ExportController extends Controller
             return view('reports.service_permission', compact('company', 'policyContainers', 'policy'));
         } elseif ($reportType == 'journal_entry') {
             $journal = JournalEntry::findOrFail($request->journal_id);
-            logActivity('طباعة قيد يومي', "تم طباعة القيد اليومي رقم " . $journal->code);
+            logActivity('طباعة قيد يومية', "تم طباعة القيد اليومي رقم " . $journal->code);
             return view('reports.journal_entry', compact('company', 'journal'));
         }
     }

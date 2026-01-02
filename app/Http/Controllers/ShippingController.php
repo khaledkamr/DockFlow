@@ -79,7 +79,7 @@ class ShippingController extends Controller
             $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
 
             $journal = JournalEntry::create([
-                'type' => 'قيد يومي',
+                'type' => 'قيد يومية',
                 'date' => $policy->date,
                 'totalDebit' => $policy->supplier_cost,
                 'totalCredit' => $policy->supplier_cost,

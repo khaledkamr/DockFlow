@@ -51,7 +51,7 @@ class JournalEntry extends Model
                 $journalEntry->code = $journalEntry->voucher->code;
             } else {
                 $year = date('Y');
-                $journalEntry->type = 'قيد يومي';
+                $journalEntry->type = 'قيد يومية';
                 $prefix = 'JD';
                 $lastJournal = self::where('type', $journalEntry->type)->whereYear('date', $year)->latest('code')->first();
                 if ($lastJournal && $lastJournal->code) {

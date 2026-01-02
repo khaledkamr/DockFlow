@@ -24,7 +24,7 @@ class JournalEntryExport implements FromCollection, WithHeadings
 
         if (!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
             $type = $this->filters['type'];
-            if($type == "قيد يومي") {
+            if($type == "قيد يومية") {
                 $query->whereNull('voucher_id');
             } else {
                 $query->whereHas('voucher', function ($q) use ($type) {
@@ -45,7 +45,7 @@ class JournalEntryExport implements FromCollection, WithHeadings
             $rows = collect();
             
             $rows->push([
-                "قيد - " . ($entry->voucher->type ?? 'قيد يومي') . " - بتاريخ " . $entry->date,
+                "قيد - " . ($entry->voucher->type ?? 'قيد يومية') . " - بتاريخ " . $entry->date,
                 '', '', '', '', '', ''
             ]);
 

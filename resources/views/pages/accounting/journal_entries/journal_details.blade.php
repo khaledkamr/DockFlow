@@ -8,10 +8,10 @@
 <div class="bg-white p-3 rounded-3 shadow-sm border-0 mb-5">
     <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
         <h5 class="fw-bold">
-            {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومي' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
+            {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومية' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
         </h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
-            @if($journal->type == 'قيد يومي')
+            @if($journal->type == 'قيد يومية')
                 <a href="{{ route('journal.duplicate', $journal) }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تكرار القيد">
                     <i class="fa-solid fa-copy"></i>
                 </a>
