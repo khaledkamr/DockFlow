@@ -66,12 +66,12 @@ class Account extends Model
         ")->first();
 
         return (object)[
-            'beginning_debit'  => $beginning_result->total_debit,
-            'beginning_credit' => $beginning_result->total_credit,
-            'movement_debit'   => $movement_result->total_debit,
-            'movement_credit'  => $movement_result->total_credit,
-            'final_debit'  => max(0, $movement_result->total_debit + $beginning_result->total_debit - $movement_result->total_credit - $beginning_result->total_credit),
-            'final_credit' => max(0, $movement_result->total_credit + $beginning_result->total_credit - $movement_result->total_debit - $beginning_result->total_debit)
+            'beginning_debit'  => number_format($beginning_result->total_debit, 2, '.', ''),
+            'beginning_credit' => number_format($beginning_result->total_credit, 2, '.', ''),
+            'movement_debit'   => number_format($movement_result->total_debit, 2, '.', ''),
+            'movement_credit'  => number_format($movement_result->total_credit, 2, '.', ''),
+            'final_debit'  => number_format(max(0, $movement_result->total_debit + $beginning_result->total_debit - $movement_result->total_credit - $beginning_result->total_credit), 2, '.', ''),
+            'final_credit' => number_format(max(0, $movement_result->total_credit + $beginning_result->total_credit - $movement_result->total_debit - $beginning_result->total_debit), 2, '.', '')
         ];
     }
 
