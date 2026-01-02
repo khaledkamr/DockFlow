@@ -109,6 +109,8 @@
     </table>
 </div>
 
+{{-- BadMethodCallException
+Method Illuminate\Database\Eloquent\Collection::links does not exist.
 <div class="mt-4">
     {{ $journals->links('components.pagination') }}
-</div>
+</div> --}}
