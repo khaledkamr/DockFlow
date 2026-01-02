@@ -6,11 +6,13 @@
             <select name="type" id="type" class="form-control border-primary">
                 <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>شامل</option>
                 @foreach($accounts as $account)
-                    <option value="{{ $account->name }}" {{ request('type') == $account->name ? 'selected' : '' }}>
+                    <option value="{{ $account->name }}" data-level="{{ $account->level }}" 
+                        {{ (request('type') == $account->name && request('type_level') == $account->level) ? 'selected' : '' }}>
                         {{ $account->name }} ({{ $account->level }})
                     </option>
                 @endforeach
             </select>
+            <input type="hidden" name="type_level" id="type_level" value="{{ request('type_level', '') }}">
         </div>
         <div class="col">
             <label class="form-label">من تاريخ</label>
@@ -176,6 +178,12 @@
         width: '100%',
         placeholder: 'اختر النوع',
         allowClear: true
+    });
+
+    $('#type').on('change', function() {
+        var selectedOption = $(this).find('option:selected');
+        var level = selectedOption.data('level') || '';
+        $('#type_level').val(level);
     });
 </script>
 

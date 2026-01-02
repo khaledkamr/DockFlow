@@ -500,7 +500,8 @@ class AccountingController extends Controller
         } elseif($view == 'ميزان مراجعة') {
             $accounts = Account::whereIn('level', [1, 2, 3, 4])->get();
             if($request->query('type') && $request->query('type') != 'all') {
-                $trialBalance = Account::where('name', $request->query('type'))->get();
+                $trialBalance = Account::where('name', $request->query('type'))
+                    ->where('level', $request->query('type_level'))->get();
             } else {
                 $trialBalance = Account::where('level', 1)->get();
             }
