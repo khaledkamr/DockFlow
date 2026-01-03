@@ -119,8 +119,7 @@ class TransactionController extends Controller
 
     public function transactionDetails(Transaction $transaction) {
         $customers = Customer::all();
-        $parentAccount = Account::where('name', 'النقدية والبنوك')->first();
-        $creditAccounts = $parentAccount ? $parentAccount->getLeafAccounts() : collect();
+        $creditAccounts = Account::where('level', 5)->get();
 
         $items = [
             [

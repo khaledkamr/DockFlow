@@ -27,7 +27,9 @@
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if ($transaction->containers->first()->invoices && $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
+            @if (
+                $transaction->containers->first()->invoices &&
+                    $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
                     <i class="fas fa-scroll me-1"></i>
@@ -281,7 +283,7 @@
                                     <td class="text-center fw-bold text-primary">{{ number_format($item->total, 2) }} <i
                                             data-lucide="saudi-riyal"></i></td>
                                     <td class="text-center d-flex justify-content-center align-items-center gap-2">
-                                        @if(!$item->is_posted && $item->type == 'مصروف')
+                                        @if (!$item->is_posted && $item->type == 'مصروف')
                                             <div data-bs-toggle="tooltip" data-bs-placement="top" title="ترحيل">
                                                 <button class="btn btn-sm btn-outline-primary" type="button"
                                                     data-bs-toggle="modal"
@@ -377,9 +379,10 @@
                                                         <div class="row g-3">
                                                             <div class="col">
                                                                 <label class="form-label">اسم الحساب الدائن</label>
-                                                                <select class="form-select border-primary account-select"
-                                                                    id="credit_account_id" name="credit_account_id"
-                                                                    required>
+                                                                <select
+                                                                    class="form-select border-primary edit-account-select"
+                                                                    id="edit_credit_account_id_{{ $item->id }}"
+                                                                    name="credit_account_id" required>
                                                                     <option disabled selected>اختر حساب دائن...</option>
                                                                     @foreach ($creditAccounts as $account)
                                                                         <option value="{{ $account->id }}"
@@ -393,7 +396,7 @@
                                                             <div class="col">
                                                                 <label class="form-label">رقم الحساب الدائن</label>
                                                                 <input type="text" class="form-control border-primary"
-                                                                    id="credit_account_code"
+                                                                    id="edit_credit_account_code_{{ $item->id }}"
                                                                     value="{{ $item->creditAccount?->code }}" readonly>
                                                             </div>
                                                         </div>
@@ -523,7 +526,8 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer d-flex justify-content-start">
-                                                <form action="{{ route('transactions.item.post', $item) }}" method="POST">
+                                                <form action="{{ route('transactions.item.post', $item) }}"
+                                                    method="POST">
                                                     @csrf
                                                     <button type="submit" class="btn btn-primary fw-bold">
                                                         <i class="fas fa-check me-1"></i>
@@ -706,7 +710,8 @@
                                         @if ($container->status == 'في الساحة')
                                             <div class="badge status-available">{{ $container->status }}</div>
                                         @elseif($container->status == 'تم التسليم')
-                                            <div class="badge status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
+                                            <div class="badge status-delivered">{{ $container->status }} <i
+                                                    class="fa-solid fa-check"></i></div>
                                         @elseif($container->status == 'متأخر')
                                             <div class="badge status-danger">{{ $container->status }}</div>
                                         @elseif($container->status == 'خدمات')
@@ -732,7 +737,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('container.details', $container) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('container.details', $container) }}"
+                                            class="btn btn-sm btn-primary">
                                             عرض
                                         </a>
                                         <a class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="modal"
@@ -748,17 +754,20 @@
                                         <div class="modal-content">
                                             <div class="modal-header bg-primary">
                                                 <h5 class="modal-title text-white fw-bold"
-                                                    id="editContainerModalLabel{{ $container->id }}">تعديل بيانات الحاوية</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
+                                                    id="editContainerModalLabel{{ $container->id }}">تعديل بيانات الحاوية
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <form action="{{ route('yard.containers.update', $container) }}" method="POST">
+                                            <form action="{{ route('yard.containers.update', $container) }}"
+                                                method="POST">
                                                 @csrf
                                                 @method('PATCH')
                                                 <div class="modal-body text-dark">
                                                     <div class="row g-3 mb-3">
                                                         <div class="col-12 col-md-6">
-                                                            <label for="code" class="form-label">رقم الحـــاوية</label>
+                                                            <label for="code" class="form-label">رقم
+                                                                الحـــاوية</label>
                                                             <input type="text" class="form-control border-primary"
                                                                 name="code" value="{{ $container->code }}">
                                                             @error('code')
@@ -784,8 +793,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
-                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ التغيرات</button>
+                                                <div
+                                                    class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                    <button type="submit" class="btn btn-primary fw-bold">حفظ
+                                                        التغيرات</button>
                                                     <button type="button" class="btn btn-secondary fw-bold"
                                                         data-bs-dismiss="modal">إلغاء</button>
                                                 </div>
@@ -955,10 +966,25 @@
             $('#credit_account_code').val(accountCode);
         });
 
+        // Initialize Select2 for edit modals when they open
+        $(document).on('shown.bs.modal', '[id^="editItemModal"]', function() {
+            let modal = $(this);
+            let select = modal.find('.edit-account-select');
+            if (select.length && !select.hasClass('select2-hidden-accessible')) {
+                select.select2({
+                    dropdownParent: modal,
+                    width: '100%',
+                    placeholder: 'اختر حساب دائن...',
+                    allowClear: true
+                });
+            }
+        });
+
         // Handle credit account change in edit modals
-        $(document).on('change', '.account-select', function() {
+        $(document).on('change', '.edit-account-select', function() {
             let accountCode = $(this).find('option:selected').data('code');
-            $(this).closest('.modal-body').find('#credit_account_code').val(accountCode);
+            let itemId = $(this).attr('id').replace('edit_credit_account_id_', '');
+            $('#edit_credit_account_code_' + itemId).val(accountCode);
         });
 
         $('.item-select').select2({
