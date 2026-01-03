@@ -185,9 +185,11 @@
                                     ترحيل
                                 </a>
                             @endif
-                            <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $voucher->id }}">
-                                حذف
-                            </button>
+                            @can('حذف قيد يومية')
+                                <button class="btn btn-sm btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#delete{{ $voucher->id }}">
+                                    حذف
+                                </button>
+                            @endcan
                         </td>
                     </tr>
 

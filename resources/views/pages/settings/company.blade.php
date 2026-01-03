@@ -344,7 +344,7 @@
         </div>
     </div>
 
-    @if (auth()->user()->roles->contains('name', 'Super Admin'))
+    @if (auth()->user()->roles->contains('name', 'Admin'))
         <div class="card border-0 shadow-sm bg-white p-3 p-md-4">
             <div
                 class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">

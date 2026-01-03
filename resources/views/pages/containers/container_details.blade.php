@@ -103,7 +103,7 @@
                 <h1 class="h3 h-md-2 mb-0">
                     تفاصيل الحاوية {{ $container->code }}
                 </h1>
-                @if(auth()->user()->roles->contains('name', 'Super Admin'))
+                @if(auth()->user()->roles->contains('name', 'Admin'))
                     <div class="mt-2">
                         <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteContainerModal">
                             <i class="fas fa-trash me-1"></i>

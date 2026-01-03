@@ -24,7 +24,7 @@
                             <span class="d-inline">طباعة اذن خروج</span>
                         </button>
                     </form>
-                    @if(auth()->user()->roles->contains('name', 'Super Admin'))
+                    @if(auth()->user()->roles->contains('name', 'Admin'))
                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                             <i class="fas fa-trash me-1"></i>
                             <span class="d-inline">حذف البوليصة</span>

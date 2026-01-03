@@ -64,11 +64,19 @@
             @else
                 @foreach ($journals as $journal)
                     <tr>
-                        <td class="text-center text-primary fw-bold">{{ $journal->code }}</td>
+                        <td class="text-center text-primary fw-bold">
+                            <a href="{{ route('journal.details', $journal) }}" class="text-decoration-none">
+                                {{ $journal->code }}
+                            </a>
+                        </td>
                         <td class="text-center fw-bold">{{ $journal->type }}</td>
                         <td class="text-center fw-bold">{{ $journal->totalDebit }} <i data-lucide="saudi-riyal"></i></td>
                         <td class="text-center">{{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}</td>
-                        <td class="text-center">{{ $journal->made_by->name ?? '-' }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.user.profile', $journal->made_by) }}" class="text-decoration-none text-dark">
+                                {{ $journal->made_by->name ?? '-' }}
+                            </a>
+                        </td>
                         <td class="text-center {{ $journal->modifier_id ? 'text-dark' : 'text-muted' }}">
                             {{ $journal->modified_by->name ?? 'لم يتم التعديل' }}
                         </td>
@@ -90,7 +98,7 @@
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-dark">
-                                    هل انت متأكد من حذف القيد؟
+                                    هل انت متأكد من حذف هذا القيد؟
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>

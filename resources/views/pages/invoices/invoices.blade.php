@@ -161,7 +161,7 @@
                                     </a>
                                 @endif
 
-                                @if (auth()->user()->roles()->pluck('name')->contains('Super Admin'))
+                                @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#deleteModal{{ $invoice->id }}">
                                         <span class="d-none d-sm-inline">حذف</span><i

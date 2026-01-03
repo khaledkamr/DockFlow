@@ -140,7 +140,7 @@
                                 <a href="{{ route('shipping.policies.details', $policy) }}" class="btn btn-sm btn-primary">
                                     عرض
                                 </a>
-                                @if(auth()->user()->roles()->first()->name === 'Super Admin')
+                                @if(auth()->user()->roles()->first()->name === 'Admin')
                                     <button type="button" class="btn btn-sm btn-danger ms-1" data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal{{ $policy->id }}">
                                         حذف

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContainerController;
@@ -32,7 +33,15 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::get('/', [DashboardController::class, 'handle'])->middleware('auth')->name('dashboard');
 
-Route::controller(AdminController::class)->middleware('auth')->group(function() {
+Route::controller(AdminController::class)->middleware('auth')->group(function () {
+    Route::get('admin/dashboard', 'dashboard')->name('admin.dashboard');
+    Route::get('admin/companies', 'companies')->name('admin.companies');
+    Route::post('admin/companies/store', 'storeCompany')->name('admin.companies.store');
+    Route::get('admin/companies/{company:uuid}', 'companyDetails')->name('admin.company.details');
+    Route::get('admin/users', 'users')->name('admin.dashboard.users'); 
+});
+
+Route::controller(UserController::class)->middleware('auth')->group(function() {
     Route::get('users', 'users')->name('admin.users');
     Route::post('users/store', 'storeUser')->name('admin.users.store');
     Route::get('users/{user:uuid}', 'userProfile')->name('admin.user.profile');

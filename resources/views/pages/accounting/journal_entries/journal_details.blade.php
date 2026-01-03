@@ -28,12 +28,14 @@
             <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>
-
-            <div data-bs-toggle="tooltip" data-bs-placement="top" title="حذف">
-                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteJournalModal">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
+            
+            @can('حذف قيد يومية')
+                <div data-bs-toggle="tooltip" data-bs-placement="top" title="حذف">
+                    <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteJournalModal">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            @endcan
         </div>
     </div>
 
@@ -47,7 +49,7 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center text-dark">
-                    هل انت متأكد من حذف القيد؟
+                    هل انت متأكد من حذف هذا القيد؟
                 </div>
                 <div
                     class="modal-footer d-flex flex-column flex-sm-row justify-content-center">
