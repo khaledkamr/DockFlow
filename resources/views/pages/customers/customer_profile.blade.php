@@ -287,30 +287,34 @@
                 </thead>
                 <tbody class="text-center">
                     @foreach($customer['containers'] as $index => $container)
-                    <tr>
-                        <td class="fw-bold text-primary">{{ $index + 1 }}</td>
-                        <td class="fw-bold">{{ $container->code }}</td>
-                        <td><span class="badge bg-outline-primary">{{ $container->containerType->name }}</span></td>
-                        <td>
-                            @if($container->status == 'في الساحة')
-                                <div class="status-available">{{ $container->status }}</div>
-                            @elseif($container->status == 'تم التسليم')
-                                <div class="status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
-                            @elseif($container->status == 'متأخر')
-                                <div class="status-danger">{{ $container->status }}</div>
-                            @elseif($container->status == 'خدمات')
-                                <div class="status-waiting">{{ $container->status }}</div>
-                            @elseif($container->status == 'في الميناء')
-                                <div class="status-info">{{ $container->status }}</div>
-                            @elseif($container->status == 'قيد النقل')
-                                <div class="status-purple">{{ $container->status }}</div>
-                            @endif
-                        </td>
-                        <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'غير محدد' }}</td>
-                        <td>{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
-                        <td>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>
-                        <td>{{ $container->noted }}</td>
-                    </tr>
+                        <tr>
+                            <td class="fw-bold text-primary">{{ $index + 1 }}</td>
+                            <td class="fw-bold">{{ $container->code }}</td>
+                            <td>
+                                <span class="badge bg-outline-primary">
+                                    {{ $container->containerType->name }}
+                                </span>
+                            </td>
+                            <td>
+                                @if($container->status == 'في الساحة')
+                                    <div class="status-available">{{ $container->status }}</div>
+                                @elseif($container->status == 'تم التسليم')
+                                    <div class="status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
+                                @elseif($container->status == 'متأخر')
+                                    <div class="status-danger">{{ $container->status }}</div>
+                                @elseif($container->status == 'خدمات')
+                                    <div class="status-waiting">{{ $container->status }}</div>
+                                @elseif($container->status == 'في الميناء')
+                                    <div class="status-info">{{ $container->status }}</div>
+                                @elseif($container->status == 'قيد النقل')
+                                    <div class="status-purple">{{ $container->status }}</div>
+                                @endif
+                            </td>
+                            <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">{{ $container->location ?? 'غير محدد' }}</td>
+                            <td>{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
+                            <td>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>
+                            <td>{{ $container->noted }}</td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>

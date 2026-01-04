@@ -53,7 +53,7 @@
 
     <!-- Create Invoice Modal -->
     <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title text-white fw-bold" id="createInvoiceLabel">إنشاء فاتورة جديدة</h5>
@@ -65,12 +65,11 @@
                     <input type="hidden" name="type" value="تخليص">
                     <input type="hidden" name="customer_id" value="{{ $transaction->customer_id }}">
                     <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                    <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
                     <input type="hidden" name="container_ids[]"
                         value="{{ $transaction->containers->pluck('id')->join(',') }}">
                     <div class="modal-body text-dark">
                         <div class="row g-3 mb-4">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label">طريقة الدفع</label>
                                 <select class="form-select border-primary" name="payment_method" required>
                                     <option value="آجل">آجل</option>
@@ -78,15 +77,74 @@
                                     <option value="تحويل بنكي">تحويل بنكي</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label">نسبة الخصم(%)</label>
                                 <input type="number" name="discount" id="discount" class="form-control border-primary"
-                                    min="0" max="100" step="1" value="0" placeholder="0.00">
+                                    min="0" max="100" step="1" value="0" placeholder="0.00"
+                                    oninput="calculatePreviewDiscount()">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">تاريخ الفاتورة</label>
+                                <input type="date" name="date" class="form-control border-primary"
+                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Preview Section -->
+                        <div class="border rounded p-3 bg-light">
+                            <h6 class="fw-bold mb-3">
+                                <i class="fas fa-eye me-2"></i>
+                                معاينة بنود الفاتورة
+                            </h6>
+                            <div id="invoicePreviewLoading" class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">جاري التحميل...</span>
+                                </div>
+                                <p class="mt-2 text-muted">جاري تحميل البنود...</p>
+                            </div>
+                            <div id="invoicePreviewContent" class="d-none">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered mb-0">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th class="text-center fw-bold">#</th>
+                                                <th class="text-center fw-bold">البند</th>
+                                                <th class="text-center fw-bold">المبلغ</th>
+                                                <th class="text-center fw-bold">الضريبة</th>
+                                                <th class="text-center fw-bold">الإجمالي</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="invoicePreviewItems">
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="bg-light fw-bold">
+                                                <td colspan="2" class="text-center">المجموع:</td>
+                                                <td class="text-center" id="previewTotalAmount">0.00</td>
+                                                <td class="text-center" id="previewTotalTax">0.00</td>
+                                                <td class="text-center text-primary" id="previewTotalWithTax">0.00</td>
+                                            </tr>
+                                            <tr class="bg-warning-subtle fw-bold" id="previewDiscountRow"
+                                                style="display: none;">
+                                                <td colspan="4" class="text-center">الخصم (<span
+                                                        id="previewDiscountPercent">0</span>%):</td>
+                                                <td class="text-center text-danger" id="previewDiscountAmount">0.00</td>
+                                            </tr>
+                                            <tr class="bg-success-subtle fw-bold" id="previewFinalRow"
+                                                style="display: none;">
+                                                <td colspan="4" class="text-center">الإجمالي بعد الخصم:</td>
+                                                <td class="text-center text-success" id="previewFinalAmount">0.00</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div id="invoicePreviewEmpty" class="text-center py-3 d-none">
+                                    <p class="text-muted mb-0">لا توجد بنود للفاتورة</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
-                        <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
+                        <button type="submit" class="btn btn-primary fw-bold" id="createInvoiceBtn">إنشاء الفاتورة</button>
                         <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                     </div>
                 </form>
@@ -1017,6 +1075,111 @@
             const total = amount + tax;
             document.getElementById('editTax' + index).value = tax.toFixed(2);
             document.getElementById('editTotal' + index).value = total.toFixed(2);
+        }
+
+        // Invoice Preview Variables
+        let invoicePreviewData = null;
+
+        // Load invoice preview when modal opens
+        $('#createInvoice').on('show.bs.modal', function() {
+            loadInvoicePreview();
+        });
+
+        function loadInvoicePreview() {
+            const previewUrl = "{{ route('invoices.clearance.preview', $transaction) }}";
+
+            // Show loading
+            $('#invoicePreviewLoading').removeClass('d-none');
+            $('#invoicePreviewContent').addClass('d-none');
+
+            fetch(previewUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    invoicePreviewData = data;
+                    renderInvoicePreview(data);
+                })
+                .catch(error => {
+                    console.error('Error loading preview:', error);
+                    $('#invoicePreviewLoading').addClass('d-none');
+                    $('#invoicePreviewContent').removeClass('d-none');
+                    $('#invoicePreviewItems').html(
+                        '<tr><td colspan="5" class="text-center text-danger">حدث خطأ أثناء تحميل البنود</td></tr>');
+                });
+        }
+
+        function renderInvoicePreview(data) {
+            $('#invoicePreviewLoading').addClass('d-none');
+            $('#invoicePreviewContent').removeClass('d-none');
+
+            const items = data.items;
+            const totals = data.totals;
+
+            if (items.length === 0) {
+                $('#invoicePreviewItems').closest('.table-responsive').addClass('d-none');
+                $('#invoicePreviewEmpty').removeClass('d-none');
+                return;
+            }
+
+            $('#invoicePreviewItems').closest('.table-responsive').removeClass('d-none');
+            $('#invoicePreviewEmpty').addClass('d-none');
+
+            let html = '';
+            items.forEach((item, index) => {
+                const sourceClass = item.source === 'contract' ? 'bg-info-subtle' :
+                    item.source === 'storage' ? 'bg-primary-subtle' : '';
+                const sourceBadge = item.source === 'contract' ? '<span class="badge bg-info ms-1">عقد</span>' :
+                    item.source === 'storage' ? '<span class="badge bg-primary ms-1">تخزين</span>' : '';
+
+                html += `<tr class="${sourceClass}">
+                    <td class="text-center">${index + 1}</td>
+                    <td class="text-center">${item.description} ${sourceBadge}</td>
+                    <td class="text-center">${formatNumber(item.amount)}</td>
+                    <td class="text-center">${formatNumber(item.tax)}</td>
+                    <td class="text-center fw-bold">${formatNumber(item.total)}</td>
+                </tr>`;
+            });
+
+            $('#invoicePreviewItems').html(html);
+            $('#previewTotalAmount').text(formatNumber(totals.amount));
+            $('#previewTotalTax').text(formatNumber(totals.tax));
+            $('#previewTotalWithTax').text(formatNumber(totals.total));
+
+            // Calculate discount if any
+            calculatePreviewDiscount();
+        }
+
+        function calculatePreviewDiscount() {
+            if (!invoicePreviewData) return;
+
+            const discountPercent = parseFloat($('#discount').val()) || 0;
+            const totalAmount = invoicePreviewData.totals.amount;
+
+            if (discountPercent > 0) {
+                const discountAmount = (totalAmount * discountPercent) / 100;
+                const finalAmount = invoicePreviewData.totals.total - discountAmount;
+
+                $('#previewDiscountRow').show();
+                $('#previewFinalRow').show();
+                $('#previewDiscountPercent').text(discountPercent);
+                $('#previewDiscountAmount').text('-' + formatNumber(discountAmount));
+                $('#previewFinalAmount').text(formatNumber(finalAmount));
+            } else {
+                $('#previewDiscountRow').hide();
+                $('#previewFinalRow').hide();
+            }
+        }
+
+        function formatNumber(num) {
+            return parseFloat(num).toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
     </script>
 @endsection

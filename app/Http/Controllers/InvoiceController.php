@@ -272,7 +272,172 @@ class InvoiceController extends Controller
         ));
     }
 
+    public function previewClearanceInvoice(Transaction $transaction) {
+        $previewItems = collect();
+        $existingItems = $transaction->items;
+
+        // Add existing items to preview
+        foreach($existingItems as $item) {
+            $previewItems->push([
+                'description' => $item->description,
+                'amount' => $item->amount,
+                'tax' => $item->tax,
+                'total' => $item->total,
+                'source' => 'existing',
+            ]);
+        }
+
+        // Calculate contract-based items
+        if($transaction->customer->contract) {
+            $containers_count = $transaction->containers->count();
+            $contractServices = collect($transaction->customer->contract->services->pluck('description')->toArray());
+
+            // Clearance fees
+            if($contractServices->contains('اجور تخليص') && !$existingItems->contains('description', 'اجور تخليص - CLEARANCE FEES')) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور تخليص')->first()->pivot->price * $containers_count;
+                $previewItems->push([
+                    'description' => 'اجور تخليص - CLEARANCE FEES',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                    'source' => 'contract',
+                ]);
+            }
+
+            // Transport fees
+            if($contractServices->contains(function($service) {
+                return str_starts_with($service, 'اجور نقل');
+            }) && !$existingItems->contains('description', 'اجور نقل - TRANSPORT FEES')) {
+                $price = 0;
+
+                foreach($transaction->containers as $container) {
+                    $transportOrder = $container->transportOrders()->where('transaction_id', $transaction->id)->first();
+                    $from = $transportOrder ? $transportOrder->from : null;
+                    $to = $transportOrder ? $transportOrder->to : null;
+                    
+                    if ($container->containerType->name == 'حاوية 20' || $container->containerType->name == 'حاوية 40') {
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل حاوية فئة 20/40 من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
+                    } elseif ($container->containerType->name == 'وزن زائد') {
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل حاوية وزن زائد من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
+                    } elseif ($container->containerType->name == 'حاوية مبرده') {
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل حاوية مبردة من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
+                    } elseif ($container->containerType->name == 'طرود LCL') {
+                        $transportService = $transaction->customer->contract->services->where("description", "اجور نقل طرود LCL من $from الى $to")->first();
+                        if($transportService) {
+                            $price += $transportService->pivot->price;
+                        }
+                    }
+                }
+
+                if($price > 0) {
+                    $previewItems->push([
+                        'description' => 'اجور نقل - TRANSPORT FEES',
+                        'amount' => $price,
+                        'tax' => $price * 0.15,
+                        'total' => $price * 1.15,
+                        'source' => 'contract',
+                    ]);
+                }
+            }
+
+            // Labour fees
+            if($contractServices->contains('اجور عمال') && !$existingItems->contains('description', 'اجور عمال - LABOUR')) {
+                $price = $transaction->customer->contract->services->where('description', 'اجور عمال')->first()->pivot->price * $containers_count;
+                $previewItems->push([
+                    'description' => 'اجور عمال - LABOUR',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                    'source' => 'contract',
+                ]);
+            }
+
+            // Saber fees
+            if($contractServices->contains('خدمات سابر') && !$existingItems->contains('description', 'خدمات سابر - SABER FEES')) {
+                $price = $transaction->customer->contract->services->where('description', 'خدمات سابر')->first()->pivot->price * $containers_count;
+                $previewItems->push([
+                    'description' => 'خدمات سابر - SABER FEES',
+                    'amount' => $price,
+                    'tax' => $price * 0.15,
+                    'total' => $price * 1.15,
+                    'source' => 'contract',
+                ]);
+            }
+        }
+
+        // Calculate storage fees
+        $storage_price_before_tax = 0;
+        foreach($transaction->containers as $container) {
+            if($container->invoices->isEmpty() 
+                && $container->policies->where('type', 'تخزين')->isNotEmpty() 
+                && $container->status == 'تم التسليم') {
+                $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+                $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+                if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
+                    $days = (int) Carbon::parse($container->date)
+                        ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
+                        ->diffInDays(Carbon::parse($container->exit_date));
+                    $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+                } else {
+                    $late_fee = 0;
+                }
+                $services = 0;
+                foreach($container->services as $service) {
+                    $services += $service->pivot->price;
+                }
+                $storage_price_before_tax += $storage_price + $late_fee + $services;
+            }
+        }
+
+        if($storage_price_before_tax > 0 && !$existingItems->contains('description', 'رسوم تخزين - STORAGE FEES')) {
+            $previewItems->push([
+                'description' => 'رسوم تخزين - STORAGE FEES',
+                'amount' => $storage_price_before_tax,
+                'tax' => $storage_price_before_tax * 0.15,
+                'total' => $storage_price_before_tax * 1.15,
+                'source' => 'storage',
+            ]);
+        }
+
+        // Group items by description
+        $grouped = $previewItems
+            ->groupBy('description')
+            ->map(function ($group) {
+                return [
+                    'description' => $group->first()['description'],
+                    'amount' => $group->sum('amount'),
+                    'tax' => $group->sum('tax'),
+                    'total' => $group->sum('total'),
+                    'source' => $group->first()['source'],
+                ];
+            })
+            ->values();
+
+        $totalAmount = $grouped->sum('amount');
+        $totalTax = $grouped->sum('tax');
+        $totalWithTax = $grouped->sum('total');
+
+        return response()->json([
+            'items' => $grouped,
+            'totals' => [
+                'amount' => $totalAmount,
+                'tax' => $totalTax,
+                'total' => $totalWithTax,
+            ]
+        ]);
+    }
+
     public function storeClearanceInvoice(InvoiceRequest $request, Transaction $transaction) {
+        return $request;
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
