@@ -54,7 +54,7 @@ class Transaction extends Model
     protected static function booted()
     {
         static::creating(function ($transaction) {
-            $year = date('Y');
+            $year = $transaction->date ? date('Y', strtotime($transaction->date)) : date('Y');
             $prefix = 'CT';
             $lastTransaction = self::whereYear('date', $year)->latest('id')->first();
             if ($lastTransaction && $lastTransaction->code) {

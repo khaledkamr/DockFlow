@@ -57,7 +57,7 @@ class ExpenseInvoice extends Model
     protected static function booted()
     {
         static::creating(function ($expenseInvoice) {
-            $year = date('Y');
+            $year = $expenseInvoice->date ? date('Y', strtotime($expenseInvoice->date)) : date('Y');
             $prefix = 'EI';
             $lastExpenseInvoice = self::whereYear('date', $year)->latest('code')->first();
             if ($lastExpenseInvoice && $lastExpenseInvoice->code) {

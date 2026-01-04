@@ -53,7 +53,8 @@ class Policy extends Model
     protected static function booted()
     {
         static::creating(function ($policy) {
-            $year = date('Y');
+            $year = $policy->date ? date('Y', strtotime($policy->date)) : date('Y');
+            $prefix = '';
 
             if($policy->type == 'تخزين') {
                 $prefix = 'ST';

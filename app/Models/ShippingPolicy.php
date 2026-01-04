@@ -71,7 +71,7 @@ class ShippingPolicy extends Model
     protected static function booted()
     {
         static::creating(function ($policy) {
-            $year = date('Y');
+            $year = $policy->date ? date('Y', strtotime($policy->date)) : date('Y');
             $prefix = 'SP';
             $lastPolicy = self::whereYear('date', $year)->latest('code')->first();
             if ($lastPolicy && $lastPolicy->code) {

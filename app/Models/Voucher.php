@@ -50,7 +50,7 @@ class Voucher extends Model
     protected static function booted()
     {
         static::creating(function ($voucher) {
-            $year = date('Y');
+            $year = $voucher->date ? date('Y', strtotime($voucher->date)) : date('Y');
             $prefix = match($voucher->type) {
                 'سند صرف نقدي' => 'VR',
                 'سند صرف بشيك' => 'VR',

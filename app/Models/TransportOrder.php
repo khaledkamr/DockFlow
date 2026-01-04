@@ -69,7 +69,7 @@ class TransportOrder extends Model
     protected static function booted()
     {
         static::creating(function ($transportOrder) {
-            $year = date('Y');
+            $year = $transportOrder->date ? date('Y', strtotime($transportOrder->date)) : date('Y');
             $prefix = 'TO';
             $lastTransportOrder = self::whereYear('date', $year)->latest('code')->first();
             if ($lastTransportOrder && $lastTransportOrder->code) {

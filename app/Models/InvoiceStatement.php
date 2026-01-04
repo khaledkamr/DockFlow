@@ -42,7 +42,7 @@ class InvoiceStatement extends Model
 
     protected static function booted() {
         static::creating(function ($invoiceStatement) {
-            $year = date('Y');
+            $year = $invoiceStatement->date ? date('Y', strtotime($invoiceStatement->date)) : date('Y');
             $prefix = 'IS';
             $lastInvoiceStatement = self::whereYear('date', $year)->latest('code')->first();
             if ($lastInvoiceStatement && $lastInvoiceStatement->code) {
