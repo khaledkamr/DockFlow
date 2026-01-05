@@ -138,7 +138,7 @@ class PolicyController extends Controller
         $new = $policy->toArray();
         logActivity('تعديل بوليصة تخزين', 'تم تعديل بيانات بوليصة التخزين رقم ' . $policy->code, $old, $new);
 
-        return redirect()->back()->with('success', 'تم تحديق بيانات البوليصة بنجاح');
+        return redirect()->back()->with('success', 'تم تحديث بيانات البوليصة بنجاح');
     }
 
     public function storagePolicyDetails(Policy $policy) {

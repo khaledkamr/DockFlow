@@ -163,7 +163,8 @@
                                     $storage_policy = $container->policies->where('type', 'تخزين')->first();
                                 @endphp
 
-                                @if ($container->status == 'في الساحة' && $storage_policy && $container->days > $storage_policy->storage_duration)
+                                @if ($container->status == 'في الساحة' && $storage_policy && $storage_policy->storage_duration 
+                                    && $container->days > $storage_policy->storage_duration)
                                     <div class="text-danger fw-semibold mt-1" style="font-size: 0.85rem;">
                                         متأخر منذ {{ (int) ($container->days - $storage_policy->storage_duration) }} أيام
                                     </div>

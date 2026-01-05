@@ -84,14 +84,14 @@
             <h5 class="mb-2">سعر التخزين</h5>
             <div class="col-4 col-md-4">
                 <label class="form-label">سعر التخزين <span class="text-danger">*</span></label>
-                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" value="0" min="0" step="1">
+                <input type="number" id="storage_price" name="storage_price" class="form-control border-primary" min="0" step="any" required>
                 @error('storage_price')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
             <div class="col-4 col-md-4">
                 <label class="form-label">مدة التخزين <span class="text-danger">*</span></label>
-                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" value="0" min="0" step="1">
+                <input type="number" id="storage_duration" name="storage_duration" class="form-control border-primary" min="0" step="any">
                 @error('storage_duration')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
@@ -99,7 +99,7 @@
             <div class="col-4 col-md-4">
                 <label class="form-label d-none d-sm-block">غرامة التأخير (لليوم) <span class="text-danger">*</span></label>
                 <label class="form-label d-block d-sm-none">غرامة التأخير<span class="text-danger">*</span></label>
-                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" value="0" min="0" step="1">
+                <input type="number" id="late_fee" name="late_fee" class="form-control border-primary" min="0" step="any" required>
                 @error('late_fee')
                     <div class="text-danger">{{ $message }}</div>
                 @endif

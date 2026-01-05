@@ -291,7 +291,7 @@
                         </div>
                         <div class="col-4 col-sm-4 col-lg-4">
                             <label class="form-label text-muted small">مدة التخزين</label>
-                            <div class="fw-bold">{{ $policy->storage_duration }} يوم</div>
+                            <div class="fw-bold">{{ $policy->storage_duration }} {{ $policy->storage_duration ? 'يوم' : 'مدة مفتوحة' }}</div>
                         </div>
                         <div class="col-4 col-sm-4 col-lg-4">
                             <label class="form-label text-muted small">غرامة التأخير (لليوم)</label>

@@ -192,65 +192,60 @@
                 </button>
             </div>
 
-            <div id="services-container">
-
-            </div>
-
-            <!-- Service Selection Modal -->
-            <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary">
-                            <h5 class="modal-title text-white fw-bold" id="serviceModalLabel">اختيار الخدمة</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="service-select" class="form-label">الخدمة المطلوبة</label>
-                                <select id="service-select" class="form-select border-primary">
-                                    <option value="">اختر الخدمة...</option>
-                                    @foreach ($services as $service)
-                                        <option value="{{ $service->id }}"
-                                            data-description="{{ $service->description }}">
-                                            {{ $service->description }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-12 col-md-4">
-                                    <label for="service-price" class="form-label">السعر</label>
-                                    <input type="number" min="1" step="1"
-                                        class="form-control border-primary" id="service-price" placeholder="0.00">
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <label for="service-unit" class="form-label">الكمية</label>
-                                    <input type="number" class="form-control border-primary" id="service-unit"
-                                        placeholder="1" value="1">
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <label for="service-unit-desc" class="form-label">وحدة القياس</label>
-                                    <input type="text" class="form-control border-primary" id="service-unit-desc"
-                                        placeholder="شهر، يوم، حاوية...">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer d-flex flex-column flex-sm-row gap-2">
-                            <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1"
-                                data-bs-dismiss="modal">إلغاء</button>
-                            <button type="button" class="btn btn-primary fw-bold order-1 order-sm-2"
-                                id="confirm-service">إضافة الخدمة</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="services-container"></div>
 
             <button type="submit" class="btn btn-primary fw-bold" id="submit-btn">
                 حفظ العقد
             </button>
         </form>
+    </div>
+
+    <!-- Service Selection Modal -->
+    <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="serviceModalLabel">اختيار الخدمة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="service-select" class="form-label">الخدمة المطلوبة</label>
+                        <select id="service-select" class="form-select border-primary" required>
+                            <option value="">اختر الخدمة...</option>
+                            @foreach ($services as $service)
+                                <option value="{{ $service->id }}" data-description="{{ $service->description }}">
+                                    {{ $service->description }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <label for="service-price" class="form-label">السعر</label>
+                            <input type="number" min="0" step="any" required
+                                class="form-control border-primary" id="service-price">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="service-unit" class="form-label">الكمية</label>
+                            <input type="number" class="form-control border-primary" id="service-unit" value="1">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="service-unit-desc" class="form-label">وحدة القياس</label>
+                            <input type="text" class="form-control border-primary" id="service-unit-desc"
+                                placeholder="شهر، يوم، حاوية...">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex flex-column flex-sm-row gap-2">
+                    <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1"
+                        data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary fw-bold order-1 order-sm-2" id="confirm-service">إضافة
+                        الخدمة</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -295,7 +290,7 @@
             const unit = $('#service-unit').val();
             const unitDesc = $('#service-unit-desc').val();
 
-            if (!serviceId || !price || !unit || !unitDesc) {
+            if (!serviceId || !price || !unitDesc) {
                 showToast('الرجاء ملء جميع الحقول المطلوبة', 'danger');
                 return;
             }
@@ -354,6 +349,13 @@
             });
             serviceCounter = $('#services-container .service-item').length;
         }
+
+        // Remove service button click
+        $(document).on('click', '.remove-service', function() {
+            $(this).closest('.service-item').remove();
+            updateServiceNumbers();
+            checkSubmitButton();
+        });
 
         function checkSubmitButton() {
             const hasServices = $('#services-container .service-item').length > 0;
