@@ -12,9 +12,27 @@
         </h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
             @if($journal->type == 'قيد يومية')
-                <a href="{{ route('journal.duplicate', $journal) }}" target="_blank" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تكرار القيد">
-                    <i class="fa-solid fa-copy"></i>
-                </a>
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#duplicateJournalModal">
+                    <i class="fa-solid fa-copy" data-bs-toggle="tooltip" data-bs-placement="top" title="تكرار القيد"></i>
+                </button>
+
+                <div class="modal fade" id="duplicateJournalModal" tabindex="-1" aria-labelledby="duplicateJournalModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white fw-bold" id="duplicateJournalModalLabel">تأكيد تكرار القيد</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center text-dark">
+                                هل أنت متأكد من تكرار هذا القيد؟
+                            </div>
+                            <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center">
+                                <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1" data-bs-dismiss="modal">إلغاء</button>
+                                <a href="{{ route('journal.duplicate', $journal) }}" target="_blank" class="btn btn-primary fw-bold order-1 order-sm-2">تكرار</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             @endif
 
             <form action="{{ route('print', 'journal_entry') }}" method="POST" target="_blank">
