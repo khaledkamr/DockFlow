@@ -349,10 +349,12 @@
                     <tr>
                         <th class="text-center fw-bold">#</th>
                         <th class="text-center fw-bold">رقم الفاتورة</th>
+                        <th class="text-center fw-bold">نوع الفاتورة</th>
                         <th class="text-center fw-bold">المبلغ</th>
                         <th class="text-center fw-bold">طريقة الدفع</th>
                         <th class="text-center fw-bold">الحالة</th>
                         <th class="text-center fw-bold">التاريخ</th>
+                        <th class="text-center fw-bold">تم بواسطة</th>
                     </tr>
                 </thead>
                 <tbody class="text-center">
@@ -360,20 +362,39 @@
                     <tr>
                         <td class="fw-bold text-primary">{{ $loop->iteration }}</td>
                         <td class="fw-bold text-primary">
-                            <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
-                                {{ $invoice->code }}
-                            </a>
+                            @if ($invoice->type == 'خدمات')
+                                <a href="{{ route('invoices.services.details', $invoice) }}"
+                                    class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
+                            @elseif($invoice->type == 'تخزين')
+                                <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
+                            @elseif($invoice->type == 'تخليص')
+                                <a href="{{ route('invoices.clearance.details', $invoice) }}"
+                                    class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
+                            @elseif($invoice->type == 'شحن')
+                                <a href="{{ route('invoices.shipping.details', $invoice) }}"
+                                    class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
+                            @endif
                         </td>
+                        <td>{{ $invoice->type }}</td>
                         <td class="fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i></td>
                         <td>{{ $invoice->payment_method }}</td>
                         <td>
                             @if($invoice->isPaid === 'تم الدفع')
-                                <span class="status-available">{{ $invoice->isPaid }}</span>
+                                <span class="badge status-available">{{ $invoice->isPaid }}</span>
                             @else
-                                <span class="status-danger">{{ $invoice->isPaid }}</span>
+                                <span class="badge status-danger">{{ $invoice->isPaid }}</span>
                             @endif
                         </td>
                         <td>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
+                        <td>{{ $invoice->made_by->name }}</td>
                     </tr>
                     @endforeach
                 </tbody>
