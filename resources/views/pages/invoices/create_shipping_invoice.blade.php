@@ -45,7 +45,6 @@
             <input type="hidden" name="type" value="شحن">
             <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
             <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-            <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
 
             <!-- Search results info -->
             <div class="alert alert-secondary mb-3" id="search-info" style="display: none;">
@@ -178,12 +177,13 @@
                                 min="0" max="100" step="1" value="0" placeholder="0.00"
                                 required>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn"
-                                disabled>
-                                <i class="fas fa-plus me-1"></i>
-                                إنشاء فاتورة
-                            </button>
+                        <div class="col-4 col-sm-4 col-lg-3">
+                            <label for="date" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                تاريخ الفاتورة
+                            </label>
+                            <input type="date" name="date" id="date" class="form-control border-primary"
+                                value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
                         </div>
                     </div>
 
@@ -237,6 +237,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary w-100 fw-bold" id="create-invoice-btn" disabled>
+                    <i class="fas fa-plus me-1"></i>
+                    إنشاء الفاتورة
+                </button>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mt-4">
