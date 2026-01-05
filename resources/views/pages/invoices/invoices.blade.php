@@ -179,10 +179,15 @@
                                                 </div>
                                                 <div class="modal-body fs-6">
                                                     هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟
+                                                    @if($invoice->is_posted)
+                                                        <div class="alert alert-danger mt-3">
+                                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل حذف الفاتورة.
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary fw-bold"
-                                                        data-bs-dismiss="modal">إلغاء</button>
+                                                    <button type="button" class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
                                                     <form action="{{ route('invoices.delete', $invoice) }}"
                                                         method="POST" style="display: inline;">
                                                         @csrf

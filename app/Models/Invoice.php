@@ -19,15 +19,18 @@ class Invoice extends Model
         'customer_id', 
         'code',
         'amount_before_tax',
+        'tax_rate',
         'tax',
         'discount',
         'amount_after_discount',
         'total_amount',
         'payment_method',
         'date',
+        'is_posted',
         'isPaid',
         'user_id',
         'company_id',
+        'notes',
     ];
 
     public function customer() {

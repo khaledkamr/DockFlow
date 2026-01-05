@@ -720,17 +720,6 @@ class InvoiceController extends Controller
         ));
     }
 
-    public function updateInvoice(Request $request, Invoice $invoice) {
-        if(Gate::denies('تعديل فاتورة')) {
-            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل الفواتير');
-        }
-        $invoice->isPaid = $request->isPaid;
-        $invoice->save();
-
-        logActivity('تحديث فاتورة', "تم تحديث حالة الفاتورة رقم " . $invoice->code . " إلى " . $invoice->isPaid);
-        return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
-    }
-
     public function postInvoice(Invoice $invoice) {
         if($invoice->is_posted) {
             return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
@@ -1056,7 +1045,21 @@ class InvoiceController extends Controller
 
         logActivity('حذف فاتورة', "تم حذف الفاتورة رقم " . $name, null, $invoice->toArray());
 
-        return redirect()->back()->with('success', 'تم حذف الفاتورة ' . $name . ' بنجاح');
+        return redirect()->route('invoices')->with('success', 'تم حذف الفاتورة ' . $name . ' بنجاح');
+    }
+
+    public function updateInvoice(Request $request, Invoice $invoice) {
+        if(Gate::denies('تعديل فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل الفواتير');
+        }
+
+        $old = $invoice->toArray();
+        $invoice->update($request->all());
+        $new = $invoice->toArray();
+
+        logActivity('تعديل فاتورة', "تم تعديل بيانات الفاتورة رقم " . $invoice->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
     }
 
     public function attachFile(Request $request, Invoice $invoice) {
