@@ -179,12 +179,14 @@ class TransportController extends Controller
         $transportOrder->save();
 
         $container = $transportOrder->containers()->first();
-        if ($transportOrder->is_received) {
-            $container->status = 'تم التسليم';
-        } else {
-            $container->status = 'قيد النقل';
+        if($container->status != 'في الساحة') {
+            if ($transportOrder->is_received) {
+                $container->status = 'تم التسليم';
+            } else {
+                $container->status = 'قيد النقل';
+            }
+            $container->save();
         }
-        $container->save();
 
         logActivity('تحديث حالة تسليم اشعار النقل', "تم تحديث حالة التسليم لاشعار النقل برقم " . $transportOrder->code . " إلى " . ($transportOrder->is_received ? 'تم التسليم' : 'في الانتظار'));
         return redirect()->back()->with('success', 'تم تحديث حالة التسليم بنجاح');
