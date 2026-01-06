@@ -223,6 +223,188 @@ class AccountingController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء قيد جديد بنجاح, <a class="text-white fw-bold" href="'.route('journal.details', $journalEntry).'">عرض القيد</a>');
     }
 
+    public function createClosingJournal() {
+        $accounts = Account::where('level', 5)->get();
+        return view('pages.accounting.journal_entries.closing_journal', compact('accounts'));
+    }
+
+    public function getClosingJournalData(Request $request) {
+        $year = $request->query('year');
+        
+        if (!$year) {
+            return response()->json(['error' => 'السنة مطلوبة'], 400);
+        }
+
+        $company_id = Auth::user()->company_id;
+        
+        // Get المصاريف (Expenses) parent account and all its children
+        $expensesParent = Account::where('name', 'المصاريف')
+            ->where('company_id', $company_id)
+            ->first();
+        
+        // Get الإيرادات (Revenues) parent account and all its children  
+        $revenuesParent = Account::where('name', 'الإيرادات')
+            ->where('company_id', $company_id)
+            ->first();
+
+        $expenses = [];
+        $revenues = [];
+
+        if ($expensesParent) {
+            $expenseAccountIds = $expensesParent->getAllChildrenIds();
+            $expenseAccountIds[] = $expensesParent->id;
+
+            // Get level 5 expense accounts with balances for the year
+            $expenseAccounts = Account::whereIn('id', $expenseAccountIds)
+                ->where('level', 5)
+                ->get();
+
+            foreach ($expenseAccounts as $account) {
+                $balance = $this->getAccountBalanceForYear($account, $year);
+                if ($balance > 0) {
+                    $expenses[] = [
+                        'account_id' => $account->id,
+                        'account_name' => $account->name,
+                        'account_code' => $account->code,
+                        'balance' => number_format($balance, 2, '.', '')
+                    ];
+                }
+            }
+        }
+
+        if ($revenuesParent) {
+            $revenueAccountIds = $revenuesParent->getAllChildrenIds();
+            $revenueAccountIds[] = $revenuesParent->id;
+
+            // Get level 5 revenue accounts with balances for the year
+            $revenueAccounts = Account::whereIn('id', $revenueAccountIds)
+                ->where('level', 5)
+                ->get();
+
+            foreach ($revenueAccounts as $account) {
+                $balance = $this->getAccountBalanceForYear($account, $year);
+                if ($balance > 0) {
+                    $revenues[] = [
+                        'account_id' => $account->id,
+                        'account_name' => $account->name,
+                        'account_code' => $account->code,
+                        'balance' => number_format($balance, 2, '.', '')
+                    ];
+                }
+            }
+        }
+
+        // Calculate profit or loss
+        $totalRevenues = array_sum(array_column($revenues, 'balance'));
+        $totalExpenses = array_sum(array_column($expenses, 'balance'));
+        $profitLoss = null;
+
+        $difference = $totalRevenues - $totalExpenses;
+        
+        // Get retained earnings / profit & loss account (أرباح وخسائر محتجزة or similar)
+        $profitLossAccount = Account::where('company_id', $company_id)
+            ->where('level', 5)
+            ->where(function($query) {
+                $query->where('name', 'like', '%أرباح%')
+                    ->orWhere('name', 'like', '%خسائر%')
+                    ->orWhere('name', 'like', '%صافي الربح%');
+            })
+            ->first();
+
+        if ($difference != 0 && $profitLossAccount) {
+            $profitLoss = [
+                'account_id' => $profitLossAccount->id,
+                'account_name' => $profitLossAccount->name,
+                'amount' => number_format(abs($difference), 2, '.', ''),
+                'type' => $difference > 0 ? 'profit' : 'loss'
+            ];
+        }
+
+        return response()->json([
+            'expenses' => $expenses,
+            'revenues' => $revenues,
+            'profit_loss' => $profitLoss,
+            'total_revenues' => number_format($totalRevenues, 2, '.', ''),
+            'total_expenses' => number_format($totalExpenses, 2, '.', '')
+        ]);
+    }
+
+    private function getAccountBalanceForYear(Account $account, $year) {
+        $startDate = "{$year}-01-01";
+        $endDate = "{$year}-12-31";
+
+        $result = JournalEntryLine::where('account_id', $account->id)
+            ->whereHas('journal', function($query) use ($startDate, $endDate) {
+                $query->whereBetween('date', [$startDate, $endDate]);
+            })
+            ->selectRaw('COALESCE(SUM(debit), 0) as total_debit, COALESCE(SUM(credit), 0) as total_credit')
+            ->first();
+
+        // For expenses: balance = debit - credit (normally debit balance)
+        // For revenues: balance = credit - debit (normally credit balance)
+        $accountType = $account->type_id;
+        
+        // Expenses (type_id = 3) - debit balance
+        if ($accountType == 3) {
+            return max(0, $result->total_debit - $result->total_credit);
+        }
+        // Revenues (type_id = 4) - credit balance
+        if ($accountType == 4) {
+            return max(0, $result->total_credit - $result->total_debit);
+        }
+
+        return 0;
+    }
+
+    public function storeClosingJournal(Request $request) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء قيود');
+        }
+
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        foreach ($request->account_id as $index => $accountId) {
+            if (!$accountId) {
+                return redirect()->back()->with('error', 'جميع الحسابات مطلوبة');
+            }
+
+            $debit = floatval($request->debit[$index] ?? 0);
+            $credit = floatval($request->credit[$index] ?? 0);
+
+            $totalDebit += $debit;
+            $totalCredit += $credit;
+        }
+
+        if (abs($totalDebit - $totalCredit) > 0.01) {
+            return redirect()->back()->with('error', 'مجموع المدين يجب أن يساوي مجموع الدائن');
+        }
+
+        $journalEntry = JournalEntry::create([
+            'type' => 'قيد إقفال',
+            'date' => $request->date,
+            'totalDebit' => $totalDebit,
+            'totalCredit' => $totalCredit,
+            'user_id' => Auth::user()->id,
+            'company_id' => Auth::user()->company_id,
+        ]);
+
+        foreach ($request->account_id as $index => $accountId) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journalEntry->id,
+                'account_id'       => $accountId,
+                'debit'            => $request->debit[$index] ?? 0,
+                'credit'           => $request->credit[$index] ?? 0,
+                'description'      => $request->description[$index],
+            ]);
+        }
+
+        $new = $journalEntry->load('lines')->toArray();
+        logActivity('إنشاء قيد إقفال', "تم إنشاء قيد إقفال جديد برقم " . $journalEntry->code . " لسنة " . $request->year, null, $new);
+
+        return redirect()->route('journal.details', $journalEntry)->with('success', 'تم إنشاء قيد الإقفال بنجاح');
+    }
+
     public function editJournal(JournalEntry $journal) {
         if(Gate::denies('إنشاء قيود وسندات')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل القيود');

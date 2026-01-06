@@ -6,9 +6,9 @@
 <h1 class="mb-4">تفاصيل القيد {{ $journal->code }}</h1>
 
 <div class="bg-white p-3 rounded-3 shadow-sm border-0 mb-5">
-    <div class="d-flex flex-column flex-md-row justify-content-between mb-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between mb-2">
         <h5 class="fw-bold">
-            {{ $journal->voucher_id ? $journal->voucher->type : 'قيد يومية' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
+            {{ $journal->type ?? 'قيد يومية' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
         </h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
             @if($journal->type == 'قيد يومية')

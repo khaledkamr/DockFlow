@@ -5,27 +5,31 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>إنشاء قيد يومية</h1>
-        <a href="javascript:history.back()" class="btn btn-outline-secondary">
-            العودة <i class="fas fa-arrow-left"></i>
-        </a>
+        <div class="d-flex gap-2">
+            @can('إنشاء قيد إقفال')
+                <a href="{{ route('money.create.closing.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="قيد اقفال">
+                    <i class="fa-solid fa-lock"></i>
+                </a>
+            @endcan
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                العودة <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
     </div>
 
     <style>
         .bg-unbalanced {
             background-color: rgb(250, 203, 203);
         }
-
         .bg-balanced {
             background-color: rgb(203, 250, 203);
         }
-
         .select2-container .select2-selection {
             height: 38px;
             border-radius: 6px;
             border: 2px solid #dddddd;
             padding: 5px;
         }
-
         .select2-container .select2-selection__rendered {
             line-height: 30px;
         }
@@ -230,6 +234,4 @@
             updateRowNumbers();
         });
     </script>
-
-
 @endsection

@@ -258,6 +258,9 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::get('accounting/post-voucher/{voucher:uuid}/toJournal', 'postVoucherToJournal')->name('post.voucher');
 
     Route::get('accounting/entries/create/journal', 'createJournal')->name('money.create.journal');
+    Route::get('accounting/entries/create/closing-journal', 'createClosingJournal')->name('money.create.closing.journal');
+    Route::get('accounting/entries/create/closing-journal/data', 'getClosingJournalData')->name('get.closing.journal.data');
+    Route::post('accounting/entries/create/closing-journal', 'storeClosingJournal')->name('store.closing.journal');
     Route::post('accounting/entries/create/journal', 'storeJournal')->name('store.journal');
     Route::get('accounting/journal/{journal:uuid}', 'journalDetails')->name('journal.details');
     Route::get('accounting/journal/edit/{journal:uuid}', 'editJournal')->name('journal.edit');
