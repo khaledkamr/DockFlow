@@ -4,7 +4,6 @@
 
 @section('content')
 <style>
-    /* Only essential custom styles that Bootstrap can't handle */
     .table-container::after {
         content: '';
         position: absolute;
@@ -288,6 +287,7 @@
         </tbody>
     </table>
 </div>
+
 <div class="text-center text-secondary small mt-2 d-md-none">
     <i class="fa-solid fa-arrows-left-right me-1"></i>
     اسحب الجدول لليمين أو اليسار لرؤية المزيد

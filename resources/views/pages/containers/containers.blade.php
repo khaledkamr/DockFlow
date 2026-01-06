@@ -10,7 +10,7 @@
                     <div>
                         <h6 class="card-title fw-bold">إجمالي عدد الحاويات في الساحة</h6>
                         <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">
-                            {{ $containers->whereIn('status', ['في الساحة', 'متأخر'])->count() }}</h6>
+                            {{ $existingContainers }}</h6>
                     </div>
                     <div>
                         <i class="bi bi-boxes fs-2"></i>
@@ -24,7 +24,7 @@
                     <div>
                         <h6 class="card-title fw-bold">إجمالي الحاويات المتأخرة</h6>
                         <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">
-                            {{ $lateContainers->count() }}
+                            {{ $lateContainers }}
                         </h6>
                     </div>
                     <div>
@@ -39,7 +39,8 @@
                     <div>
                         <h6 class="card-title fw-bold">إجمالي الحاويات التي تم تسليمها</h6>
                         <h6 class="text-primary fw-bold mb-0" style="font-size: 1.4rem;">
-                            {{ $containers->where('status', 'تم التسليم')->count() }}</h6>
+                            {{ $deliveredContainers }}
+                        </h6>
                     </div>
                     <div>
                         <i class="bi bi-check-circle fs-2"></i>
@@ -55,7 +56,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن حاوية:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن حاوية بإسم العميل او بالموقع ... " value="{{ request()->query('search') }}">
+                        placeholder=" ابحث عن حاوية برقم الحاوية او بإسم العميل او بالموقع ... " value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>
                         <i class="fa-solid fa-magnifying-glass ms-0 ms-sm-2"></i>

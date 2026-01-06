@@ -572,7 +572,7 @@
                             data-bs-toggle="collapse" href="#policy-management" role="button"
                             aria-expanded="{{ request()->routeIs(['policies*']) ? 'true' : 'false' }}"
                             aria-controls="policy-management">
-                            <i class="fa-solid fa-file ms-2 me-2"></i> بوالـص التخزيـــــــن
+                            <i class="fa-solid fa-box ms-2 me-2"></i> بوالـص التخزيـــــــن
                         </a>
                         <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['policies*']) ? 'show' : '' }}"
                             id="policy-management">
@@ -608,7 +608,7 @@
                             data-bs-toggle="collapse" href="#transaction-management" role="button"
                             aria-expanded="{{ request()->routeIs(['transactions*']) ? 'true' : 'false' }}"
                             aria-controls="transaction-management">
-                            <i class="fa-solid fa-file ms-2 me-2"></i> معاملات التخليـــص
+                            <i class="fa-solid fa-ship ms-1 me-2"></i> معاملات التخليـــص
                         </a>
                         <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['transactions*']) ? 'show' : '' }}"
                             id="transaction-management">

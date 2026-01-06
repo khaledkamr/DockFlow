@@ -17,37 +17,29 @@ use Illuminate\Support\Facades\Storage;
 class ContractController extends Controller
 {
     public function contracts(Request $request) {
-        $contracts = Contract::orderBy('created_at')->get();
+        $contracts = Contract::query();
 
         $status = $request->input('status', null);
+        $search = $request->input('search', null);
+
         if($status) {
             if($status == 'جاري') {
-                $contracts = $contracts->filter(function($contract) {
-                    return Carbon::parse($contract->end_date) >= Carbon::now();
+                $contracts->where(function($q) {
+                    $q->where('end_date', '>=', Carbon::now())
+                      ->orWhereNull('end_date');
                 });
             } elseif($status == 'منتهي') {
-                $contracts = $contracts->filter(function($contract) {
-                    return Carbon::parse($contract->end_date) < Carbon::now();
-                });
+                $contracts->where('end_date', '<', Carbon::now());
             }
         }
 
-        $search = $request->input('search', null);
         if($search) {
-            $contracts = $contracts->filter(function($contract) use($search) {
-                return stripos($contract->id, $search) !== false 
-                    || stripos($contract->customer->name, $search) !== false
-                    || stripos($contract->start_date, $search) !== false;
-            });
+            $contracts->whereHas('customer', function($q) use($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            })->orWhere('date', 'like', '%' . $search . '%');
         }
 
-        $contracts = new \Illuminate\Pagination\LengthAwarePaginator(
-            $contracts->forPage(request()->get('page', 1), 100),
-            $contracts->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $contracts = $contracts->with(['customer', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.contracts.contracts', compact('contracts'));
     }

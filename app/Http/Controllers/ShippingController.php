@@ -18,43 +18,36 @@ use Illuminate\Support\Facades\Auth;
 class ShippingController extends Controller
 {
     public function policies(Request $request) {
-        $policies = ShippingPolicy::orderBy('code', 'desc')->get();
+        $policies = ShippingPolicy::query();
 
         $search = $request->input('search', null);
-        if ($search) {
-            $policies = $policies->filter(function ($policy) use ($search) {
-                $matchCode = stripos($policy->code, $search) !== false;
-                $matchCustomer = stripos($policy->customer->name, $search) !== false;
-                $matchDate = stripos($policy->date, $search) !== false;
-                $matchContainer = $policy->goods->filter(function($good) use ($search) {
-                    return stripos($good->description, $search) !== false;
-                })->isNotEmpty();
+        $type = $request->input('type', 'all');
+        $is_received = $request->input('is_received', 'all');
 
-                return $matchCode || $matchCustomer || $matchDate || $matchContainer;
+        if ($type && $type != 'all') {
+            $policies->where('type', $type);
+        }
+        if ($is_received && $is_received != 'all') {
+            if ($is_received == 'تم التسليم') {
+                $policies->where('is_received', true);
+            } elseif ($is_received == 'في الانتظار') {
+                $policies->where('is_received', false);
+            }
+        }
+        if ($search) {
+            $policies->where(function($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('date', 'like', '%' . $search . '%')
+                    ->orWhereHas('goods', function($q) use ($search) {
+                        $q->where('description', 'like', '%' . $search . '%');
+                    });
             });
         }
 
-        $type = $request->input('type', 'all');
-        if ($type && $type != 'all') {
-            $policies = $policies->where('type', $type);
-        }
-
-        $is_received = $request->input('is_received', 'all');
-        if ($is_received && $is_received != 'all') {
-            if ($is_received == 'تم التسليم') {
-                $policies = $policies->where('is_received', true);
-            } elseif ($is_received == 'في الانتظار') {
-                $policies = $policies->where('is_received', false);
-            }
-        }
-
-        $policies = new \Illuminate\Pagination\LengthAwarePaginator(
-            $policies->forPage(request()->get('page', 1), 100),
-            $policies->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $policies = $policies->with(['customer', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.shipping.policies', compact('policies'));
     }
@@ -218,7 +211,7 @@ class ShippingController extends Controller
     }
 
     public function reports(Request $request) {
-        $policies = ShippingPolicy::orderBy('date')->get();
+        $policies = ShippingPolicy::query();
         $customers = Customer::all();
         $drivers = Driver::with('vehicle')->get();
         $vehicles = Vehicle::all();
@@ -237,58 +230,47 @@ class ShippingController extends Controller
         $vehicle = $request->input('vehicle', 'all');
         $loading_location = $request->input('loading_location', 'all');
         $delivery_location = $request->input('delivery_location', 'all');
+        $perPage = $request->input('per_page', 100);
 
         if($customer && $customer != 'all') {
-            $policies = $policies->where('customer_id', $customer);
+            $policies->where('customer_id', $customer);
         }
         if($from) {
-            $policies = $policies->where('date', '>=', $from);
+            $policies->where('date', '>=', $from);
         }
         if($to) {
-            $policies = $policies->where('date', '<=', $to);
+            $policies->where('date', '<=', $to);
         }
         if($type && $type != 'all') {
-            $policies = $policies->where('type', $type);
+            $policies->where('type', $type);
         }
         if($status && $status != 'all') {
-            $policies = $policies->where('is_received', $status == 'تم التسليم' ? true : false);
+            $policies->where('is_received', $status == 'تم التسليم' ? true : false);
         }
         if($invoice_status && $invoice_status != 'all') {
-            $policies = $policies->filter(function($policy) use ($invoice_status) {
-                $invoice = $policy->invoices->filter(function($invoice) {
-                    return $invoice->type == 'شحن';
-                })->isEmpty();
-                if($invoice_status == 'with_invoice') {
-                    return $invoice == false;
-                } elseif($invoice_status == 'without_invoice') {
-                    return $invoice;
-                }
-            });
+            if($invoice_status == 'with_invoice') {
+                $policies->whereHas('invoices');
+            } elseif($invoice_status == 'without_invoice') {
+                $policies->whereDoesntHave('invoices');
+            }
         }
         if($supplier && $supplier != 'all') {
-            $policies = $policies->where('supplier_id', $supplier);
+            $policies->where('supplier_id', $supplier);
         }
         if($driver && $driver != 'all') {
-            $policies = $policies->where('driver_id', $driver);
+            $policies->where('driver_id', $driver);
         }
         if($vehicle && $vehicle != 'all') {
-            $policies = $policies->where('vehicle_id', $vehicle);
+            $policies->where('vehicle_id', $vehicle);
         }
         if($loading_location && $loading_location != 'all') {
-            $policies = $policies->where('from', $loading_location);
+            $policies->where('from', $loading_location);
         }
         if($delivery_location && $delivery_location != 'all') {
-            $policies = $policies->where('to', $delivery_location);
+            $policies->where('to', $delivery_location);
         }
 
-        $perPage = $request->input('per_page', 100);
-        $policies = new \Illuminate\Pagination\LengthAwarePaginator(
-            $policies->forPage(request()->get('page', 1), $perPage),
-            $policies->count(),
-            $perPage,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $policies = $policies->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->withQueryString();
 
         return view('pages.shipping.reports', compact(
             'policies', 

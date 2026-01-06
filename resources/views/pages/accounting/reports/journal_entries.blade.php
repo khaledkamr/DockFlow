@@ -1,7 +1,7 @@
 <style>
     .table-container {
-        max-height: 650px; /* Adjust height as needed */
-        overflow-y: auto;
+        /* max-height: 650px; Adjust height as needed */
+        /* overflow-y: auto; */
         border: 1px solid #dee2e6;
     }
     
@@ -53,7 +53,20 @@
 
 <div class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-3">
-        <div></div>
+        <div >
+            <form method="GET" action="">
+                <label for="per_page" class="fw-semibold">عدد القيود:</label>
+                <select id="per_page" name="per_page" onchange="this.form.submit()"
+                    class="form-select form-select-sm d-inline-block w-auto">
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
+                    <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
+                </select>
+                @foreach (request()->except('per_page') as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+            </form>
+        </div>
         <div class="export-buttons d-flex gap-2 align-items-center">
             <form action="{{ route('export.excel', 'journal_entries') }}" method="GET">
                 <input type="hidden" name="type" value="{{ request()->query('type') }}">
@@ -64,10 +77,6 @@
                 </button>
             </form>
 
-            <button class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير PDF">
-                <i class="fa-solid fa-file-pdf"></i>
-            </button>
-            
             <form action="{{ route('print', 'journal_entries') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="type" value="{{ request()->query('type') }}">
@@ -80,7 +89,7 @@
         </div>
     </div>
     <div class="table-container">
-        <table class="table table-hover">
+        <table class="table table-hover table-bordered">
             <thead>
                 <tr>
                     <th class="text-center bg-dark text-white">رقم القيد</th>
@@ -101,7 +110,7 @@
                     <tr>
                         <td colspan="7" class="text-start table-secondary fw-bold">
                             <a href="{{ route('journal.details', $entry) }}" class="text-decoration-none">
-                                قيد - {{ $entry->voucher->type ?? 'قيد يومية' }} - بتاريخ {{ $entry->date }}
+                                قيد - {{ $entry->type }} - بتاريخ {{ \Carbon\Carbon::parse($entry->date)->format('Y/m/d') }}
                             </a>
                         </td>
                     </tr>
@@ -144,6 +153,10 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="mt-4">
+        {{ $entries->links('components.pagination') }} 
     </div>
 </div>
 

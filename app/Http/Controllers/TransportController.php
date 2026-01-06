@@ -25,30 +25,25 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 class TransportController extends Controller
 {
     public function transportOrders(Request $request) {
-        $transportOrders = TransportOrder::orderBy('code', 'desc')->get();
+        $transportOrders = TransportOrder::query();
 
         $search = $request->input('search', null);
-        if ($search) {
-            $transportOrders = $transportOrders->filter(function ($order) use ($search) {
-                $matchCode = stripos($order->code, $search) !== false;
-                $matchTransaction = stripos($order->transaction->code, $search) !== false;
-                $matchCustomer = stripos($order->customer->name, $search) !== false;
-                $matchDate = stripos($order->date, $search) !== false;
-                $matchContainer = $order->containers->contains(function ($container) use ($search) {
-                    return stripos($container->code, $search) !== false;
-                });
 
-                return $matchCode || $matchTransaction || $matchCustomer || $matchDate || $matchContainer;
-            });
+        if ($search) {
+            $transportOrders->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('transaction', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('containers', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhere('date', 'like', '%' . $search . '%');
         }
 
-        $transportOrders = new \Illuminate\Pagination\LengthAwarePaginator(
-            $transportOrders->forPage(request()->get('page', 1), 100),
-            $transportOrders->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $transportOrders = $transportOrders->with(['customer', 'transaction', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.transportOrders.transport_orders', compact('transportOrders'));
     }
@@ -370,7 +365,7 @@ class TransportController extends Controller
     }
 
     public function reports(Request $request) {
-        $transportOrders = TransportOrder::orderBy('date')->get();
+        $transportOrders = TransportOrder::query();
         $customers = Customer::all();
         $drivers = Driver::with('vehicle')->get();
         $vehicles = Vehicle::all();
@@ -387,43 +382,37 @@ class TransportController extends Controller
         $vehicle = $request->input('vehicle', 'all');
         $loading_location = $request->input('loading_location', 'all');
         $delivery_location = $request->input('delivery_location', 'all');
+        $perPage = $request->input('per_page', 100);
 
         if($customer && $customer != 'all') {
-            $transportOrders = $transportOrders->where('customer_id', $customer);
+            $transportOrders->where('customer_id', $customer);
         }
         if($from) {
-            $transportOrders = $transportOrders->where('date', '>=', $from);
+            $transportOrders->where('date', '>=', $from);
         }
         if($to) {
-            $transportOrders = $transportOrders->where('date', '<=', $to);
+            $transportOrders->where('date', '<=', $to);
         }
         if($type && $type != 'all') {
-            $transportOrders = $transportOrders->where('type', $type);
+            $transportOrders->where('type', $type);
         }
         if($supplier && $supplier != 'all') {
-            $transportOrders = $transportOrders->where('supplier_id', $supplier);
+            $transportOrders->where('supplier_id', $supplier);
         }
         if($driver && $driver != 'all') {
-            $transportOrders = $transportOrders->where('driver_id', $driver);
+            $transportOrders->where('driver_id', $driver);
         }
         if($vehicle && $vehicle != 'all') {
-            $transportOrders = $transportOrders->where('vehicle_id', $vehicle);
+            $transportOrders->where('vehicle_id', $vehicle);
         }
         if($loading_location && $loading_location != 'all') {
-            $transportOrders = $transportOrders->where('from', $loading_location);
+            $transportOrders->where('from', $loading_location);
         }
         if($delivery_location && $delivery_location != 'all') {
-            $transportOrders = $transportOrders->where('to', $delivery_location);
+            $transportOrders->where('to', $delivery_location);
         }
 
-        $perPage = $request->input('per_page', 100);
-        $transportOrders = new \Illuminate\Pagination\LengthAwarePaginator(
-            $transportOrders->forPage(request()->get('page', 1), $perPage),
-            $transportOrders->count(),
-            $perPage,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $transportOrders = $transportOrders->with(['customer', 'driver', 'vehicle', 'supplier', 'made_by'])->orderBy('code')->paginate($perPage)->withQueryString();
         
         return view('pages.transportOrders.reports', compact(
             'transportOrders',

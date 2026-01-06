@@ -11,7 +11,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن إشعار:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن إشعار بإسم العميل او بكود الإشعار او بالتاريخ... "
+                        placeholder=" ابحث عن إشعار برقم الإشعار او بإسم العميل او بالتاريخ او برقم الحاوية... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>
@@ -32,8 +32,8 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th class="text-center bg-dark text-white text-nowrap">كود الإشعار</th>
-                    <th class="text-center bg-dark text-white text-nowrap">كود المعاملة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">رقم الإشعار</th>
+                    <th class="text-center bg-dark text-white text-nowrap">رقم المعاملة</th>
                     <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ الإشعار</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
@@ -52,7 +52,11 @@
                 @else
                     @foreach ($transportOrders as $order)
                         <tr>
-                            <td class="text-center text-primary fw-bold">{{ $order->code }}</td>
+                            <td class="text-center text-primary fw-bold">
+                                <a href="{{ route('transactions.transportOrders.details', $order) }}" class="text-decoration-none">
+                                    {{ $order->code }}
+                                </a>
+                            </td>
                             <td class="text-center text-primary fw-bold">
                                 <a href="{{ route('transactions.details', $order->transaction) }}"
                                     class="text-decoration-none">

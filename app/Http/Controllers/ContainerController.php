@@ -16,61 +16,57 @@ class ContainerController extends Controller
 {
     public function containers(Request $request) {
         $containerTypes = Container_type::all();
-        $containers = Container::orderBy('id')->get();
+        $containerFilter = request()->query('status');
+        $search = $request->input('search', null);
+
+        $existingContainers = Container::where('status', 'في الساحة')->count();
+        $deliveredContainers = Container::where('status', 'تم التسليم')->count();
         $lateContainers = Container::where('status', 'في الساحة')
             ->whereHas('policies', function($query) {
-            $query->where('type', 'تخزين');
+                $query->where('type', 'تخزين');
             })
             ->get()
             ->filter(function ($container) {
-            $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-            if(!$storagePolicy) {
-                return false;
-            }
-            $dueDays = $storagePolicy->storage_duration;
-            return $container->days > $dueDays;
-            });
+                $storagePolicy = $container->policies->where('type', 'تخزين')->first();
+                if(!$storagePolicy) {
+                    return false;
+                }
+                $dueDays = $storagePolicy->storage_duration;
+                return $container->days > $dueDays;
+            })->count();
+
+        $containers = Container::query();
         
-        $containerFilter = request()->query('status');
         if ($containerFilter && $containerFilter !== 'all') {
             if($containerFilter === 'متأخر') {
-                $containers = $containers->filter(function ($container) {
-                    if($container->status !== 'في الساحة') {
-                        return false;
-                    }
-                    $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-                    if(!$storagePolicy) {
-                        return false;
-                    }
-                    $dueDays = $storagePolicy->storage_duration;
-                    return $container->days > $dueDays;
-                });
+                $containers->where('status', 'في الساحة')
+                    ->whereHas('policies', function ($q) {
+                        $q->where('type', 'تخزين')
+                            ->whereRaw('DATEDIFF(NOW(), containers.date) > policies.storage_duration');
+                    });
             } else {
-                $containers = $containers->filter(function ($container) use ($containerFilter) {
-                    return $container->status === $containerFilter;
-                });
+                $containers->where('status', $containerFilter);
             }
         }
-
-        $search = $request->input('search', null);
+        
         if($search) {
-            $containers = $containers->filter(function($container) use($search) {
-                return stripos($container->id, $search) !== false 
-                    || stripos($container->code, $search) !== false 
-                    || stripos($container->customer->name, $search) !== false
-                    || stripos($container->location, $search) !== false;
+            $containers->where(function($query) use ($search) {
+                $query->where('code', 'like', "%$search%")
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })->orWhere('location', 'like', "%$search%");
             });
         }
 
-        $containers = new \Illuminate\Pagination\LengthAwarePaginator(
-            $containers->forPage(request()->get('page', 1), 100),
-            $containers->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $containers = $containers->with(['customer', 'containerType'])->orderBy('date', 'desc')->paginate(100)->withQueryString();
 
-        return view('pages.containers.containers', compact('containers', 'lateContainers', 'containerTypes'));
+        return view('pages.containers.containers', compact(
+            'existingContainers',
+            'lateContainers', 
+            'deliveredContainers',
+            'containers', 
+            'containerTypes',
+        ));
     }
 
     public function containerStore(Request $request) {
@@ -197,7 +193,7 @@ class ContainerController extends Controller
     }
 
     public function reports(Request $request) {
-        $containers = Container::orderBy('date')->get();
+        $containers = Container::query();
         $types = Container_type::all();
         $customers = Customer::all();
 
@@ -207,57 +203,37 @@ class ContainerController extends Controller
         $type = $request->input('type', 'all');
         $customer = $request->input('customer', 'all');
         $invoiced = $request->input('invoiced', 'all');
+        $perPage = $request->input('per_page', 100);
 
         if($to && $from) {
-            $containers = $containers->whereBetween('date', [$from, $to]);
+            $containers->whereBetween('date', [$from, $to]);
         }
         if($status !== 'all') {
             if($status == 'متأخر') {
-                $containers = $containers->filter(function ($container) {
-                    if($container->status !== 'في الساحة') {
-                        return false;
-                    }
-                    $storagePolicy = $container->policies->where('type', 'تخزين')->first();
-                    if(!$storagePolicy) {
-                        return false;
-                    }
-                    $dueDays = $storagePolicy->storage_duration;
-                    return $container->days > $dueDays;
-                });
+                $containers->where('status', 'في الساحة')
+                    ->whereHas('policies', function ($q) {
+                        $q->where('type', 'تخزين')
+                            ->whereRaw('DATEDIFF(NOW(), containers.date) > policies.storage_duration');
+                    });
             } else {
-                $containers = $containers->where('status', $status);
+                $containers->where('status', $status);
             }
         }
         if($type !== 'all') {
-            $containers = $containers->filter(function($container) use($type) {
-                return $container->containerType->id == $type;
-            });
+            $containers->where('container_type_id', $type);
         }
         if($customer !== 'all') {
-            $containers = $containers->filter(function($container) use($customer) {
-                return $container->customer->id == $customer;
-            });
+            $containers->where('customer_id', $customer);
         }
         if($invoiced !== 'all') {
             if($invoiced == 'مع فاتورة') {
-                $containers = $containers->filter(function($container) {
-                    return $container->invoices()->exists();
-                });
+                $containers->whereHas('invoices');
             } elseif($invoiced == 'بدون فاتورة') {
-                $containers = $containers->filter(function($container) {
-                    return !$container->invoices()->exists();
-                });
+                $containers->whereDoesntHave('invoices');
             }
         }
 
-        $perPage = $request->input('per_page', 100);
-        $containers = new \Illuminate\Pagination\LengthAwarePaginator(
-            $containers->forPage(request()->get('page', 1), $perPage),
-            $containers->count(),
-            $perPage,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $containers = $containers->with(['customer', 'containerType', 'invoices'])->orderBy('date')->paginate($perPage)->withQueryString();
 
         return view('pages.containers.reports', compact(
             'containers',

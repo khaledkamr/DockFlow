@@ -26,38 +26,28 @@ use Illuminate\Support\Facades\Storage;
 class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
-        $invoices = Invoice::orderBy('code', 'desc')->get();
+        $invoices = Invoice::query();
 
         $methodFilter = request()->query('paymentMethod');
-        if ($methodFilter && $methodFilter !== 'all') {
-            $invoices = $invoices->filter(function ($invoice) use ($methodFilter) {
-                return $invoice->payment_method === $methodFilter;
-            });
-        }
-
         $paymentFilter = request()->query('isPaid');
-        if ($paymentFilter && $paymentFilter !== 'all') {
-            $invoices = $invoices->filter(function ($invoice) use ($paymentFilter) {
-                return $invoice->isPaid === $paymentFilter;
-            });
-        }
-
         $search = $request->input('search', null);
+
+        if ($methodFilter && $methodFilter !== 'all') {
+            $invoices->where('payment_method', $methodFilter);
+        }
+        if ($paymentFilter && $paymentFilter !== 'all') {
+            $invoices->where('isPaid', $paymentFilter);
+        }
         if($search) {
-            $invoices = $invoices->filter(function($invoice) use($search) {
-                return stripos($invoice->code, $search) !== false 
-                    || stripos($invoice->customer->name, $search) !== false
-                    || stripos($invoice->date, $search) !== false;
+            $invoices->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%$search%");
+                  })->orWhere('date', 'like', "%$search%");
             });
         }
 
-        $invoices = new \Illuminate\Pagination\LengthAwarePaginator(
-            $invoices->forPage(request()->get('page', 1), 100),
-            $invoices->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $invoices = $invoices->with(['customer'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.invoices.invoices', compact('invoices'));
     }
@@ -977,7 +967,7 @@ class InvoiceController extends Controller
     }
 
     public function invoicesReports(Request $request) {
-        $invoices = Invoice::orderBy('code', 'asc')->get();
+        $invoices = Invoice::query();
         $customers = Customer::all();
         $types = [];
 
@@ -998,35 +988,29 @@ class InvoiceController extends Controller
         $type = $request->input('type', 'all');
         $payment_method = $request->input('payment_method', 'all');
         $is_posted = $request->input('is_posted', 'all');
+        $perPage = $request->input('per_page', 100);
 
         if($customer !== 'all') {
-            $invoices = $invoices->where('customer_id', $customer);
+            $invoices->where('customer_id', $customer);
         }
         if($from) {
-            $invoices = $invoices->where('date', '>=', $from);
+            $invoices->where('date', '>=', $from);
         }
         if($to) {
             $to = Carbon::parse($to)->endOfDay();
-            $invoices = $invoices->where('date', '<=', $to);
+            $invoices->where('date', '<=', $to);
         }
         if($type !== 'all') {
-            $invoices = $invoices->where('type', $type);
+            $invoices->where('type', $type);
         }
         if($payment_method !== 'all') {
-            $invoices = $invoices->where('payment_method', $payment_method);
+            $invoices->where('payment_method', $payment_method);
         }
         if($is_posted !== 'all') {
-            $invoices = $invoices->where('is_posted', $is_posted == 'true' ? true : false);
+            $invoices->where('is_posted', $is_posted == 'true' ? true : false);
         }
 
-        $perPage = $request->input('per_page', 100);
-        $invoices = new \Illuminate\Pagination\LengthAwarePaginator(
-            $invoices->forPage(request()->get('page', 1), $perPage),
-            $invoices->count(),
-            $perPage,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->withQueryString();
 
         return view('pages.invoices.reports', compact(
             'invoices', 

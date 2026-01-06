@@ -88,7 +88,7 @@
                     <option value="">-- اختر الحساب --</option>
                     @foreach ($accounts as $account)
                         <option value="{{ $account->id }}" data-code="{{ $account->code }}">
-                            {{ $account->name }}
+                            {{ $account->name }} ({{ $account->code }})
                         </option>
                     @endforeach
                 </select>

@@ -11,7 +11,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن معاملة:</label>
                 <div class="d-flex gap-2">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن معاملة بإسم العميل او بكود المعاملة او بالتاريخ... "
+                        placeholder=" ابحث عن معاملة برقم المعاملة او بإسم العميل او برقم البوليصة او بالبيان الجمركي او برقم الحاوية... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>

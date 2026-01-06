@@ -11,7 +11,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن بوليصة:</label>
                 <div class="d-flex flex-grow-1">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن بوليصة بالرقم او بإسم العميل او برقم البوليصة... "
+                        placeholder=" ابحث عن بوليصة بالرقم او بإسم العميل او برقم الحاوية... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>
@@ -36,9 +36,9 @@
                             ناقل خارجي
                         </option>
                     </select>
-                    @if (request()->query('search'))
-                        <input type="hidden" name="search" value="{{ request()->query('search') }}">
-                    @endif
+                    @foreach (request()->except('type') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                 </div>
             </form>
         </div>
@@ -60,9 +60,9 @@
                             في الانتظار
                         </option>
                     </select>
-                    @if (request()->query('search'))
-                        <input type="hidden" name="search" value="{{ request()->query('search') }}">
-                    @endif
+                    @foreach (request()->except('is_received') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                 </div>
             </form>
         </div>

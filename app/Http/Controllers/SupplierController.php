@@ -10,15 +10,15 @@ use Illuminate\Http\Request;
 class SupplierController extends Controller
 {
     public function suppliers(Request $request) {
-        $suppliers = Supplier::orderBy('created_at', 'desc')->paginate(100);
+        $suppliers = Supplier::query();
         
         $search = $request->input('search', null);
+
         if($search) {
-            $suppliers = $suppliers->filter(function($supplier) use($search) {
-                return stripos($supplier->id, $search) !== false 
-                    || stripos($supplier->name, $search) !== false;
-            });
+            $suppliers->where('name', 'like', '%' . $search . '%');
         }
+
+        $suppliers = $suppliers->with(['account', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->withQueryString();
 
         $accountId = Account::where('name', 'الموردين')->first()->id;
         $supplierAccounts = Account::where('parent_id', $accountId)->get();

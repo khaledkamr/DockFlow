@@ -20,31 +20,24 @@ use Illuminate\Support\Facades\Gate;
 class TransactionController extends Controller
 {
     public function transactions(Request $request) {
-        $transactions = Transaction::orderBy('code', 'desc')->get();
+        $transactions = Transaction::query();
 
         $search = $request->input('search', null);
-        if ($search) {
-            $transactions = $transactions->filter(function ($transaction) use ($search) {
-                $matchCode = stripos($transaction->code, $search) !== false;
-                $matchCustomer = stripos($transaction->customer->name, $search) !== false;
-                $matchDate = stripos($transaction->date, $search) !== false;
-                $matchCustomsDeclaration = stripos($transaction->customs_declaration, $search) !== false;
-                $matchPolicyNumber = stripos($transaction->policy_number, $search) !== false;
-                $matchContainer = $transaction->containers->contains(function ($container) use ($search) {
-                    return stripos($container->code, $search) !== false;
-                });
 
-                return $matchCode || $matchCustomer || $matchDate || $matchCustomsDeclaration || $matchPolicyNumber || $matchContainer;
-            });
+        if ($search) {
+            $transactions->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhere('customs_declaration', 'like', '%' . $search . '%')
+                ->orWhere('policy_number', 'like', '%' . $search . '%')
+                ->orWhereHas('containers', function ($query) use ($search) {
+                    $query->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereDate('date', 'like', '%' . $search . '%');
         }
 
-        $transactions = new \Illuminate\Pagination\LengthAwarePaginator(
-            $transactions->forPage(request()->get('page', 1), 100),
-            $transactions->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $transactions = $transactions->with(['customer', 'containers'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.transactions.transactions', compact('transactions'));
     } 
@@ -335,7 +328,7 @@ class TransactionController extends Controller
     }
     
     public function reports(Request $request) {
-        $transactions = Transaction::orderBy('code', 'asc')->get();
+        $transactions = Transaction::query();
         $customers = Customer::all();
 
         $customer_id = $request->input('customer', 'all');
@@ -343,43 +336,33 @@ class TransactionController extends Controller
         $to = $request->input('to', null);
         $status = $request->input('status', 'all');
         $invoice_status = $request->input('invoice_status', 'all');
+        $perPage = $request->input('per_page', 100);
 
         if($customer_id !== 'all') {
-            $transactions = $transactions->where('customer_id', $customer_id);
+            $transactions->where('customer_id', $customer_id);
         }
         if($from) {
-            $transactions = $transactions->where('date', '>=', $from);
+            $transactions->where('date', '>=', $from);
         }
         if($to) {
-            $transactions = $transactions->where('date', '<=', $to);
+            $transactions->where('date', '<=', $to);
         }
         if($status !== 'all') {
-            $transactions = $transactions->where('status', $status);
+            $transactions->where('status', $status);
         }
         if($invoice_status !== 'all') {
             if($invoice_status == 'with_invoice') {
-                $transactions = $transactions->filter(function($transaction) {
-                    return !$transaction->containers->every(function($container) {
-                        return $container->invoices->where('type', 'تخليص')->isEmpty();
-                    });
+                $transactions->whereHas('containers.invoices', function($query) {
+                    $query->where('type', 'تخليص');
                 });
             } elseif($invoice_status == 'without_invoice') {
-                $transactions = $transactions->filter(function($transaction) {
-                    return $transaction->containers->every(function($container) {
-                        return $container->invoices->where('type', 'تخليص')->isEmpty();
-                    });
+                $transactions->whereDoesntHave('containers.invoices', function($query) {
+                    $query->where('type', 'تخليص');
                 });
             }
         }
 
-        $perPage = $request->input('per_page', 100);
-        $transactions = new \Illuminate\Pagination\LengthAwarePaginator(
-            $transactions->forPage(request()->get('page', 1), $perPage),
-            $transactions->count(),
-            $perPage,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $transactions = $transactions->with(['customer', 'containers'])->orderBy('code')->paginate(100)->withQueryString();
 
         return view('pages.transactions.reports', compact(
             'transactions',

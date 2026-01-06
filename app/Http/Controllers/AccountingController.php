@@ -75,85 +75,89 @@ class AccountingController extends Controller
     }
 
     public function entries(Request $request) {
-        $company = Company::first();
-        $accounts = Account::where('level', 5)->get();
-        $vouchers = Voucher::all();
-        $journals = JournalEntry::orderBy('code', 'desc')->get();
+        $view = $request->query('view', 'قيود يومية');
 
-        $journalSearch = $request->query('journal_search');
-        if($journalSearch) {
-            $journals = $journals->filter(function($journal) use($journalSearch) {
-                return str_contains((string)$journal->code, $journalSearch) || str_contains($journal->date, $journalSearch);
-            });
-        }
+        if($view == 'قيود يومية') {
+            $journals = JournalEntry::query();
+            $journalSearch = $request->query('journal_search');
+            $journalType = $request->query('journal_type', 'all');
 
-        if($request->query('journal_type') && $request->query('journal_type') != 'all') {
-            if($request->query('journal_type') == 'all_journals') {
-                $journals = $journals->filter(function($journal) {
-                    return $journal->type == 'قيد يومية';
-                });
-            } elseif($request->query('journal_type') == 'all_receipts') {
-                $journals = $journals->filter(function($journal) {
-                    return str_starts_with($journal->type, 'سند قبض');
-                });
-            } elseif($request->query('journal_type') == 'all_payments') {
-                $journals = $journals->filter(function($journal) {
-                    return str_starts_with($journal->type, 'سند صرف');
-                });
+            if($journalSearch) {
+                $journals->where('code', 'like', '%' . $journalSearch . '%')
+                    ->orWhere('date', 'like', '%' . $journalSearch . '%');
             }
-        }
-
-        $balance = 0;
-        $balanceArray = [];
-        $vouchersBox = $vouchers->filter(function($voucher) {
-            return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
-        });
-
-        foreach($vouchersBox as $voucher) {
-            if($voucher->type == 'سند قبض نقدي') {
-                $balance += $voucher->amount;
-                $balanceArray[] = $balance;
-            } elseif($voucher->type == 'سند صرف نقدي') {
-                $balance -= $voucher->amount;
-                $balanceArray[] = $balance;
+            if($journalType && $journalType != 'all') {
+                if($journalType == 'all_journals') {
+                    $journals->where('type', 'قيد يومية');
+                } elseif($journalType == 'all_receipts') {
+                    $journals->where('type', 'like', 'سند قبض%');
+                } elseif($journalType == 'all_payments') {
+                    $journals->where('type', 'like', 'سند صرف%');
+                } else {
+                    $journals->where('type', $journalType);
+                }
             }
-        }
-        
-        if(request()->query('view') == 'سندات قبض') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return str_starts_with($voucher->type, 'سند قبض');
-            });
-        }
-        elseif(request()->query('view') == 'سندات صرف') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return str_starts_with($voucher->type, 'سند صرف');
-            });
-        }
-        elseif(request()->query('view') == 'الصندوق') {
-            $vouchers = $vouchers->filter(function($voucher) {
-                return $voucher->type == 'سند قبض نقدي' || $voucher->type == 'سند صرف نقدي';
-            });
-        }
 
-        if($request->query('voucher_type') && $request->query('voucher_type') != 'all') {
-            $vouchers = $vouchers->filter(function($voucher) use($request) {
-                return $voucher->type == $request->query('voucher_type');
-            });
+            $journals = $journals->with(['made_by', 'modified_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+
+            return view('pages.accounting.entries', compact('journals'));
+        } elseif($view == 'سندات قبض') {
+            $vouchers = Voucher::query()->where('type', 'like', 'سند قبض%');
+            $type = $request->query('voucher_type', 'all');
+            $search = $request->query('voucher_search');
+
+            if($type && $type != 'all') {
+                $vouchers->where('type', $type);
+            }
+            if($search) {
+                $vouchers->where('code', 'like', '%' . $search . '%')
+                    ->orWhere('date', 'like', '%' . $search . '%');
+            }
+
+            $vouchers = $vouchers->with(['debit_account', 'credit_account', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+
+            return (view('pages.accounting.entries', compact('vouchers')));
+        } elseif($view == 'سندات صرف') {
+            $vouchers = Voucher::query()->where('type', 'like', 'سند صرف%');
+            $type = $request->query('voucher_type', 'all');
+            $search = $request->query('voucher_search');
+
+            if($type && $type != 'all') {
+                $vouchers->where('type', $type);
+            }
+            if($search) {
+                $vouchers->where('code', 'like', '%' . $search . '%')
+                    ->orWhere('date', 'like', '%' . $search . '%');
+            }
+
+            $vouchers = $vouchers->with(['debit_account', 'credit_account', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+
+            return (view('pages.accounting.entries', compact('vouchers')));
+        } elseif($view == 'الصندوق') {
+            $vouchers = Voucher::query()->where('type', 'like', 'سند قبض نقدي')
+                ->orWhere('type', 'like', 'سند صرف نقدي')
+                ->orderBy('code')
+                ->get();
+
+            $balance = 0;
+            $balanceArray = [];
+
+            if($vouchers->isEmpty()) {
+                return (view('pages.accounting.entries', compact('vouchers')));
+            } else {
+                foreach($vouchers as $voucher) {
+                    if($voucher->type == 'سند قبض نقدي') {
+                        $balance += $voucher->amount;
+                        $balanceArray[] = $balance;
+                    } elseif($voucher->type == 'سند صرف نقدي') {
+                        $balance -= $voucher->amount;
+                        $balanceArray[] = $balance;
+                    }
+                }
+            }
+
+            return (view('pages.accounting.entries', compact('vouchers', 'balance', 'balanceArray')));
         }
-        if($request->query('voucher_search')) {
-            $vouchers = $vouchers->filter(function($voucher) use($request) {
-                return str_contains((string)$voucher->code, $request->query('voucher_search')) || str_contains($voucher->date, $request->query('voucher_search'));
-            });
-        }
-        
-        return view('pages.accounting.entries', compact(
-            'accounts', 
-            'vouchers', 
-            'balance', 
-            'journals', 
-            'balanceArray', 
-            'company'
-        ));
     }
 
     public function createJournal() {
@@ -614,35 +618,33 @@ class AccountingController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
         }
 
-        $view = $request->query('view', 'تقارير القيود');
+        $view = $request->query('view', 'كشف حساب');
         
         if($view == 'تقارير القيود') {
-            $type = $request->input('type');
+            $type = $request->input('journal_type', 'all');
             $from = $request->input('from');
             $to = $request->input('to');
-            $entries = JournalEntry::orderBy('date')->get();
+            $perPage = $request->input('per_page', 100);
+            $entries = JournalEntry::query();
 
-            if($request->query('journal_type') && $request->query('journal_type') != 'all') {
-                if($request->query('journal_type') == 'all_journals') {
-                    $entries = $entries->filter(function($journal) {
-                        return $journal->type == 'قيد يومية';
-                    });
-                } elseif($request->query('journal_type') == 'all_receipts') {
-                    $entries = $entries->filter(function($journal) {
-                        return str_starts_with($journal->type, 'سند قبض');
-                    });
-                } elseif($request->query('journal_type') == 'all_payments') {
-                    $entries = $entries->filter(function($journal) {
-                        return str_starts_with($journal->type, 'سند صرف');
-                    });
+            if($type && $type != 'all') {
+                if($type == 'all_journals') {
+                    $entries->where('type', 'قيد يومية');
+                } elseif($type == 'all_receipts') {
+                    $entries->where('type', 'like', 'سند قبض%');
+                } elseif($type == 'all_payments') {
+                    $entries->where('type', 'like', 'سند صرف%');
+                } else {
+                    $entries->where('type', $type);
                 }
             }
-
             if($from && $to) {
-                $entries = $entries->whereBetween('date', [$from, $to]);
+                $entries->whereBetween('date', [$from, $to]);
             }
 
-            return view('pages.accounting.reports', compact('entries'));
+            $entries = $entries->orderBy('date')->paginate($perPage)->withQueryString();
+
+            return view('pages.accounting.reports', compact('entries', 'perPage'));
         } elseif($view == 'كشف حساب') {
             $accounts = Account::where('level', 5)->get();
             $from = $request->input('from');

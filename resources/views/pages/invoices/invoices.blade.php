@@ -37,9 +37,9 @@
                         <option value="كاش" {{ request()->query('paymentMethod') === 'كاش' ? 'selected' : '' }}>
                             كاش</option>
                     </select>
-                    @if (request()->query('search'))
-                        <input type="hidden" name="search" value="{{ request()->query('search') }}">
-                    @endif
+                    @foreach (request()->except('paymentMethod') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                 </div>
             </form>
         </div>
@@ -57,9 +57,9 @@
                         <option value="لم يتم الدفع" {{ request()->query('isPaid') === 'لم يتم الدفع' ? 'selected' : '' }}>
                             لم يتم الدفع</option>
                     </select>
-                    @if (request()->query('search'))
-                        <input type="hidden" name="search" value="{{ request()->query('search') }}">
-                    @endif
+                    @foreach (request()->except('isPaid') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                 </div>
             </form>
         </div>

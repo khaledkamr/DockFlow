@@ -19,10 +19,10 @@
 
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-        <a class="nav-link {{ request()->query('view', 'تقارير القيود') === 'تقارير القيود' ? 'active' : '' }}" href="?view=تقارير القيود">تقارير القيود</a>
+        <a class="nav-link {{ request()->query('view', 'كشف حساب') === 'كشف حساب' ? 'active' : '' }}" href="?view=كشف حساب">كشف حساب</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'كشف حساب' ? 'active' : '' }}" href="?view=كشف حساب">كشف حساب</a>
+        <a class="nav-link {{ request()->query('view') === 'تقارير القيود' ? 'active' : '' }}" href="?view=تقارير القيود">تقارير القيود</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {{ request()->query('view') === 'ميزان مراجعة' ? 'active' : '' }}" href="?view=ميزان مراجعة">ميزان مراجعة</a>
@@ -32,10 +32,10 @@
     </li>
 </ul>
 
-@if(request()->query('view', 'تقارير القيود') == 'تقارير القيود')
-    @include('pages.accounting.reports.journal_entries')
-@elseif(request()->query('view') == 'كشف حساب')
+@if(request()->query('view', 'كشف حساب') == 'كشف حساب')
     @include('pages.accounting.reports.account_statement')
+@elseif(request()->query('view') == 'تقارير القيود')
+    @include('pages.accounting.reports.journal_entries')
 @elseif(request()->query('view') == 'ميزان مراجعة')
     @include('pages.accounting.reports.trial_balance')
 @elseif(request()->query('view') == 'سند صرف نقدي')

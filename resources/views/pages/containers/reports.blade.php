@@ -75,8 +75,7 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
-        <div
-            class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div class="">
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>

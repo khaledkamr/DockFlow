@@ -14,21 +14,19 @@ use Illuminate\Support\Facades\Gate;
 class CustomerController extends Controller
 {
     public function customers(Request $request) {
-        $customers = Customer::orderBy('id', 'desc')->get();
+        $customers = Customer::query();
         $search = $request->input('search', null);
+
         if($search) {
-            $customers = $customers->filter(function($customer) use($search) {
-                return stripos($customer->id, $search) !== false 
-                    || stripos($customer->name, $search) !== false;
+            $customers->where(function($query) use ($search) {
+                $query->where('name', 'LIKE', '%' . $search . '%')
+                      ->orWhereHas('account', function($q) use ($search) {
+                          $q->where('code', 'LIKE', '%' . $search . '%');
+                      });
             });
         }
-        $customers = new \Illuminate\Pagination\LengthAwarePaginator(
-            $customers->forPage(request()->get('page', 1), 100),
-            $customers->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+
+        $customers = $customers->with('account')->orderBy('created_at', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.customers.customers', compact('customers'));
     }

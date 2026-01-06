@@ -3,10 +3,6 @@
 @section('title', 'القيود')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
 <h1 class="mb-4">القيود والسندات</h1>
 
 <ul class="nav nav-tabs mb-4">
@@ -20,7 +16,7 @@
         <a class="nav-link {{ request()->query('view') === 'سندات صرف' ? 'active' : '' }}" href="?view=سندات صرف">سندات صرف</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ request()->query('view') === 'الصندوق' ? 'active' : '' }}" href="?view=الصندوق">الصندوق ({{ $balance }})</a>
+        <a class="nav-link {{ request()->query('view') === 'الصندوق' ? 'active' : '' }}" href="?view=الصندوق">الصندوق</a>
     </li>
 </ul>
 

@@ -21,29 +21,26 @@ use Illuminate\Support\Facades\Gate;
 class PolicyController extends Controller
 {
     public function policies(Request $request) {
-        $policies = Policy::orderBy('date', 'desc')->orderBy('code', 'desc')->get();
+        $policies = Policy::query();
         $customers = Customer::all();
         $policyFilter = request()->query('type');
-        if ($policyFilter && $policyFilter !== 'all') {
-            $policies = $policies->filter(function ($policy) use ($policyFilter) {
-                return $policy->type === $policyFilter;
-            });
-        }
         $search = $request->input('search', null);
+
+        if ($policyFilter && $policyFilter !== 'all') {
+            $policies->where('type', $policyFilter);
+        }
         if($search) {
-            $policies = $policies->filter(function($policy) use($search) {
-                return stripos($policy->code, $search) !== false 
-                    || stripos($policy->customer->name, $search) !== false
-                    || stripos($policy->date, $search) !== false;
+            $policies->where(function($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('date', 'like', '%' . $search . '%');
             });
         }
-        $policies = new \Illuminate\Pagination\LengthAwarePaginator(
-            $policies->forPage(request()->get('page', 1), 100),
-            $policies->count(),
-            100,
-            request()->get('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+
+        $policies = $policies->with(['customer', 'made_by'])->orderBy('date', 'desc')->orderBy('code', 'desc')->paginate(100)->withQueryString();
+
         return view('pages.policies.policies', compact('policies', 'customers'));
     }
 
