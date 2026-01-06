@@ -123,6 +123,13 @@ class PolicyController extends Controller
             'late_fee' => 'nullable|numeric',
         ]);
 
+        if($request->date != $policy->date) {
+            foreach($policy->containers as $container) {
+                $container->date = $request->date;
+                $container->save();
+            }
+        }
+
         $policy->update([
             'date' => $validated['date'],
             'tax_statement' => $validated['tax_statement'],
@@ -134,6 +141,7 @@ class PolicyController extends Controller
             'storage_duration' => $validated['storage_duration'],
             'late_fee' => $validated['late_fee'],
         ]);
+        
 
         $new = $policy->toArray();
         logActivity('تعديل بوليصة تخزين', 'تم تعديل بيانات بوليصة التخزين رقم ' . $policy->code, $old, $new);
