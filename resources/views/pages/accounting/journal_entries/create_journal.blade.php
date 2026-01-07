@@ -7,7 +7,12 @@
         <h1>إنشاء قيد يومية</h1>
         <div class="d-flex gap-2">
             @can('إنشاء قيد إقفال')
-                <a href="{{ route('money.create.closing.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="قيد اقفال">
+                <a href="{{ route('money.create.opening.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="قيد إفتتاحي">
+                    <i class="fa-solid fa-lock-open"></i>
+                </a>
+            @endcan
+            @can('إنشاء قيد إقفال')
+                <a href="{{ route('money.create.closing.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="قيد إقفال">
                     <i class="fa-solid fa-lock"></i>
                 </a>
             @endcan

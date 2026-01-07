@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'إنشاء قيد إقفال')
+@section('title', 'إنشاء قيد إفتتاحي')
 
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>إنشاء قيد إقفال</h1>
+        <h1>إنشاء قيد إفتتاحي</h1>
         <div class="d-flex gap-2">
             <a href="{{ route('money.create.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip"
                 data-bs-placement="top" title="قيد يومية">
@@ -50,8 +50,8 @@
         }
     </style>
 
-    <form action="{{ route('store.closing.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm"
-        id="closing-journal-form">
+    <form action="{{ route('store.opening.journal') }}" method="POST" class="bg-white p-4 rounded-4 mb-5 shadow-sm"
+        id="opening-journal-form">
         @csrf
         <div class="row mb-4">
             <div class="col-md-4">
@@ -60,8 +60,8 @@
                     disabled>
             </div>
             <div class="col-md-4">
-                <label class="form-label"><i class="fas fa-calendar-alt me-2"></i>سنة الإقفال</label>
-                <select name="year" id="closing-year" class="form-select border-primary" required>
+                <label class="form-label"><i class="fas fa-calendar-alt me-2"></i>سنة الإفتتاح</label>
+                <select name="year" id="opening-year" class="form-select border-primary" required>
                     <option value="">-- اختر السنة --</option>
                     @for ($year = date('Y'); $year >= 2020; $year--)
                         <option value="{{ $year }}">{{ $year }}</option>
@@ -129,7 +129,7 @@
 
         <div class="d-flex gap-2">
             <button type="submit" id="submit" class="btn btn-primary fw-bold" disabled>
-                حفظ قيد الإقفال
+                حفظ قيد الإفتتاحي
             </button>
             <button type="button" id="clear-data" class="btn btn-outline-danger d-none">
                 <i class="fas fa-eraser me-2"></i>مسح البيانات
@@ -139,7 +139,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const yearSelect = document.getElementById('closing-year');
+            const yearSelect = document.getElementById('opening-year');
             const tableBody = document.querySelector("#journal-entries-table tbody");
             const addRowBtn = document.getElementById("add-row");
             const loadingIndicator = document.getElementById('loading-indicator');
@@ -292,8 +292,8 @@
 
                 showLoading();
 
-                // Fetch closing journal data via AJAX
-                fetch(`{{ route('get.closing.journal.data') }}?year=${year}`, {
+                // Fetch opening journal data via AJAX
+                fetch(`{{ route('get.opening.journal.data') }}?year=${year}`, {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'Accept': 'application/json'
@@ -313,19 +313,19 @@
                                 $(this).remove();
                             });
 
-                        // Add expense accounts (as credit - closing expenses)
-                        if (data.expenses && data.expenses.length > 0) {
-                            data.expenses.forEach(item => {
+                        // Add asset (as credit - opening assets)
+                        if (data.assets && data.assets.length > 0) {
+                            data.assets.forEach(item => {
                                 addRow(item.account_id, item.account_name, '', item.balance,
-                                    `إقفال ${item.account_name} لسنة ${year}`);
+                                    `إفتتاح ${item.account_name} لسنة ${year}`);
                             });
                         }
 
-                        // Add revenue accounts (as debit - closing revenues)
-                        if (data.revenues && data.revenues.length > 0) {
-                            data.revenues.forEach(item => {
+                        // Add liability accounts (as debit - opening liabilities)
+                        if (data.liabilities && data.liabilities.length > 0) {
+                            data.liabilities.forEach(item => {
                                 addRow(item.account_id, item.account_name, item.balance, '',
-                                    `إقفال ${item.account_name} لسنة ${year}`);
+                                    `إفتتاح ${item.account_name} لسنة ${year}`);
                             });
                         }
 
@@ -350,7 +350,7 @@
                         calculateTotals();
                         updateRowNumbers();
 
-                        if (data.revenues.length === 0 && data.expenses.length === 0) {
+                        if (data.liabilities.length === 0 && data.assets.length === 0) {
                             // No data found, show message
                             const noDataRow = `
                             <tr class="no-data-row">

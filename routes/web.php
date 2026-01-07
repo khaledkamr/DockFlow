@@ -258,15 +258,20 @@ Route::controller(AccountingController::class)->middleware('auth')->group(functi
     Route::get('accounting/post-voucher/{voucher:uuid}/toJournal', 'postVoucherToJournal')->name('post.voucher');
 
     Route::get('accounting/entries/create/journal', 'createJournal')->name('money.create.journal');
-    Route::get('accounting/entries/create/closing-journal', 'createClosingJournal')->name('money.create.closing.journal');
-    Route::get('accounting/entries/create/closing-journal/data', 'getClosingJournalData')->name('get.closing.journal.data');
-    Route::post('accounting/entries/create/closing-journal', 'storeClosingJournal')->name('store.closing.journal');
     Route::post('accounting/entries/create/journal', 'storeJournal')->name('store.journal');
     Route::get('accounting/journal/{journal:uuid}', 'journalDetails')->name('journal.details');
     Route::get('accounting/journal/edit/{journal:uuid}', 'editJournal')->name('journal.edit');
     Route::put('accounting/journal/update/{journal:uuid}', 'updateJournal')->name('journal.update');
     Route::get('accounting/journal/{journal:uuid}/duplicate', 'duplicateJournal')->name('journal.duplicate');
     Route::delete('accounting/journal/delete/{journal:uuid}', 'deleteJournal')->name('journal.delete');
+
+    Route::get('accounting/entries/create/closing-journal', 'createClosingJournal')->name('money.create.closing.journal');
+    Route::get('accounting/entries/create/closing-journal/data', 'getClosingJournalData')->name('get.closing.journal.data');
+    Route::post('accounting/entries/create/closing-journal', 'storeClosingJournal')->name('store.closing.journal');
+
+    Route::get('accounting/entries/create/opening-journal', 'createOpeningJournal')->name('money.create.opening.journal');
+    Route::get('accounting/entries/create/opening-journal/data', 'getOpeningJournalData')->name('get.opening.journal.data');
+    Route::post('accounting/entries/create/opening-journal', 'storeOpeningJournal')->name('store.opening.journal');
 
     Route::post('accounting/journal/{journal:uuid}/add/attachment', 'attachFileToJournal')->name('journal.add.attachment');
     Route::delete('accounting/journal/attachment/delete/{attachment:id}', 'deleteJournalAttachment')->name('journal.delete.attachment');

@@ -238,18 +238,12 @@ class AccountingController extends Controller
         if (!$year) {
             return response()->json(['error' => 'السنة مطلوبة'], 400);
         }
-
-        $company_id = Auth::user()->company_id;
         
         // Get المصاريف (Expenses) parent account and all its children
-        $expensesParent = Account::where('name', 'المصاريف')
-            ->where('company_id', $company_id)
-            ->first();
+        $expensesParent = Account::where('name', 'المصاريف')->first();
         
         // Get الإيرادات (Revenues) parent account and all its children  
-        $revenuesParent = Account::where('name', 'الإيرادات')
-            ->where('company_id', $company_id)
-            ->first();
+        $revenuesParent = Account::where('name', 'الإيرادات')->first();
 
         $expenses = [];
         $revenues = [];
@@ -306,8 +300,7 @@ class AccountingController extends Controller
         $difference = $totalRevenues - $totalExpenses;
         
         // Get retained earnings / profit & loss account (أرباح وخسائر محتجزة or similar)
-        $profitLossAccount = Account::where('company_id', $company_id)
-            ->where('level', 5)
+        $profitLossAccount = Account::where('level', 5)
             ->where(function($query) {
                 $query->where('name', 'like', '%أرباح%')
                     ->orWhere('name', 'like', '%خسائر%')
@@ -355,6 +348,14 @@ class AccountingController extends Controller
         // Revenues (type_id = 4) - credit balance
         if ($accountType == 4) {
             return max(0, $result->total_credit - $result->total_debit);
+        }
+
+        if($accountType == 1) {
+            return $result->total_debit - $result->total_credit;
+        }
+
+        if($accountType == 2) {
+            return $result->total_credit - $result->total_debit;
         }
 
         return 0;
@@ -407,6 +408,122 @@ class AccountingController extends Controller
         logActivity('إنشاء قيد إقفال', "تم إنشاء قيد إقفال جديد برقم " . $journalEntry->code . " لسنة " . $request->year, null, $new);
 
         return redirect()->route('journal.details', $journalEntry)->with('success', 'تم إنشاء قيد الإقفال بنجاح');
+    }
+
+    public function createOpeningJournal() {
+        $accounts = Account::where('level', 5)->get();
+        return view('pages.accounting.journal_entries.opening_journal', compact('accounts'));
+    }
+
+    public function getOpeningJournalData(Request $request) {
+        $year = $request->query('year');
+        
+        if (!$year) {
+            return response()->json(['error' => 'السنة مطلوبة'], 400);
+        }
+
+        $assetsParent = Account::where('name', 'الأصول')->first();
+        $liabilitiesParent = Account::where('name', 'الخصوم')->first();
+
+        $assets = [];
+        $liabilities = [];
+
+        if ($assetsParent) {
+            $assetAccountIds = $assetsParent->getAllChildrenIds();
+            $assetAccountIds[] = $assetsParent->id;
+            // Get level 5 asset accounts with balances for the year
+            $assetAccounts = Account::whereIn('id', $assetAccountIds)
+                ->where('level', 5)
+                ->get();
+
+            foreach ($assetAccounts as $account) {
+                $balance = $this->getAccountBalanceForYear($account, $year);
+                if ($balance > 0) {
+                    $assets[] = [
+                        'account_id' => $account->id,
+                        'account_name' => $account->name,
+                        'account_code' => $account->code,
+                        'balance' => number_format($balance, 2, '.', '')
+                    ];
+                }
+            }
+        }
+
+        if ($liabilitiesParent) {
+            $liabilityAccountIds = $liabilitiesParent->getAllChildrenIds();
+            $liabilityAccountIds[] = $liabilitiesParent->id;
+
+            // Get level 5 liability accounts with balances for the year
+            $liabilityAccounts = Account::whereIn('id', $liabilityAccountIds)
+                ->where('level', 5)
+                ->get();
+
+            foreach ($liabilityAccounts as $account) {
+                $balance = $this->getAccountBalanceForYear($account, $year);
+                if ($balance > 0) {
+                    $liabilities[] = [
+                        'account_id' => $account->id,
+                        'account_name' => $account->name,
+                        'account_code' => $account->code,
+                        'balance' => number_format($balance, 2, '.', '')
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'assets' => $assets,
+            'liabilities' => $liabilities,
+        ]);
+    }
+
+    public function storeOpeningJournal(Request $request) {
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء قيود');
+        }
+
+        $totalDebit = 0;
+        $totalCredit = 0;
+
+        foreach ($request->account_id as $index => $accountId) {
+            if (!$accountId) {
+                return redirect()->back()->with('error', 'جميع الحسابات مطلوبة');
+            }
+
+            $debit = floatval($request->debit[$index] ?? 0);
+            $credit = floatval($request->credit[$index] ?? 0);
+
+            $totalDebit += $debit;
+            $totalCredit += $credit;
+        }
+
+        if (abs($totalDebit - $totalCredit) > 0.01) {
+            return redirect()->back()->with('error', 'مجموع المدين يجب أن يساوي مجموع الدائن');
+        }
+
+        $journalEntry = JournalEntry::create([
+            'type' => 'قيد إفتتاحي',
+            'date' => $request->date,
+            'totalDebit' => $totalDebit,
+            'totalCredit' => $totalCredit,
+            'user_id' => Auth::user()->id,
+            'company_id' => Auth::user()->company_id,
+        ]);
+
+        foreach ($request->account_id as $index => $accountId) {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journalEntry->id,
+                'account_id'       => $accountId,
+                'debit'            => $request->debit[$index] ?? 0,
+                'credit'           => $request->credit[$index] ?? 0,
+                'description'      => $request->description[$index],
+            ]);
+        }
+
+        $new = $journalEntry->load('lines')->toArray();
+        logActivity('إنشاء قيد إفتتاحي', "تم إنشاء قيد إفتتاحي جديد برقم " . $journalEntry->code . " لسنة " . $request->year, null, $new);
+
+        return redirect()->route('journal.details', $journalEntry)->with('success', 'تم إنشاء قيد الإفتتاحي بنجاح');
     }
 
     public function editJournal(JournalEntry $journal) {
