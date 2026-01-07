@@ -289,6 +289,26 @@ class PolicyController extends Controller
     }
 
     public function deletePolicy(Policy $policy) {
+        if($policy->type == 'تخزين') {
+            foreach($policy->containers as $container) {
+                $container->location = null;
+                $container->received_by = null;
+                $container->date = null;
+                $container->save();
+            }
+        } elseif($policy->type == 'تسليم') {
+            foreach($policy->containers as $container) {
+                $container->status = 'في الساحة';
+                $container->delivered_by = null;
+                $container->exit_date = null;
+                $container->save();
+            }
+        } elseif($policy->type == 'خدمات') {
+            foreach($policy->containers as $container) {
+                $container->delete();
+            }
+        }
+
         $old = $policy->toArray();
         $policy->containers()->detach();
         $policy->delete();

@@ -78,7 +78,24 @@
                 @else
                     @foreach ($policies as $policy)
                         <tr>
-                            <td class="text-center text-primary fw-bold">{{ $policy->code }}</td>
+                            <td class="text-center text-primary fw-bold">
+                                @if ($policy->type == 'تخزين')
+                                    <a href="{{ route('policies.storage.details', $policy) }}"
+                                        class="text-decoration-none">
+                                        {{ $policy->code }}
+                                    </a>
+                                @elseif($policy->type == 'تسليم')
+                                    <a href="{{ route('policies.receive.details', $policy) }}"
+                                        class="text-decoration-none">
+                                        {{ $policy->code }}
+                                    </a>
+                                @elseif($policy->type == 'خدمات')
+                                    <a href="{{ route('policies.services.details', $policy) }}"
+                                        class="text-decoration-none">
+                                        {{ $policy->code }}
+                                    </a>
+                                @endif
+                            </td>
                             <td class="text-center">
                                 @if ($policy->external_customer)
                                     <span class="text-dark fw-bold">{{ $policy->external_customer }}</span>

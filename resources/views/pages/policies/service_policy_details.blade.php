@@ -63,13 +63,14 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center">
-                            <div class="mb-3">
-                                <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
-                            </div>
                             <h6 class="mb-3">هل أنت متأكد من حذف هذه البوليصة؟</h6>
                             <p class="text-muted mb-0">
                                 سيتم حذف بوليصة التسليم <strong>{{ $policy->code }}</strong> نهائياً ولن يمكن استرجاعها.
                             </p>
+                            <div class="alert alert-warning mt-3 mb-0">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <strong>تنبيه:</strong> سيتم حذف الحاويات المرتبطة بهذه البوليصة أيضاً.
+                            </div>
                         </div>
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
