@@ -164,7 +164,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $invoices->links('components.pagination') }}
+        {{ $expenseInvoices->links('components.pagination') }}
     </div>
 
     <script>
