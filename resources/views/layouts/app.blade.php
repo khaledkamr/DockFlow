@@ -584,18 +584,19 @@
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('policies.storage.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                                 href="{{ route('policies.storage.create') }}">
-                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة تخزين
+                                <i class="fa-solid fa-file-circle-plus  me-2"></i> إضافة بوليصة تخزين
                             </a>
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('policies.receive.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                                 href="{{ route('policies.receive.create') }}">
-                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة تسليم
+                                <i class="fa-solid fa-file-circle-plus  me-2"></i> إضافة بوليصة تسليم
                             </a>
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('policies.services.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                                 href="{{ route('policies.services.create') }}">
-                                <i class="fa-solid fa-file-circle-plus ms-2 me-2"></i> إضافة بوليصة خدمات
+                                <i class="fa-solid fa-file-circle-plus  me-2"></i> إضافة بوليصة خدمات
                             </a>
+                            
                         </div>
                     </li>
                 @endcan
