@@ -102,15 +102,18 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center bg-dark text-white text-nowrap">#</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم المعالمة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">عدد الحاويات</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
+                        <th class="text-center bg-dark text-white">#</th>
+                        <th class="text-center bg-dark text-white">رقم المعالمة</th>
+                        <th class="text-center bg-dark text-white">العميل</th>
+                        <th class="text-center bg-dark text-white">عدد الحاويات</th>
+                        <th class="text-center bg-dark text-white">الحالة</th>
+                        <th class="text-center bg-dark text-white">التاريخ</th>
+                        <th class="text-center bg-dark text-white">الفاتورة</th>
+                        <th class="text-center bg-dark text-white">المصروفات</th>
+                        <th class="text-center bg-dark text-white">ايراد التخليص</th>
+                        <th class="text-center bg-dark text-white">ايراد النقل</th>
+                        <th class="text-center bg-dark text-white">ايراد عمال</th>
+                        <th class="text-center bg-dark text-white">ايراد سابر</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,19 +124,15 @@
                             </td>
                         </tr>
                     @else
-                        @php
-                            $index = 1;
-                        @endphp
                         @foreach ($transactions as $transaction)
                             <tr>
-                                <td class="text-center">{{ $index++ }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
                                     <a href="{{ route('transactions.details', $transaction) }}"
                                         class="text-decoration-none">
                                         {{ $transaction->code }}
                                     </a>
                                 </td>
-                                <td class="text-center fw-bold">{{ $transaction->policy_number ?? '-' }}</td>
                                 <td class="text-center fw-bold">
                                     <a href="{{ route('users.customer.profile', $transaction->customer) }}"
                                         class="text-decoration-none text-dark" target="_blank">
@@ -142,15 +141,11 @@
                                 </td>
                                 <td class="text-center fw-bold">{{ $transaction->containers()->count() }}</td>
                                 <td class="text-center">
-                                    @if ($transaction->status == 'مغلقة')
-                                        <span class="badge status-delivered">مغلقة</span>
-                                    @else
-                                        <span class="badge status-waiting">معلقة</span>
-                                    @endif
+                                    <span class="badge status-{{  $transaction->status == 'مغلقة' ? 'delivered' : 'waiting' }}">
+                                        {{ $transaction->status }}
+                                    </span>
                                 </td>
-                                <td class="text-center">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}
-                                </td>
-                                <td class="text-center">{{ $transaction->made_by->name }}</td>
+                                <td class="text-center">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}</td>
                                 <td class="text-center">
                                     @if ($transaction->containers()->first()->invoices->where('type', 'تخليص')->first())
                                         <a href="{{ route('invoices.clearance.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}"
@@ -161,8 +156,41 @@
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
+                                <td class="text-center">{{ $transaction->items->where('type', 'مصروف')->sum('amount') }}</td>
+                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد تخليص')->sum('amount') }}</td>
+                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد نقل')->sum('amount') }}</td>
+                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد عمال')->sum('amount') }}</td>
+                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد سابر')->sum('amount') }}</td>
                             </tr>
                         @endforeach
+                        <tr class="table-primary">
+                            <td colspan="7" class="text-end text-center fw-bold">الإجمالي</td>
+                            <td class="text-center fw-bold">
+                                {{ $transactions->sum(function ($transaction) {
+                                    return $transaction->items->where('type', 'مصروف')->sum('amount');
+                                }) }}
+                            </td>
+                            <td class="text-center fw-bold">
+                                {{ $transactions->sum(function ($transaction) {
+                                    return $transaction->items->where('type', 'ايراد تخليص')->sum('amount');
+                                }) }}
+                            </td>
+                            <td class="text-center fw-bold">
+                                {{ $transactions->sum(function ($transaction) {
+                                    return $transaction->items->where('type', 'ايراد نقل')->sum('amount');
+                                }) }}
+                            </td>
+                            <td class="text-center fw-bold">
+                                {{ $transactions->sum(function ($transaction) {
+                                    return $transaction->items->where('type', 'ايراد عمال')->sum('amount');
+                                }) }}
+                            </td>
+                            <td class="text-center fw-bold">
+                                {{ $transactions->sum(function ($transaction) {
+                                    return $transaction->items->where('type', 'ايراد سابر')->sum('amount');
+                                }) }}
+                            </td>
+                        </tr>
                     @endif
                 </tbody>
             </table>

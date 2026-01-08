@@ -11,13 +11,16 @@
             <tr class="text-center">
                 <th>#</th>
                 <th>رقم المعاملة</th>
-                <th>رقم البوليصة</th>
                 <th>العميل</th>
                 <th>عدد الحاويات</th>
                 <th>الحالة</th>
                 <th>التاريخ</th>
-                <th>تم بواسطة</th>
                 <th>الفاتورة</th>
+                <th>المصروفات</th>
+                <th>ايراد التخليص</th>
+                <th>ايراد النقل</th>
+                <th>ايراد عمال</th>
+                <th>ايراد سابر</th>
             </tr>
         </thead>
         <tbody>
@@ -28,22 +31,30 @@
                     </td>
                 </tr>
             @else
-                @php
-                    $index = 1;
-                @endphp
                 @foreach ($transactions as  $transaction)
                     <tr>
-                        <td class="text-center">{{ $index++ }}</td>
-                        <td class="text-center text-primary fw-bold">{{ $transaction->code }}</td>
-                        <td class="text-center">{{ $transaction->policy_number ?? '-' }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td class="text-center fw-bold">{{ $transaction->code }}</td>
                         <td class="text-center">{{ $transaction->customer->name }}</td>
                         <td class="text-center fw-bold">{{ $transaction->containers->count() }}</td>
                         <td class="text-center">{{ $transaction->status }}</td>
                         <td class="text-center">{{ (Carbon\Carbon::parse($transaction->date)->format('Y/m/d')) }}</td>
-                        <td class="text-center">{{ $transaction->made_by->name }}</td>
                         <td class="text-center">{{ $transaction->containers->first()->invoices->where('type', 'تخليص')->first()->code ?? '-' }}</td>
+                        <td class="text-center">{{ $transaction->items->where('type', 'مصروف')->sum('amount') }}</td>
+                        <td class="text-center">{{ $transaction->items->where('type', 'ايراد تخليص')->sum('amount') }}</td>
+                        <td class="text-center">{{ $transaction->items->where('type', 'ايراد نقل')->sum('amount') }}</td>
+                        <td class="text-center">{{ $transaction->items->where('type', 'ايراد عمال')->sum('amount') }}</td>
+                        <td class="text-center">{{ $transaction->items->where('type', 'ايراد سابر')->sum('amount') }}</td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td colspan="7" class="text-end text-center fw-bold">الاجمالي</td>
+                    <td class="text-center fw-bold">{{ $transactions->sum(function($transaction) { return $transaction->items->where('type', 'مصروف')->sum('amount'); }) }}</td>
+                    <td class="text-center fw-bold">{{ $transactions->sum(function($transaction) { return $transaction->items->where('type', 'ايراد تخليص')->sum('amount'); }) }}</td>
+                    <td class="text-center fw-bold">{{ $transactions->sum(function($transaction) { return $transaction->items->where('type', 'ايراد نقل')->sum('amount'); }) }}</td>
+                    <td class="text-center fw-bold">{{ $transactions->sum(function($transaction) { return $transaction->items->where('type', 'ايراد عمال')->sum('amount'); }) }}</td>
+                    <td class="text-center fw-bold">{{ $transactions->sum(function($transaction) { return $transaction->items->where('type', 'ايراد سابر')->sum('amount'); }) }}</td>
+                </tr>
             @endif
         </tbody>
     </table>

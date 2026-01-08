@@ -37,7 +37,7 @@ class TransactionController extends Controller
                 ->orWhereDate('date', 'like', '%' . $search . '%');
         }
 
-        $transactions = $transactions->with(['customer', 'containers'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+        $transactions = $transactions->with(['customer', 'containers', 'items'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
 
         return view('pages.transactions.transactions', compact('transactions'));
     } 
@@ -362,7 +362,7 @@ class TransactionController extends Controller
             }
         }
 
-        $transactions = $transactions->with(['customer', 'containers'])->orderBy('code')->paginate(100)->withQueryString();
+        $transactions = $transactions->with(['customer', 'containers', 'items'])->orderBy('code')->paginate(100)->withQueryString();
 
         return view('pages.transactions.reports', compact(
             'transactions',
