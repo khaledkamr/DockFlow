@@ -7,6 +7,7 @@ use App\Exports\ContainersExport;
 use App\Exports\InvoicesExport;
 use App\Exports\JournalEntryExport;
 use App\Exports\ShippingPoliciesExport;
+use App\Exports\TransactionsExport;
 use App\Exports\TransportOrdersExport;
 use App\Exports\TrialBalanceExport;
 use App\Models\Account;
@@ -572,6 +573,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير الفواتير الى اكسيل', "تم تصدير تقرير الفواتير الى اكسيل بتصفية: ", $filters);
             return Excel::download(new InvoicesExport($filters), 'تقرير الفواتير.xlsx');
+        } elseif($reportType == 'transactions') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير معاملات التخليص الى اكسيل', "تم تصدير تقرير معاملات التخليص الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new TransactionsExport($filters), 'تقرير معاملات التخليص.xlsx');
         }
 
         abort(404);

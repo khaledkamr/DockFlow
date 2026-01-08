@@ -86,6 +86,15 @@
                 </form>
             </div>
             <div class="d-flex gap-2">
+                <form method="GET" action="{{ route('export.excel', 'transactions') }}">
+                    @foreach(request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="تصدير Excel">
+                        <i class="fa-solid fa-file-excel"></i>
+                    </button>
+                </form>
                 <form action="{{ route('print.transactions.reports') }}" method="GET" target="_blank">
                     @csrf
                     @foreach (request()->except('per_page') as $key => $value)
