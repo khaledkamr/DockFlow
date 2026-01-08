@@ -148,7 +148,7 @@
                                 @enderror
                             </div>
                             <div class="col-12 col-md-2 external-field">
-                                <label class="form-label">تم حساب المورد</label>
+                                <label class="form-label">تم الدفع للمورد</label>
                                 <select name="paid" id="paid" class="form-select border-primary" style="width: 100%;">
                                     <option value="0" {{ old('paid', $policy->paid) == 0 ? 'selected' : '' }}>لا</option>
                                     <option value="1" {{ old('paid', $policy->paid) == 1 ? 'selected' : '' }}>نعم</option>
