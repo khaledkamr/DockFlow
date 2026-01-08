@@ -20,6 +20,8 @@ class SupplierRequest extends FormRequest
             'national_address' => 'required',
             'phone' => 'max:15',
             'email' => 'max:255',
+            'account_id' => 'nullable|exists:accounts,id',
+            'settlement_account_id' => 'nullable|exists:accounts,id',
             'user_id' => 'required|exists:users,id',
         ];
     }

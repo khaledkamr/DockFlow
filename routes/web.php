@@ -74,7 +74,7 @@ Route::controller(CustomerController::class)->middleware('auth')->group(function
 
 Route::controller(SupplierController::class)->middleware('auth')->group(function () {
     Route::get('/suppliers', 'suppliers')->name('relation.suppliers');
-    Route::get('/supplier/{supplier:uuid}', 'supplierProfile')->name('users.supplier.profile');
+    Route::get('/supplier/{supplier:uuid}', 'supplierProfile')->name('relation.supplier.profile');
     Route::post('/supplier/store', 'storeSupplier')->name('users.supplier.store');
     Route::put('/supplier/update/{supplier:uuid}', 'updateSupplier')->name('users.supplier.update');
     Route::delete('/supplier/delete/{supplier:uuid}', 'deleteSupplier')->name('users.supplier.delete');

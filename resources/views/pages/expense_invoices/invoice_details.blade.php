@@ -130,7 +130,7 @@
                                         <tr class="table-warning border-secondary">
                                             <td class="text-center">{{ $counter++ }}</td>
                                             <td class="text-center">{{ $invoice->supplier->account->code ?? '-' }}</td>
-                                            <td class="text-center fw-semibold">{{ $invoice->supplier->name ?? 'مورد' }}</td>
+                                            <td class="text-center fw-semibold">{{ $invoice->supplier->account->name ?? 'مورد' }}</td>
                                             <td class="text-center">0.00</td>
                                             <td class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</td>
                                             <td class="text-center">فاتورة مصاريف رقم {{ $invoice->code }}</td>

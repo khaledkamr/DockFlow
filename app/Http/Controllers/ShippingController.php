@@ -68,7 +68,7 @@ class ShippingController extends Controller
         $policy->goods()->createMany($request['goods']);
 
         if($policy->type == 'ناقل خارجي') {
-            $supplierAccount = $policy->supplier ? $policy->supplier->account : null;
+            $supplierAccount = $policy->supplier ? $policy->supplier->settlement_account : null;
             $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
 
             $journal = JournalEntry::create([

@@ -92,7 +92,7 @@ class TransportController extends Controller
         }
 
         if($transportOrder->type == 'ناقل خارجي') {
-            $supplierAccount = $transportOrder->supplier ? $transportOrder->supplier->account : null;
+            $supplierAccount = $transportOrder->supplier ? $transportOrder->supplier->settlement_account : null;
             $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
 
             $journal = JournalEntry::create([

@@ -19,12 +19,29 @@ class Supplier extends Model
         'phone',
         'email',
         'account_id',
+        'settlement_account_id',
         'user_id',
         'company_id',
     ];
 
     public function account() {
         return $this->belongsTo(Account::class);
+    }
+
+    public function settlementAccount() {
+        return $this->belongsTo(Account::class, 'settlement_account_id');
+    }
+
+    public function expenseInvoices() {
+        return $this->hasMany(ExpenseInvoice::class);
+    }
+
+    public function shippingPolicies() {
+        return $this->hasMany(ShippingPolicy::class);
+    }
+
+    public function transportOrders() {
+        return $this->hasMany(TransportOrder::class);
     }
 
     public function made_by() {
