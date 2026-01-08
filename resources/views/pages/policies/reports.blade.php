@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'تقارير الحاويات')
+@section('title', 'تقارير بوالص التخزين')
 
 @section('content')
-    <h1 class="mb-4">تقارير الحاويات</h1>
+    <h1 class="mb-4">تقارير بوالص التخزين</h1>
 
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
         <form method="GET" class="row g-3" id="reportForm">
@@ -31,23 +31,12 @@
                     class="form-control border-primary">
             </div>
             <div class="col-6 col-md-6 col-lg">
-                <label class="form-label">الحالة</label>
-                <select name="status" class="form-select border-primary">
-                    <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>الكل</option>
-                    <option value="في الساحة" {{ request('status') == 'في الساحة' ? 'selected' : '' }}>في الساحة</option>
-                    <option value="تم التسليم" {{ request('status') == 'تم التسليم' ? 'selected' : '' }}>تم التسليم</option>
-                    <option value="متأخر" {{ request('status') == 'متأخر' ? 'selected' : '' }}>متأخر</option>
-                    <option value="قيد النقل" {{ request('status') == 'قيد النقل' ? 'selected' : '' }}>قيد النقل</option>
-                    <option value="في الميناء" {{ request('status') == 'في الميناء' ? 'selected' : '' }}>في الميناء</option>
-                </select>
-            </div>
-            <div class="col-6 col-md-6 col-lg">
                 <label class="form-label">النوع</label>
                 <select name="type" class="form-select border-primary">
                     <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
                     @foreach ($types as $type)
-                        <option value="{{ $type->id }}" {{ request('type') == $type->id ? 'selected' : '' }}>
-                            {{ $type->name }}
+                        <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
+                            {{ $type }}
                         </option>
                     @endforeach
                 </select>
@@ -56,10 +45,10 @@
                 <label class="form-label">مفوترة</label>
                 <select name="invoiced" id="invoiced" class="form-select border-primary">
                     <option value="all" {{ request('invoiced') == 'all' ? 'selected' : '' }}>الكل</option>
-                    <option value="مع فاتورة" {{ request('invoiced') == 'مع فاتورة' ? 'selected' : '' }}>
+                    <option value="invoiced" {{ request('invoiced') == 'invoiced' ? 'selected' : '' }}>
                         مع فاتورة
                     </option>
-                    <option value="بدون فاتورة" {{ request('invoiced') == 'بدون فاتورة' ? 'selected' : '' }}>
+                    <option value="not_invoiced" {{ request('invoiced') == 'not_invoiced' ? 'selected' : '' }}>
                         بدون فاتورة
                     </option>
                 </select>
@@ -75,7 +64,7 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
-        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-2">
             <div class="">
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
@@ -119,92 +108,103 @@
                 <thead>
                     <tr>
                         <th class="text-center bg-dark text-white text-nowrap">#</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم الحاويــة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">النوع</th>
+                        <th class="text-center bg-dark text-white text-nowrap">بوليصة التسليم</th>
                         <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الفئـــة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الموقــع</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحالـــة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الحاوية</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
+                        <th class="text-center bg-dark text-white text-nowrap">أيام التخزين</th>
                         <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($containers->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type', 'status']))
+                    @if ($policies->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type']))
                         <tr>
-                            <td colspan="10" class="text-center">
-                                <div class="status-danger fs-6">لم يتم العثور على اي حاويات!</div>
+                            <td colspan="11" class="text-center">
+                                <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
                             </td>
                         </tr>
                     @else
-                        @foreach ($containers as $container)
+                        @foreach ($policies as $policy)
                             <tr>
                                 <td class="text-center text-nowrap">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold text-nowrap">
-                                    <a href="{{ route('container.details', $container) }}" class="text-decoration-none">
-                                        {{ $container->code }}
-                                    </a>
-                                </td>
-                                <td class="text-center fw-bold text-nowrap">
-                                    <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-decoration-none text-dark">
-                                        {{ $container->customer->name }}
-                                    </a>
-                                </td>
-                                <td class="text-center text-nowrap">{{ $container->containerType->name }}</td>
-                                <td class="text-center text-nowrap">{{ $container->location ?? '-' }}</td>
-                                <td class="text-center text-nowrap">
-                                    @if ($container->status == 'في الساحة')
-                                        <div class="badge status-available">{{ $container->status }}</div>
-                                    @elseif($container->status == 'تم التسليم')
-                                        <div class="badge status-delivered">
-                                            {{ $container->status }}
-                                            <i class="fa-solid fa-check"></i>
-                                        </div>
-                                    @elseif($container->status == 'خدمات')
-                                        <div class="badge status-waiting">{{ $container->status }}</div>
-                                    @elseif($container->status == 'متأخر')
-                                        <div class="badge status-danger">{{ $container->status }}</div>
-                                    @elseif($container->status == 'في الميناء')
-                                        <div class="badge status-info">{{ $container->status }}</div>
-                                    @elseif($container->status == 'قيد النقل')
-                                        <div class="badge status-purple">{{ $container->status }}</div>
+                                    @if ($policy->type == 'تخزين')
+                                        <a href="{{ route('policies.storage.details', $policy) }}"
+                                            class="text-decoration-none">
+                                            {{ $policy->code }}
+                                        </a>
+                                    @elseif($policy->type == 'خدمات')
+                                        <a href="{{ route('policies.services.details', $policy) }}"
+                                            class="text-decoration-none">
+                                            {{ $policy->code }}
+                                        </a>
                                     @endif
-                                    
-                                    @php
-                                        $storage_policy = $container->policies->where('type', 'تخزين')->first();
-                                    @endphp
-
-                                    @if ($container->status == 'في الساحة' && $storage_policy && $storage_policy->storage_duration 
-                                        && $container->days > $storage_policy->storage_duration)
-                                        <div class="text-danger fw-semibold mt-1" style="font-size: 0.85rem;">
-                                            متأخر منذ {{ (int) ($container->days - $storage_policy->storage_duration) }} أيام
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="text-center text-nowrap">
-                                    {{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}
-                                </td>
-                                <td class="text-center text-nowrap">
-                                    {{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    @if($container->invoices->isEmpty())
+                                    @if ($policy->type == 'تخزين')
+                                        <span class="badge status-available">{{ $policy->type }}</span>
+                                    @elseif($policy->type == 'خدمات')
+                                        <span class="badge status-waiting">{{ $policy->type }}</span>
+                                    @endif
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                        <a href="{{ route('policies.receive.details', $policy->containers->first()->policies->where('type', 'تسليم')->first()) }}" class="text-decoration-none fw-bold">
+                                            {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->code }}
+                                        </a>
+                                    @else
                                         -
                                     @endif
-                                    @if ($container->invoices->where('type', 'تخزين')->first())
-                                        <a href="{{ route('invoices.details', $container->invoices->where('type', 'تخزين')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
-                                            {{ $container->invoices->where('type', 'تخزين')->first()->code }}
+                                </td>
+                                <td class="text-center fw-bold">
+                                    <a href="{{ route('users.customer.profile', $policy->customer) }}" class="text-decoration-none text-dark">
+                                        {{ $policy->customer->name }}
+                                    </a>
+                                </td>
+                                <td class="text-center fw-bold">
+                                    @if($policy->containers->first())
+                                        <a href="{{ route('container.details', $policy->containers->first()) }}" class="text-decoration-none text-dark">
+                                            {{ $policy->containers->first()->code }}
                                         </a>
+                                    @else
+                                        -
                                     @endif
-                                    @if($container->invoices->where('type', 'تخليص')->first())
-                                        <a href="{{ route('invoices.clearance.details', $container->invoices->where('type', 'تخليص')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
-                                            {{ $container->invoices->where('type', 'تخليص')->first()->code }}
-                                        </a>
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if($policy->containers->first())
+                                        {{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') }}
                                     @endif
-                                    @if($container->invoices->where('type', 'خدمات')->first())
-                                        <a href="{{ route('invoices.services.details', $container->invoices->where('type', 'خدمات')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
-                                            {{ $container->invoices->where('type', 'خدمات')->first()->code }}
-                                        </a>
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if($policy->containers->first() && $policy->containers->first()->exit_date)
+                                        {{ Carbon\Carbon::parse($policy->containers->first()->exit_date)->format('Y/m/d') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if($policy->type == 'تخزين')
+                                        {{ $policy->containers->first() ? $policy->containers->first()->storage_days : '-' }}
+                                    @elseif($policy->type == 'خدمات')
+                                        0
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($policy->containers->first())
+                                        @if ($policy->containers->first()->invoices->where('type', 'تخزين')->first())
+                                            <a href="{{ route('invoices.details', $policy->containers->first()->invoices->where('type', 'تخزين')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                                {{ $policy->containers->first()->invoices->where('type', 'تخزين')->first()->code }}
+                                            </a>
+                                        @elseif($policy->containers->first()->invoices->where('type', 'خدمات')->first())
+                                            <a href="{{ route('invoices.services.details', $policy->containers->first()->invoices->where('type', 'خدمات')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                                {{ $policy->containers->first()->invoices->where('type', 'خدمات')->first()->code }}
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -220,7 +220,7 @@
         </div>
         
         <div class="mt-4">
-            {{ $containers->links('components.pagination') }}
+            {{ $policies->links('components.pagination') }}
         </div>
     </div>
 
@@ -263,10 +263,8 @@
             border: 1px solid #0d6efd;
             padding: 5px;
         }
-
         .select2-container .select2-selection__rendered {
             line-height: 30px;
         }
     </style>
-
 @endsection

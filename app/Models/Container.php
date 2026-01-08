@@ -27,7 +27,7 @@ class Container extends Model
         'user_id',
     ];
 
-    protected $appends = ['days'];
+    protected $appends = ['days', 'storage_days'];
 
     public function containerType() {
         return $this->belongsTo(Container_type::class);
@@ -71,5 +71,12 @@ class Container extends Model
 
     public function getDaysAttribute() {
         return (int) Carbon::parse($this->date)->diffInDays(Carbon::now());
+    }
+
+    public function getStorageDaysAttribute() {
+        if(!$this->exit_date) {
+            return (int) Carbon::parse($this->date)->diffInDays(Carbon::now());
+        }
+        return (int) Carbon::parse($this->date)->diffInDays(Carbon::parse($this->exit_date)) + 1;
     }
 }

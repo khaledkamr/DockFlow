@@ -111,6 +111,7 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
 
     Route::delete('/policies/delete/{policy:uuid}', 'deletePolicy')->name('policy.delete');
+    Route::get('/policies/reports', 'reports')->name('policies.reports');
 });
 
 Route::controller(TransactionController::class)->middleware('auth')->group(function () {

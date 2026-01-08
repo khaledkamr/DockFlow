@@ -596,7 +596,11 @@
                                 href="{{ route('policies.services.create') }}">
                                 <i class="fa-solid fa-file-circle-plus  me-2"></i> إضافة بوليصة خدمات
                             </a>
-                            
+                            <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                                style="{{ request()->routeIs('policies.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                                href="{{ route('policies.reports') }}">
+                                <i class="fa-solid fa-chart-line ms-1 me-2"></i> تقارير بوالص التخزين
+                            </a>
                         </div>
                     </li>
                 @endcan

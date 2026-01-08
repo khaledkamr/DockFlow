@@ -317,4 +317,47 @@ class PolicyController extends Controller
 
         return redirect()->route('policies')->with('success', 'تم حذف البوليصة بنجاح');
     }
+
+    public function reports(Request $request) {
+        $customers = Customer::all();
+        $types = ['تخزين', 'خدمات'];
+        $perPage = 100;
+        $policies = Policy::query()->whereIn('type', $types);
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $invoiced = $request->input('invoiced', 'all');
+
+        if($from && $to) {
+            $policies->whereBetween('date', [$from, $to]);
+        }
+        if($customer && $customer != 'all') {
+            $policies->where('customer_id', $customer);
+        }
+        if($type != 'all') {
+            $policies->where('type', $type);
+        }
+        if($invoiced && $invoiced != 'all') {
+            if($invoiced == 'invoiced') {
+                $policies->whereHas('containers.invoices', function($q) {
+                    $q->where('type', 'تخزين')->orWhere('type', 'خدمات');
+                });
+            } elseif($invoiced == 'not_invoiced') {
+                $policies->whereDoesntHave('containers.invoices', function($q) {
+                    $q->where('type', 'تخزين')->orWhere('type', 'خدمات');
+                });
+            }
+        }
+
+        $policies = $policies->with(['customer', 'containers.invoices'])->orderBy('code')->paginate($perPage)->withQueryString();
+
+        return view('pages.policies.reports', compact(
+            'customers', 
+            'policies', 
+            'types',
+            'perPage'
+        ));
+    }
 }
