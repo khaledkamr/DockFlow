@@ -68,7 +68,7 @@ class ShippingController extends Controller
         $policy->goods()->createMany($request['goods']);
 
         if($policy->type == 'ناقل خارجي') {
-            $supplierAccount = $policy->supplier ? $policy->supplier->settlement_account : null;
+            $supplierAccount = $policy->supplier ? $policy->supplier->settlementAccount : null;
             $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
 
             $journal = JournalEntry::create([
@@ -159,6 +159,7 @@ class ShippingController extends Controller
             'diesel_cost' => 'nullable|numeric|min:0',
             'driver_wage' => 'nullable|numeric|min:0',
             'other_expenses' => 'nullable|numeric|min:0',
+            'paid' => 'nullable|boolean',
         ]);
 
         $old = $policy->toArray();

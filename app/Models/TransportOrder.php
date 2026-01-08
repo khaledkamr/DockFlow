@@ -30,6 +30,8 @@ class TransportOrder extends Model
         'driver_wage',
         'other_expenses',
         'client_cost',
+        'is_received',
+        'paid',
         'user_id',
         'company_id',
     ];

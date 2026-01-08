@@ -9,7 +9,9 @@ use App\Models\Attachment;
 use App\Models\CostCenter;
 use App\Models\ExpenseInvoice;
 use App\Models\JournalEntry;
+use App\Models\ShippingPolicy;
 use App\Models\Supplier;
+use App\Models\TransportOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -59,6 +61,22 @@ class ExpenseInvoiceController extends Controller
                 'tax' => $item['tax'],
                 'total_amount' => $item['total_amount'],
             ]);
+
+            if(isset($item['policy_id']) && isset($item['policy_type'])) {
+                if($item['policy_type'] === 'shipping_policy') {
+                    $policy = ShippingPolicy::find($item['policy_id']);
+                    if($policy) {
+                        $policy->paid = true;
+                        $policy->save();
+                    }
+                } elseif($item['policy_type'] === 'transport_order') {
+                    $order = TransportOrder::find($item['policy_id']);
+                    if($order) {
+                        $order->paid = true;
+                        $order->save();
+                    }
+                }
+            }
         }
 
         $invoice->fresh();
@@ -135,7 +153,7 @@ class ExpenseInvoiceController extends Controller
                 'account_id' => $item->account_id,
                 'debit' => $item->amount,
                 'credit' => 0,
-                'description' => 'بند فاتورة مصاريف رقم ' . $invoice->code,
+                'description' => $item->description ? $item->description . ' على فاتورة مصاريف رقم ' . $invoice->code : 'بند مصاريف على فاتورة مصاريف رقم ' . $invoice->code,
             ]);
             $totalDebit += $item->amount;
         }
@@ -271,5 +289,63 @@ class ExpenseInvoiceController extends Controller
         logActivity('حذف ملف من الفاتورة', "تم حذف الملف " . $attachment->original_name . " من الفاتورة رقم " . $attachment->attachable->code);
 
         return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
+    }
+
+    public function getSupplierPolicies($supplierId) {
+        $supplier = Supplier::findOrFail($supplierId);
+        // Get unpaid shipping policies for this supplier
+        $shippingPolicies = $supplier->shippingPolicies()
+            ->with('customer')
+            ->where('paid', false)
+            ->get()
+            ->map(function($policy) {
+                return [
+                    'id' => $policy->id,
+                    'type' => 'shipping_policy',
+                    'code' => $policy->code,
+                    'customer_name' => $policy->customer->name ?? '-',
+                    'from' => $policy->from,
+                    'to' => $policy->to,
+                    'supplier_cost' => $policy->supplier_cost,
+                    'is_paid' => $policy->paid,
+                ];
+            });
+
+        // Get unpaid transport orders for this supplier
+        $transportOrders = $supplier->transportOrders()
+            ->with('customer')
+            ->where('paid', false)
+            ->get()
+            ->map(function($order) {
+                return [
+                    'id' => $order->id,
+                    'type' => 'transport_order',
+                    'code' => $order->code,
+                    'customer_name' => $order->customer->name ?? '-',
+                    'from' => $order->from,
+                    'to' => $order->to,
+                    'supplier_cost' => $order->supplier_cost,
+                    'is_paid' => $order->paid,
+                ];
+            });
+        
+        if($shippingPolicies->isEmpty()) {
+            $policies = $transportOrders;
+        } elseif($transportOrders->isEmpty()) {
+            $policies = $shippingPolicies;
+        } else {
+            $policies = $shippingPolicies->merge($transportOrders)->values();
+        }
+
+        // Get settlement account for this supplier
+        $settlementAccount = $supplier->settlementAccount;
+
+        return response()->json([
+            'policies' => $policies,
+            'settlement_account' => $settlementAccount ? [
+                'id' => $settlementAccount->id,
+                'name' => $settlementAccount->name,
+            ] : null,
+        ]);
     }
 }

@@ -110,13 +110,20 @@
                             <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate"
                                 value="{{ old('vehicle_plate', $transportOrder->vehicle_plate) }}">
                         </div>
-                        <div class="col-12 col-md-4 external-field">
+                        <div class="col-12 col-md-2 external-field">
                             <label class="form-label">مصاريف المورد</label>
                             <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost" min="0" step="any"
                                 value="{{ old('supplier_cost', $transportOrder->supplier_cost) }}">
                             @error('supplier_cost')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
+                        </div>
+                        <div class="col-12 col-md-2 external-field">
+                            <label class="form-label">تم حساب المورد</label>
+                            <select name="paid" id="paid" class="form-select border-primary" style="width: 100%;">
+                                <option value="0" {{ old('paid', $transportOrder->paid) == 0 ? 'selected' : '' }}>لا</option>
+                                <option value="1" {{ old('paid', $transportOrder->paid) == 1 ? 'selected' : '' }}>نعم</option>
+                            </select>
                         </div>
                         <div class="col-12 col-md internal-field">
                             <label class="form-label">مصاريف الديزل</label>
@@ -239,10 +246,13 @@
                         <p class="fw-bold mb-0">{{ $transportOrder->type }}</p>
                     </div>
                     <div class="col-6 col-sm-6">
-                        <label
-                            class="text-muted small">{{ $transportOrder->driver ? 'اسم السائق' : 'اسم المورد' }}</label>
+                        <label class="text-muted small">{{ $transportOrder->driver ? 'اسم السائق' : 'اسم المورد' }}</label>
                         <p class="fw-bold mb-0">
-                            {{ $transportOrder->driver->name ?? ($transportOrder->supplier->name ?? '--') }}</p>
+                            {{ $transportOrder->driver->name ?? ($transportOrder->supplier->name ?? '--') }}
+                            @if($transportOrder->supplier)
+                                <span class="badge bg-{{ $transportOrder->paid ? 'success' : 'danger' }}">{{ $transportOrder->paid ? 'مدفوع' : 'غير مدفوع' }}</span>
+                            @endif
+                        </p>
                     </div>
                 </div>
                 <div class="row g-2">

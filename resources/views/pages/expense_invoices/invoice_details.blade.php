@@ -5,12 +5,44 @@
 @section('content')
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
         <h2 class="mb-0">عرض فاتورة المصاريف</h2>
+        <div>
+            @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="fas fa-trash me-1"></i>حذف الفاتورة
+                </button>
+
+                <div class="modal fade" id="deleteModal" tabindex="-1"
+                    aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title fw-bold" id="deleteModalLabel">تأكيد الحذف</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center fs-6">
+                                هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary fw-bold"
+                                    data-bs-dismiss="modal">إلغاء</button>
+                                <form action="{{ route('expense.invoices.delete', $invoice) }}"
+                                    method="POST" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-4">
-            <div
-                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div>
                     <span class="badge bg-{{ $invoice->is_paid ? 'success' : 'danger' }} fs-6 px-3 py-2">
                         @if ($invoice->is_paid)

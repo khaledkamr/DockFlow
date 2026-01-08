@@ -231,6 +231,7 @@ Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(fu
     Route::get('/expense/invoices', 'invoices')->name('expense.invoices');
     Route::get('/expense/invoices/create', 'createInvoice')->name('expense.invoices.create');
     Route::post('/expense/invoices/store', 'storeInvoice')->name('expense.invoices.store');
+    Route::get('/expense/invoices/supplier/{supplier}/policies', 'getSupplierPolicies')->name('expense.invoices.supplier.policies');
     Route::get('/expense/invoice/{invoice:uuid}', 'invoiceDetails')->name('expense.invoices.details');
     Route::patch('/expense/invoice/update-status/{invoice:uuid}', 'updateInvoiceStatus')->name('expense.invoices.update.status');
     Route::patch('/expense/invoice/update-notes/{invoice:uuid}', 'updateInvoiceNotes')->name('expense.invoices.update.notes');

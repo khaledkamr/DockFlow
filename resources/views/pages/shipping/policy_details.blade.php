@@ -139,13 +139,20 @@
                                 <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate"
                                     value="{{ old('vehicle_plate', $policy->vehicle_plate) }}">
                             </div>
-                            <div class="col-12 col-md-4 external-field">
+                            <div class="col-12 col-md-2 external-field">
                                 <label class="form-label">مصاريف المورد</label>
                                 <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
                                     value="{{ old('supplier_cost', $policy->supplier_cost) }}">
                                 @error('supplier_cost')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
+                            </div>
+                            <div class="col-12 col-md-2 external-field">
+                                <label class="form-label">تم حساب المورد</label>
+                                <select name="paid" id="paid" class="form-select border-primary" style="width: 100%;">
+                                    <option value="0" {{ old('paid', $policy->paid) == 0 ? 'selected' : '' }}>لا</option>
+                                    <option value="1" {{ old('paid', $policy->paid) == 1 ? 'selected' : '' }}>نعم</option>
+                                </select>
                             </div>
                             <div class="col-12 col-md internal-field">
                                 <label class="form-label">مصاريف الديزل</label>
@@ -264,7 +271,12 @@
                         </div>
                         <div class="col">
                             <label class="text-muted small">{{ $policy->driver ? 'اسم السائق' : 'اسم المورد' }}</label>
-                            <p class="fw-bold mb-0">{{ $policy->driver->name ?? ($policy->supplier->name ?? '--') }}</p>
+                            <p class="fw-bold mb-0">
+                                {{ $policy->driver->name ?? ($policy->supplier->name ?? '--') }}
+                                @if($policy->supplier)
+                                    <span class="badge bg-{{ $policy->paid ? 'success' : 'danger' }}">{{ $policy->paid ? 'مدفوع' : 'غير مدفوع' }}</span>
+                                @endif
+                            </p>
                         </div>
                     </div>
                     <div class="row g-3">
@@ -284,7 +296,7 @@
                                 <p class="fw-semibold mb-0">{{ $policy->driver_name ?? 'N/A' }}</p>
                             </div>
                             <div class="col">
-                                <label class="text-muted small">رقم التواصل</label>
+                                <label class="text-muted small">لوحة السيارة</label>
                                 <p class="fw-semibold mb-0">{{ $policy->vehicle_plate ?? 'N/A' }}</p>
                             </div>
                         @endif

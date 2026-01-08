@@ -32,6 +32,7 @@ class ShippingPolicy extends Model
         'other_expenses',
         'client_cost',
         'is_received',
+        'paid',
         'company_id',
         'user_id',
     ];

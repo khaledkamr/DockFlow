@@ -241,7 +241,11 @@
                                 <td class="text-center">{{ $transportOrder->from }}</td>
                                 <td class="text-center">{{ $transportOrder->to }}</td>
                                 <td class="text-center">
-                                    <div class="badge status-delivered">تم التسليم</div>
+                                    @if(!$transportOrder->is_received)
+                                        <div class="badge status-waiting">تحت التسليم</div>
+                                    @else
+                                        <div class="badge status-delivered">تم التسليم</div>
+                                    @endif
                                 </td>
                                 <td class="text-center">{{ $transportOrder->total_cost }}</td>
                             </tr>

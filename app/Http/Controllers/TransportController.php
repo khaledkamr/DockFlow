@@ -92,7 +92,7 @@ class TransportController extends Controller
         }
 
         if($transportOrder->type == 'ناقل خارجي') {
-            $supplierAccount = $transportOrder->supplier ? $transportOrder->supplier->settlement_account : null;
+            $supplierAccount = $transportOrder->supplier ? $transportOrder->supplier->settlementAccount : null;
             $creditAccount = Account::where('name', 'ايجار شاحنات')->where('level', 5)->first();
 
             $journal = JournalEntry::create([
@@ -151,6 +151,7 @@ class TransportController extends Controller
             'diesel_cost' => 'nullable|numeric|min:0',
             'driver_wage' => 'nullable|numeric|min:0',
             'other_expenses' => 'nullable|numeric|min:0',
+            'paid' => 'nullable|boolean',
         ]);
 
         $old = $transportOrder->toArray();
