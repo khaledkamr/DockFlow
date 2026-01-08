@@ -44,11 +44,6 @@
             min-width: 800px;
         }
 
-        .table thead th,
-        .table tbody td {
-            white-space: nowrap;
-        }
-
         @media (max-width: 768px) {
             .table thead th {
                 font-size: 13px;
