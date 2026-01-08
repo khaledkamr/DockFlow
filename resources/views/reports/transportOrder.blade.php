@@ -44,14 +44,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($transportOrder->containers as $index => $container)
-                <tr class="text-center">
-                    <td class="fw-bold">{{ $index + 1 }}</td>
-                    <td class="fw-bold">{{ $transportOrder->transaction->policy_number }}</td>
-                    <td class="fw-bold">{{ $container->code }}</td>
-                    <td>{{ $container->containerType->name }}</td>
-                    <td>{{ $container->notes ?? '---' }}</td>
-                </tr>
+                @foreach($transportOrder->containers as $container)
+                    <tr class="text-center">
+                        <td class="fw-bold">{{ $loop->iteration }}</td>
+                        <td class="fw-bold">{{ $transportOrder->transaction->policy_number }}</td>
+                        <td class="fw-bold">{{ $container->code }}</td>
+                        <td>{{ $container->containerType->name }}</td>
+                        <td>{{ $container->notes ?? '---' }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

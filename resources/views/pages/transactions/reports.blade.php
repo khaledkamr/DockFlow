@@ -76,9 +76,10 @@
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
                         class="form-select form-select-sm d-inline-block w-auto">
-                        <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50</option>
                         <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
                         <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
+                        <option value="500" {{ $perPage == 500 ? 'selected' : '' }}>500</option>
+                        <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
                     @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">

@@ -111,7 +111,7 @@
         </div>
         @if (isset($hatching_total) && $hatching_total)
             <div class="text-center mt-3 pt-3 border-top">
-                <span class="text-muted fst-italic">{{ $hatching_total }}</span>
+                <span class="text-dark fst-italic">{{ $hatching_total }}</span>
             </div>
         @endif
     </div>

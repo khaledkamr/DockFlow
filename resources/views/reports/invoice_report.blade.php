@@ -28,12 +28,9 @@
                     </td>
                 </tr>
             @else
-                @php
-                    $index = 1;
-                @endphp
                 @foreach ($invoices as $invoice)
                     <tr>
-                        <td class="text-center">{{ $index++ }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center text-primary fw-bold">{{ $invoice->code }}</td>
                         <td class="text-center">{{ (Carbon\Carbon::parse($invoice->date)->format('Y/m/d')) }}</td>
                         <td class="text-center">{{ $invoice->customer->name }}</td>

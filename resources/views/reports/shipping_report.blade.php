@@ -33,12 +33,9 @@
                     </td>
                 </tr>
             @else
-                @php
-                    $index = 1;
-                @endphp
                 @foreach ($policies as  $policy)
                     <tr>
-                        <td class="text-center">{{ $index++ }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center text-primary fw-bold">{{ $policy->code }}</td>
                         <td class="text-center">{{ (Carbon\Carbon::parse($policy->date)->format('Y/m/d')) }}</td>
                         <td class="text-center">{{ $policy->customer->name }}</td>

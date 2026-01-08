@@ -33,12 +33,9 @@
                     </td>
                 </tr>
             @else
-                @php
-                    $index = 1;
-                @endphp
                 @foreach ($transportOrders as  $transportOrder)
                     <tr>
-                        <td class="text-center">{{ $index++ }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center fw-bold">{{ $transportOrder->code }}</td>
                         <td class="text-center fw-bold">{{ $transportOrder->transaction->code }}</td>
                         <td class="text-center">{{ (Carbon\Carbon::parse($transportOrder->date)->format('Y/m/d')) }}</td>

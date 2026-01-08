@@ -27,12 +27,9 @@
                     </td>
                 </tr>
             @else
-                @php
-                    $index = 1;
-                @endphp
                 @foreach ($containers as $container)
                     <tr>
-                        <td class="text-center">{{ $index++ }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center fw-bold">{{ $container->code }}</td>
                         <td class="text-center">{{ $container->customer->name }}</td>
                         <td class="text-center">{{ $container->containerType->name }}</td>
