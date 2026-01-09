@@ -6,6 +6,7 @@ use App\Exports\AccountStatementExport;
 use App\Exports\ContainersExport;
 use App\Exports\InvoicesExport;
 use App\Exports\JournalEntryExport;
+use App\Exports\PoliciesExport;
 use App\Exports\ShippingPoliciesExport;
 use App\Exports\TransactionsExport;
 use App\Exports\TransportOrdersExport;
@@ -25,6 +26,7 @@ use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
 use App\Models\ExpenseInvoice;
 use App\Models\InvoiceStatement;
+use App\Models\Policy;
 use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
@@ -161,6 +163,44 @@ class ExportController extends Controller
         $days = $start->copy()->addMonths($months)->diffInDays($end);
         logActivity('طباعة عقد', "تم طباعة عقد رقم " . $contract->id);
         return view('reports.contract', compact('contract', 'company', 'months', 'days'));
+    }
+
+    public function printPoliciesReport(Request $request) {
+        $types = ['تخزين', 'خدمات'];
+        $policies = Policy::query()->whereIn('type', $types);
+
+        $customer = $request->input('customer', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $invoiced = $request->input('invoiced', 'all');
+
+        if($from && $to) {
+            $policies->whereBetween('date', [$from, $to]);
+        }
+        if($customer != 'all') {
+            $policies->where('customer_id', $customer);
+        }
+        if($type && $type != 'all') {
+            $policies->where('type', $type);
+        }
+        if($invoiced && $invoiced != 'all') {
+            if($invoiced == 'invoiced') {
+                $policies->whereHas('containers.invoices', function($query) {
+                    $query->whereIn('type', ['تخزين', 'خدمات']);
+                });
+            } elseif($invoiced == 'not_invoiced') {
+                $policies->whereDoesntHave('containers.invoices', function($query) {
+                    $query->whereIn('type', ['تخزين', 'خدمات']);
+                });
+            }
+        }
+
+        $policies = $policies->with('customer', 'containers.invoices')->orderBy('code')->get();
+        $filters = $request->all();
+        logActivity('طباعة تقرير بوالص الشحن', "تم طباعة تقرير بوالص الشحن بتصفية: ", $filters);
+
+        return view('reports.policies_report', compact('policies', 'from', 'to'));
     }
 
     public function printInvoice($code) {
@@ -577,6 +617,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير معاملات التخليص الى اكسيل', "تم تصدير تقرير معاملات التخليص الى اكسيل بتصفية: ", $filters);
             return Excel::download(new TransactionsExport($filters), 'تقرير معاملات التخليص.xlsx');
+        } elseif($reportType == 'policies_report') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير بوالص التخزين الى اكسيل', "تم تصدير تقرير بوالص التخزين الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new PoliciesExport($filters), 'تقرير بوالص التخزين.xlsx');
         }
 
         abort(404);

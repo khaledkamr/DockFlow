@@ -81,7 +81,7 @@
                 </form>
             </div>
             <div class="d-flex gap-2">
-                <form method="GET" action="{{ route('export.excel', 'containers') }}">
+                <form method="GET" action="{{ route('export.excel', 'policies_report') }}">
                     @foreach(request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
@@ -91,7 +91,7 @@
                     </button>
                 </form>
 
-                <form action="{{ route('print', 'containers') }}" method="POST" target="_blank">
+                <form action="{{ route('print.policies.report') }}" method="GET" target="_blank">
                     @csrf
                     @foreach(request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
