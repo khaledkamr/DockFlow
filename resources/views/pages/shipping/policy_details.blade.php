@@ -10,18 +10,44 @@
         </h1>
         <div class="d-flex flex-row gap-2">
             @if ($policy->invoices->where('type', 'شحن')->first())
-            <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}"
-                target="_blank" class="btn btn-outline-primary flex-fill">
-                <i class="fa-solid fa-scroll"></i> <span class="d-inline">عرض الفاتورة</span>
-            </a>
+                <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}"
+                    target="_blank" class="btn btn-outline-primary flex-fill">
+                    <i class="fa-solid fa-scroll"></i> <span class="d-inline">عرض الفاتورة</span>
+                </a>
             @endif
             <a href="{{ route('export.shipping.policy', $policy->id) }}" target="_blank" class="btn btn-outline-primary flex-fill">
-                <i class="fa-solid fa-print"></i> <span class="d-inline">طباعة البوليصة</span>
+                <i class="fa-solid fa-print"></i> <span class="d-inline">طباعة</span>
             </a>
             <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editPolicyModal">
                 <i class="fas fa-edit me-1"></i>
-                تعديل البوليصة
+                تعديل
             </button>
+            <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deletePolicyModal">
+                <i class="fas fa-trash-alt me-1"></i>
+                حذف
+            </button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deletePolicyModal" tabindex="-1" aria-labelledby="deletePolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="deletePolicyModalLabel">تأكيد الحذف</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center text-dark">
+                    <p class="mb-0">هل أنت متأكد من حذف بوليصة الشحن <strong>{{ $policy->code }}</strong>؟</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-start">
+                    <form action="{{ route('shipping.policies.delete', $policy) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -36,6 +62,14 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-body text-dark">
+                        @if ($policy->invoices->where('type', 'شحن')->first())
+                            <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                                <div>
+                                    <strong>تنبيه:</strong> يوجد فاتورة مرتبطة بهذه البوليصة. لا يمكن التعديل على البوليصة الا بعد حذف الفاتورة.
+                                </div>
+                            </div>
+                        @endif
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
                                 <label class="form-label">رقم البوليصة</label>

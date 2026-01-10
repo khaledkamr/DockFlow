@@ -14,6 +14,7 @@ use App\Models\Supplier;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ShippingController extends Controller
 {
@@ -141,6 +142,10 @@ class ShippingController extends Controller
     }
 
     public function updatePolicy(Request $request, ShippingPolicy $policy) {
+        if($policy->invoices->where('type', 'شحن')->first()) {
+            return redirect()->back()->with('error', 'لا يمكن تعديل بوليصة شحن مرتبطة بفاتورة');
+        }
+
         $validated = $request->validate([
             'code' => 'required|string',
             'customer_id' => 'required|exists:customers,id',
@@ -201,8 +206,11 @@ class ShippingController extends Controller
     }
 
     public function deletePolicy(ShippingPolicy $policy) {
-        $old = $policy->load('goods')->toArray();
+        if($policy->invoices->where('type', 'شحن')->first()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف بوليصة الشحن المرتبطة بفاتورة شحن');
+        }
 
+        $old = $policy->load('goods')->toArray();
         $policy->goods()->delete();
         $policy->delete();
         
