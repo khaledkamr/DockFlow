@@ -33,11 +33,11 @@ class PoliciesExport implements FromCollection, WithHeadings
         if(!empty($this->filters['invoiced']) && $this->filters['invoiced'] !== 'all') {
             if($this->filters['invoiced'] == 'invoiced') {
                 $query->whereHas('containers.invoices', function($q) {
-                    $q->whereIn('type', ['تخزين', 'خدمات']);
+                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
                 });
             } elseif($this->filters['invoiced'] == 'not_invoiced') {
                 $query->whereDoesntHave('containers.invoices', function($q) {
-                    $q->whereIn('type', ['تخزين', 'خدمات']);
+                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
                 });
             }
         }

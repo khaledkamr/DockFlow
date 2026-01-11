@@ -342,11 +342,11 @@ class PolicyController extends Controller
         if($invoiced && $invoiced != 'all') {
             if($invoiced == 'invoiced') {
                 $policies->whereHas('containers.invoices', function($q) {
-                    $q->where('type', 'تخزين')->orWhere('type', 'خدمات');
+                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
                 });
             } elseif($invoiced == 'not_invoiced') {
                 $policies->whereDoesntHave('containers.invoices', function($q) {
-                    $q->where('type', 'تخزين')->orWhere('type', 'خدمات');
+                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
                 });
             }
         }
