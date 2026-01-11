@@ -198,6 +198,10 @@
                                             <a href="{{ route('invoices.details', $policy->containers->first()->invoices->where('type', 'تخزين')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
                                                 {{ $policy->containers->first()->invoices->where('type', 'تخزين')->first()->code }}
                                             </a>
+                                        @elseif($policy->containers->first()->invoices->where('type', 'تخليص')->first())
+                                            <a href="{{ route('invoices.clearance.details', $policy->containers->first()->invoices->where('type', 'تخليص')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                                {{ $policy->containers->first()->invoices->where('type', 'تخليص')->first()->code }}
+                                            </a>
                                         @elseif($policy->containers->first()->invoices->where('type', 'خدمات')->first())
                                             <a href="{{ route('invoices.services.details', $policy->containers->first()->invoices->where('type', 'خدمات')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
                                                 {{ $policy->containers->first()->invoices->where('type', 'خدمات')->first()->code }}
