@@ -20,6 +20,7 @@ use App\Models\TransportOrder;
 use App\Models\Vehicle;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class TransportController extends Controller
@@ -136,7 +137,14 @@ class TransportController extends Controller
     }
 
     public function updateTransportOrder(Request $request, TransportOrder $transportOrder) {
+        if(Gate::denies('تعديل إشعار نقل')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية لتعديل إشعار النقل.');
+        }
+
         $validated = $request->validate([
+            'code' => 'required|string',
+            'date' => 'required|date',
+            'customer_id' => 'required|exists:customers,id',
             'from' => 'required|string',
             'to' => 'required|string',
             'type' => 'required|string',
@@ -197,12 +205,28 @@ class TransportController extends Controller
         $transportOrder->load('driver', 'vehicle', 'containers.containerType');
         $drivers = Driver::all();
         $suppliers = Supplier::all();
+        $customers = Customer::all();
 
         return view('pages.transportOrders.transport_order_details', compact(
             'transportOrder',
             'drivers',
-            'suppliers'
+            'suppliers',
+            'customers'
         ));
+    }
+
+    public function deleteTransportOrder(TransportOrder $transportOrder) {
+        $containers = $transportOrder->containers;
+        foreach($containers as $container) {
+            $container->status = 'في الميناء';
+            $container->save();
+        }
+
+        $old = $transportOrder->toArray();
+        $transportOrder->delete();
+        logActivity('حذف اشعار النقل', "تم حذف اشعار النقل رقم " . $transportOrder->code, $old, null);
+
+        return redirect()->back()->with('success', 'تم حذف اشعار النقل بنجاح');
     }
 
     public function driversAndVehicles(Request $request) {

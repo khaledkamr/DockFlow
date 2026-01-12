@@ -140,6 +140,7 @@ Route::controller(TransportController::class)->middleware('auth')->group(functio
     Route::patch('/transport/orders/{transportOrder:uuid}/update-notes', 'updateNotes')->name('transportOrders.notes');
     Route::patch('/transport/orders/{transportOrder:uuid}/toggle-receive-status', 'toggleReceiveStatus')->name('transportOrders.toggle'); 
     Route::get('/transport/orders/{transportOrder:uuid}', 'transportOrderDetails')->name('transactions.transportOrders.details');
+    Route::delete('/transport/orders/delete/{transportOrder:uuid}', 'deleteTransportOrder')->name('transportOrders.delete');
 
     Route::get('drivers-and-vehicles', 'driversAndVehicles')->name('relation.drivers.vehicles');
 

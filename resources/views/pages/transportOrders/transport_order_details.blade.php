@@ -13,14 +13,42 @@
         <span class="d-none d-md-inline"> تفاصيل إشعار النقل {{ $transportOrder->code }}</span>
         <span class="d-inline d-md-none">إشعار النقل {{ $transportOrder->code }}</span>
     </h1>
-    <div>
+    <div class="d-flex gap-2">
         <a href="{{ route('export.transport.order', $transportOrder) }}" target="_blank" class="btn btn-outline-primary">
             <i class="fa-solid fa-print"></i> طباعة الإشعار
         </a>
         <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editTransportOrderModal">
             <i class="fas fa-edit me-1"></i>
-            تعديل الإشعار
+            تعديل
         </button>
+        @if(auth()->user()->roles->pluck('name')->contains('Admin'))
+            <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteTransportOrderModal">
+                <i class="fas fa-trash-alt me-1"></i>
+                حذف
+            </button>
+        @endif
+    </div>
+</div>
+
+<div class="modal fade" id="deleteTransportOrderModal" tabindex="-1" aria-labelledby="deleteTransportOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="deleteTransportOrderModalLabel">تأكيد الحذف</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center text-dark">
+                <p class="mb-0">هل أنت متأكد من حذف إشعار النقل <strong>{{ $transportOrder->code }}</strong>؟</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-start">
+                <form action="{{ route('transportOrders.delete', $transportOrder) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                </form>
+                <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -36,6 +64,34 @@
                 @method('PATCH')
                 <div class="modal-body text-dark">
                     <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">رقم الإشعار</label>
+                            <input type="text" class="form-control border-primary" id="code" name="code"
+                                value="{{ old('code', $transportOrder->code) }}">
+                            @error('code')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label d-block">إســم العميل</label>
+                            <select name="customer_id" id="customer_id" class="form-select border-primary" style="width: 100%;">
+                                <option value="">اختر عميل...</option>
+                                @foreach ($customers as $customer)
+                                    <option value="{{ $customer->id }}"
+                                        {{ old('customer_id', $transportOrder->customer_id) == $customer->id ? 'selected' : '' }}>
+                                        {{ $customer->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label">تاريخ الإشعار</label>
+                            <input type="date" class="form-control border-primary" id="date" name="date" 
+                                value="{{ old('date', \Carbon\Carbon::parse($transportOrder->date)->format('Y-m-d')) }}">
+                            @error('date')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="col-12 col-md-4">
                             <label class="form-label">مكان التحميل</label>
                             <input type="text" class="form-control border-primary" id="from" name="from"

@@ -22,10 +22,12 @@
                 <i class="fas fa-edit me-1"></i>
                 تعديل
             </button>
-            <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deletePolicyModal">
-                <i class="fas fa-trash-alt me-1"></i>
-                حذف
-            </button>
+            @if(auth()->user()->roles->pluck('name')->contains('Admin'))
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deletePolicyModal">
+                    <i class="fas fa-trash-alt me-1"></i>
+                    حذف
+                </button>
+            @endif
         </div>
     </div>
 
