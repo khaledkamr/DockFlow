@@ -127,20 +127,7 @@ class PolicyController extends Controller
             'late_fee' => 'nullable|numeric',
         ]);
 
-        $policy->update([
-            'code' => $validated['code'],
-            'date' => $validated['date'],
-            'customer_id' => $validated['customer_id'],
-            'tax_statement' => $validated['tax_statement'],
-            'driver_name' => $validated['driver_name'],
-            'driver_NID' => $validated['driver_NID'],
-            'driver_number' => $validated['driver_number'],
-            'driver_car' => $validated['driver_car'],
-            'car_code' => $validated['car_code'],
-            'storage_price' => $validated['storage_price'],
-            'storage_duration' => $validated['storage_duration'],
-            'late_fee' => $validated['late_fee'],
-        ]);
+        $policy->update($validated);
 
         foreach($policy->containers as $container) {
             $container->date = $request->date;
@@ -199,8 +186,45 @@ class PolicyController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض البوليصة؟</a>');
     }
 
+    public function updateReceivePolicy(Request $request, Policy $policy) {
+        if(Gate::denies('تعديل بوليصة تخزين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل هذه البوليصة');
+        }
+
+        $old = $policy->toArray();
+
+        $validated = $request->validate([
+            'code' => 'required|string',
+            'date' => 'required|date',
+            'customer_id' => 'required',
+            'tax_statement' => 'nullable',
+            'driver_name' => 'required',
+            'driver_NID' => 'required',
+            'driver_number' => 'nullable',
+            'driver_car' => 'required',
+            'car_code' => 'required',
+        ]);
+
+        $policy->update($validated);
+
+        foreach($policy->containers as $container) {
+            $container->exit_date = $request->date;
+            $container->delivered_by = $request->driver_name;
+            $container->save();
+        }
+        
+        $new = $policy->toArray();
+        logActivity('تعديل بوليصة تسليم', 'تم تعديل بيانات بوليصة التسليم رقم ' . $policy->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات البوليصة بنجاح');
+    }
+
     public function receivePolicyDetails(Policy $policy) {
-        return view('pages.policies.receive_policy_details', compact('policy'));
+        $customers = Customer::all();
+        return view('pages.policies.receive_policy_details', compact(
+            'policy', 
+            'customers'
+        ));
     }
 
     public function servicePolicy() {

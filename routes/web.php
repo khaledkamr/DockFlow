@@ -105,6 +105,7 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/receive/create', 'createReceivePolicy')->name('policies.receive.create');
     Route::post('/policies/receive/store', 'storeReceivePolicy')->name('policies.receive.store');
     Route::get('/policies/receive/details/{policy:uuid}', 'receivePolicyDetails')->name('policies.receive.details');
+    Route::patch('/policies/receive/update/{policy:uuid}', 'updateReceivePolicy')->name('policies.receive.update');
     
     Route::get('/policies/services/create', 'servicePolicy')->name('policies.services.create');
     Route::post('/policies/services/store', 'storeServicePolicy')->name('policies.services.store');
