@@ -177,7 +177,7 @@
                     <div class="modal-body text-dark">
                         <div class="table-responsive">
                             <table class="table table-bordered">
-                                <thead class="table-secondary">
+                                <thead class="table-dark">
                                     <tr>
                                         <th class="text-center">الحساب</th>
                                         <th class="text-center">مدين</th>
@@ -223,7 +223,7 @@
                                         <td class="text-center">استحقاق فاتورة {{ $invoice->type }} رقم {{ $invoice->code }}</td>
                                     </tr>
                                 </tbody>
-                                <tfoot class="table-secondary">
+                                <tfoot class="table-dark">
                                     <tr>
                                         <th class="text-center fw-bold">الإجمالي</th>
                                         <th class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</th>
