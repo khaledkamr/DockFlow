@@ -106,40 +106,48 @@ class PolicyController extends Controller
     }
 
     public function updateStoragePolicy(Request $request, Policy $policy) {
+        if(Gate::denies('تعديل بوليصة تخزين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل هذه البوليصة');
+        }
+
         $old = $policy->toArray();
 
         $validated = $request->validate([
+            'code' => 'required|string',
             'date' => 'required|date',
-            'tax_statement' => 'nullable',
             'customer_id' => 'required',
+            'tax_statement' => 'nullable',
             'driver_name' => 'required',
             'driver_NID' => 'required',
+            'driver_number' => 'nullable',
+            'driver_car' => 'required',
             'car_code' => 'required',
             'storage_price' => 'nullable|numeric',
             'storage_duration' => 'nullable|numeric',
             'late_fee' => 'nullable|numeric',
         ]);
 
-        if($request->date != $policy->date) {
-            foreach($policy->containers as $container) {
-                $container->date = $request->date;
-                $container->save();
-            }
-        }
-
         $policy->update([
+            'code' => $validated['code'],
             'date' => $validated['date'],
-            'tax_statement' => $validated['tax_statement'],
             'customer_id' => $validated['customer_id'],
+            'tax_statement' => $validated['tax_statement'],
             'driver_name' => $validated['driver_name'],
             'driver_NID' => $validated['driver_NID'],
+            'driver_number' => $validated['driver_number'],
+            'driver_car' => $validated['driver_car'],
             'car_code' => $validated['car_code'],
             'storage_price' => $validated['storage_price'],
             'storage_duration' => $validated['storage_duration'],
             'late_fee' => $validated['late_fee'],
         ]);
-        
 
+        foreach($policy->containers as $container) {
+            $container->date = $request->date;
+            $container->received_by = $request->driver_name;
+            $container->save();
+        }
+        
         $new = $policy->toArray();
         logActivity('تعديل بوليصة تخزين', 'تم تعديل بيانات بوليصة التخزين رقم ' . $policy->code, $old, $new);
 
@@ -289,6 +297,13 @@ class PolicyController extends Controller
     }
 
     public function deletePolicy(Policy $policy) {
+        if(Gate::denies('حذف بوليصة تخزين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية حذف هذه البوليصة');
+        }
+        if($policy->containers->first()->invoices()->where('type', 'تخزين')) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذه البوليصة لارتباطها بفاتورة تخزين');
+        }
+
         if($policy->type == 'تخزين') {
             foreach($policy->containers as $container) {
                 $container->location = null;
