@@ -59,7 +59,14 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-body text-dark">
-                        <div class="row g-3 mb-4">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">رقم البوليصة</label>
+                                <input type="text" class="form-control border-primary" name="code" value="{{ old('code', $policy->code) }}">
+                                @error('code')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">تاريخ البوليصة</label>
                                 <input type="date" class="form-control border-primary" name="date" value="{{ old('date', \Carbon\Carbon::parse($policy->date)->format('Y-m-d')) }}">
@@ -68,14 +75,6 @@
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
-                                <label class="form-label">البيان الضريبي</label>
-                                <input type="text" class="form-control border-primary" name="tax_statement" value="{{ old('tax_statement', $policy->tax_statement) }}">
-                                @error('tax_statement')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <label class="form-label">العميل</label>
                                 <label class="form-label">العميل</label>
                                 <select class="form-select border-primary" name="customer_id" id="customer_id" required>
                                     <option disabled selected>اختر العميل...</option>
@@ -87,8 +86,13 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">البيان الضريبي</label>
+                                <input type="text" class="form-control border-primary" name="tax_statement" value="{{ old('tax_statement', $policy->tax_statement) }}">
+                                @error('tax_statement')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">إســم السائق</label>
                                 <input type="text" class="form-control border-primary" name="driver_name" value="{{ old('driver_name', $policy->driver_name) }}">
@@ -104,14 +108,26 @@
                                 @enderror   
                             </div>
                             <div class="col-12 col-md-4">
+                                <label class="form-label">رقم السائق</label>
+                                <input type="text" class="form-control border-primary" name="driver_number" value="{{ old('driver_number', $policy->driver_number) }}">
+                                @error('driver_number')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror   
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">نوع السيارة</label>
+                                <input type="text" class="form-control border-primary" name="driver_car" value="{{ old('driver_car', $policy->driver_car) }}">
+                                @error('driver_car')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-4">
                                 <label class="form-label">لوحة السيارة</label>
                                 <input type="text" class="form-control border-primary" name="car_code" value="{{ old('plate_number', $policy->car_code) }}">
                                 @error('car_code')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
                                 <label class="form-label">سعر التخزين</label>
                                 <input type="number" class="form-control border-primary" name="storage_price" value="{{ old('storage_price', $policy->storage_price) }}">
@@ -134,6 +150,7 @@
                                 @enderror
                             </div>
                         </div>
+
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
                         <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
