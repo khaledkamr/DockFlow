@@ -110,6 +110,8 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::get('/policies/services/create', 'servicePolicy')->name('policies.services.create');
     Route::post('/policies/services/store', 'storeServicePolicy')->name('policies.services.store');
     Route::get('/policies/services/details/{policy:uuid}', 'servicePolicyDetails')->name('policies.services.details');
+    Route::patch('/policies/services/update/{policy:uuid}', 'updateServicePolicy')->name('policies.services.update');
+    Route::patch('/policies/services/{policy:uuid}/update-container-service', 'updateServicePolicyContainers')->name('policies.services.update.container');
 
     Route::delete('/policies/delete/{policy:uuid}', 'deletePolicy')->name('policy.delete');
     Route::get('/policies/reports', 'reports')->name('policies.reports');

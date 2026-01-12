@@ -316,8 +316,64 @@ class PolicyController extends Controller
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.services.details', $policy).'">عرض البوليصة؟</a>');
     }
 
+    public function updateServicePolicy(Request $request, Policy $policy) {
+        if(Gate::denies('تعديل بوليصة تخزين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل هذه البوليصة');
+        }
+
+        $old = $policy->toArray();
+
+        $validated = $request->validate([
+            'code' => 'required|string',
+            'date' => 'required|date',
+            'customer_id' => 'required',
+            'tax_statement' => 'nullable',
+            'driver_name' => 'required',
+            'driver_NID' => 'required',
+            'driver_car' => 'required',
+            'car_code' => 'required',
+            'driver_number' => 'nullable|string',
+        ]);
+
+        foreach($policy->containers as $container) {
+            $container->date = $request->date;
+            $container->exit_date = $request->date;
+            $container->save();
+        }
+
+        $policy->update($validated);
+        
+        $new = $policy->toArray();
+        logActivity('تعديل بوليصة خدمات', 'تم تعديل بيانات بوليصة الخدمات رقم ' . $policy->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات البوليصة بنجاح');
+    }
+
+    public function updateServicePolicyContainers(Request $request, Policy $policy) {
+        if(Gate::denies('تعديل بوليصة تخزين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل هذه البوليصة');
+        }
+
+        if($request->container_id) {
+            $container = Container::findOrFail($request->container_id);
+            $container->services()->detach($request->old_service_id);
+            $container->services()->attach($request->service_id, [
+                'price' => $request->price,
+                'notes' => $request->notes,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'تم تحديث خدمات الحاويات بنجاح');
+    }
+
     public function servicePolicyDetails(Policy $policy) {
-        return view('pages.policies.service_policy_details', compact('policy'));
+        $customers = Customer::all();
+        $services = Service::all();
+        return view('pages.policies.service_policy_details', compact(
+            'policy', 
+            'customers',
+            'services'
+        ));
     }
 
     public function deletePolicy(Policy $policy) {
