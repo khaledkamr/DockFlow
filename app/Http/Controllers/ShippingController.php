@@ -142,8 +142,8 @@ class ShippingController extends Controller
     }
 
     public function updatePolicy(Request $request, ShippingPolicy $policy) {
-        if($policy->invoices->where('type', 'شحن')->first()) {
-            return redirect()->back()->with('error', 'لا يمكن تعديل بوليصة شحن مرتبطة بفاتورة');
+        if(Gate::denies('تعديل بوليصة شحن')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بوليصة الشحن');
         }
 
         $validated = $request->validate([
@@ -185,6 +185,10 @@ class ShippingController extends Controller
     }
 
     public function updateGoods(Request $request, ShippingPolicy $policy) {
+        if(Gate::denies('تعديل بوليصة شحن')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بوليصة الشحن');
+        }
+
         $request->validate([
             'goods' => 'required|array',
             'goods.*.description' => 'required|string|max:255',
@@ -206,6 +210,9 @@ class ShippingController extends Controller
     }
 
     public function deletePolicy(ShippingPolicy $policy) {
+        if(Gate::denies('حذف بوليصة شحن')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية حذف بوليصة الشحن');
+        }
         if($policy->invoices->where('type', 'شحن')->first()) {
             return redirect()->back()->with('error', 'لا يمكن حذف بوليصة الشحن المرتبطة بفاتورة شحن');
         }

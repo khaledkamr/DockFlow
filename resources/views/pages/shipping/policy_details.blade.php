@@ -62,14 +62,6 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-body text-dark">
-                        @if ($policy->invoices->where('type', 'شحن')->first())
-                            <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
-                                <i class="fa-solid fa-triangle-exclamation me-2"></i>
-                                <div>
-                                    <strong>تنبيه:</strong> يوجد فاتورة مرتبطة بهذه البوليصة. لا يمكن التعديل على البوليصة الا بعد حذف الفاتورة.
-                                </div>
-                            </div>
-                        @endif
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-4">
                                 <label class="form-label">رقم البوليصة</label>
