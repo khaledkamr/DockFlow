@@ -20,7 +20,7 @@
                     @if ($transaction->customer->contract)
                         <li class="breadcrumb-item">
                             <a href="{{ route('contracts.details', $transaction->customer->contract) }}"
-                                class="text-decoration-none">العقد #{{ $transaction->customer->contract->id }}</a>
+                                class="text-decoration-none">عقد {{ $transaction->customer->name }}</a>
                         </li>
                     @endif
                 </ol>
@@ -700,7 +700,7 @@
                             <select class="form-select border-primary" name="name" required>
                                 <option disabled selected>اختر الإجراء...</option>
                                 @foreach ($procedures as $procedure)
-                                    <option value="{{ $procedure['name'] }}">{{ $procedure['name'] }}</option>
+                                    <option value="{{ $procedure->name }}">{{ $procedure->name }}</option>
                                 @endforeach
                             </select>
                             <button class="btn btn-primary" type="submit">
@@ -905,9 +905,9 @@
                                     name="description" required>
                                     <option disabled selected>اختر البند...</option>
                                     @foreach ($items as $item)
-                                        <option value="{{ $item['name'] }}" data-type="{{ $item['type'] }}"
-                                            data-debit-account-id="{{ $item['debit_account_id'] }}">
-                                            {{ $item['name'] }}</option>
+                                        <option value="{{ $item->name }}" data-type="{{ $item->type }}"
+                                            data-debit-account-id="{{ $item->debit_account_id }}">
+                                            {{ $item->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             // ModuleSeeder::class,
             // CompanyModulesSeeder::class,
             // PlacesSeeder::class,
+            ItemSeeder::class,
+            ProcedureSeeder::class,
         ]);
     }
 }

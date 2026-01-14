@@ -48,7 +48,7 @@ class Transaction extends Model
     }
 
     public function procedures() {
-        return $this->hasMany(Procedure::class);
+        return $this->hasMany(TransactionProcedure::class);
     }
 
     protected static function booted()

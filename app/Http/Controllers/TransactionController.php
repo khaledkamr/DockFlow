@@ -8,7 +8,9 @@ use App\Models\Account;
 use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Customer;
+use App\Models\Item;
 use App\Models\JournalEntry;
+use App\Models\Procedure;
 use App\Models\TransactionProcedure;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
@@ -113,86 +115,9 @@ class TransactionController extends Controller
         $customers = Customer::all();
         $creditAccounts = Account::where('level', 5)->get();
 
-        $items = [
-            [
-                'name' => 'رسوم اذن التسليم - DELIVERY ORDER',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'رسوم اذن التسليم - تحت التسوية')->first()->id ?? null,
-            ],
-            [   
-                'name' => 'رسوم مواني - PORT CHARGE',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'رسوم مواني - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'رسوم الشركه السعوديه للمواني - SAUDI GLOBAL PORT FEES',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'رسوم الشركه السعوديه للمواني - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'اجور السكه الحديد - DRY PORT FEES',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'اجور السكه الحديد - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'رسوم موعد فسح - APPOINTMENT FASAH',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'رسوم موعد فسح - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'رسوم سابر - SABER FEES',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'رسوم سابر - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'رسوم جمركية - CUSTOMS FEES',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'رسوم جمركية - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'ارضيات - DEMURRAGE CHARGE',
-                'type' => 'مصروف',
-                'debit_account_id' => Account::where('name', 'ارضيات - تحت التسوية')->first()->id ?? null,
-            ],
-            [
-                'name' => 'اجور تخليص - CLEARANCE FEES',
-                'type' => 'ايراد تخليص',
-                'debit_account_id' => null,
-            ],
-            [
-                'name' => 'اجور نقل - TRANSPORT FEES',
-                'type' => 'ايراد نقل',
-                'debit_account_id' => null,
-            ],
-            [
-                'name' => 'اجور عمال - LABOUR',
-                'type' => 'ايراد عمال',
-                'debit_account_id' => null,
-            ],
-            [
-                'name' => 'خدمات سابر - SABER FEES',
-                'type' => 'ايراد سابر',
-                'debit_account_id' => null,
-            ],
-            [
-                'name' => 'رسوم تخزين - STORAGE FEES',
-                'type' => 'ايراد تخزين',
-                'debit_account_id' => null,
-            ]
-        ];
+        $items = Item::with('debitAccount')->orderBy('type', 'desc')->orderBy('id')->get();
 
-        $procedures = [
-            ['name' => 'تم فتح معامله - Open Transaction'],
-            ['name' => 'تم استلام اذن التسليم - The delivery order has been received'],
-            ['name' => 'تم طباعة البيان - The import declaration has been received'],
-            ['name' => 'تم السداد على معامله - Payment is made'],
-            ['name' => 'لم تصل الباخرة - The steamer did not arrive'],
-            ['name' => 'مطلوب تفويض - Authorization required'],
-            ['name' => 'مطلوب فسح للمواد المقيدة - Approval Required'],
-            ['name' => 'تم عمل اشعار نقل - Create transport notification'],
-            ['name' => 'تم عمل فاتورة - Create invoice'],
-            ['name' => 'لم تفرغ الحاوية فى الايداع - The container was not emptied at the deposit'],
-        ];
+        $procedures = Procedure::all();
 
         return view('pages.transactions.transaction_details', compact(
             'transaction', 
@@ -203,7 +128,25 @@ class TransactionController extends Controller
         ));
     }
 
-    public function storeItem(ItemRequest $request) {
+    public function deleteTransaction(Transaction $transaction) {
+        if($transaction->containers->first()->invoices->where('type', 'تخليص')->first()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف معاملة تم إصدار فاتورة لها');
+        }
+
+        foreach($transaction->containers as $container) {
+            $container->delete();
+        }
+
+        $old = $transaction->toArray();
+        $transaction->items()->delete();
+        $transaction->procedures()->delete();
+        $transaction->delete();
+        logActivity('حذف معاملة تخليص', "تم حذف معاملة تخليص برقم " . $transaction->code, $old, null);
+
+        return redirect()->route('transactions')->with('success', 'تم حذف المعاملة بنجاح');
+    }
+
+    public function addTransactionItem(ItemRequest $request) {
         if(Gate::denies('إضافة بند الى المعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء بند في المعاملة');
         }
@@ -215,7 +158,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم إضافة بند جديد للمعاملة');
     }
 
-    public function updateItem(ItemRequest $request, TransactionItem $item) {
+    public function updateTransactionItem(ItemRequest $request, TransactionItem $item) {
         if(Gate::denies('تعديل بند في المعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بند في المعاملة');
         }
@@ -235,7 +178,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم تعديل بيانات البند');
     }
 
-    public function postItem(TransactionItem $item) {
+    public function postTransactionItem(TransactionItem $item) {
         if($item->debit_account_id == null) {
             return redirect()->back()->with('error', 'الحساب المدين للبند غير موجود, يرجى تعيين حساب مدين صالح للبند قبل الترحيل');
         }
@@ -278,7 +221,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم ترحيل البند الى قيد بنجاح, <a class="text-white fw-bold" href="'.route('journal.details', $journal).'">عرض القيد</a>');
     }
 
-    public function deleteItem(TransactionItem $item) {
+    public function deleteTransactionItem(TransactionItem $item) {
         if(Gate::denies('حذف بند من المعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية حذف بند من المعاملة');
         }
@@ -295,7 +238,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم حذف البند بنجاح');
     }
 
-    public function addProcedure(Request $request, Transaction $transaction) {
+    public function addTransactionProcedure(Request $request, Transaction $transaction) {
         if(Gate::denies('إضافة إجراء للمعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية إضافة إجراء إلى المعاملة');
         }
@@ -313,7 +256,7 @@ class TransactionController extends Controller
         return redirect()->back()->with('success', 'تم إضافة إجراء جديد للمعاملة');
     }
 
-    public function deleteProcedure($procedureId) {
+    public function deleteTransactionProcedure($procedureId) {
         if(Gate::denies('حذف إجراء من المعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية حذف إجراء من المعاملة');
         }
@@ -323,6 +266,96 @@ class TransactionController extends Controller
         $procedure->delete();
         logActivity('حذف إجراء من المعاملة', "تم حذف إجراء من المعاملة رقم " . $procedure->transaction->code . ": " . $procedure->name, $old, null);
 
+        return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
+    }
+
+    public function itemsAndProcedures() {
+        $items = Item::with('debitAccount')->get();
+        $procedures = Procedure::all();
+        $accounts = Account::where('level', 5)->get();
+
+        return view('pages.transactions.items_and_procedures', compact(
+            'items',
+            'procedures',
+            'accounts', 
+        ));
+    }
+
+    public function storeItem(Request $request) {
+        if(Gate::denies('إنشاء بند جديد')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء بند جديد');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'debit_account_id' => 'nullable|exists:accounts,id',
+        ]);
+
+        Item::create($validated);
+
+        return redirect()->back()->with('success', 'تم إنشاء بند جديد بنجاح');
+    }
+
+    public function updateItem(Request $request, Item $item) {
+        if(Gate::denies('تعديل بند')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بند');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'debit_account_id' => 'nullable|exists:accounts,id',
+        ]);
+
+        $item->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات البند بنجاح');
+    }
+
+    public function deleteItem(Item $item) {
+        if(Gate::denies('حذف بند')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية حذف بند');
+        }
+
+        $item->delete();
+        return redirect()->back()->with('success', 'تم حذف البند بنجاح');
+    }
+
+    public function storeProcedure(Request $request) {
+        if(Gate::denies('إنشاء إجراء جديد')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء إجراء جديد');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        Procedure::create($validated);
+
+        return redirect()->back()->with('success', 'تم إنشاء إجراء جديد بنجاح');
+    }
+
+    public function updateProcedure(Request $request, Procedure $procedure) {
+        if(Gate::denies('تعديل إجراء')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل إجراء');
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $procedure->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات الإجراء بنجاح');
+    }
+
+    public function deleteProcedure(Procedure $procedure) {
+        if(Gate::denies('حذف إجراء')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية حذف إجراء');
+        }
+        
+        $procedure->delete();
         return redirect()->back()->with('success', 'تم حذف الإجراء بنجاح');
     }
     

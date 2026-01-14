@@ -123,12 +123,21 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::post('/transactions/store', 'storeTransaction')->name('transactions.store');
     Route::patch('/transactions/update/{transaction:uuid}', 'updateTransaction')->name('transactions.update');
     Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
-    Route::post('/transactions/item/store', 'storeItem')->name('transactions.item.store');
-    Route::put('/transactions/item/update/{item:id}', 'updateItem')->name('transactions.item.update');
-    Route::post('/transactions/item/post/{item:id}', 'postItem')->name('transactions.item.post');
-    Route::delete('/transactions/item/delete/{item:id}', 'deleteItem')->name('transactions.item.delete');
-    Route::post('/transactions/{transaction:uuid}/add/procedure', 'addProcedure')->name('transactions.store.procedure');
-    Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteProcedure')->name('transactions.delete.procedure');
+    Route::post('/transactions/item/store', 'addTransactionItem')->name('transactions.item.store');
+    Route::put('/transactions/item/update/{item:id}', 'updateTransactionItem')->name('transactions.item.update');
+    Route::post('/transactions/item/post/{item:id}', 'postTransactionItem')->name('transactions.item.post');
+    Route::delete('/transactions/item/delete/{item:id}', 'deleteTransactionItem')->name('transactions.item.delete');
+    Route::post('/transactions/{transaction:uuid}/add/procedure', 'addTransactionProcedure')->name('transactions.store.procedure');
+    Route::delete('/transactions/procedure/delete/{procedure:id}', 'deleteTransactionProcedure')->name('transactions.delete.procedure');
+
+    Route::get('/transaction/items-and-procedures', 'itemsAndProcedures')->name('transactions.items.and.procedures');
+    Route::post('/items/store', 'storeItem')->name('items.store');
+    Route::put('/items/update/{item:id}', 'updateItem')->name('items.update');
+    Route::delete('/items/delete/{item:id}', 'deleteItem')->name('items.delete');
+    Route::post('/procedures/store', 'storeProcedure')->name('procedures.store');
+    Route::put('/procedures/update/{procedure:id}', 'updateProcedure')->name('procedures.update');
+    Route::delete('/procedures/delete/{procedure:id}', 'deleteProcedure')->name('procedures.delete');
+
     Route::get('/transaction/reports', 'reports')->name('transactions.reports');
 });
 

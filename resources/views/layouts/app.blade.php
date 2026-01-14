@@ -633,6 +633,11 @@
                                 <i class="fa-solid fa-chart-line ms-2 me-2"></i> تقارير المعاملات
                             </a>
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                                style="{{ request()->routeIs('transactions.items.and.procedures') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                                href="{{ route('transactions.items.and.procedures') }}">
+                                <i class="fa-solid fa-list-check ms-2 me-2"></i> البنود والإجراءات
+                            </a>
+                            <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('transactions.transportOrders') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                                 href="{{ route('transactions.transportOrders') }}">
                                 <i class="fa-solid fa-copy ms-2 me-2"></i> إشعارات النقل
