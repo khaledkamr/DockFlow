@@ -9,7 +9,7 @@ use App\Models\Container;
 use App\Models\Container_type;
 use App\Models\Customer;
 use App\Models\JournalEntry;
-use App\Models\Procedure;
+use App\Models\TransactionProcedure;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Carbon\Carbon;
@@ -96,13 +96,12 @@ class TransactionController extends Controller
             'status' => 'required',
         ]);
 
-        $transaction->update([
-            'customer_id' => $validated['customer_id'],
-            'policy_number' => $validated['policy_number'],
-            'customs_declaration' => $validated['customs_declaration'],
-            'customs_declaration_date' => $validated['customs_declaration_date'],
-            'status' => $validated['status'],
-        ]);
+        $transaction->update($validated);
+
+        foreach($transaction->containers as $container) {
+            $container->customer_id = $validated['customer_id'];
+            $container->save();
+        }
 
         $new = $transaction->toArray();
         logActivity('تعديل معاملة تخليص', "تم تعديل بيانات المعاملة برقم " . $transaction->code, $old, $new);
@@ -319,7 +318,7 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية حذف إجراء من المعاملة');
         }
 
-        $procedure = Procedure::findOrFail($procedureId);
+        $procedure = TransactionProcedure::findOrFail($procedureId);
         $old = $procedure->toArray();
         $procedure->delete();
         logActivity('حذف إجراء من المعاملة', "تم حذف إجراء من المعاملة رقم " . $procedure->transaction->code . ": " . $procedure->name, $old, null);
