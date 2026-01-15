@@ -46,18 +46,18 @@
                             <td>{{ $line->journal->code }}</td>
                             <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
                             <td>{{ $line->description }}</td>
-                            <td>{{ $line->debit }}</td>
-                            <td>{{ $line->credit }}</td>
-                            <td>{{ $balance }}</td>
+                            <td>{{ number_format($line->debit, 2) }}</td>
+                            <td>{{ number_format($line->credit, 2) }}</td>
+                            <td>{{ number_format($balance, 2) }}</td>
                         </tr>
                     @endforeach
                     <tr class="fw-bold">
                         <td colspan="4" class="text-center fs-6">
                             الإجماليـــــات
                         </td>
-                        <td class="text-center">{{ $statement->sum(fn($line) => $line->debit) }}</td>
-                        <td class="text-center">{{ $statement->sum(fn($line) => $line->credit) }}</td>
-                        <td class="text-center">{{ $balance }}</td>
+                        <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->debit), 2) }}</td>
+                        <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->credit), 2) }}</td>
+                        <td class="text-center">{{ number_format($balance, 2) }}</td>
                     </tr>
                 @else
                     <tr>

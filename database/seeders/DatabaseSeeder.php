@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             // ContainerTypesSeeder::class,
             // ServiceSeeder::class,
             // RoleSeeder::class,
-            PermissionSeeder::class,
+            // PermissionSeeder::class,
             // UserRoleSeeder::class,
             // RolePermissionsSeeder::class,
             // DriverSeeder::class,
@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
             // ModuleSeeder::class,
             // CompanyModulesSeeder::class,
             // PlacesSeeder::class,
-            ItemSeeder::class,
-            ProcedureSeeder::class,
+            // ItemSeeder::class,
+            // ProcedureSeeder::class,
         ]);
     }
 }

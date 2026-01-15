@@ -98,9 +98,9 @@ class AccountStatementExport implements FromCollection, WithHeadings
                 $line->journal->code,
                 $line->journal->type,
                 $line->description,
-                $line->debit,
-                $line->credit,
-                $balance,
+                number_format($line->debit, 2),
+                number_format($line->credit, 2),
+                number_format($balance, 2)
             ]);
         }
 
