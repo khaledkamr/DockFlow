@@ -44,7 +44,7 @@ class TransportController extends Controller
                 ->orWhere('date', 'like', '%' . $search . '%');
         }
 
-        $transportOrders = $transportOrders->with(['customer', 'transaction', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+        $transportOrders = $transportOrders->with(['customer', 'transaction', 'made_by'])->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('pages.transportOrders.transport_orders', compact('transportOrders'));
     }
@@ -439,7 +439,7 @@ class TransportController extends Controller
             $transportOrders->where('to', $delivery_location);
         }
 
-        $transportOrders = $transportOrders->with(['customer', 'driver', 'vehicle', 'supplier', 'made_by'])->orderBy('code')->paginate($perPage)->withQueryString();
+        $transportOrders = $transportOrders->with(['customer', 'driver', 'vehicle', 'supplier', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();
         
         return view('pages.transportOrders.reports', compact(
             'transportOrders',

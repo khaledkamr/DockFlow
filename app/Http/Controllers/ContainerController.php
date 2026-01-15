@@ -58,7 +58,7 @@ class ContainerController extends Controller
             });
         }
 
-        $containers = $containers->with(['customer', 'containerType'])->orderBy('date', 'desc')->paginate(100)->withQueryString();
+        $containers = $containers->with(['customer', 'containerType'])->orderBy('date', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('pages.containers.containers', compact(
             'existingContainers',
@@ -233,7 +233,7 @@ class ContainerController extends Controller
             }
         }
 
-        $containers = $containers->with(['customer', 'containerType', 'invoices'])->orderBy('date')->paginate($perPage)->withQueryString();
+        $containers = $containers->with(['customer', 'containerType', 'invoices'])->orderBy('date')->paginate($perPage)->onEachSide(1)->withQueryString();
 
         return view('pages.containers.reports', compact(
             'containers',

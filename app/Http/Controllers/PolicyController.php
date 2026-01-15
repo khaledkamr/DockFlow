@@ -39,7 +39,7 @@ class PolicyController extends Controller
             });
         }
 
-        $policies = $policies->with(['customer', 'made_by'])->orderBy('date', 'desc')->orderBy('code', 'desc')->paginate(100)->withQueryString();
+        $policies = $policies->with(['customer', 'made_by'])->orderBy('date', 'desc')->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('pages.policies.policies', compact('policies', 'customers'));
     }
@@ -446,7 +446,7 @@ class PolicyController extends Controller
             }
         }
 
-        $policies = $policies->with(['customer', 'containers.invoices'])->orderBy('code')->paginate($perPage)->withQueryString();
+        $policies = $policies->with(['customer', 'containers.invoices'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();
 
         return view('pages.policies.reports', compact(
             'customers', 

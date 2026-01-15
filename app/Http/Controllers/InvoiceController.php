@@ -47,7 +47,7 @@ class InvoiceController extends Controller
             });
         }
 
-        $invoices = $invoices->with(['customer'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+        $invoices = $invoices->with(['customer'])->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('pages.invoices.invoices', compact('invoices'));
     }
@@ -1010,7 +1010,7 @@ class InvoiceController extends Controller
             $invoices->where('is_posted', $is_posted == 'true' ? true : false);
         }
 
-        $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->withQueryString();
+        $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();
 
         return view('pages.invoices.reports', compact(
             'invoices', 

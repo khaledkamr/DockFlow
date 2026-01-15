@@ -39,7 +39,7 @@ class ContractController extends Controller
             })->orWhere('date', 'like', '%' . $search . '%');
         }
 
-        $contracts = $contracts->with(['customer', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->withQueryString();
+        $contracts = $contracts->with(['customer', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('pages.contracts.contracts', compact('contracts'));
     }

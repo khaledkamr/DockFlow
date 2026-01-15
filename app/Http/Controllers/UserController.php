@@ -197,7 +197,7 @@ class UserController extends Controller
             ->when($request->to, fn($q) => $q->whereDate('created_at', '<=', $request->to))
             ->where('company_id', Auth::user()->company_id)
             ->orderBy('id', 'desc')
-            ->paginate(100);
+            ->paginate(100)->onEachSide(1)->withQueryString();
 
         $actions = UserLog::select('action')->distinct()->pluck('action');
         $users = User::all();

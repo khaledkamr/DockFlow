@@ -26,7 +26,7 @@ class CustomerController extends Controller
             });
         }
 
-        $customers = $customers->with('account')->orderBy('created_at', 'desc')->paginate(100)->withQueryString();
+        $customers = $customers->with('account')->orderBy('created_at', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('pages.customers.customers', compact('customers'));
     }

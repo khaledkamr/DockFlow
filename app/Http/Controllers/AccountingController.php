@@ -98,7 +98,7 @@ class AccountingController extends Controller
                 }
             }
 
-            $journals = $journals->with(['made_by', 'modified_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+            $journals = $journals->with(['made_by', 'modified_by'])->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
             return view('pages.accounting.entries', compact('journals'));
         } elseif($view == 'سندات قبض') {
@@ -114,7 +114,7 @@ class AccountingController extends Controller
                     ->orWhere('date', 'like', '%' . $search . '%');
             }
 
-            $vouchers = $vouchers->with(['debit_account', 'credit_account', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+            $vouchers = $vouchers->with(['debit_account', 'credit_account', 'made_by'])->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
             return (view('pages.accounting.entries', compact('vouchers')));
         } elseif($view == 'سندات صرف') {
@@ -130,7 +130,7 @@ class AccountingController extends Controller
                     ->orWhere('date', 'like', '%' . $search . '%');
             }
 
-            $vouchers = $vouchers->with(['debit_account', 'credit_account', 'made_by'])->orderBy('code', 'desc')->paginate(100)->withQueryString();
+            $vouchers = $vouchers->with(['debit_account', 'credit_account', 'made_by'])->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
             return (view('pages.accounting.entries', compact('vouchers')));
         } elseif($view == 'الصندوق') {
@@ -759,7 +759,7 @@ class AccountingController extends Controller
                 $entries->whereBetween('date', [$from, $to]);
             }
 
-            $entries = $entries->orderBy('date')->paginate($perPage)->withQueryString();
+            $entries = $entries->orderBy('date')->paginate($perPage)->onEachSide(1)->withQueryString();
 
             return view('pages.accounting.reports', compact('entries', 'perPage'));
         } elseif($view == 'كشف حساب') {

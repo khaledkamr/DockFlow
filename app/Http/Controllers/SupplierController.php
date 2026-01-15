@@ -21,7 +21,7 @@ class SupplierController extends Controller
             $suppliers->where('name', 'like', '%' . $search . '%');
         }
 
-        $suppliers = $suppliers->with(['account', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->withQueryString();
+        $suppliers = $suppliers->with(['account', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
 
         $accountId = Account::where('name', 'الموردين')->first()->id;
         $supplierAccounts = Account::where('parent_id', $accountId)->get();
