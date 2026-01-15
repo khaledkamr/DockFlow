@@ -27,8 +27,7 @@
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if (
-                $transaction->containers->first()->invoices &&
+            @if ($transaction->containers->first()->invoices &&
                     $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
@@ -48,6 +47,45 @@
                 <i class="fas fa-edit me-1"></i>
                 تعديل المعاملة
             </button>
+            @if(auth()->user()->roles()->pluck('name')->contains('Admin'))
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
+                    data-bs-target="#deleteTransactionModal">
+                    <i class="fas fa-trash-can me-1"></i>
+                    حذف المعاملة
+                </button>
+            @endif
+        </div>
+    </div>
+
+    <!-- Delete Transaction Modal -->
+    <div class="modal fade" id="deleteTransactionModal" tabindex="-1" aria-labelledby="deleteTransactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title text-white fw-bold" id="deleteTransactionModalLabel">تأكيد حذف المعاملة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center text-dark">
+                    <i class="fas fa-exclamation-triangle text-danger fa-3x mb-3"></i>
+                    <p>هل أنت متأكد من حذف المعاملة <strong>{{ $transaction->code }}</strong>؟</p>
+                    <p class="text-muted small">سيتم حذف جميع الحاويات المرتبطة بهذه المعاملة.</p>
+                    @if ($transaction->items->where('is_posted', true)->count() > 0)
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-1"></i>
+                            تحذير: يوجد عدد {{ $transaction->items->where('is_posted', true)->count() }} بند مرحل في هذه المعاملة.
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    <form action="{{ route('transactions.delete', $transaction) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger fw-bold">حذف المعاملة</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

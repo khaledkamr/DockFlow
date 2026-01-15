@@ -123,6 +123,7 @@ Route::controller(TransactionController::class)->middleware('auth')->group(funct
     Route::post('/transactions/store', 'storeTransaction')->name('transactions.store');
     Route::patch('/transactions/update/{transaction:uuid}', 'updateTransaction')->name('transactions.update');
     Route::get('/transactions/{transaction:uuid}', 'transactionDetails')->name('transactions.details');
+    Route::delete('/transactions/delete/{transaction:uuid}', 'deleteTransaction')->name('transactions.delete');
     Route::post('/transactions/item/store', 'addTransactionItem')->name('transactions.item.store');
     Route::put('/transactions/item/update/{item:id}', 'updateTransactionItem')->name('transactions.item.update');
     Route::post('/transactions/item/post/{item:id}', 'postTransactionItem')->name('transactions.item.post');
