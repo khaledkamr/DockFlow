@@ -5,7 +5,7 @@
 @section('content')
     <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-2">
         <div>
-            <h2 class="h3 text-primary mb-1">
+            <h2 class="h3 mb-1">
                 <i class="fas fa-clipboard-list me-2 d-none d-md-inline"></i>
                 <span class="d-none d-md-inline">تفاصيل بوليصة التخزين {{ $policy->code }}</span>
                 <span class="d-inline d-md-none"> بوليصة {{ $policy->code }}</span>
@@ -14,10 +14,10 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $policy->customer->contract) }}"
-                                class="text-decoration-none">العقد #{{ $policy->customer->contract->id }}</a>
+                            <a href="{{ route('contracts.details', $policy->customer->contract) }}" target="_blank" class="text-decoration-none">
+                                <i class="fa-solid fa-link"></i> عقد {{ $policy->customer->name }}
+                            </a>
                         </li>
-                        <li class="breadcrumb-item active d-none d-md-inline" aria-current="page">البوليصة #{{ $policy->code }}</li>
                     </ol>
                 </nav>
             @endif
@@ -85,6 +85,13 @@
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">الرقم المرجعي</label>
+                                <input type="text" class="form-control border-primary" name="reference_number" value="{{ old('reference_number', $policy->reference_number) }}">
+                                @error('reference_number')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">البيان الضريبي</label>
@@ -216,12 +223,12 @@
                             <div class="fw-bold">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</div>
                         </div>
                         <div class="col-6 col-sm-4 col-lg-4">
-                            <label class="form-label text-muted small">البيان الضريبي</label>
-                            <div class="fw-bold">{{ $policy->tax_statement ?? 'N/A' }}</div>
+                            <label class="form-label text-muted small">الرقم المرجعي</label>
+                            <div class="fw-bold">{{ $policy->reference_number ?? 'N/A' }}</div>
                         </div>
                         <div class="col-6 col-sm-4 col-lg-4">
-                            <label class="form-label text-muted small">تم الإنشاء بواسطة</label>
-                            <div class="fw-bold">{{ $policy->made_by->name }}</div>
+                            <label class="form-label text-muted small">البيان الضريبي</label>
+                            <div class="fw-bold">{{ $policy->tax_statement ?? 'N/A' }}</div>
                         </div>
                     </div>
                 </div>
@@ -450,6 +457,12 @@
                 </div>
             @endif
         </div>
+    </div>
+
+    <div class="text-center mt-4 mb-5">
+        <small class="text-muted">
+            تم إنشاء هذه البوليصة بواسطة: <strong>{{ $policy->made_by->name }}</strong>
+        </small>
     </div>
 
     <script>

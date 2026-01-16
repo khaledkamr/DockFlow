@@ -11,7 +11,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن بوليصة:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن بوليصة بإسم العميل او بتاريخ البوليصة... "
+                        placeholder=" ابحث عن بوليصة بإسم العميل او بالرقم المرجعي... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>
@@ -62,6 +62,7 @@
                     <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                     <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">نوع البوليصة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الرقم المرجعي</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ البوليصة</th>
                     <th class="text-center bg-dark text-white text-nowrap">عدد الحاويات</th>
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
@@ -80,8 +81,7 @@
                         <tr>
                             <td class="text-center text-primary fw-bold">
                                 @if ($policy->type == 'تخزين')
-                                    <a href="{{ route('policies.storage.details', $policy) }}"
-                                        class="text-decoration-none">
+                                    <a href="{{ route('policies.storage.details', $policy) }}" class="text-decoration-none">
                                         {{ $policy->code }}
                                     </a>
                                 @elseif($policy->type == 'تسليم')
@@ -115,8 +115,13 @@
                                     <span class="badge status-waiting">{{ $policy->type }}</span>
                                 @endif
                             </td>
+                            <td class="text-center">{{ $policy->reference_number ?? 'N/A' }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                            <td class="text-center">{{ $policy->containers ? $policy->containers->count() : 0 }}</td>
+                            <td class="text-center">
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ $policy->containers ? $policy->containers->count() : 0 }}
+                                </span>
+                            </td>
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $policy->made_by) }}"
                                     class="text-dark text-decoration-none">
@@ -147,7 +152,7 @@
             </tbody>
         </table>
     </div>
-    
+
     <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
         <i class="fa-solid fa-arrows-left-right me-1"></i>
         اسحب الجدول لليمين أو اليسار لرؤية المزيد
@@ -160,7 +165,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -169,17 +174,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>

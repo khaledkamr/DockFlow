@@ -14,6 +14,7 @@ class PolicyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'reference_number' => 'nullable|string',
             'contract_id' => 'nullable',
             'customer_id' => 'required',
             'user_id' => 'required',

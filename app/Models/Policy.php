@@ -11,6 +11,8 @@ class Policy extends Model
     use BelongsToCompany, HasUuid;
     
     protected $fillable = [
+        'code',
+        'reference_number',
         'contract_id',
         'customer_id',
         'external_customer',
@@ -20,7 +22,6 @@ class Policy extends Model
         'driver_car',
         'car_code',
         'date',
-        'code',
         'type',
         'tax_statement',
         'storage_price',

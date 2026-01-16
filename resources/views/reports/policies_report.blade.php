@@ -15,6 +15,7 @@
                 <th>بوليصة التسليم</th>
                 <th>العميل</th>
                 <th>الحاوية</th>
+                <th>الرقم المرجعي</th>
                 <th>تاريخ الدخول</th>
                 <th>تاريخ الخروج</th>
                 <th>أيام التخزين</th>
@@ -49,6 +50,7 @@
                                 -
                             @endif
                         </td>
+                        <td class="text-center">{{ $policy->reference_number ?? '-' }}</td>
                         <td class="text-center">
                             @if($policy->containers->first())
                                 {{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') ?? '-' }}
@@ -74,6 +76,8 @@
                             @if($policy->containers->first())
                                 @if ($policy->containers->first()->invoices->where('type', 'تخزين')->first())
                                     {{ $policy->containers->first()->invoices->where('type', 'تخزين')->first()->code }}
+                                @elseif($policy->containers->first()->invoices->where('type', 'تخليص')->first())
+                                    {{ $policy->containers->first()->invoices->where('type', 'تخليص')->first()->code }}
                                 @elseif($policy->containers->first()->invoices->where('type', 'خدمات')->first())
                                     {{ $policy->containers->first()->invoices->where('type', 'خدمات')->first()->code }}
                                 @else

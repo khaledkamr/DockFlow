@@ -24,17 +24,14 @@
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}" data-id="{{ $customer->id }}"  data-account="{{ $customer->account ? $customer->account->code : null }}"
                             {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                            {{ $customer->name }}
+                            {{ $customer->name }} ({{ $customer->account ? $customer->account->code : '' }})
                         </option>
                     @endforeach
                 </select>
             </div>
             <input type="hidden" id="contract_id" name="contract_id">
             <input type="hidden" id="customer_id" name="customer_id">
-            <div class="col-6 col-md-6 col-lg-3">
-                <label class="form-label">رقــم العميــل</label>
-                <input type="text" class="form-control border-primary" id="customer_account" name="customer_account" value="{{ old('customer_account') }}" readonly>
-            </div>
+            
             <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">إســم السائق <span class="text-danger">*</span></label>
                 <input type="text" name="driver_name" class="form-control border-primary" value="{{  old('driver_name') }}">
@@ -49,7 +46,6 @@
                     <div class="text-danger">{{ $message }}</div>
                 @endif
             </div>
-
             <div class="col-6 col-md-6 col-lg-3">
                 <label class="form-label">رقم السائق</label>
                 <input type="text" class="form-control border-primary" name="driver_number" value="{{ old('driver_number') }}">
@@ -70,6 +66,10 @@
                 @error('car_code')
                     <div class="text-danger">{{ $message }}</div>
                 @endif
+            </div>
+            <div class="col-6 col-md-6 col-lg-3">
+                <label class="form-label">الرقم المرجعي</label>
+                <input type="text" class="form-control border-primary" id="reference_number" name="reference_number" value="{{ old('reference_number') }}">
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <label class="form-label">البيان الضريبي</label>
@@ -252,8 +252,6 @@
         $('#customer_id').val(id || '');
         let contract = $(this).find(':selected').data('contract');
         $('#contract_id').val(contract || '');
-        let account = $(this).find(':selected').data('account');
-        $('#customer_account').val(account || '');
 
         let contract_storage_price = 0;
         let contract_storage_duration = 0;

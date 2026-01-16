@@ -35,6 +35,7 @@ class PolicyController extends Controller
                     ->orWhereHas('customer', function($q) use ($search) {
                         $q->where('name', 'like', '%' . $search . '%');
                     })
+                    ->orWhere('reference_number', 'like', $search)
                     ->orWhere('date', 'like', '%' . $search . '%');
             });
         }
@@ -117,6 +118,7 @@ class PolicyController extends Controller
             'date' => 'required|date',
             'customer_id' => 'required',
             'tax_statement' => 'nullable',
+            'reference_number' => 'nullable|string',
             'driver_name' => 'required',
             'driver_NID' => 'required',
             'driver_number' => 'nullable',
@@ -424,6 +426,7 @@ class PolicyController extends Controller
         $to = $request->input('to', null);
         $type = $request->input('type', 'all');
         $invoiced = $request->input('invoiced', 'all');
+        $search = $request->input('search', null);
 
         if($from && $to) {
             $policies->whereBetween('date', [$from, $to]);
@@ -444,6 +447,19 @@ class PolicyController extends Controller
                     $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
                 });
             }
+        }
+        if($search) {
+            $policies->where(function($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('containers', function($q) use ($search) {
+                        $q->where('code', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('reference_number', 'like', $search)
+                    ->orWhere('date', 'like', '%' . $search . '%');
+            });
         }
 
         $policies = $policies->with(['customer', 'containers.invoices'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();

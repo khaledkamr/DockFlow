@@ -41,6 +41,20 @@ class PoliciesExport implements FromCollection, WithHeadings
                 });
             }
         }
+        if(!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', '%' . $search . '%')
+                    ->whereHas('customer', function($q2) use ($search) {
+                        $q2->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('containers', function($q) use ($search) {
+                        $q->where('code', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('reference_number', 'like', '%' . $search . '%')
+                    ->orWhere('date', 'like', '%' . $search . '%');
+            });
+        }
 
         $query->with(['customer', 'containers.invoices'])->orderBy('code');
 
@@ -66,12 +80,14 @@ class PoliciesExport implements FromCollection, WithHeadings
                     $invoice = '-';
                 }
             }
+
             return [
                 $policy->code,
                 $policy->type,
                 $receivePolicy,         
                 $policy->customer->name,
                 $policy->containers->first() ? $policy->containers->first()->code : '-',
+                $policy->reference_number ?? '-',
                 Carbon::parse($policy->containers->first()->date)->format('Y/m/d'),
                 $policy->containers->first()->exit_date ? Carbon::parse($policy->containers->first()->exit_date)->format('Y/m/d') : '-',
                 $storageDays,
@@ -88,6 +104,7 @@ class PoliciesExport implements FromCollection, WithHeadings
             'بوليصة التسليم',
             'العميل',
             'الحاوية',
+            'الرقم المرجعي',
             'تاريخ الدخول',
             'تاريخ الخروج',
             'أيام التخزين',

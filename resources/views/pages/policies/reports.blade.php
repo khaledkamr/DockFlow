@@ -65,7 +65,7 @@
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
         <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-2">
-            <div class="">
+            <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
@@ -76,6 +76,21 @@
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
                     @foreach (request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-primary" 
+                            placeholder="بحث برقم البوليصة أو بإسم العميل أو برقم الحاوية أو بالرقم المرجعي..." 
+                            value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                    @foreach (request()->except(['search', 'page']) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </form>
@@ -103,6 +118,7 @@
                 </form>
             </div>
         </div>
+
         <div class="table-container" id="tableContainer">
             <table class="table table-striped">
                 <thead>
@@ -113,6 +129,7 @@
                         <th class="text-center bg-dark text-white text-nowrap">بوليصة التسليم</th>
                         <th class="text-center bg-dark text-white text-nowrap">العميل</th>
                         <th class="text-center bg-dark text-white text-nowrap">الحاوية</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الرقم المرجعي</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
                         <th class="text-center bg-dark text-white text-nowrap">أيام التخزين</th>
@@ -172,6 +189,9 @@
                                     @else
                                         -
                                     @endif
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    {{ $policy->reference_number ?? '-' }}
                                 </td>
                                 <td class="text-center text-nowrap">
                                     @if($policy->containers->first())
