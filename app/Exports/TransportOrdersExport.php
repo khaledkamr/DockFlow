@@ -83,6 +83,7 @@ class TransportOrdersExport implements FromCollection, WithHeadings
                 $transportOrder->other_expenses,
                 $transportOrder->client_cost,
                 $transportOrder->total_cost,
+                $transportOrder->total_cost - $transportOrder->supplier_cost,
             ];
         });
     }
@@ -108,6 +109,7 @@ class TransportOrdersExport implements FromCollection, WithHeadings
             'مصروفات أخرى',
             'تكلفة العميل',
             'إجمالي التكلفة',
+            'صافي الربح',
         ];
     }
 }

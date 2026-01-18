@@ -89,6 +89,7 @@ class ShippingPoliciesExport implements FromCollection, WithHeadings
                 $policy->other_expenses,
                 $policy->customer_cost,
                 $policy->total_cost,
+                $policy->total_cost - $policy->supplier_cost,
                 $invoices ?: 'N/A'
             ];
         });
@@ -113,6 +114,7 @@ class ShippingPoliciesExport implements FromCollection, WithHeadings
             'مصروفات أخرى',
             'تكلفة العميل',
             'التكلفة الإجمالية',
+            'صافي الربح',
             'الفاتورة'
         ];
     }

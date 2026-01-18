@@ -126,6 +126,13 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="col-6 col-md-6 col-lg">
+                    <label class="form-label">صافي الربح</label>
+                    <select name="net_profit" id="net_profit" class="form-select border-primary">
+                        <option value="0" {{ request('net_profit') == '0' ? 'selected' : '' }}>إخفاء</option>
+                        <option value="1" {{ request('net_profit') == '1' ? 'selected' : '' }}>عرض</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row">
@@ -199,19 +206,27 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center bg-dark text-white text-nowrap">#</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المورد</th>
-                        <th class="text-center bg-dark text-white text-nowrap">السائق</th>
-                        <th class="text-center bg-dark text-white text-nowrap">السيارة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">البيان</th>
+                        <th class="text-center bg-dark text-white">#</th>
+                        <th class="text-center bg-dark text-white">رقم البوليصة</th>
+                        <th class="text-center bg-dark text-white">التاريخ</th>
+                        <th class="text-center bg-dark text-white">العميل</th>
+                        <th class="text-center bg-dark text-white">المورد</th>
+                        @if(request('net_profit') == '0')
+                            <th class="text-center bg-dark text-white">السائق</th>
+                            <th class="text-center bg-dark text-white">السيارة</th>
+                            <th class="text-center bg-dark text-white">البيان</th>
+                        @endif
                         <th class="text-center bg-dark text-white">مكان التحميل</th>
                         <th class="text-center bg-dark text-white">مكان التسليم</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
+                        <th class="text-center bg-dark text-white">الحالة</th>
+                        @if(request('net_profit') == '0')
+                            <th class="text-center bg-dark text-white">المبلغ</th>
+                        @elseif(request('net_profit') == '1')
+                            <th class="text-center bg-dark text-white">تكلفة المورد</th>
+                            <th class="text-center bg-dark text-white">سعر العميل</th>
+                            <th class="text-center bg-dark text-white">صافي الربح</th>
+                        @endif
+                        <th class="text-center bg-dark text-white">الفاتورة</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -222,12 +237,9 @@
                             </td>
                         </tr>
                     @else
-                        @php
-                            $index = 1;
-                        @endphp
                         @foreach ($policies as $policy)
                             <tr>
-                                <td class="text-center">{{ $index++ }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
                                     <a href="{{ route('shipping.policies.details', $policy) }}"
                                         class="text-decoration-none">
@@ -241,12 +253,14 @@
                                     </a>
                                 </td>
                                 <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
-                                <td class="text-center">
-                                    {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
-                                <td class="text-center">
-                                    {{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}
-                                </td>
-                                <td class="text-center">{{ $policy->goods->first()->description }}</td>
+                                @if(request('net_profit') == '0')
+                                    <td class="text-center">
+                                        {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
+                                    <td class="text-center">
+                                        {{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}
+                                    </td>
+                                    <td class="text-center">{{ $policy->goods->first()->description }}</td>
+                                @endif
                                 <td class="text-center">{{ $policy->from }}</td>
                                 <td class="text-center">{{ $policy->to }}</td>
                                 <td class="text-center">
@@ -256,7 +270,13 @@
                                         <div class="badge status-waiting">تحت التسليم</div>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ $policy->total_cost }}</td>
+                                @if(request('net_profit') == '0')
+                                    <td class="text-center">{{ $policy->total_cost }}</td>
+                                @elseif(request('net_profit') == '1')
+                                    <td class="text-center">{{ $policy->supplier_cost }}</td>
+                                    <td class="text-center">{{ $policy->total_cost }}</td>
+                                    <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost }}</td>
+                                @endif
                                 <td class="text-center">
                                     @if($policy->invoices->where('type', 'شحن')->isEmpty())
                                         -
@@ -269,6 +289,23 @@
                                 </td>
                             </tr>
                         @endforeach
+
+                        @if(request('net_profit') == '1')
+                            <tr class="table-primary fw-bold">
+                                <td colspan="7"></td>
+                                <td class="text-center">الإجمالي</td>
+                                <td class="text-center">
+                                    {{ $policies->sum('supplier_cost') }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $policies->sum('total_cost') }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $policies->sum('total_cost') - $policies->sum('supplier_cost') }}
+                                </td>
+                                <td></td>
+                            </tr>
+                        @endif
                     @endif
                 </tbody>
             </table>

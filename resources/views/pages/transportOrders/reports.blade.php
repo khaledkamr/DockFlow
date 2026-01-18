@@ -117,6 +117,13 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="col-6 col-md-6 col-lg">
+                    <label class="form-label">صافي الربح</label>
+                    <select name="net_profit" id="net_profit" class="form-select border-primary">
+                        <option value="0" {{ request('net_profit') == '0' ? 'selected' : '' }}>إخفاء</option>
+                        <option value="1" {{ request('net_profit') == '1' ? 'selected' : '' }}>عرض</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row">
@@ -189,18 +196,26 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center bg-dark text-white text-nowrap">#</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم الاشعار</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم المعاملة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المورد</th>
-                        <th class="text-center bg-dark text-white text-nowrap">السائق</th>
-                        <th class="text-center bg-dark text-white text-nowrap">السيارة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">البيان</th>
+                        <th class="text-center bg-dark text-white">#</th>
+                        <th class="text-center bg-dark text-white">رقم الاشعار</th>
+                        <th class="text-center bg-dark text-white">رقم المعاملة</th>
+                        <th class="text-center bg-dark text-white">التاريخ</th>
+                        <th class="text-center bg-dark text-white">العميل</th>
+                        <th class="text-center bg-dark text-white">المورد</th>
+                        @if(request('net_profit') == '0')
+                            <th class="text-center bg-dark text-white">السائق</th>
+                            <th class="text-center bg-dark text-white">السيارة</th>
+                            <th class="text-center bg-dark text-white">البيان</th>
+                        @endif
                         <th class="text-center bg-dark text-white">مكان التحميل</th>
                         <th class="text-center bg-dark text-white">مكان التسليم</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
+                        @if(request('net_profit') == '0')
+                            <th class="text-center bg-dark text-white">المبلغ</th>
+                        @elseif(request('net_profit') == '1')
+                            <th class="text-center bg-dark text-white">تكلفة المورد</th>
+                            <th class="text-center bg-dark text-white">سعر العميل</th>
+                            <th class="text-center bg-dark text-white">صافي الربح</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -233,25 +248,49 @@
                                     </a>
                                 </td>
                                 <td class="text-center">{{ $transportOrder->supplier->name ?? '-' }}</td>
-                                <td class="text-center">
-                                    {{ $transportOrder->supplier ? $transportOrder->driver_name : $transportOrder->driver->name ?? '-' }}</td>
-                                <td class="text-center">
-                                    {{ $transportOrder->supplier ? $transportOrder->vehicle_plate : $transportOrder->vehicle->plate_number ?? '-' }}
-                                </td>
-                                <td class="text-center fw-bold">
-                                    @if($transportOrder->containers->isEmpty())
-                                        -
-                                    @else
-                                        <a href="{{ route('container.details', $transportOrder->containers->first()) }}" class="text-decoration-none text-dark" target="_blank">
-                                            {{ $transportOrder->containers->first()->code }}
-                                        </a>
-                                    @endif
-                                </td>
+                                @if(request('net_profit') == '0')
+                                    <td class="text-center">
+                                        {{ $transportOrder->supplier ? $transportOrder->driver_name : $transportOrder->driver->name ?? '-' }}</td>
+                                    <td class="text-center">
+                                        {{ $transportOrder->supplier ? $transportOrder->vehicle_plate : $transportOrder->vehicle->plate_number ?? '-' }}
+                                    </td>
+                                    <td class="text-center fw-bold">
+                                        @if($transportOrder->containers->isEmpty())
+                                            -
+                                        @else
+                                            <a href="{{ route('container.details', $transportOrder->containers->first()) }}" class="text-decoration-none text-dark" target="_blank">
+                                                {{ $transportOrder->containers->first()->code }}
+                                            </a>
+                                        @endif
+                                    </td>
+                                @endif
                                 <td class="text-center">{{ $transportOrder->from }}</td>
                                 <td class="text-center">{{ $transportOrder->to }}</td>
-                                <td class="text-center">{{ $transportOrder->total_cost }}</td>
+                                @if(request('net_profit') == '0')
+                                    <td class="text-center">{{ $transportOrder->total_cost }}</td>
+                                @elseif(request('net_profit') == '1')
+                                    <td class="text-center">{{ $transportOrder->supplier_cost }}</td>
+                                    <td class="text-center">{{ $transportOrder->total_cost }}</td>
+                                    <td class="text-center fw-bold">{{ $transportOrder->total_cost - $transportOrder->supplier_cost }}</td>
+                                @endif
                             </tr>
                         @endforeach
+
+                        @if(request('net_profit') == '1')
+                            <tr class="table-primary fw-bold">
+                                <td colspan="7"></td>
+                                <td class="text-center">الإجمالي</td>
+                                <td class="text-center">
+                                    {{ $transportOrders->sum('supplier_cost') }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $transportOrders->sum('total_cost') }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $transportOrders->sum('total_cost') - $transportOrders->sum('supplier_cost') }}
+                                </td>
+                            </tr>
+                        @endif
                     @endif
                 </tbody>
             </table>
