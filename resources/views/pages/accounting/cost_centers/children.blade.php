@@ -122,7 +122,7 @@
                     <form action="{{ route('cost.centers.update', $child->id) }}" method="POST"
                         onsubmit="saveTreeState()">
                         @csrf
-                        @method('PATCH')
+                        @method('PUT')
                         <div class="modal-body text-dark">
                             <div class="mb-3">
                                 <label for="name" class="form-label">اسم مركز التكلفة</label>
