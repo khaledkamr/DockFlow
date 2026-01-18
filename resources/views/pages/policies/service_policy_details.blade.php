@@ -392,6 +392,12 @@
         </div>
     </div>
 
+    <div class="text-center mt-4">
+        <small class="text-muted">
+            تم إنشاء هذه البوليصة بواسطة <strong>{{ $policy->made_by->name }}</strong>
+        </small>
+    </div>
+
     <style>
         .bg-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;

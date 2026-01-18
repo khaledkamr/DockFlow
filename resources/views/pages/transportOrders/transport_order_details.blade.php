@@ -457,6 +457,12 @@
     </div>
 </div>
 
+<div class="text-center mt-4">
+    <small class="text-muted">
+        تم إنشاء هذا الإشعار بواسطة <strong>{{ $transportOrder->made_by->name }}</strong>
+    </small>
+</div>
+
 <script>
     $('#editTransportOrderModal').on('shown.bs.modal', function () {
         $('#driver_id').select2({

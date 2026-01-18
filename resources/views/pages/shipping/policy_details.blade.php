@@ -531,6 +531,12 @@
         </div>
     </div>
 
+    <div class="text-center mt-4">
+        <small class="text-muted">
+            تم إنشاء هذه البوليصة بواسطة <strong>{{ $policy->made_by->name }}</strong>
+        </small>
+    </div>
+
     <script>
         $('#customer_id').select2({
             placeholder: "ابحث عن إسم العميل...",
