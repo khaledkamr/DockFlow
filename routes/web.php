@@ -305,6 +305,7 @@ Route::controller(CostCenterController::class)->middleware('auth')->group(functi
 Route::controller(ExportController::class)->group(function () {
     Route::post('/print/{reportType}', 'print')->name('print');
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');
+    Route::get('/print/containers/report', 'printContainersReport')->name('print.containers.report');
     Route::get('/print/policies/report', 'printPoliciesReport')->name('print.policies.report');
     Route::get('/print/invoice/{code}', 'printInvoice')->name('print.invoice');
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');

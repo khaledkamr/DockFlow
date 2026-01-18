@@ -410,6 +410,7 @@ class TransportController extends Controller
         $loading_location = $request->input('loading_location', 'all');
         $delivery_location = $request->input('delivery_location', 'all');
         $perPage = $request->input('per_page', 100);
+        $search = $request->input('search', null);
 
         if($customer && $customer != 'all') {
             $transportOrders->where('customer_id', $customer);
@@ -437,6 +438,19 @@ class TransportController extends Controller
         }
         if($delivery_location && $delivery_location != 'all') {
             $transportOrders->where('to', $delivery_location);
+        }
+        if ($search) {
+            $transportOrders->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('transaction', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('containers', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhere('date', 'like', '%' . $search . '%');
         }
 
         $transportOrders = $transportOrders->with(['customer', 'driver', 'vehicle', 'supplier', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();

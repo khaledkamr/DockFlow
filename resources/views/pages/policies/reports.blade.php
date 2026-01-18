@@ -84,7 +84,7 @@
                 <form method="GET" action="">
                     <div class="input-group">
                         <input type="text" name="search" class="form-control border-primary" 
-                            placeholder="بحث برقم البوليصة أو بإسم العميل أو برقم الحاوية أو بالرقم المرجعي..." 
+                            placeholder="ابحث عن بوليصة برقم البوليصة أو بإسم العميل أو برقم الحاوية أو بالرقم المرجعي..." 
                             value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-search"></i>

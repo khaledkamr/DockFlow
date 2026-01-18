@@ -64,7 +64,11 @@
                                     {{ $transaction->customer->name }}
                                 </a>
                             </td>
-                            <td class="text-center fw-bold">{{ $transaction->containers->count() }}</td>
+                            <td class="text-center">
+                                <span class="badge rounded-circle bg-primary">
+                                    {{ $transaction->containers->count() }}
+                                </span>
+                            </td>
                             <td class="text-center">
                                 @if ($transaction->status == 'مغلقة')
                                     <span class="badge status-delivered">مغلقة</span>

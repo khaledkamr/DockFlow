@@ -6,7 +6,7 @@
     <h1 class="mb-4">الفواتير</h1>
 
     <div class="row g-3 mb-4">
-        <div class="col-12 col-md-5">
+        <div class="col-12 col-md-9">
             <form method="GET" action="" class="d-flex flex-column">
                 <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
                 <div class="d-flex">
@@ -17,29 +17,6 @@
                         <span>بحث</span>
                         <i class="fa-solid fa-magnifying-glass ms-2"></i>
                     </button>
-                </div>
-            </form>
-        </div>
-        <div class="col-6 col-md-4">
-            <form method="GET" action="" class="d-flex flex-column">
-                <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب طريقــة الدفــع:</label>
-                <label class="form-label text-dark fw-bold d-inline d-md-none">طريقــة الدفــع:</label>
-                <div class="d-flex">
-                    <select name="paymentMethod" class="form-select border-primary" onchange="this.form.submit()">
-                        <option value="all"
-                            {{ request()->query('paymentMethod') === 'all' || !request()->query('paymentMethod') ? 'selected' : '' }}>
-                            جميع الطرق</option>
-                        <option value="آجل" {{ request()->query('paymentMethod') === 'آجل' ? 'selected' : '' }}>
-                            آجل</option>
-                        <option value="تحويل بنكي"
-                            {{ request()->query('paymentMethod') === 'تحويل بنكي' ? 'selected' : '' }}>
-                            تحويل بنكي</option>
-                        <option value="كاش" {{ request()->query('paymentMethod') === 'كاش' ? 'selected' : '' }}>
-                            كاش</option>
-                    </select>
-                    @foreach (request()->except('paymentMethod') as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
                 </div>
             </form>
         </div>

@@ -5,7 +5,7 @@
 @section('content')
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-2">
         <div>
-            <h2 class="h3 text-primary mb-1">
+            <h2 class="h3 mb-1">
                 <i class="fas fa-clipboard-list me-2 d-none d-md-inline"></i>
                 <span class="d-none d-md-inline">تفاصيل المعاملة {{ $transaction->code }}</span>
                 <span class="d-inline d-md-none">المعاملة {{ $transaction->code }}</span>
@@ -19,8 +19,9 @@
                 <ol class="breadcrumb">
                     @if ($transaction->customer->contract)
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $transaction->customer->contract) }}"
-                                class="text-decoration-none">عقد {{ $transaction->customer->name }}</a>
+                            <a href="{{ route('contracts.details', $transaction->customer->contract) }}" target="_blank" class="text-decoration-none">
+                                <i class="fas fa-link"></i> عقد {{ $transaction->customer->name }}
+                            </a>
                         </li>
                     @endif
                 </ol>
@@ -1001,9 +1002,9 @@
         </div>
     </div>
 
-    <div class="text-center mt-4 mb-5">
+    <div class="text-center mt-4">
         <small class="text-muted">
-            تم إنشاء هذه المعاملة بواسطة: {{ $transaction->made_by->name }}
+            تم إنشاء هذه المعاملة بواسطة <strong>{{ $transaction->made_by->name }}</strong>
         </small>
     </div>
 

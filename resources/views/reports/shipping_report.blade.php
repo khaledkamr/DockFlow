@@ -13,7 +13,6 @@
                 <th>رقم البوليصة</th>
                 <th>التاريخ</th>
                 <th>العميل</th>
-                <th>نوع الناقل</th>
                 <th>المورد</th>
                 <th>السائق</th>
                 <th>السيارة</th>
@@ -36,10 +35,9 @@
                 @foreach ($policies as  $policy)
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center text-primary fw-bold">{{ $policy->code }}</td>
+                        <td class="text-center fw-bold">{{ $policy->code }}</td>
                         <td class="text-center">{{ (Carbon\Carbon::parse($policy->date)->format('Y/m/d')) }}</td>
                         <td class="text-center">{{ $policy->customer->name }}</td>
-                        <td class="text-center">{{ $policy->type }}</td>
                         <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
                         <td class="text-center">{{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
                         <td class="text-center">{{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}</td>

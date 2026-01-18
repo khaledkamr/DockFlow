@@ -132,9 +132,8 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
-        <div
-            class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-            <div class="">
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+            <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
@@ -145,6 +144,21 @@
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
                     @foreach (request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-primary" 
+                            placeholder="ابحث عن إشعار برقم الإشعار او بإسم العميل او برقم الحاوية..." 
+                            value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                    @foreach (request()->except(['search', 'page']) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </form>
@@ -180,14 +194,12 @@
                         <th class="text-center bg-dark text-white text-nowrap">رقم المعاملة</th>
                         <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
                         <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">نوع الناقل</th>
                         <th class="text-center bg-dark text-white text-nowrap">المورد</th>
                         <th class="text-center bg-dark text-white text-nowrap">السائق</th>
                         <th class="text-center bg-dark text-white text-nowrap">السيارة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحاوية</th>
+                        <th class="text-center bg-dark text-white text-nowrap">البيان</th>
                         <th class="text-center bg-dark text-white">مكان التحميل</th>
                         <th class="text-center bg-dark text-white">مكان التسليم</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
                         <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                     </tr>
                 </thead>
@@ -220,7 +232,6 @@
                                         {{ $transportOrder->customer->name }}
                                     </a>
                                 </td>
-                                <td class="text-center">{{ $transportOrder->type }}</td>
                                 <td class="text-center">{{ $transportOrder->supplier->name ?? '-' }}</td>
                                 <td class="text-center">
                                     {{ $transportOrder->supplier ? $transportOrder->driver_name : $transportOrder->driver->name ?? '-' }}</td>
@@ -238,13 +249,6 @@
                                 </td>
                                 <td class="text-center">{{ $transportOrder->from }}</td>
                                 <td class="text-center">{{ $transportOrder->to }}</td>
-                                <td class="text-center">
-                                    @if(!$transportOrder->is_received)
-                                        <div class="badge status-waiting">تحت التسليم</div>
-                                    @else
-                                        <div class="badge status-delivered">تم التسليم</div>
-                                    @endif
-                                </td>
                                 <td class="text-center">{{ $transportOrder->total_cost }}</td>
                             </tr>
                         @endforeach

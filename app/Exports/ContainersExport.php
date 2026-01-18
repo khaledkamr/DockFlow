@@ -23,7 +23,6 @@ class ContainersExport implements FromCollection, WithHeadings
         if (!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to'],]);
         }
-
         if(!empty($this->filters['status']) && $this->filters['status'] !== 'all') {
             if($this->filters['status'] == 'متأخر') {
                 $query->where('status', 'في الساحة')
@@ -35,21 +34,28 @@ class ContainersExport implements FromCollection, WithHeadings
                 $query->where('status', $this->filters['status']);
             }
         }
-        
         if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
             $query->where('container_type_id', $this->filters['type']);
         }
-
         if(!empty($this->filters['customer']) && $this->filters['customer'] !== 'all') {
             $query->where('customer_id', $this->filters['customer']);
         }
-
         if (!empty($this->filters['invoiced']) && $this->filters['invoiced'] !== 'all') {
             if ($this->filters['invoiced'] == 'مع فاتورة') {
                 $query->whereHas('invoices');
             } elseif ($this->filters['invoiced'] == 'بدون فاتورة') {
                 $query->whereDoesntHave('invoices');
             }
+        }
+        if(!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('code', 'LIKE', "%$search%")
+                    ->orWhere('location', 'LIKE', "%$search%")
+                    ->orWhereHas('customer', function ($q2) use ($search) {
+                        $q2->where('name', 'LIKE', "%$search%");
+                    });
+            });
         }
 
         $query->with(['customer', 'containerType', 'invoices']);

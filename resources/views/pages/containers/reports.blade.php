@@ -76,7 +76,7 @@
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
         <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-            <div class="">
+            <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
@@ -87,6 +87,21 @@
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
                     @foreach (request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-primary" 
+                            placeholder="ابحث عن حاوية برقم الحاوية أو بإسم العميل أو بالموقع..." 
+                            value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                    @foreach (request()->except(['search', 'page']) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </form>
@@ -102,7 +117,7 @@
                     </button>
                 </form>
 
-                <form action="{{ route('print', 'containers') }}" method="POST" target="_blank">
+                <form action="{{ route('print.containers.report') }}" method="GET" target="_blank">
                     @csrf
                     @foreach(request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
@@ -121,7 +136,7 @@
                         <th class="text-center bg-dark text-white text-nowrap">#</th>
                         <th class="text-center bg-dark text-white text-nowrap">رقم الحاويــة</th>
                         <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الفئـــة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">النوع</th>
                         <th class="text-center bg-dark text-white text-nowrap">الموقــع</th>
                         <th class="text-center bg-dark text-white text-nowrap">الحالـــة</th>
                         <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>

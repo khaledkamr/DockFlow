@@ -11,7 +11,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن إشعار:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن إشعار برقم الإشعار او بإسم العميل او بالتاريخ او برقم الحاوية... "
+                        placeholder=" ابحث عن إشعار برقم الإشعار او بإسم العميل او برقم الحاوية... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>
@@ -34,10 +34,12 @@
                 <tr>
                     <th class="text-center bg-dark text-white text-nowrap">رقم الإشعار</th>
                     <th class="text-center bg-dark text-white text-nowrap">رقم المعاملة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">نوع الناقل</th>
                     <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ الإشعار</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
@@ -63,6 +65,11 @@
                                     {{ $order->transaction->code }}
                                 </a>
                             </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge {{ $order->type === 'ناقل داخلي' ? 'status-available' : 'status-danger' }}">
+                                    {{ $order->type }}
+                                </span>
+                            </td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $order->customer) }}"
                                     class="text-dark text-decoration-none fw-bold">
@@ -77,6 +84,13 @@
                             </td>
                             <td class="text-center fw-bold">
                                 <i class="fas fa-map-marker-alt text-danger"></i>{{ $order->to }}
+                            </td>
+                            <td class="text-center text-nowrap">
+                                @if ($order->is_received)
+                                    <span class="badge status-delivered">تم التسليم</span>
+                                @else
+                                    <span class="badge status-waiting">في الانتظار</span>
+                                @endif
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $order->made_by) }}"

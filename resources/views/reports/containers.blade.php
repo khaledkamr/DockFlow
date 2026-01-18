@@ -10,13 +10,14 @@
         <thead class="table-dark">
             <tr class="text-center">
                 <th>#</th>
-                <th>كود الحاويــة</th>
-                <th>صاحــب الحاويــة</th>
-                <th>الفئـــة</th>
+                <th>رقم الحاويــة</th>
+                <th>العميل</th>
+                <th>النوع</th>
                 <th>الموقــع</th>
                 <th>الحالـــة</th>
                 <th>تاريخ الدخول</th>
                 <th>تاريخ الخروج</th>
+                <th>الفاتورة</th>
             </tr>
         </thead>
         <tbody>
@@ -35,22 +36,19 @@
                         <td class="text-center">{{ $container->containerType->name }}</td>
                         <td class="text-center">{{ $container->location ?? '-' }}</td>
                         <td class="text-center">
-                            @if($container->status == 'في الساحة')
-                                <div class="status-available">{{ $container->status }}</div>
-                            @elseif($container->status == 'تم التسليم')
-                                <div class="status-delivered">{{ $container->status }}</div>
-                            @elseif($container->status == 'متأخر')
-                                <div class="status-danger">{{ $container->status }}</div>
-                            @elseif($container->status == 'خدمات')
-                                <div class="status-waiting">{{ $container->status }}</div>
-                            @elseif($container->status == 'في الميناء')
-                                <div class="status-info">{{ $container->status }}</div>
-                            @elseif($container->status == 'قيد النقل')
-                                <div class="status-purple">{{ $container->status }}</div>
+                            {{ $container->status }}
+                        </td>
+                        <td class="text-center">{{ $container->date ? Carbon\Carbon::parse($container->date)->format('Y/m/d') : '-' }}</td>
+                        <td class="text-center">{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}</td>
+                        <td class="text-center">
+                            @if ($container->invoices->isNotEmpty())
+                                @foreach ($container->invoices as $invoice)
+                                    <span class="fw-bold">{{ $invoice->code }}</span>
+                                @endforeach
+                            @else
+                                -
                             @endif
                         </td>
-                        <td class="text-center">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') ?? '-' }}</td>
-                        <td class="text-center">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') ?? '-' }}</td>
                     </tr>
                 @endforeach
             @endif

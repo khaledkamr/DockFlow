@@ -27,14 +27,9 @@ class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
         $invoices = Invoice::query();
-
-        $methodFilter = request()->query('paymentMethod');
         $paymentFilter = request()->query('isPaid');
         $search = $request->input('search', null);
 
-        if ($methodFilter && $methodFilter !== 'all') {
-            $invoices->where('payment_method', $methodFilter);
-        }
         if ($paymentFilter && $paymentFilter !== 'all') {
             $invoices->where('isPaid', $paymentFilter);
         }
@@ -989,6 +984,7 @@ class InvoiceController extends Controller
         $payment_method = $request->input('payment_method', 'all');
         $is_posted = $request->input('is_posted', 'all');
         $perPage = $request->input('per_page', 100);
+        $search = $request->input('search', null);
 
         if($customer !== 'all') {
             $invoices->where('customer_id', $customer);
@@ -1008,6 +1004,14 @@ class InvoiceController extends Controller
         }
         if($is_posted !== 'all') {
             $invoices->where('is_posted', $is_posted == 'true' ? true : false);
+        }
+        if($search) {
+            $invoices->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%$search%");
+                  })->orWhere('date', 'like', "%$search%");
+            });
         }
 
         $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();

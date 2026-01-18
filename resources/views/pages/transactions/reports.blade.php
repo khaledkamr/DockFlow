@@ -69,9 +69,8 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-5">
-        <div
-            class="d-flex flex-row justify-content-between align-items-center gap-2 mb-3">
-            <div class="">
+        <div class="d-flex flex-row justify-content-between align-items-center gap-2 mb-3">
+            <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
@@ -82,6 +81,21 @@
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
                     @foreach (request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-primary" 
+                            placeholder="ابحث عن معاملة برقم المعاملة أو برقم البوليصة  أو بالبيان الجمركي أو بإسم العميل أو برقم الحاوية..." 
+                            value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                    @foreach (request()->except(['search', 'page']) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </form>

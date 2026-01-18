@@ -21,11 +21,11 @@ class PoliciesExport implements FromCollection, WithHeadings
     {
         $query = Policy::query()->whereIn('type', ['تخزين', 'خدمات']);
         
-        if(!empty($this->filters['customer']) && $this->filters['customer'] !== 'all') {
-            $query->where('customer_id', $this->filters['customer']);
-        }
         if(!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to']]);
+        }
+        if(!empty($this->filters['customer']) && $this->filters['customer'] !== 'all') {
+            $query->where('customer_id', $this->filters['customer']);
         }
         if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
             $query->where('type', $this->filters['type']);
@@ -45,11 +45,11 @@ class PoliciesExport implements FromCollection, WithHeadings
             $search = $this->filters['search'];
             $query->where(function($q) use ($search) {
                 $q->where('code', 'like', '%' . $search . '%')
-                    ->whereHas('customer', function($q2) use ($search) {
+                    ->orWhereHas('customer', function($q2) use ($search) {
                         $q2->where('name', 'like', '%' . $search . '%');
                     })
-                    ->orWhereHas('containers', function($q) use ($search) {
-                        $q->where('code', 'like', '%' . $search . '%');
+                    ->orWhereHas('containers', function($q3) use ($search) {
+                        $q3->where('code', 'like', '%' . $search . '%');
                     })
                     ->orWhere('reference_number', 'like', '%' . $search . '%')
                     ->orWhere('date', 'like', '%' . $search . '%');

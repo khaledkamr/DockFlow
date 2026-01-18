@@ -8,7 +8,7 @@
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
         <form method="GET" id="reportForm">
             <div class="row g-3 mb-3">
-                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                <div class="col-12 col-sm-6 col-md-3">
                     <label class="form-label">العميل</label>
                     <select name="customer" id="customer_id" class="form-select border-primary">
                         <option value="all" {{ request('customer') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -20,18 +20,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-sm-6 col-md-4 col-lg-2">
+                <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">من تاريخ</label>
                     <input type="date" name="from"
                         value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-6 col-sm-6 col-md-4 col-lg-2">
+                <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">إلى تاريخ</label>
                     <input type="date" name="to" value="{{ request('to', now()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
-                <div class="col-6 col-sm-6 col-md-4 col-lg-2">
+                <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">نوع الفاتورة</label>
                     <select name="type" class="form-select border-primary">
                         <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -42,7 +42,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-sm-6 col-md-4 col-lg-2">
+                <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">طريقة الدفع</label>
                     <select name="payment_method" class="form-select border-primary">
                         <option value="all" {{ request('payment_method') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -52,7 +52,7 @@
                             بنكي</option>
                     </select>
                 </div>
-                <div class="col-6 col-sm-6 col-md-4 col-lg-2">
+                <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">الترحيل</label>
                     <select name="is_posted" class="form-select border-primary">
                         <option value="all" {{ request('is_posted') == 'all' ? 'selected' : '' }}>الكل</option>
@@ -76,9 +76,8 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-5">
-        <div
-            class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-            <div class="">
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+            <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
@@ -88,6 +87,21 @@
                         <option value="500" {{ $perPage == 500 ? 'selected' : '' }}>500</option>
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
+                </form>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-primary" 
+                            placeholder="ابحث عن فاتورة بالرقم او بإسم العميل او بتاريخ الفاتورة..." 
+                            value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                    @foreach (request()->except(['search', 'page']) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                 </form>
             </div>
             <div class="d-flex gap-2">

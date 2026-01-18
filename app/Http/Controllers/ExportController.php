@@ -24,6 +24,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
+use App\Models\Container_type;
+use App\Models\Customer;
 use App\Models\ExpenseInvoice;
 use App\Models\InvoiceStatement;
 use App\Models\Policy;
@@ -94,26 +96,6 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('طباعة قيود يومية', "تم طباعة قيود يومية بتصفية: ", $filters);
             return view('reports.journal_entries', compact('entries', 'company', 'from', 'to'));
-        } elseif ($reportType == 'containers') {
-            $status = $request->input('status');
-            $customer = $request->input('customer');
-
-            $containers = Container::orderBy('id', 'desc')->get();
-            if($from && $to) {
-                $containers = $containers->whereBetween('date', [$from, $to]);
-            }
-            if($status && $status !== 'all') {
-                $containers = $containers->where('status', $status);
-            }
-            if($type && $type !== 'all') {
-                $containers = $containers->where('container_type_id', $type);
-            }
-            if($customer && $customer !== 'all') {
-                $containers = $containers->where('customer_id', $customer);
-            }
-            $filters = $request->all();
-            logActivity('طباعة تقرير حاويات', "تم طباعة تقرير الحاويات بتصفية: ", $filters);
-            return view('reports.containers', compact('company', 'containers', 'from', 'to', 'status', 'type', 'customer'));
         } elseif ($reportType == 'entry_permission') {
             $policyContainers = [];
             foreach($request->containers as $container) {
@@ -165,6 +147,60 @@ class ExportController extends Controller
         return view('reports.contract', compact('contract', 'company', 'months', 'days'));
     }
 
+    public function printContainersReport(Request $request) {
+        $containers = Container::query();
+
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $status = $request->input('status', 'all');
+        $type = $request->input('type', 'all');
+        $customer = $request->input('customer', 'all');
+        $invoiced = $request->input('invoiced', 'all');
+        $search = $request->input('search', null);
+
+        if($to && $from) {
+            $containers->whereBetween('date', [$from, $to]);
+        }
+        if($status !== 'all') {
+            if($status == 'متأخر') {
+                $containers->where('status', 'في الساحة')
+                    ->whereHas('policies', function ($q) {
+                        $q->where('type', 'تخزين')
+                            ->whereRaw('DATEDIFF(NOW(), containers.date) > policies.storage_duration');
+                    });
+            } else {
+                $containers->where('status', $status);
+            }
+        }
+        if($type !== 'all') {
+            $containers->where('container_type_id', $type);
+        }
+        if($customer !== 'all') {
+            $containers->where('customer_id', $customer);
+        }
+        if($invoiced !== 'all') {
+            if($invoiced == 'مع فاتورة') {
+                $containers->whereHas('invoices');
+            } elseif($invoiced == 'بدون فاتورة') {
+                $containers->whereDoesntHave('invoices');
+            }
+        }
+        if($search) {
+            $containers->where(function($query) use ($search) {
+                $query->where('code', 'like', "%$search%")
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })->orWhere('location', 'like', "%$search%");
+            });
+        }
+
+        $containers = $containers->with(['customer', 'containerType', 'invoices'])->orderBy('date')->get();
+        $filters = $request->all();
+        logActivity('طباعة تقرير حاويات', "تم طباعة تقرير الحاويات بتصفية: ", $filters);
+
+        return view('reports.containers', compact('containers', 'from', 'to'));
+    }
+
     public function printPoliciesReport(Request $request) {
         $types = ['تخزين', 'خدمات'];
         $policies = Policy::query()->whereIn('type', $types);
@@ -174,6 +210,7 @@ class ExportController extends Controller
         $to = $request->input('to', null);
         $type = $request->input('type', 'all');
         $invoiced = $request->input('invoiced', 'all');
+        $search = $request->input('search', null);
 
         if($from && $to) {
             $policies->whereBetween('date', [$from, $to]);
@@ -194,6 +231,19 @@ class ExportController extends Controller
                     $query->whereIn('type', ['تخزين', 'خدمات']);
                 });
             }
+        }
+        if($search) {
+            $policies->where(function($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('containers', function($q) use ($search) {
+                        $q->where('code', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('reference_number', 'like', $search)
+                    ->orWhere('date', 'like', '%' . $search . '%');
+            });
         }
 
         $policies = $policies->with('customer', 'containers.invoices')->orderBy('code')->get();
@@ -334,11 +384,7 @@ class ExportController extends Controller
         return view('reports.shipping_invoice', compact('company', 'invoice', 'discountValue', 'hatching_total', 'qrCode'));
     }
 
-    public function printInvoiceStatement($code) {
-        // if(Gate::denies('طباعة فاتورة')) {
-        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لطباعة الفواتير');
-        // }
-        
+    public function printInvoiceStatement($code) {     
         $invoiceStatement = InvoiceStatement::where('code', $code)->first();
         $company = $invoiceStatement->company;
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
@@ -362,8 +408,7 @@ class ExportController extends Controller
     }
 
     public function printShippingReports(Request $request) {
-        $policies = ShippingPolicy::all();
-        $company = Auth::user()->company;
+        $policies = ShippingPolicy::query();
 
         $customer = $request->input('customer', 'all');
         $from = $request->input('from', null);
@@ -376,54 +421,63 @@ class ExportController extends Controller
         $vehicle = $request->input('vehicle', 'all');
         $loading_location = $request->input('loading_location', 'all');
         $delivery_location = $request->input('delivery_location', 'all');
+        $search = $request->input('search', null);
 
-       if($customer && $customer != 'all') {
-            $policies = $policies->where('customer_id', $customer);
+        if($customer && $customer != 'all') {
+            $policies->where('customer_id', $customer);
         }
         if($from) {
-            $policies = $policies->where('date', '>=', $from);
+            $policies->where('date', '>=', $from);
         }
         if($to) {
-            $policies = $policies->where('date', '<=', $to);
+            $policies->where('date', '<=', $to);
         }
         if($type && $type != 'all') {
-            $policies = $policies->where('type', $type);
+            $policies->where('type', $type);
         }
         if($status && $status != 'all') {
-            $policies = $policies->where('is_received', $status == 'تم التسليم' ? true : false);
+            $policies->where('is_received', $status == 'تم التسليم' ? true : false);
         }
         if($invoice_status && $invoice_status != 'all') {
-            $policies = $policies->filter(function($policy) use ($invoice_status) {
-                $invoice = $policy->invoices->filter(function($invoice) {
-                    return $invoice->type == 'شحن';
-                })->isEmpty();
-                if($invoice_status == 'with_invoice') {
-                    return $invoice == false;
-                } elseif($invoice_status == 'without_invoice') {
-                    return $invoice;
-                }
-            });
+            if($invoice_status == 'with_invoice') {
+                $policies->whereHas('invoices');
+            } elseif($invoice_status == 'without_invoice') {
+                $policies->whereDoesntHave('invoices');
+            }
         }
         if($supplier && $supplier != 'all') {
-            $policies = $policies->where('supplier_id', $supplier);
+            $policies->where('supplier_id', $supplier);
         }
         if($driver && $driver != 'all') {
-            $policies = $policies->where('driver_id', $driver);
+            $policies->where('driver_id', $driver);
         }
         if($vehicle && $vehicle != 'all') {
-            $policies = $policies->where('vehicle_id', $vehicle);
+            $policies->where('vehicle_id', $vehicle);
         }
         if($loading_location && $loading_location != 'all') {
-            $policies = $policies->where('from', $loading_location);
+            $policies->where('from', $loading_location);
         }
         if($delivery_location && $delivery_location != 'all') {
-            $policies = $policies->where('to', $delivery_location);
+            $policies->where('to', $delivery_location);
         }
+        if($search) {
+            $policies->where(function($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('goods', function($q) use ($search) {
+                        $q->where('description', 'like', '%' . $search . '%');
+                    });
+            });
+        }
+
+        $policies = $policies->with(['customer', 'made_by'])->orderBy('code')->get();
 
         $filters = $request->all();
         logActivity('طباعة تقرير بوالص الشحن', "تم طباعة تقرير بوالص الشحن بتصفية: ", $filters);
 
-        return view('reports.shipping_report', compact('company', 'policies', 'from', 'to'));
+        return view('reports.shipping_report', compact('policies', 'from', 'to'));
     }
 
     public function printTransactionReports(Request $request) {
@@ -435,6 +489,7 @@ class ExportController extends Controller
         $to = $request->input('to', null);
         $status = $request->input('status', 'all');
         $invoice_status = $request->input('invoice_status', 'all');
+        $search = $request->input('search', null);
 
         if($customer_id !== 'all') {
             $transactions = $transactions->where('customer_id', $customer_id);
@@ -463,6 +518,18 @@ class ExportController extends Controller
                 });
             }
         }
+        if($search) {
+            $transactions->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhere('customs_declaration', 'like', '%' . $search . '%')
+                ->orWhere('policy_number', 'like', '%' . $search . '%')
+                ->orWhereHas('containers', function ($query) use ($search) {
+                    $query->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereDate('date', 'like', '%' . $search . '%');
+        }
 
         $filters = $request->all();
         logActivity('طباعة تقرير معاملات التخليص', "تم طباعة تقرير معاملات التخليص بتصفية: ", $filters);
@@ -471,8 +538,7 @@ class ExportController extends Controller
     }
 
     public function printTransportOrderReports(Request $request) {
-        $transportOrders = TransportOrder::all();
-        $company = Auth::user()->company;
+        $transportOrders = TransportOrder::query();
 
         $customer = $request->input('customer', 'all');
         $from = $request->input('from', null);
@@ -483,72 +549,98 @@ class ExportController extends Controller
         $vehicle = $request->input('vehicle', 'all');
         $loading_location = $request->input('loading_location', 'all');
         $delivery_location = $request->input('delivery_location', 'all');
+        $search = $request->input('search', null);
 
         if($customer && $customer != 'all') {
-            $transportOrders = $transportOrders->where('customer_id', $customer);
+            $transportOrders->where('customer_id', $customer);
         }
         if($from) {
-            $transportOrders = $transportOrders->where('date', '>=', $from);
+            $transportOrders->where('date', '>=', $from);
         }
         if($to) {
-            $transportOrders = $transportOrders->where('date', '<=', $to);
+            $transportOrders->where('date', '<=', $to);
         }
         if($type && $type != 'all') {
-            $transportOrders = $transportOrders->where('type', $type);
+            $transportOrders->where('type', $type);
         }
         if($supplier && $supplier != 'all') {
-            $transportOrders = $transportOrders->where('supplier_id', $supplier);
+            $transportOrders->where('supplier_id', $supplier);
         }
         if($driver && $driver != 'all') {
-            $transportOrders = $transportOrders->where('driver_id', $driver);
+            $transportOrders->where('driver_id', $driver);
         }
         if($vehicle && $vehicle != 'all') {
-            $transportOrders = $transportOrders->where('vehicle_id', $vehicle);
+            $transportOrders->where('vehicle_id', $vehicle);
         }
         if($loading_location && $loading_location != 'all') {
-            $transportOrders = $transportOrders->where('from', $loading_location);
+            $transportOrders->where('from', $loading_location);
         }
         if($delivery_location && $delivery_location != 'all') {
-            $transportOrders = $transportOrders->where('to', $delivery_location);
+            $transportOrders->where('to', $delivery_location);
         }
+        if($search) {
+            $transportOrders->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('transaction', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('containers', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhere('date', 'like', '%' . $search . '%');
+        }
+
+        $transportOrders = $transportOrders->with(['customer', 'driver', 'vehicle', 'supplier', 'made_by'])->orderBy('code')->get();
 
         $filters = $request->all();
         logActivity('طباعة تقرير اشعارات النقل', "تم طباعة تقرير اشعارات النقل بتصفية: ", $filters);
 
-        return view('reports.transport_order_report', compact('company', 'transportOrders', 'from', 'to'));
+        return view('reports.transport_order_report', compact('transportOrders', 'from', 'to'));
     }
 
     public function printInvoiceReports(Request $request) {
-        $invoices = Invoice::all();
-        $company = Auth::user()->company;
+        $invoices = Invoice::query();
 
         $customer = $request->input('customer', 'all');
         $from = $request->input('from', null);
         $to = $request->input('to', null);
         $type = $request->input('type', 'all');
         $payment_method = $request->input('payment_method', 'all');
+        $search = $request->input('search', null);
 
         if($customer && $customer != 'all') {
-            $invoices = $invoices->where('customer_id', $customer);
+            $invoices->where('customer_id', $customer);
         }
         if($from) {
-            $invoices = $invoices->where('date', '>=', $from);
+            $invoices->where('date', '>=', $from);
         }
         if($to) {
             $to = Carbon::parse($to)->endOfDay();
-            $invoices = $invoices->where('date', '<=', $to);
+            $invoices->where('date', '<=', $to);
         }
         if($type !== 'all') {
-            $invoices = $invoices->where('type', $type);
+            $invoices->where('type', $type);
         }
         if($payment_method !== 'all') {
-            $invoices = $invoices->where('payment_method', $payment_method);
+            $invoices->where('payment_method', $payment_method);
         }
+        if($search) {
+            $invoices->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%$search%");
+                  })->orWhere('date', 'like', "%$search%");
+            });
+        }
+        
+        $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->get();
 
         $filters = $request->all();
         logActivity('طباعة تقرير الفواتير', "تم طباعة تقرير الفواتير بتصفية: ", $filters);
 
-        return view('reports.invoice_report', compact('company', 'invoices', 'from', 'to'));
+        return view('reports.invoice_report', compact('invoices', 'from', 'to'));
     }
 
     public function printExpenseInvoice($code) {

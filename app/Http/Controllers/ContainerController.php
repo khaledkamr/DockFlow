@@ -204,6 +204,7 @@ class ContainerController extends Controller
         $customer = $request->input('customer', 'all');
         $invoiced = $request->input('invoiced', 'all');
         $perPage = $request->input('per_page', 100);
+        $search = $request->input('search', null);
 
         if($to && $from) {
             $containers->whereBetween('date', [$from, $to]);
@@ -231,6 +232,14 @@ class ContainerController extends Controller
             } elseif($invoiced == 'بدون فاتورة') {
                 $containers->whereDoesntHave('invoices');
             }
+        }
+        if($search) {
+            $containers->where(function($query) use ($search) {
+                $query->where('code', 'like', "%$search%")
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', "%$search%");
+                    })->orWhere('location', 'like', "%$search%");
+            });
         }
 
         $containers = $containers->with(['customer', 'containerType', 'invoices'])->orderBy('date')->paginate($perPage)->onEachSide(1)->withQueryString();

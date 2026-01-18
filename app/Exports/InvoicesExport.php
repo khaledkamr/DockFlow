@@ -25,22 +25,27 @@ class InvoicesExport implements FromCollection, WithHeadings
         if(!empty($this->filters['customers']) && $this->filters['customers'] !== 'all') {
             $query->whereIn('customer_id', explode(',', $this->filters['customers']));
         }
-
         if(!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to'],]);
         }
-
         if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
             $query->where('type', $this->filters['type']);
         }
-
         if(!empty($this->filters['payment_method']) && $this->filters['payment_method'] !== 'all') {
             $query->where('payment_method', $this->filters['payment_method']);
         }
-
         if(!empty($this->filters['is_posted']) && $this->filters['is_posted'] !== 'all') {
             $is_posted = $this->filters['is_posted'] == 'true' ? true : false;
             $query->where('is_posted', $is_posted);
+        }
+        if(!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                    ->orWhereHas('customer', function($q2) use ($search) {
+                        $q2->where('name', 'like', "%$search%");
+                    })->orWhere('date', 'like', "%$search%");
+            });
         }
 
         $query->with(['customer', 'made_by'])->orderby('code', 'asc');

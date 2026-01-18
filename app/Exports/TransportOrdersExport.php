@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\TransportOrder;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -23,43 +24,50 @@ class TransportOrdersExport implements FromCollection, WithHeadings
         if(!empty($this->filters['customer']) && $this->filters['customer'] !== 'all') {
             $query->where('customer_id', $this->filters['customer']);
         }
-
         if(!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to']]);
         }
-
         if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
             $query->where('type', $this->filters['type']);
         }
-
         if(!empty($this->filters['supplier']) && $this->filters['supplier'] !== 'all') {
             $query->where('supplier_id', $this->filters['supplier']);
         }
-
         if(!empty($this->filters['driver']) && $this->filters['driver'] !== 'all') {
             $query->where('driver_id', $this->filters['driver']);
         }
-
         if(!empty($this->filters['vehicle']) && $this->filters['vehicle'] !== 'all') {
             $query->where('vehicle_id', $this->filters['vehicle']);
         }
-
         if(!empty($this->filters['loading_location']) && $this->filters['loading_location'] !== 'all') {
             $query->where('from', $this->filters['loading_location']);
         }
-
         if(!empty($this->filters['delivery_location']) && $this->filters['delivery_location'] !== 'all') {
             $query->where('to', $this->filters['delivery_location']);
+        }
+        if(!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('transaction', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('customer', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('containers', function ($q) use ($search) {
+                    $q->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhere('date', 'like', '%' . $search . '%');
         }
 
         $query->with(['customer', 'supplier', 'driver', 'vehicle', 'containers']);
 
         return $query->get()->map(function ($transportOrder) {
-            $status = 'تم التسليم';
+            $status = $transportOrder->is_received ? 'تم التسليم' : 'تحت التسليم';
             return [
                 $transportOrder->code,
                 $transportOrder->transaction->code,
-                $transportOrder->date,
+                Carbon::parse($transportOrder->date)->format('Y/m/d'),
                 $transportOrder->customer->name ?? 'N/A',
                 $transportOrder->type,
                 $transportOrder->supplier->name ?? 'N/A',

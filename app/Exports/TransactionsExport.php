@@ -42,6 +42,21 @@ class TransactionsExport implements FromCollection, WithHeadings
                 });
             }
         }
+        if(!empty($this->filters['search'])) {
+            $search = $this->filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('code', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhere('customs_declaration', 'like', '%' . $search . '%')
+                    ->orWhere('policy_number', 'like', '%' . $search . '%')
+                    ->orWhereHas('containers', function($q3) use ($search) {
+                        $q3->where('code', 'like', "%{$search}%");
+                    })
+                    ->orWhereDate('date', 'like', '%' . $search . '%');
+            });
+        }
 
         $query = $query->with(['customer', 'containers', 'items'])->orderBy('code');
 

@@ -112,17 +112,17 @@
                                 </a>
                             </td>
                             <td class="text-center text-nowrap">
-                                <span
-                                    class="badge {{ $policy->type === 'ناقل داخلي' ? 'status-available' : 'status-danger' }}">
+                                <span class="badge {{ $policy->type === 'ناقل داخلي' ? 'status-available' : 'status-danger' }}">
                                     {{ $policy->type }}
                                 </span>
                             </td>
-                            <td class="text-center text-nowrap">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}
+                            <td class="text-center text-nowrap">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
+                            <td class="text-center text-nowrap">
+                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $policy->from }}
                             </td>
-                            <td class="text-center text-nowrap"><i class="fas fa-map-marker-alt text-danger"></i>
-                                {{ $policy->from }}</td>
-                            <td class="text-center text-nowrap"><i class="fas fa-map-marker-alt text-danger"></i>
-                                {{ $policy->to }}</td>
+                            <td class="text-center text-nowrap">
+                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $policy->to }}
+                            </td>
                             <td class="text-center text-nowrap">
                                 @if ($policy->is_received)
                                     <span class="badge status-delivered">تم التسليم</span>

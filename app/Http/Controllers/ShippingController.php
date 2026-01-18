@@ -247,6 +247,7 @@ class ShippingController extends Controller
         $loading_location = $request->input('loading_location', 'all');
         $delivery_location = $request->input('delivery_location', 'all');
         $perPage = $request->input('per_page', 100);
+        $search = $request->input('search', null);
 
         if($customer && $customer != 'all') {
             $policies->where('customer_id', $customer);
@@ -284,6 +285,17 @@ class ShippingController extends Controller
         }
         if($delivery_location && $delivery_location != 'all') {
             $policies->where('to', $delivery_location);
+        }
+        if($search) {
+            $policies->where(function($query) use ($search) {
+                $query->where('code', 'like', '%' . $search . '%')
+                    ->orWhereHas('customer', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('goods', function($q) use ($search) {
+                        $q->where('description', 'like', '%' . $search . '%');
+                    });
+            });
         }
 
         $policies = $policies->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();

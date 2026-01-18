@@ -143,7 +143,7 @@
     <div class="card border-0 shadow-sm rounded-3 p-3">
         <div
             class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-            <div class="">
+            <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
                     <select id="per_page" name="per_page" onchange="this.form.submit()"
@@ -154,6 +154,21 @@
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
                     @foreach (request()->except('per_page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            </div>
+            <div class="flex-grow-1 mx-2">
+                <form method="GET" action="">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-primary" 
+                            placeholder="ابحث عن بوليصة بالرقم او بإسم العميل او برقم الحاوية..." 
+                            value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                    @foreach (request()->except(['search', 'page']) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </form>
@@ -188,7 +203,6 @@
                         <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                         <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
                         <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">نوع الناقل</th>
                         <th class="text-center bg-dark text-white text-nowrap">المورد</th>
                         <th class="text-center bg-dark text-white text-nowrap">السائق</th>
                         <th class="text-center bg-dark text-white text-nowrap">السيارة</th>
@@ -226,7 +240,6 @@
                                         {{ $policy->customer->name }}
                                     </a>
                                 </td>
-                                <td class="text-center">{{ $policy->type }}</td>
                                 <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
                                 <td class="text-center">
                                     {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>

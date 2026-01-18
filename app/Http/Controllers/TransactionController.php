@@ -369,6 +369,7 @@ class TransactionController extends Controller
         $status = $request->input('status', 'all');
         $invoice_status = $request->input('invoice_status', 'all');
         $perPage = $request->input('per_page', 100);
+        $search = $request->input('search', null);
 
         if($customer_id !== 'all') {
             $transactions->where('customer_id', $customer_id);
@@ -393,8 +394,24 @@ class TransactionController extends Controller
                 });
             }
         }
+        if ($search) {
+            $transactions->where('code', 'like', '%' . $search . '%')
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhere('customs_declaration', 'like', '%' . $search . '%')
+                ->orWhere('policy_number', 'like', '%' . $search . '%')
+                ->orWhereHas('containers', function ($query) use ($search) {
+                    $query->where('code', 'like', '%' . $search . '%');
+                })
+                ->orWhereDate('date', 'like', '%' . $search . '%');
+        }
 
-        $transactions = $transactions->with(['customer', 'containers', 'items'])->orderBy('code')->paginate(100)->onEachSide(1)->withQueryString();
+        $transactions = $transactions->with(['customer', 'containers', 'items'])
+            ->orderBy('code')
+            ->paginate($perPage)
+            ->onEachSide(1)
+            ->withQueryString();
 
         return view('pages.transactions.reports', compact(
             'transactions',
