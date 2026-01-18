@@ -21,7 +21,6 @@
     <tr>
         <td class="text-center">{{ $child->code }}</td>
         <td class="fw-bold">
-            {{ str_repeat(' - ', $child->level) }}
             {{ $child->name }}
             ({{ $child->level }})
         </td>

@@ -87,14 +87,14 @@ class TrialBalanceExport implements FromCollection, WithHeadings
         if(!isset($this->filters['with_balances']) || $this->filters['with_balances'] == '1') {
             $rows->push((object)[
                 'code' => $account->code,
-                'name' => str_repeat(' - ', $account->level) . ' ' . $account->name,
+                'name' => $account->name . ' (' . $account->level . ')',
                 'closing_debit' => $balance->final_debit ?? 0,
                 'closing_credit' => $balance->final_credit ?? 0,
             ]);
         } else {
             $rows->push((object)[
                 'code' => $account->code,
-                'name' => str_repeat(' - ', $account->level) . ' ' . $account->name,
+                'name' => $account->name . ' (' . $account->level . ')',
                 'opening_debit' => $balance->beginning_debit ?? 0,
                 'opening_credit' => $balance->beginning_credit ?? 0,
                 'movement_debit' => $balance->movement_debit ?? 0,
