@@ -233,6 +233,12 @@
         </div>
     </div>
 
+    <div class="text-center mb-3">
+        <small class="text-muted">
+            تم إنشاء هذه المطالبة بواسطة <strong>{{ $invoiceStatement->made_by->name ?? 'غير محدد' }}</strong>
+        </small>
+    </div>
+
     <style>
         .qr-code-container svg {
             max-width: 100px;

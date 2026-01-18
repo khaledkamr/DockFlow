@@ -341,7 +341,6 @@
         </div>
     @endif
 
-
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-4">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
@@ -828,7 +827,7 @@
 
     <div class="text-center mb-3">
         <small class="text-muted">
-            تم إنشاء هذه الفاتورة بواسطة: {{ $invoice->made_by->name ?? 'غير محدد' }}
+            تم إنشاء هذه الفاتورة بواسطة <strong>{{ $invoice->made_by->name ?? 'غير محدد' }}</strong>
         </small>
     </div>
     
