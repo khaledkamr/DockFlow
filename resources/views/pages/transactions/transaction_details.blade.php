@@ -74,7 +74,7 @@
                     @if ($transaction->items->where('is_posted', true)->count() > 0)
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-circle me-1"></i>
-                            تحذير: يوجد عدد {{ $transaction->items->where('is_posted', true)->count() }} بند مرحل في هذه المعاملة.
+                            تحذير: يوجد عدد {{ $transaction->items->where('is_posted', true)->count() }} بنود مرحلة في هذه المعاملة.
                         </div>
                     @endif
                 </div>

@@ -786,6 +786,8 @@ class AccountingController extends Controller
                 }
             }
 
+            $opening_balance = number_format($opening_balance, 2, '.', '');
+
             if($from && $to) {
                 $statement = $statement->filter(function($line) use($from, $to) {
                     $date = Carbon::parse($line->journal->date);
