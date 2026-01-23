@@ -157,30 +157,59 @@
 
         <!-- Services and Notes -->
         <div class="row g-3 mb-3 mb-md-4">
-            <!-- Customer -->
+            <!-- Details -->
             <div class="col-12 col-lg-6">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-dark text-white">
                         <h5 class="card-title mb-0 fs-6 fs-md-5">
                             <i class="fas fa-user-tie me-2"></i>
-                            معلومات العميل
+                            معلومات الحاوية
                         </h5>
                     </div>
                     <div class="card-body">
-                        <div class="info-item">
-                            <strong class="text-muted">اسم العميل:</strong>
-                            <a href="{{ route('users.customer.profile', $container->customer) }}"
-                                class="text-decoration-none fw-bold">
-                                {{ $container->customer->name }}
-                            </a>
-                        </div>
-                        <div class="info-item">
-                            <strong class="text-muted">رقم الحساب:</strong>
-                            <span class="text-dark">{{ $container->customer->account->code }}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong class="text-muted">الرقم الضريبي:</strong>
-                            <span class="text-dark">{{ $container->customer->vatNumber }}</span>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <strong>العميل:</strong> 
+                                <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-decoration-none fw-bold">
+                                    {{ $container->customer->name ?? 'N/A' }}
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <strong>نوع الحاوية:</strong> {{ $container->containerType->name ?? 'N/A' }}
+                            </div>
+                            <div class="col-6">
+                                <strong>تاريخ الدخول:</strong> {{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}
+                            </div>
+                            <div class="col-6">
+                                <strong>تاريخ الخروج:</strong>
+                                {{ $container->exit_date ? \Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : 'لم يتم الخروج بعد' }}
+                            </div>
+                            <div class="col-6">
+                                <strong>الرقم المرجعي:</strong> {{ $container->reference_number ?? 'N/A' }}
+                            </div>
+                            <div class="col-6">
+                                <strong>الحالة الحالية:</strong>
+                                @if ($container->status == 'في الساحة')
+                                    <div class="badge status-available">{{ $container->status }}</div>
+                                @elseif($container->status == 'تم التسليم')
+                                    <div class="badge status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
+                                @elseif($container->status == 'متأخر')
+                                    <div class="badge status-danger">{{ $container->status }}</div>
+                                @elseif($container->status == 'خدمات')
+                                    <div class="badge status-waiting">{{ $container->status }}</div>
+                                @elseif($container->status == 'في الميناء')
+                                    <div class="badge status-info">{{ $container->status }}</div>
+                                @elseif($container->status == 'قيد النقل')
+                                    <div class="badge status-purple">{{ $container->status }}</div>
+                                @endif
+                            </div>
+                            <div class="col-6">
+                                <strong>الموقع الحالي:</strong> {{ $container->location ?? 'N/A' }}
+                            </div>
+                            <div class="col-6">
+                                <strong>الملاحظات:</strong>
+                                {{ $container->notes ?? 'لا توجد ملاحظات' }}
+                            </div>
                         </div>
                     </div>
                 </div>
