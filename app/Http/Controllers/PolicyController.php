@@ -132,6 +132,7 @@ class PolicyController extends Controller
         $policy->update($validated);
 
         foreach($policy->containers as $container) {
+            $container->customer_id = $request->customer_id;
             $container->date = $request->date;
             $container->received_by = $request->driver_name;
             $container->save();
@@ -210,6 +211,7 @@ class PolicyController extends Controller
         $policy->update($validated);
 
         foreach($policy->containers as $container) {
+            $container->customer_id = $request->customer_id;
             $container->exit_date = $request->date;
             $container->delivered_by = $request->driver_name;
             $container->save();
@@ -338,6 +340,7 @@ class PolicyController extends Controller
         ]);
 
         foreach($policy->containers as $container) {
+            $container->customer_id = $request->customer_id;
             $container->date = $request->date;
             $container->exit_date = $request->date;
             $container->save();
