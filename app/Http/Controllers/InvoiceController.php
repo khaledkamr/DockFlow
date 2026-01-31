@@ -20,6 +20,7 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
@@ -80,14 +81,14 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.create_invoice', compact('customers', 'containers'));
     }
-
+    
     public function storeInvoice(InvoiceRequest $request) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
         $containerIds = $request->input('container_ids', []);
-        $containers = Container::whereIn('id', $containerIds)->get();
+        $containers = Container::with(['transactions', 'policies', 'services'])->whereIn('id', $containerIds)->get();
 
         foreach($containers as $container) {
             if($container->transactions->first()) {
@@ -95,50 +96,61 @@ class InvoiceController extends Controller
             }
         }
 
-        $validated = $request->validated();
-        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-        $invoice = Invoice::create($validated);
-
-        
         $amountBeforeTax = 0;
+        $containerData = []; 
 
         foreach($containers as $container) {
+            $policy = $container->policies->where('type', 'تخزين')->first();
+            if (!$policy) continue;
+
             $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-            $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
-            if($period > $container->policies->where('type', 'تخزين')->first()->storage_duration) {
+            $storage_price = $policy->storage_price;
+            
+            $late_fee = 0;
+            if($period > $policy->storage_duration) {
                 $days = (int) Carbon::parse($container->date)
-                    ->addDays((int) $container->policies->where('type', 'تخزين')->first()->storage_duration)
+                    ->addDays((int) $policy->storage_duration)
                     ->diffInDays(Carbon::parse($container->exit_date));
-                $late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
-            } else {
-                $late_fee = 0;
+                $late_fee = $days * $policy->late_fee;
             }
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
-            $amountBeforeTax += $storage_price + $late_fee + $services;
-            $invoice->containers()->attach($container->id, ['amount' => $storage_price + $late_fee + $services]);
+
+            $servicesSum = $container->services->sum('pivot.price');
+            $totalForThisContainer = $storage_price + $late_fee + $servicesSum;
+
+            $amountBeforeTax += $totalForThisContainer;
+            $containerData[$container->id] = ['amount' => $totalForThisContainer];
+        }
+
+        if($amountBeforeTax <= 0) {
+            return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من أسعار التخزين والخدمات.');
         }
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax_rate = $request->input('tax_rate', 15) / 100;
-        $tax = $amountAfterDiscount * $tax_rate;
-        $amount = $amountAfterDiscount + $tax;
+        $tax_rate_percent = $request->input('tax_rate', 15);
+        $tax = $amountAfterDiscount * ($tax_rate_percent / 100);
+        $totalAmount = $amountAfterDiscount + $tax;
 
-        $invoice->amount_before_tax = $amountBeforeTax;
-        $invoice->tax_rate = $request->input('tax_rate', 15);
-        $invoice->tax = $tax;
-        $invoice->amount_after_discount = $amountAfterDiscount;
-        $invoice->total_amount = $amount;
-        $invoice->save();
+        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData) {
+            $validated = $request->validated();
+            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            
+            $invoice = Invoice::create(array_merge($validated, [
+                'amount_before_tax' => $amountBeforeTax,
+                'tax_rate' => $tax_rate_percent,
+                'tax' => $tax,
+                'amount_after_discount' => $amountAfterDiscount,
+                'total_amount' => $totalAmount,
+            ]));
 
-        logActivity('إنشاء فاتورة تخزين', "تم إنشاء فاتورة تخزين رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+            $invoice->containers()->attach($containerData);
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
-    } 
-    
+            logActivity('إنشاء فاتورة تخزين', "تم إنشاء فاتورة تخزين رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
+        });
+    }
+
     public function invoiceDetails(Invoice $invoice) {
         $amountBeforeTax = 0;
         $services = 0;
@@ -192,39 +204,46 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
-        $validated = $request->validated();
-        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-        $invoice = Invoice::create($validated);
-
         $containerIds = $request->input('container_ids', []);
-        $containers = Container::whereIn('id', $containerIds)->get();
+        $containers = Container::with(['services'])->whereIn('id', $containerIds)->get();
+
         $amountBeforeTax = 0;
+        $containerData = [];
 
         foreach($containers as $container) {
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
+            $services = $container->services->sum('pivot.price');
             $amountBeforeTax += $services;
-            $invoice->containers()->attach($container->id, ['amount' => $services]);
+            $containerData[$container->id] = ['amount' => $services];
+        }
+
+        if($amountBeforeTax <= 0) {
+            return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من أسعار الخدمات.');
         }
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax_rate = $request->input('tax_rate', 15) / 100;
-        $tax = $amountAfterDiscount * $tax_rate;
-        $amount = $amountAfterDiscount + $tax;
+        $tax_rate_percent = $request->input('tax_rate', 15);
+        $tax = $amountAfterDiscount * ($tax_rate_percent / 100);
+        $totalAmount = $amountAfterDiscount + $tax;
 
-        $invoice->amount_before_tax = $amountBeforeTax;
-        $invoice->tax_rate = $request->input('tax_rate', 15);
-        $invoice->tax = $tax;
-        $invoice->amount_after_discount = $amountAfterDiscount;
-        $invoice->total_amount = $amount;
-        $invoice->save();
+        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData) {
+            $validated = $request->validated();
+            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
 
-        logActivity('إنشاء فاتورة خدمات', "تم إنشاء فاتورة خدمات رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+            $invoice = Invoice::create(array_merge($validated, [
+                'amount_before_tax' => $amountBeforeTax,
+                'tax_rate' => $tax_rate_percent,
+                'tax' => $tax,
+                'amount_after_discount' => $amountAfterDiscount,
+                'total_amount' => $totalAmount,
+            ]));
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
+            $invoice->containers()->attach($containerData);
+
+            logActivity('إنشاء فاتورة خدمات', "تم إنشاء فاتورة خدمات رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
+        });
     }
 
     public function invoiceServicesDetails(Invoice $invoice) {
@@ -433,21 +452,21 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة تخليص على معاملة معلقة');
         }
 
-        if($transaction->customer->contract) {
-            $containers_count = $transaction->containers->count();
+        $newItems = [];
+        $containers_count = $transaction->containers->count();
 
+        if($transaction->customer->contract) {
             $contractServices = collect($transaction->customer->contract->services->pluck('description')->toArray());
 
-            if($contractServices->contains('اجور تخليص')  && !$transaction->items->contains('description', 'اجور تخليص - CLEARANCE FEES')) {
+            if($contractServices->contains('اجور تخليص') && !$transaction->items->contains('description', 'اجور تخليص - CLEARANCE FEES')) {
                 $price = $transaction->customer->contract->services->where('description', 'اجور تخليص')->first()->pivot->price * $containers_count;
-                $transaction->items()->create([
-                    'number' => $transaction->items()->count() + 1,
+                $newItems[] = [
                     'description' => 'اجور تخليص - CLEARANCE FEES',
                     'type' => 'ايراد تخليص',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
-                ]);
+                ];
             }
 
             if($contractServices->contains(function($service) {
@@ -484,49 +503,45 @@ class InvoiceController extends Controller
                 }
 
                 if($price > 0) {
-                    $transaction->items()->create([
-                        'number' => $transaction->items()->count() + 1,
+                    $newItems[] = [
                         'description' => 'اجور نقل - TRANSPORT FEES',
                         'type' => 'ايراد نقل',
                         'amount' => $price,
                         'tax' => $price * 0.15,
                         'total' => $price * 1.15,
-                    ]);
+                    ];
                 }
             }
 
             if($contractServices->contains('اجور عمال') && !$transaction->items->contains('description', 'اجور عمال - LABOUR')) {
                 $price = $transaction->customer->contract->services->where('description', 'اجور عمال')->first()->pivot->price * $containers_count;
-                $transaction->items()->create([
-                    'number' => $transaction->items()->count() + 1,
+                $newItems[] = [
                     'description' => 'اجور عمال - LABOUR',
                     'type' => 'ايراد عمال',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
-                ]);
+                ];
             }
 
             if($contractServices->contains('خدمات سابر') && !$transaction->items->contains('description', 'خدمات سابر - SABER FEES')) {
                 $price = $transaction->customer->contract->services->where('description', 'خدمات سابر')->first()->pivot->price * $containers_count;
-                $transaction->items()->create([
-                    'number' => $transaction->items()->count() + 1,
+                $newItems[] = [
                     'description' => 'خدمات سابر - SABER FEES',
                     'type' => 'ايراد سابر',
                     'amount' => $price,
                     'tax' => $price * 0.15,
                     'total' => $price * 1.15,
-                ]);
+                ];
             }
         }
 
-        $validated = $request->validated();
-        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-        $invoice = Invoice::create($validated);
-
+        // Calculate storage fees
         $storage_price_before_tax = 0;
+        $containerData = [];
 
         foreach($transaction->containers as $container) {
+            $containerStorageAmount = 0;
             if($container->invoices->isEmpty() 
                 && $container->policies->where('type', 'تخزين')->isNotEmpty() 
                 && $container->status == 'تم التسليم') {
@@ -541,74 +556,82 @@ class InvoiceController extends Controller
                 } else {
                     $late_fee = 0;
                 }
-                $services = 0;
-                foreach($container->services as $service) {
-                    $services += $service->pivot->price;
-                }
-                $storage_price_before_tax += $storage_price + $late_fee + $services;
+                $services = $container->services->sum('pivot.price');
+                $containerStorageAmount = $storage_price + $late_fee + $services;
+                $storage_price_before_tax += $containerStorageAmount;
             }
-            $invoice->containers()->attach($container->id, ['amount' => $storage_price_before_tax]);
+            $containerData[$container->id] = ['amount' => $containerStorageAmount];
         }
 
         if($storage_price_before_tax > 0 && !$transaction->items->contains('description', 'رسوم تخزين - STORAGE FEES')) {
-            $transaction->items()->create([
-                'number' => $transaction->items()->count() + 1,
+            $newItems[] = [
                 'description' => 'رسوم تخزين - STORAGE FEES',
                 'type' => 'ايراد تخزين',
                 'amount' => $storage_price_before_tax,
                 'tax' => $storage_price_before_tax * 0.15,
                 'total' => $storage_price_before_tax * 1.15,
-            ]);
+            ];
         }
 
-        $transaction->refresh(); // to get latest items
+        // Combine existing items with new items for calculation
+        $allItems = collect($transaction->items->toArray())->merge($newItems);
 
-        $grouped = $transaction->items
-            ->groupBy('description')
-            ->map(function ($group) {
-                return [
-                    'number' => $group->min('number'),
-                    'description' => $group->first()->description,
-                    'amount' => $group->sum('amount'),
-                    'tax' => $group->sum('tax'),
-                    'total' => $group->sum('total'),
-                ];
-            })
-            ->sortBy('number')
-            ->values();         
-
-        foreach ($grouped as $item) {
-            $invoice->clearanceInvoiceItems()->create([
-                'number' => $item['number'],
-                'description' => $item['description'],
-                'amount' => $item['amount'],
-                'tax' => $item['tax'],
-                'total' => $item['total'],
-            ]);
-        }
-
-        $amountBeforeTax = 0;
-        $tax = 0;
-        $totalAmount = 0;
-
-        foreach($transaction->items as $item) {
-            $amountBeforeTax += $item->amount;
-            $tax += $item->tax;
-            $totalAmount += $item->total;
-        }
+        $amountBeforeTax = $allItems->sum('amount');
+        $tax = $allItems->sum('tax');
+        $totalAmount = $allItems->sum('total');
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
 
-        $invoice->amount_before_tax = $amountBeforeTax;
-        $invoice->tax = $tax;
-        $invoice->amount_after_discount = $amountAfterDiscount;
-        $invoice->total_amount = $totalAmount;
-        $invoice->save();
+        return DB::transaction(function () use ($request, $transaction, $newItems, $containerData, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount) {
+            $itemNumber = $transaction->items()->count();
+            foreach($newItems as $item) {
+                $itemNumber++;
+                $transaction->items()->create(array_merge($item, ['number' => $itemNumber]));
+            }
 
-        logActivity('إنشاء فاتورة تخليص', "تم إنشاء فاتورة تخليص رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+            $validated = $request->validated();
+            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
+            $invoice = Invoice::create(array_merge($validated, [
+                'amount_before_tax' => $amountBeforeTax,
+                'tax' => $tax,
+                'amount_after_discount' => $amountAfterDiscount,
+                'total_amount' => $totalAmount,
+            ]));
+
+            $invoice->containers()->attach($containerData);
+
+            $transaction->refresh();
+
+            $grouped = $transaction->items
+                ->groupBy('description')
+                ->map(function ($group) {
+                    return [
+                        'number' => $group->min('number'),
+                        'description' => $group->first()->description,
+                        'amount' => $group->sum('amount'),
+                        'tax' => $group->sum('tax'),
+                        'total' => $group->sum('total'),
+                    ];
+                })
+                ->sortBy('number')
+                ->values();         
+
+            foreach ($grouped as $item) {
+                $invoice->clearanceInvoiceItems()->create([
+                    'number' => $item['number'],
+                    'description' => $item['description'],
+                    'amount' => $item['amount'],
+                    'tax' => $item['tax'],
+                    'total' => $item['total'],
+                ]);
+            }
+
+            logActivity('إنشاء فاتورة تخليص', "تم إنشاء فاتورة تخليص رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
+        });
     }
 
     public function clearanceInvoiceDetails(Invoice $invoice) {
@@ -658,35 +681,45 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
 
-        $validated = $request->validated();
-        $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-        $invoice = Invoice::create($validated);
-
         $policyIds = $request->input('shipping_policy_ids', []);
         $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
+
         $amountBeforeTax = 0;
+        $policyData = [];
 
         foreach($shippingPolicies as $policy) {
             $amountBeforeTax += $policy->total_cost;
-            $invoice->shippingPolicies()->attach($policy->id, ['amount' => $policy->total_cost]);
+            $policyData[$policy->id] = ['amount' => $policy->total_cost];
+        }
+
+        if($amountBeforeTax <= 0) {
+            return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من تكاليف الشحن.');
         }
 
         $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
         $amountAfterDiscount = $amountBeforeTax - $discountValue;
-        $tax_rate = $request->input('tax_rate', 15) / 100;
-        $tax = $amountAfterDiscount * $tax_rate;
-        $amount = $amountAfterDiscount + $tax;
+        $tax_rate_percent = $request->input('tax_rate', 15);
+        $tax = $amountAfterDiscount * ($tax_rate_percent / 100);
+        $totalAmount = $amountAfterDiscount + $tax;
 
-        $invoice->amount_before_tax = $amountBeforeTax;
-        $invoice->tax_rate = $request->input('tax_rate', 15);
-        $invoice->tax = $tax;
-        $invoice->amount_after_discount = $amountAfterDiscount;
-        $invoice->total_amount = $amount;
-        $invoice->save();
+        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $policyData) {
+            $validated = $request->validated();
+            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
 
-        logActivity('إنشاء فاتورة شحن', "تم إنشاء فاتورة شحن رقم " . $invoice->code . "للعميل " . $invoice->customer->name, null, $invoice->toArray());
+            $invoice = Invoice::create(array_merge($validated, [
+                'amount_before_tax' => $amountBeforeTax,
+                'tax_rate' => $tax_rate_percent,
+                'tax' => $tax,
+                'amount_after_discount' => $amountAfterDiscount,
+                'total_amount' => $totalAmount,
+            ]));
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');  
+            $invoice->shippingPolicies()->attach($policyData);
+
+            logActivity('إنشاء فاتورة شحن', "تم إنشاء فاتورة شحن رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');
+        });  
     }
 
     public function shippingInvoiceDetails(Invoice $invoice) {

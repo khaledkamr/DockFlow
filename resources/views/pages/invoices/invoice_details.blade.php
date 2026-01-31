@@ -404,7 +404,7 @@
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center bg-dark text-white text-nowrap">#</th>
-                                <th class="text-center bg-dark text-white text-nowrap">رقم الإتفاقية</th>
+                                <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                                 <th class="text-center bg-dark text-white text-nowrap">رقم الحاوية</th>
                                 <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
                                 <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
@@ -421,9 +421,9 @@
                                 <tr>
                                     <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                     <td class="text-center fw-bold">
-                                        <a href="{{ route('policies.receive.details', $container->policies->where('type', 'تسليم')->first()->id) }}"
+                                        <a href="{{ route('policies.storage.details', $container->policies->where('type', 'تخزين')->first()) }}"
                                             class="text-decoration-none">
-                                            {{ $container->policies->where('type', 'تسليم')->first()->code ?? '---' }}
+                                            {{ $container->policies->where('type', 'تخزين')->first()->code ?? '---' }}
                                         </a>
                                     </td>
                                     <td class="text-center fw-bold">
@@ -438,7 +438,7 @@
                                     <td class="text-center">
                                         <small>{{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('d/m/Y') : '---' }}</small>
                                     </td>
-                                    <td class="text-center fw-bold">{{ $container->period }}</td>
+                                    <td class="text-center fw-bold">{{ $container->period + 1 }}</td>
                                     <td class="text-center fw-bold">{{ number_format($container->storage_price, 2) }}</td>
                                     <td class="text-center fw-bold">{{ $container->late_days }}</td>
                                     <td class="text-center fw-bold">{{ number_format($container->late_fee, 2) }}</td>
@@ -701,7 +701,7 @@
                                         placeholder="أدخل ملاحظات الفاتورة هنا..." data-original="{{ $invoice->notes }}">{{ $invoice->notes }}</textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="saveNotesBtn" style="display: none;">
-                                    <i class="fas fa-save me-2"></i>حفظ الملاحظات
+                                    حفظ الملاحظات
                                 </button>
                             </form>
                         </div>
