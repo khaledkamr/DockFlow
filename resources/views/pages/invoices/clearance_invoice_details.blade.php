@@ -421,7 +421,11 @@
                                 <div class="col-12 mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">اسم العميل:</strong>
-                                        <span class="fw-bold">{{ $invoice->customer->name ?? '---' }}</span>
+                                        <span class="fw-bold">
+                                            <a href="{{ route('users.customer.profile', $invoice->customer) }}" class="text-decoration-none text-dark">
+                                                {{ $invoice->customer->name }}
+                                            </a>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="col-12 mb-3">
