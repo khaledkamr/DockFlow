@@ -389,7 +389,7 @@
                         <thead class="table-primary">
                             <tr>
                                 <th class="text-center bg-dark text-white text-nowrap">#</th>
-                                <th class="text-center bg-dark text-white text-nowrap">رقم الإتفاقية</th>
+                                <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                                 <th class="text-center bg-dark text-white text-nowrap">رقم الحاوية</th>
                                 <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
                                 <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
@@ -402,7 +402,7 @@
                                 <tr>
                                     <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                     <td class="text-center fw-bold">
-                                        <a href="{{ route('policies.receive.details', $container->policies->where('type', 'خدمات')->first()->id) }}"
+                                        <a href="{{ route('policies.services.details', $container->policies->where('type', 'خدمات')->first()->id) }}"
                                             class="text-decoration-none">
                                             {{ $container->policies->where('type', 'خدمات')->first()->code ?? '---' }}
                                         </a>
