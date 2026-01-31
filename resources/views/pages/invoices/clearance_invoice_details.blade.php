@@ -26,7 +26,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title text-white fw-bold" id="editInvoiceModalLabel">تعديل بيانات الفاتورة</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('invoices.update', $invoice) }}" method="POST">
                     @csrf
@@ -35,7 +36,8 @@
                         @if ($invoice->is_posted)
                             <div class="alert alert-warning">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل تعديل الفاتورة.
+                                <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل
+                                تعديل الفاتورة.
                             </div>
                         @endif
                         <div class="row g-3">
@@ -107,8 +109,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="updateInvoice" tabindex="-1" aria-labelledby="updateInvoiceLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="updateInvoice" tabindex="-1" aria-labelledby="updateInvoiceLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
@@ -133,8 +134,7 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
                         <button type="submit" class="btn btn-primary fw-bold">حفظ الفاتورة</button>
-                        <button type="button" class="btn btn-secondary fw-bold"
-                            data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                     </div>
                 </form>
             </div>
@@ -257,7 +257,8 @@
                                         <tr>
                                             <td class="text-center">{{ $expense['account'] }}</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center text-success fw-bold">{{ number_format($expense['amount'], 2) }}</td>
+                                            <td class="text-center text-success fw-bold">
+                                                {{ number_format($expense['amount'], 2) }}</td>
                                             <td class="text-center">{{ $expense['description'] }}</td>
                                         </tr>
                                     @endforeach
@@ -265,7 +266,8 @@
                                         <tr>
                                             <td class="text-center">ايرادات تخليص جمركي</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center text-success fw-bold">{{ number_format($clearance_revenue, 2) }}</td>
+                                            <td class="text-center text-success fw-bold">
+                                                {{ number_format($clearance_revenue, 2) }}</td>
                                             <td class="text-center">ايرادات تخليص فاتورة رقم {{ $invoice->code }}</td>
                                         </tr>
                                     @endif
@@ -273,7 +275,8 @@
                                         <tr>
                                             <td class="text-center">ايرادات النقليات</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center text-success fw-bold">{{ number_format($transport_revenue, 2) }}</td>
+                                            <td class="text-center text-success fw-bold">
+                                                {{ number_format($transport_revenue, 2) }}</td>
                                             <td class="text-center">ايرادات نقل فاتورة رقم {{ $invoice->code }}</td>
                                         </tr>
                                     @endif
@@ -281,7 +284,8 @@
                                         <tr>
                                             <td class="text-center">ايرادات اجور عمال</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center text-success fw-bold">{{ number_format($labor_revenue, 2) }}</td>
+                                            <td class="text-center text-success fw-bold">
+                                                {{ number_format($labor_revenue, 2) }}</td>
                                             <td class="text-center">ايرادات اجور عمال فاتورة رقم {{ $invoice->code }}</td>
                                         </tr>
                                     @endif
@@ -289,36 +293,46 @@
                                         <tr>
                                             <td class="text-center">ايرادات خدمات سابر</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center text-success fw-bold">{{ number_format($saber_revenue, 2) }}</td>
-                                            <td class="text-center">ايرادات خدمات سابر فاتورة رقم {{ $invoice->code }}</td>
+                                            <td class="text-center text-success fw-bold">
+                                                {{ number_format($saber_revenue, 2) }}</td>
+                                            <td class="text-center">ايرادات خدمات سابر فاتورة رقم {{ $invoice->code }}
+                                            </td>
                                         </tr>
                                     @endif
                                     @if ($storage_revenue > 0)
                                         <tr>
                                             <td class="text-center">ايرادات التخزين</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center text-success fw-bold">{{ number_format($storage_revenue, 2) }}</td>
+                                            <td class="text-center text-success fw-bold">
+                                                {{ number_format($storage_revenue, 2) }}</td>
                                             <td class="text-center">ايرادات تخزين فاتورة رقم {{ $invoice->code }}</td>
                                         </tr>
                                     @endif
                                     <tr>
                                         <td class="text-center">ضريبة القيمة المضافة من الايرادات</td>
                                         <td class="text-center">0.00</td>
-                                        <td class="text-center text-success fw-bold">{{ number_format($invoice->tax, 2) }}</td>
-                                        <td class="text-center">قيمة مضافة فاتورة {{ $invoice->type }} رقم {{ $invoice->code }}</td>
+                                        <td class="text-center text-success fw-bold">{{ number_format($invoice->tax, 2) }}
+                                        </td>
+                                        <td class="text-center">قيمة مضافة فاتورة {{ $invoice->type }} رقم
+                                            {{ $invoice->code }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center">{{ $invoice->customer->account->name ?? $invoice->customer->name }}</td>
-                                        <td class="text-center text-danger fw-bold">{{ number_format($invoice->total_amount, 2) }}</td>
+                                        <td class="text-center">
+                                            {{ $invoice->customer->account->name ?? $invoice->customer->name }}</td>
+                                        <td class="text-center text-danger fw-bold">
+                                            {{ number_format($invoice->total_amount, 2) }}</td>
                                         <td class="text-center">0.00</td>
-                                        <td class="text-center">استحقاق فاتورة {{ $invoice->type }} رقم {{ $invoice->code }}</td>
+                                        <td class="text-center">استحقاق فاتورة {{ $invoice->type }} رقم
+                                            {{ $invoice->code }}</td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="table-dark">
                                     <tr>
                                         <th class="text-center fw-bold">الإجمالي</th>
-                                        <th class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</th>
-                                        <th class="text-center fw-bold text-success">{{ number_format($invoice->total_amount, 2) }}</th>
+                                        <th class="text-center fw-bold text-danger">
+                                            {{ number_format($invoice->total_amount, 2) }}</th>
+                                        <th class="text-center fw-bold text-success">
+                                            {{ number_format($invoice->total_amount, 2) }}</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>
@@ -327,7 +341,8 @@
 
                         <div class="alert alert-warning mt-3">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            <strong>تنبيه:</strong> بعد ترحيل الفاتورة لن تتمكن من تعديلها أو حذفها إلا بعد حذف القيد المرتبط بها.
+                            <strong>تنبيه:</strong> بعد ترحيل الفاتورة لن تتمكن من تعديلها أو حذفها إلا بعد حذف القيد
+                            المرتبط بها.
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
@@ -343,7 +358,8 @@
 
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-4">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+            <div
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-{{ $invoice->isPaid == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
                         @if ($invoice->isPaid == 'تم الدفع')
@@ -354,13 +370,15 @@
                     </span>
                     @if ($invoice->isPaid == 'لم يتم الدفع' && $invoice->customer->contract)
                         @php
-                            $paymentDueDate = Carbon\Carbon::parse($invoice->date)->addDays($invoice->customer->contract->payment_grace_period ?? 0);
-                            $lateDays = Carbon\Carbon::now()->gt($paymentDueDate) ? Carbon\Carbon::parse($paymentDueDate)->diffInDays(Carbon\Carbon::now()) : 0;
+                            $paymentDueDate = Carbon\Carbon::parse($invoice->date)->addDays((int) ($invoice->customer->contract->payment_grace_period ?? 0));
+                            $lateDays = Carbon\Carbon::now()->gt($paymentDueDate)
+                                ? Carbon\Carbon::parse($paymentDueDate)->diffInDays(Carbon\Carbon::now())
+                                : 0;
                         @endphp
                         <span class="badge bg-primary fs-6 px-3 py-2">
                             <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $paymentDueDate->format('Y/m/d') }}
                         </span>
-                        @if($lateDays > 0)
+                        @if ($lateDays > 0)
                             <span class="badge bg-danger fs-6 px-3 py-2">
                                 <i class="fas fa-exclamation-circle me-1"></i>متأخر منذ {{ (int) $lateDays }} يوم
                             </span>
@@ -761,7 +779,8 @@
 
                                         <!-- Delete Attachment Modal -->
                                         <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}"
-                                            tabindex="-1" aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}"
+                                            tabindex="-1"
+                                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
@@ -844,7 +863,7 @@
             تم إنشاء هذه الفاتورة بواسطة <strong>{{ $invoice->made_by->name ?? 'غير محدد' }}</strong>
         </small>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const textarea = document.getElementById('notesTextarea');
