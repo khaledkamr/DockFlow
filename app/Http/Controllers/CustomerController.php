@@ -15,14 +15,21 @@ class CustomerController extends Controller
 {
     public function customers(Request $request) {
         $customers = Customer::query();
+        $type = $request->input('type', 'all');
         $search = $request->input('search', null);
+
+        if($type === 'with_contracts') {
+            $customers->whereHas('contract');
+        } elseif($type === 'without_contracts') {
+            $customers->whereDoesntHave('contract');
+        }
 
         if($search) {
             $customers->where(function($query) use ($search) {
                 $query->where('name', 'LIKE', '%' . $search . '%')
-                      ->orWhereHas('account', function($q) use ($search) {
-                          $q->where('code', 'LIKE', '%' . $search . '%');
-                      });
+                    ->orWhereHas('account', function($q) use ($search) {
+                        $q->where('code', 'LIKE', '%' . $search . '%');
+                    });
             });
         }
 

@@ -46,9 +46,15 @@
     <div class="col-12 col-sm-6 col-lg-4 d-none d-sm-block">
         <form method="GET" action="" class="d-flex flex-column">
             <label for="statusFilter" class="form-label text-dark fw-bold mb-2">تصفية حسب الحالة:</label>
-            <select id="statusFilter" name="role" class="form-select border-primary" onchange="this.form.submit()">
-                <option value="all" {{ request()->query('role') === 'all' || !request()->query('role') ? 'selected' : '' }}>
+            <select id="statusFilter" name="type" class="form-select border-primary" onchange="this.form.submit()">
+                <option value="all" {{ request()->query('type') === 'all' || !request()->query('type') ? 'selected' : '' }}>
                     جميع العملاء
+                </option>
+                <option value="with_contracts" {{ request()->query('type') === 'with_contracts' ? 'selected' : '' }}>
+                    عملاء بعقود
+                </option>
+                <option value="without_contracts" {{ request()->query('type') === 'without_contracts' ? 'selected' : '' }}>
+                    عملاء بدون عقود
                 </option>
             </select>
             @if (request()->query('search'))
