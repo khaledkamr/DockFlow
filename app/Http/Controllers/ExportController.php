@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AccountStatementExport;
+use App\Exports\AgingReportExport;
 use App\Exports\ContainersExport;
 use App\Exports\InvoicesExport;
 use App\Exports\JournalEntryExport;
@@ -709,6 +710,17 @@ class ExportController extends Controller
         return view('reports.user_activity_report', compact('activities', 'from', 'to'));
     }
 
+    public function printAgingReport(Request $request) {
+        $customers = Customer::all();
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+
+        $filters = $request->all();
+        logActivity('طباعة تقرير أعمار الذمم', "تم طباعة تقرير أعمار الذمم بتصفية: ", $filters);
+
+        return view('reports.aging_report', compact('customers', 'from', 'to'));
+    }
+
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
@@ -750,6 +762,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير نشاط المستخدمين الى اكسيل', "تم تصدير تقرير نشاط المستخدمين الى اكسيل بتصفية: ", $filters);
             return Excel::download(new UserActivityExport($filters), 'تقرير نشاط المستخدمين.xlsx');
+        } elseif($reportType == 'aging_report') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير أعمار الذمم الى اكسيل', "تم تصدير تقرير أعمار الذمم الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new AgingReportExport($filters), 'تقرير أعمار الذمم.xlsx');
         }
 
         abort(404);
