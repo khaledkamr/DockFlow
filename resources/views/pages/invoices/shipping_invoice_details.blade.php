@@ -254,14 +254,28 @@
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
-                <div>
+                <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-{{ $invoice->isPaid == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
                         @if ($invoice->isPaid == 'تم الدفع')
                             <i class="fas fa-check-circle me-1"></i>مدفوعة
                         @elseif($invoice->isPaid == 'لم يتم الدفع')
-                            <i class="fas fa-clock me-1"></i>عير مدفوعة
+                            <i class="fas fa-clock me-1"></i>غير مدفوعة
                         @endif
                     </span>
+                    @if ($invoice->isPaid == 'لم يتم الدفع' && $invoice->customer->contract)
+                        @php
+                            $paymentDueDate = Carbon\Carbon::parse($invoice->date)->addDays($invoice->customer->contract->payment_grace_period ?? 0);
+                            $lateDays = Carbon\Carbon::now()->gt($paymentDueDate) ? Carbon\Carbon::parse($paymentDueDate)->diffInDays(Carbon\Carbon::now()) : 0;
+                        @endphp
+                        <span class="badge bg-primary fs-6 px-3 py-2">
+                            <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $paymentDueDate->format('Y/m/d') }}
+                        </span>
+                        @if($lateDays > 0)
+                            <span class="badge bg-danger fs-6 px-3 py-2">
+                                <i class="fas fa-exclamation-circle me-1"></i>متأخر منذ {{ (int) $lateDays }} يوم
+                            </span>
+                        @endif
+                    @endif
                 </div>
                 <div class="d-flex flex-column flex-sm-row gap-2">
                     <a href="{{ route('print.invoice.shipping', $invoice->code) }}" target="_blank"
