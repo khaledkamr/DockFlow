@@ -444,6 +444,11 @@
                         href="{{ route('relation.drivers.vehicles') }}">
                         <i class="fa-solid fa-truck me-2"></i> النقــــل
                     </a>
+                    <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                        style="{{ request()->routeIs('users.activity.report') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                        href="{{ route('users.activity.report') }}">
+                        <i class="fa-solid fa-clipboard-list ms-1 me-2"></i> تقرير نشاط المستخدمين
+                    </a>
                 </div>
             </li>
 

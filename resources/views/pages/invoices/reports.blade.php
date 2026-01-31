@@ -150,12 +150,9 @@
                             </td>
                         </tr>
                     @else
-                        @php
-                            $index = 1;
-                        @endphp
                         @foreach ($invoices as $invoice)
                             <tr>
-                                <td class="text-center">{{ $index++ }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
                                     @if ($invoice->type == 'تخزين')
                                         <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">

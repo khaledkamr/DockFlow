@@ -59,6 +59,7 @@ Route::controller(UserController::class)->middleware('auth')->group(function() {
     Route::get('logs', 'logs')->name('admin.logs');
     Route::delete('logs/delete/', 'deleteLogs')->name('admin.logs.delete');
     Route::post('settings/timezone/update', 'updateTimezone')->name('settings.timezone.update');
+    Route::get('users/activity/report', 'userActivityReport')->name('users.activity.report');
 });
 
 Route::controller(CustomerController::class)->middleware('auth')->group(function () {
@@ -321,4 +322,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/expense/invoice/{code}', 'printExpenseInvoice')->name('print.expense.invoice');
     Route::get('/print/transport/reports', 'printTransportOrderReports')->name('print.transport.reports');
     Route::get('/print/trial/balance/reports', 'printTrialBalance')->name('print.trial.balance');
+    Route::get('/print/user/activity/reports', 'printUserActivityReport')->name('print.user.activity.reports');
 });

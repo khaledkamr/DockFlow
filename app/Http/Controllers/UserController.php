@@ -237,4 +237,20 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'تم تحديث المنطقة الزمنية بنجاح');
     }
+
+    public function userActivityReport(Request $request) {
+        $activities = UserLog::query()
+            ->when($request->action, fn($q) => $q->where('action', $request->action))
+            ->when($request->user_id, fn($q) => $q->where('user_id', $request->user_id))
+            ->when($request->from, fn($q) => $q->whereDate('created_at', '>=', $request->from))
+            ->when($request->to, fn($q) => $q->whereDate('created_at', '<=', $request->to))
+            ->where('company_id', Auth::user()->company_id)
+            ->paginate(100)->onEachSide(1)->withQueryString();
+
+        $users = User::all();
+        $actions = UserLog::select('action')->distinct()->pluck('action');
+        $perPage = 100;
+
+        return view('pages.users.user_activity_report', compact('activities', 'actions', 'users', 'perPage'));
+    }
 }

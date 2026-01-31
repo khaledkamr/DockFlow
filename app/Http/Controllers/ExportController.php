@@ -11,6 +11,7 @@ use App\Exports\ShippingPoliciesExport;
 use App\Exports\TransactionsExport;
 use App\Exports\TransportOrdersExport;
 use App\Exports\TrialBalanceExport;
+use App\Exports\UserActivityExport;
 use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
@@ -32,6 +33,7 @@ use App\Models\Policy;
 use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use App\Models\TransportOrder;
+use App\Models\UserLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Exp;
@@ -676,6 +678,37 @@ class ExportController extends Controller
         return view('reports.trial_balance', compact('company', 'trialBalance', 'from', 'to', 'debit_movements', 'credit_movements', 'zero_balances', 'with_balances'));
     }
 
+    public function printUserActivityReport(Request $request) {
+        $activities = [];
+
+        $user = $request->input('user', 'all');
+        $action = $request->input('action', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+
+        $activitiesQuery = UserLog::query();
+
+        if($user != 'all') {
+            $activitiesQuery->where('user_id', $user);
+        }
+        if($action != 'all') {
+            $activitiesQuery->where('action', 'like', '%' . $action . '%');
+        }
+        if($from) {
+            $activitiesQuery->whereDate('created_at', '>=', $from);
+        }
+        if($to) {
+            $activitiesQuery->whereDate('created_at', '<=', $to);
+        }
+
+        $activities = $activitiesQuery->with('user')->get();
+
+        $filters = $request->all();
+        logActivity('طباعة تقرير نشاط المستخدمين', "تم طباعة تقرير نشاط المستخدمين بتصفية: ", $filters);
+
+        return view('reports.user_activity_report', compact('activities', 'from', 'to'));
+    }
+
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
@@ -713,6 +746,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير بوالص التخزين الى اكسيل', "تم تصدير تقرير بوالص التخزين الى اكسيل بتصفية: ", $filters);
             return Excel::download(new PoliciesExport($filters), 'تقرير بوالص التخزين.xlsx');
+        } elseif($reportType == 'user_activity') {
+            $filters = $request->all();
+            logActivity('تصدير تقرير نشاط المستخدمين الى اكسيل', "تم تصدير تقرير نشاط المستخدمين الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new UserActivityExport($filters), 'تقرير نشاط المستخدمين.xlsx');
         }
 
         abort(404);
