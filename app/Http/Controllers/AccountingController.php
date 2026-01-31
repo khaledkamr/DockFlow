@@ -12,6 +12,7 @@ use App\Http\Requests\JournalRequest;
 use App\Http\Requests\VoucherRequest;
 use App\Models\Attachment;
 use App\Models\Company;
+use App\Models\Customer;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -810,6 +811,14 @@ class AccountingController extends Controller
             }
             
             return view('pages.accounting.reports', compact('accounts', 'trialBalance'));
+        } elseif($view == 'قائمة الدخل') { 
+            $customers = Customer::all();
+
+            return view('pages.accounting.reports', compact('customers'));
+        } elseif($view == 'أعمار الذمم') { 
+            $customers = Customer::all();
+
+            return view('pages.accounting.reports', compact('customers'));
         }
     }
 }

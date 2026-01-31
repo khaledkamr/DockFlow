@@ -114,7 +114,6 @@
     </div>
 </div>
 
-
 <script>
     $(document).ready(function() {
         $('#account_id').select2({

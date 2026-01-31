@@ -48,4 +48,62 @@ class Customer extends Model
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function agingBalance($from, $to, int $minDays, ?int $maxDays = null) {
+        if (!$this->contract) {
+            return 0;
+        }
+
+        return $this->invoices()
+            ->where('isPaid', 'لم يتم الدفع')
+            ->whereBetween('date', [$from, $to])
+            ->get()
+            ->filter(function ($invoice) use ($minDays, $maxDays) {
+                $paymentDueDate = \Carbon\Carbon::parse($invoice->date)
+                    ->addDays((int) ($this->contract->payment_grace_period ?? 0));
+                
+                $lateDays = \Carbon\Carbon::now()->gt($paymentDueDate) 
+                    ? \Carbon\Carbon::parse($paymentDueDate)->diffInDays(\Carbon\Carbon::now()) 
+                    : 0;
+                
+                return $lateDays >= $minDays && ($maxDays === null || $lateDays <= $maxDays);
+            })
+            ->sum('total_amount');
+    }
+
+    public function agingBalanceCount($from, $to, int $minDays, ?int $maxDays = null) {
+        if (!$this->contract) {
+            return 0;
+        }
+
+        return $this->invoices()
+            ->where('isPaid', 'لم يتم الدفع')
+            ->whereBetween('date', [$from, $to])
+            ->get()
+            ->filter(function ($invoice) use ($minDays, $maxDays) {
+                $paymentDueDate = \Carbon\Carbon::parse($invoice->date)
+                    ->addDays((int) ($this->contract->payment_grace_period ?? 0));
+                
+                $lateDays = \Carbon\Carbon::now()->gt($paymentDueDate) 
+                    ? \Carbon\Carbon::parse($paymentDueDate)->diffInDays(\Carbon\Carbon::now()) 
+                    : 0;
+                
+                return $lateDays >= $minDays && ($maxDays === null || $lateDays <= $maxDays);
+            })
+            ->count();
+    }
+
+    public function totalAgingBalance($from, $to) {
+        return $this->invoices()
+            ->where('isPaid', 'لم يتم الدفع')
+            ->whereBetween('date', [$from, $to])
+            ->sum('total_amount');
+    }
+
+    public function totalAgingBalanceCount($from, $to) {
+        return $this->invoices()
+            ->where('isPaid', 'لم يتم الدفع')
+            ->whereBetween('date', [$from, $to])
+            ->count();
+    }
 }

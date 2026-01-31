@@ -30,6 +30,9 @@
     <li class="nav-item">
         <a class="nav-link {{ request()->query('view') === 'قائمة الدخل' ? 'active' : '' }}" href="?view=قائمة الدخل">قائمة الدخل</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link {{ request()->query('view') === 'أعمار الذمم' ? 'active' : '' }}" href="?view=أعمار الذمم">أعمار الذمم</a>
+    </li>
 </ul>
 
 @if(request()->query('view', 'كشف حساب') == 'كشف حساب')
@@ -38,12 +41,11 @@
     @include('pages.accounting.reports.journal_entries')
 @elseif(request()->query('view') == 'ميزان مراجعة')
     @include('pages.accounting.reports.trial_balance')
-@elseif(request()->query('view') == 'سند صرف نقدي')
-    @include('pages.accounting.vouchers.cash_receipt')
-@elseif(request()->query('view') == 'سند صرف بشيك')
-    @include('pages.accounting.vouchers.cheque_receipt')
-@elseif(request()->query('view') == 'الصندوق')
-    @include('pages.accounting.vouchers.box')
+@elseif(request()->query('view') == 'قائمة الدخل')
+    @include('pages.accounting.reports.income_statement')
+@elseif(request()->query('view') == 'أعمار الذمم')
+    @include('pages.accounting.reports.aging_report')
 @endif
+
 <div class="mb-4"></div>
 @endsection
