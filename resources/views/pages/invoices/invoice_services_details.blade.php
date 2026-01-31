@@ -402,13 +402,13 @@
                                 <tr>
                                     <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                     <td class="text-center fw-bold">
-                                        <a href="{{ route('policies.services.details', $container->policies->where('type', 'خدمات')->first()->id) }}"
+                                        <a href="{{ route('policies.services.details', $container->policies->where('type', 'خدمات')->first()) }}"
                                             class="text-decoration-none">
                                             {{ $container->policies->where('type', 'خدمات')->first()->code ?? '---' }}
                                         </a>
                                     </td>
                                     <td class="text-center fw-bold">
-                                        <a href="{{ route('container.details', $container->id) }}"
+                                        <a href="{{ route('container.details', $container) }}"
                                             class="text-decoration-none">
                                             {{ $container->code }}
                                         </a>
