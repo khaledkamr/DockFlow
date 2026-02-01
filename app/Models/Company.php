@@ -13,9 +13,9 @@ class Company extends Model
         'name',
         'branch',
         'logo',
-        'CR',
-        'TIN',
-        'vatNumber',
+        'CR',           // السجل التجاري
+        'TIN',          // الرقم الموحد
+        'vatNumber',    // الرقم الضريبي
         'national_address',
         'phone',
         'email'

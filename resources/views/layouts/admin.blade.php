@@ -416,7 +416,7 @@
                 <a class="nav-link fw-semibold rounded px-3 py-2"
                     style="{{ request()->routeIs('admin.dashboard') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                     href="{{ route('admin.dashboard') }}">
-                    <i class="fa-solid fa-house ms-2 me-2"></i> الصفحة الرئيسيـــة
+                    <i class="fa-solid fa-house ms-1 me-2"></i> الصفحة الرئيسيـــة
                 </a>
             </li>
             <li class="nav-item mb-1">
@@ -430,7 +430,7 @@
                 <a class="nav-link fw-semibold rounded px-3 py-2"
                     style="{{ request()->routeIs('admin.dashboard.users') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                     href="{{ route('admin.dashboard.users') }}">
-                    <i class="fa-solid fa-users ms-2 me-2"></i> المستخدمون
+                    <i class="fa-solid fa-users ms-1 me-2"></i> المستخدمون
                 </a>
             </li>
         </ul>

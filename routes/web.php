@@ -38,6 +38,22 @@ Route::controller(AdminController::class)->middleware('auth')->group(function ()
     Route::get('admin/companies', 'companies')->name('admin.companies');
     Route::post('admin/companies/store', 'storeCompany')->name('admin.companies.store');
     Route::get('admin/companies/{company:uuid}', 'companyDetails')->name('admin.company.details');
+    Route::put('admin/companies/update/{company:uuid}', 'updateCompany')->name('admin.companies.update');
+    Route::delete('admin/companies/delete/{company:uuid}', 'deleteCompany')->name('admin.companies.delete');
+
+    Route::post('admin/companies/{company:uuid}/seed-accounts', 'seedPrimaryAccounts')->name('admin.company.seed.accounts');
+    Route::post('admin/companies/{company:uuid}/seed-container-types', 'seedContainerTypes')->name('admin.company.seed.container-types');
+    Route::post('admin/companies/{company:uuid}/seed-roles', 'seedRoles')->name('admin.company.seed.roles');
+
+    Route::post('admin/companies/{company:uuid}/users/store', 'storeCompanyUser')->name('admin.company.users.store');
+    Route::patch('admin/companies/{company:uuid}/users/{user:uuid}', 'updateCompanyUser')->name('admin.company.users.update');
+    Route::delete('admin/companies/{company:uuid}/users/{user:uuid}', 'deleteCompanyUser')->name('admin.company.users.delete');
+
+    Route::post('admin/companies/{company:uuid}/roles/store', 'storeCompanyRole')->name('admin.company.roles.store');
+    Route::put('admin/companies/{company:uuid}/roles/{role}', 'updateCompanyRole')->name('admin.company.roles.update');
+    Route::delete('admin/companies/{company:uuid}/roles/{role}', 'deleteCompanyRole')->name('admin.company.roles.delete');
+    Route::post('admin/companies/{company:uuid}/permissions/store', 'storeCompanyPermission')->name('admin.company.permissions.store');
+    
     Route::get('admin/users', 'users')->name('admin.dashboard.users'); 
 });
 

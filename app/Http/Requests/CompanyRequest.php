@@ -16,9 +16,9 @@ class CompanyRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'branch' => 'required|max:255',
-            'CR' => 'required',
-            'TIN' => 'required',
-            'vatNumber' => 'required',
+            'CR' => 'nullable|max:255',
+            'TIN' => 'nullable|max:255',
+            'vatNumber' => 'nullable|max:255',
             'national_address' => 'required',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|max:15',

@@ -373,15 +373,12 @@
                                 </div>
 
                                 <div class="d-flex gap-2">
-                                    <form
-                                        action="{{ route('companies.toggle.module', ['company' => $company, 'moduleId' => $module->id]) }}"
+                                    <form action="{{ route('companies.toggle.module', ['company' => $company, 'moduleId' => $module->id]) }}"
                                         method="POST" class="flex-fill">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-light shadow-sm w-100 fw-semibold"
-                                            style="border-radius: 8px; padding: 10px;">
-                                            <i
-                                                class="fas {{ $module->pivot->is_active ? 'fa-toggle-off' : 'fa-toggle-on' }} me-2"></i>
+                                        <button type="submit" class="btn btn-light shadow-sm w-100 fw-semibold" style="border-radius: 8px; padding: 10px;">
+                                            <i class="fas {{ $module->pivot->is_active ? 'fa-toggle-off' : 'fa-toggle-on' }} me-2"></i>
                                             {{ $module->pivot->is_active ? 'إلغاء التفعيل' : 'تفعيل' }}
                                         </button>
                                     </form>

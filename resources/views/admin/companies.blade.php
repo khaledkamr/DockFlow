@@ -23,7 +23,7 @@
         }
     </style>
 
-    <h1 class="mb-3 mb-md-4 fs-3 fs-md-1">الشركـــات</h1>
+    <h1 class="mb-4">الشركـــات</h1>
 
     <!-- Search and Filter Section -->
     <div class="row g-3 mb-4">
@@ -75,6 +75,30 @@
                                 @enderror
                             </div>
                             <div class="col-12 col-md-6">
+                                <label for="branch" class="form-label">اسم الفرع</label>
+                                <input type="text" class="form-control border-primary" id="branch" name="branch"
+                                    value="{{ old('branch') }}" required>
+                                @error('branch')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="CR" class="form-label">السجل التجاري</label>
+                                <input type="text" class="form-control border-primary" id="CR" name="CR"
+                                    value="{{ old('CR') }}">
+                                @error('CR')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="vatNumber" class="form-label">الرقم الضريبي</label>
+                                <input type="text" class="form-control border-primary" id="vatNumber" name="vatNumber"
+                                    value="{{ old('vatNumber') }}">
+                                @error('vatNumber')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-6">
                                 <label for="email" class="form-label">البريد الإلكتروني</label>
                                 <input type="email" class="form-control border-primary" id="email" name="email"
                                     value="{{ old('email') }}">
@@ -82,8 +106,6 @@
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="row g-3 mb-3">
                             <div class="col-12 col-md-6">
                                 <label for="phone" class="form-label">رقم الهاتف</label>
                                 <input type="text" class="form-control border-primary" id="phone" name="phone"
@@ -100,9 +122,7 @@
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                        <div class="row g-3 mb-3">
-                            <div class="col-12">
+                            <div class="col-12 col-md-6">
                                 <label for="logo" class="form-label">شعار الشركة</label>
                                 <input type="file" class="form-control border-primary" id="logo" name="logo"
                                     accept="image/*">
@@ -156,7 +176,11 @@
                                         class="rounded" style="width: 40px; height: 40px; object-fit: contain;">
                                 @endif
                             </td>
-                            <td class="text-center fw-bold">{{ $company->name }}</td>
+                            <td class="text-center fw-bold">
+                                <a href="{{ route('admin.company.details', $company) }}" class="text-decoration-none text-dark">
+                                    {{ $company->name }}
+                                </a>
+                            </td>
                             <td class="text-center text-nowrap">{{ $company->email }}</td>
                             <td class="text-center text-nowrap">{{ $company->phone }}</td>
                             <td class="text-center">{{ $company->national_address }}</td>
@@ -183,14 +207,13 @@
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form action="" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('admin.companies.update', $company) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-body text-dark">
                                             <div class="row g-3 mb-3">
                                                 <div class="col-12 col-md-6">
-                                                    <label for="name{{ $company->id }}" class="form-label">اسم
-                                                        الشركة</label>
+                                                    <label for="name{{ $company->id }}" class="form-label">اسم الشركة</label>
                                                     <input type="text" class="form-control border-primary"
                                                         id="name{{ $company->id }}" name="name"
                                                         value="{{ $company->name }}" required>
@@ -199,8 +222,34 @@
                                                     @enderror
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="email{{ $company->id }}" class="form-label">البريد
-                                                        الإلكتروني</label>
+                                                    <label for="branch{{ $company->id }}" class="form-label">اسم الفرع</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="branch{{ $company->id }}" name="branch"
+                                                        value="{{ $company->branch }}" required>
+                                                    @error('branch')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="CR{{ $company->id }}" class="form-label">السجل التجاري</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="CR{{ $company->id }}" name="CR"
+                                                        value="{{ $company->CR }}" required>
+                                                    @error('CR')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="vatNumber{{ $company->id }}" class="form-label">الرقم الضريبي</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="vatNumber{{ $company->id }}" name="vatNumber"
+                                                        value="{{ $company->vatNumber }}" required>
+                                                    @error('vatNumber')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="email{{ $company->id }}" class="form-label">البريد الإلكتروني</label>
                                                     <input type="email" class="form-control border-primary"
                                                         id="email{{ $company->id }}" name="email"
                                                         value="{{ $company->email }}">
@@ -208,11 +257,8 @@
                                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            </div>
-                                            <div class="row g-3 mb-3">
                                                 <div class="col-12 col-md-6">
-                                                    <label for="phone{{ $company->id }}" class="form-label">رقم
-                                                        الهاتف</label>
+                                                    <label for="phone{{ $company->id }}" class="form-label">رقم الهاتف</label>
                                                     <input type="text" class="form-control border-primary"
                                                         id="phone{{ $company->id }}" name="phone"
                                                         value="{{ $company->phone }}">
@@ -221,8 +267,7 @@
                                                     @enderror
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="national_address{{ $company->id }}"
-                                                        class="form-label">العنوان الوطني</label>
+                                                    <label for="national_address{{ $company->id }}" class="form-label">العنوان الوطني</label>
                                                     <input type="text" class="form-control border-primary"
                                                         id="national_address{{ $company->id }}" name="national_address"
                                                         value="{{ $company->national_address }}">
@@ -230,18 +275,16 @@
                                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-                                            </div>
-                                            <div class="row g-3 mb-3">
-                                                <div class="col-12">
+                                                <div class="col-12 col-md-6">
                                                     <label for="logo{{ $company->id }}" class="form-label">شعار الشركة</label>
-                                                    @if ($company->logo)
-                                                        <div class="mb-2">
-                                                            <img src="{{ asset('storage/' . $company->logo) }}" alt="{{ $company->name }}" class="rounded border"
-                                                                style="width: 80px; height: 80px; object-fit: contain;">
-                                                        </div>
-                                                    @endif
-                                                    <input type="file" class="form-control border-primary" id="logo{{ $company->id }}" name="logo" accept="image/*">
-                                                    <small class="text-muted">اتركه فارغاً للإبقاء على الشعار الحالي</small>
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        @if ($company->logo)
+                                                            <img src="{{ asset('storage/' . $company->logo) }}"
+                                                                alt="{{ $company->name }}" class="rounded me-2"
+                                                                style="width: 40px; height: 40px; object-fit: contain;">
+                                                        @endif
+                                                        <input type="file" class="form-control border-primary" id="logo{{ $company->id }}" name="logo" accept="image/*">
+                                                    </div>
                                                     @error('logo')
                                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                                     @enderror
@@ -274,10 +317,14 @@
                                     <div class="modal-body text-center text-dark px-4 py-4">
                                         هل أنت متأكد من حذف الشركة <strong>{{ $company->name }}</strong>؟
                                     </div>
+                                    <div class="alert alert-danger mx-3 mb-3 d-flex align-items-center fw-bold" role="alert">
+                                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                                        <small>تنبيه: سيتم حذف جميع البيانات المرتبطة بهذه الشركة نهائياً.</small>
+                                    </div>
                                     <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
                                         <button type="button" class="btn btn-secondary fw-bold order-1"
                                             data-bs-dismiss="modal">إلغاء</button>
-                                        <form action="" method="POST" class="order-2">
+                                        <form action="{{ route('admin.companies.delete', $company) }}" method="POST" class="order-2">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger fw-bold">حذف</button>

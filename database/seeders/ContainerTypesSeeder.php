@@ -14,12 +14,12 @@ class ContainerTypesSeeder extends Seeder
 
         $types = [
             [
-                'name' => 'فئة 20',
+                'name' => 'حاوية 20',
                 'daily_price' => 0,
                 'company_id' => $company_id,
             ],
             [
-                'name' => 'فئة 40',
+                'name' => 'حاوية 40',
                 'daily_price' => 0,
                 'company_id' => $company_id,
             ],
