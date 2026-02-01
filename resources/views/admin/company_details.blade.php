@@ -1186,10 +1186,8 @@
                                                                     name="name" value="{{ $role->name }}" required>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <div
-                                                                    class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center mb-2 gap-2">
-                                                                    <label class="form-label fw-bold mb-0">الصلاحيات
-                                                                        المتاحة</label>
+                                                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center mb-2 gap-2">
+                                                                    <label class="form-label fw-bold mb-0">الصلاحيات المتاحة</label>
                                                                     <div class="d-flex gap-2">
                                                                         <button type="button"
                                                                             class="btn btn-outline-primary btn-sm"
@@ -1212,8 +1210,7 @@
                                                                         @forelse($permissions as $permission)
                                                                             <div class="col-12 col-md-6">
                                                                                 <div class="form-check">
-                                                                                    <input
-                                                                                        class="form-check-input permission-checkbox-{{ $role->id }}"
+                                                                                    <input class="form-check-input permission-checkbox-{{ $role->id }}"
                                                                                         type="checkbox"
                                                                                         value="{{ $permission->id }}"
                                                                                         id="edit_perm_{{ $role->id }}_{{ $permission->id }}"
@@ -1227,16 +1224,14 @@
                                                                             </div>
                                                                         @empty
                                                                             <div class="col-12">
-                                                                                <p class="text-muted text-center mb-0">لا
-                                                                                    توجد صلاحيات متاحة</p>
+                                                                                <p class="text-muted text-center mb-0">لا توجد صلاحيات متاحة</p>
                                                                             </div>
                                                                         @endforelse
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div
-                                                            class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                        </div> 
+                                                        <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
                                                             <button type="submit"
                                                                 class="btn btn-primary fw-bold order-1 order-sm-2">
                                                                 تحديث الوظيفة
@@ -1251,8 +1246,7 @@
                                         </div>
 
                                         <!-- Delete Role Modal -->
-                                        <div class="modal fade" id="deleteCompanyRoleModal{{ $role->id }}"
-                                            tabindex="-1"
+                                        <div class="modal fade" id="deleteCompanyRoleModal{{ $role->id }}" tabindex="-1"
                                             aria-labelledby="deleteCompanyRoleModalLabel{{ $role->id }}"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
@@ -1267,19 +1261,14 @@
                                                             data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body text-center">
-                                                        <i
-                                                            class="fa-solid fa-exclamation-triangle text-danger fa-3x mb-3"></i>
+                                                        <i class="fa-solid fa-exclamation-triangle text-danger fa-3x mb-3"></i>
                                                         <p class="fs-5 mb-1">هل أنت متأكد من حذف هذه الوظيفة؟</p>
-                                                        <p class="text-muted">الوظيفة:
-                                                            <strong>{{ $role->name }}</strong></p>
+                                                        <p class="text-muted">الوظيفة: <strong>{{ $role->name }}</strong></p>
                                                     </div>
-                                                    <div
-                                                        class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
-                                                        <button type="button"
-                                                            class="btn btn-secondary fw-bold order-2 order-sm-1"
+                                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
+                                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1"
                                                             data-bs-dismiss="modal">إلغاء</button>
-                                                        <form
-                                                            action="{{ route('admin.company.roles.delete', [$company, $role]) }}"
+                                                        <form action="{{ route('admin.company.roles.delete', [$company, $role]) }}"
                                                             method="POST" class="order-1 order-sm-2">
                                                             @csrf
                                                             @method('DELETE')

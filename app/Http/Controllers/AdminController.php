@@ -249,7 +249,7 @@ class AdminController extends Controller
     }
 
     public function updateCompanyRole(Request $request, Company $company, Role $role) {
-        if ($role->company_id !== $company->id) {
+        if ($role->company_id != $company->id) {
             return redirect()->back()->with('error', 'الوظيفة لا تنتمي لهذه الشركة');
         }
 
