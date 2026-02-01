@@ -385,7 +385,7 @@ class PolicyController extends Controller
         if(Gate::denies('حذف بوليصة تخزين')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية حذف هذه البوليصة');
         }
-        if($policy->containers->first()->invoices()->where('type', 'تخزين')->first()) {
+        if($policy->containers->isNotEmpty() && $policy->containers->first()->invoices()->where('type', 'تخزين')->first()) {
             return redirect()->back()->with('error', 'لا يمكن حذف هذه البوليصة لارتباطها بفاتورة تخزين');
         }
 
