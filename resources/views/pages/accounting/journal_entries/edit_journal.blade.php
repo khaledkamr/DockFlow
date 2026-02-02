@@ -72,12 +72,12 @@
             <table class="table" id="journal-entries-table">
                 <thead>
                     <tr class="table-dark">
-                        <th class="text-center" width="28%">اسم الحساب</th>
-                        <th class="text-center" width="12%">مديــن</th>
-                        <th class="text-center" width="12%">دائــن</th>
-                        <th class="text-center" width="15%">مركز التكلفة</th>
-                        <th class="text-center" width="28%">البيـــان</th>
-                        <th class="text-center" width="5%">إجراءات</th>
+                        <th class="text-center" style="min-width: 400px">اسم الحساب</th>
+                        <th class="text-center" style="min-width: 150px">مديــن</th>
+                        <th class="text-center" style="min-width: 150px">دائــن</th>
+                        <th class="text-center" style="min-width: 300px">مركز التكلفة</th>
+                        <th class="text-center" style="min-width: 400px">البيـــان</th>
+                        <th class="text-center" style="min-width: 50px">إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>

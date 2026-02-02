@@ -83,8 +83,8 @@
                     <tr class="table-dark">
                         <th class="text-center" style="min-width: 10px">#</th>
                         <th class="text-center" style="min-width: 400px">اسم الحساب</th>
-                        <th class="text-center" style="min-width: 100px">مديــن</th>
-                        <th class="text-center" style="min-width: 100px">دائــن</th>
+                        <th class="text-center" style="min-width: 150px">مديــن</th>
+                        <th class="text-center" style="min-width: 150px">دائــن</th>
                         <th class="text-center" style="min-width: 300px">مركز التكلفة</th>
                         <th class="text-center" style="min-width: 400px">البيـــان</th>
                         <th class="text-center" style="min-width: 50px">إجراءات</th>

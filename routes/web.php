@@ -340,5 +340,6 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/trial/balance/reports', 'printTrialBalance')->name('print.trial.balance');
     Route::get('/print/user/activity/reports', 'printUserActivityReport')->name('print.user.activity.reports');
     Route::get('/print/aging/report', 'printAgingReport')->name('print.aging.report');
+    Route::get('/print/cost_center/statement/report', 'printCostCenterStatement')->name('print.cost.center.statement');
     Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\AccountStatementExport;
 use App\Exports\AgingReportExport;
 use App\Exports\ContainersExport;
+use App\Exports\CostCenterStatementExport;
 use App\Exports\InvoicesExport;
 use App\Exports\JournalEntryExport;
 use App\Exports\PoliciesExport;
@@ -27,6 +28,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\QrHelper;
 use App\Helpers\ArabicNumberConverter;
 use App\Models\Container_type;
+use App\Models\CostCenter;
 use App\Models\Customer;
 use App\Models\ExpenseInvoice;
 use App\Models\InvoiceStatement;
@@ -733,6 +735,53 @@ class ExportController extends Controller
         return view('reports.aging_report', compact('customers', 'from', 'to'));
     }
 
+    public function printCostCenterStatement(Request $request) {
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $costCenter = $request->input('cost_center', null);
+        $cost_center = null;
+
+        if($costCenter) {
+            $cost_center = CostCenter::find($costCenter);
+            if($cost_center->children()->count() > 0) {
+                $costCenterIDs = $cost_center->leafsChildren();
+            } else {
+                $costCenterIDs = [$cost_center->id];
+            }
+        } else {
+            $costCenterIDs = [];
+        }
+        
+        $from = $request->input('from');
+        $to = $request->input('to');
+
+        if(!$costCenter) {
+            $statement = collect();
+        } else {
+            $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+                ->select('journal_entry_lines.*')
+                ->whereIn('cost_center_id', $costCenterIDs)
+                ->when($from && $to, function($query) use($from, $to) {
+                    return $query->whereBetween('journal_entries.date', [$from, $to]);
+                })
+                ->with(['journal', 'account', 'costCenter'])
+                ->orderBy('journal_entries.date')
+                ->orderBy('journal_entries.code')
+                ->get();
+        }
+
+        $filters = $request->all();
+        logActivity('طباعة كشف حساب مركز تكلفة', "تم طباعة كشف حساب مركز تكلفة بتصفية: ", $filters);
+
+        return view('reports.cost_center_statement', compact(
+            'from',
+            'to',
+            'costCenter',
+            'statement',
+            'cost_center'
+        ));
+    }
+
     public function excel($reportType, Request $request) {
         if($reportType == 'containers') {
             $filters = $request->all();
@@ -778,6 +827,10 @@ class ExportController extends Controller
             $filters = $request->all();
             logActivity('تصدير تقرير أعمار الذمم الى اكسيل', "تم تصدير تقرير أعمار الذمم الى اكسيل بتصفية: ", $filters);
             return Excel::download(new AgingReportExport($filters), 'تقرير أعمار الذمم.xlsx');
+        } elseif($reportType == 'cost_center_statement') {
+            $filters = $request->all();
+            logActivity('تصدير كشف مركز تكلفة الى اكسيل', "تم تصدير كشف مركز تكلفة الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new CostCenterStatementExport($filters), 'كشف مركز تكلفة.xlsx');
         }
 
         abort(404);

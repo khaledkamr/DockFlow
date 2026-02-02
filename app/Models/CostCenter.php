@@ -27,6 +27,18 @@ class CostCenter extends Model
         return $this->hasMany(CostCenter::class, 'parent_id');
     }
 
+    public function leafsChildren() {
+        $IDs = [];
+        foreach ($this->children as $child) {
+            if ($child->children->isEmpty()) {
+                $IDs[] = $child->id;
+            } else {
+                $IDs = array_merge($IDs, $child->leafsChildren());
+            }
+        }
+        return $IDs;
+    }
+
     public function expenseInvoiceItems() {
         return $this->hasMany(ExpenseInvoiceItems::class, 'cost_center_id');
     }

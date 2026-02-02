@@ -818,6 +818,40 @@ class AccountingController extends Controller
                 'statement',
                 'opening_balance'
             ));
+        } elseif($view == 'كشف مركز تكلفة') {
+            $costCenters = CostCenter::all();
+            $costCenter = $request->input('cost_center', null);
+
+            if($costCenter) {
+                $cost_center = CostCenter::find($costCenter);
+                if($cost_center->children()->count() > 0) {
+                    $costCenterIDs = $cost_center->leafsChildren();
+                } else {
+                    $costCenterIDs = [$cost_center->id];
+                }
+            } else {
+                $costCenterIDs = [];
+            }
+            
+            $from = $request->input('from');
+            $to = $request->input('to');
+
+            if(!$costCenter) {
+                $statement = collect();
+            } else {
+                $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+                    ->select('journal_entry_lines.*')
+                    ->whereIn('cost_center_id', $costCenterIDs)
+                    ->when($from && $to, function($query) use($from, $to) {
+                        return $query->whereBetween('journal_entries.date', [$from, $to]);
+                    })
+                    ->with(['journal', 'account', 'costCenter'])
+                    ->orderBy('journal_entries.date')
+                    ->orderBy('journal_entries.code')
+                    ->get();
+            }
+
+            return view('pages.accounting.reports', compact('costCenters', 'statement'));
         } elseif($view == 'ميزان مراجعة') {
             $accounts = Account::whereIn('level', [1, 2, 3, 4])->get();
             if($request->query('type') && $request->query('type') != 'all') {
@@ -830,7 +864,6 @@ class AccountingController extends Controller
             return view('pages.accounting.reports', compact('accounts', 'trialBalance'));
         } elseif($view == 'قائمة الدخل') { 
             $customers = Customer::all();
-
             return view('pages.accounting.reports', compact('customers'));
         } elseif($view == 'أعمار الذمم') { 
             $customers = Customer::all();

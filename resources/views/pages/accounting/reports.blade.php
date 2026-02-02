@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'تقارير')
+@section('title', request()->query('view', 'كشف حساب'))
 
 @section('content')
 <style>
@@ -22,6 +22,9 @@
         <a class="nav-link {{ request()->query('view', 'كشف حساب') === 'كشف حساب' ? 'active' : '' }}" href="?view=كشف حساب">كشف حساب</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link {{ request()->query('view') === 'كشف مركز تكلفة' ? 'active' : '' }}" href="?view=كشف مركز تكلفة">كشف مركز تكلفة</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {{ request()->query('view') === 'تقارير القيود' ? 'active' : '' }}" href="?view=تقارير القيود">تقارير القيود</a>
     </li>
     <li class="nav-item">
@@ -37,6 +40,8 @@
 
 @if(request()->query('view', 'كشف حساب') == 'كشف حساب')
     @include('pages.accounting.reports.account_statement')
+@elseif(request()->query('view') == 'كشف مركز تكلفة')
+    @include('pages.accounting.reports.cost_center_statement')
 @elseif(request()->query('view') == 'تقارير القيود')
     @include('pages.accounting.reports.journal_entries')
 @elseif(request()->query('view') == 'ميزان مراجعة')
