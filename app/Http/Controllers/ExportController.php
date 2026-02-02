@@ -48,45 +48,7 @@ class ExportController extends Controller
         $to = $request->input('to');
         $company = Auth::user()->company;
         
-        if ($reportType == 'account_statement') {
-            $account = Account::findOrFail($id);
-            $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
-                ->select('journal_entry_lines.*')
-                ->where('account_id', $account->id)
-                ->orderBy('journal_entries.date')
-                ->orderBy('journal_entries.code')
-                ->get();
-
-            $opening_balance = 0;
-            if($from) {
-                $opening_lines = $statement->filter(function($line) use($from) {
-                    $date = Carbon::parse($line->journal->date);
-                    return $date->lt(Carbon::parse($from));
-                });
-                foreach($opening_lines as $line) {
-                    $opening_balance += $line->debit - $line->credit;
-                }
-            }
-
-            if($from && $to) {
-                $statement = $statement->filter(function($line) use($from, $to) {
-                    $date = Carbon::parse($line->journal->date);
-                    return $date->between($from, $to);
-                });
-            }
-
-            $filters = $request->all();
-            logActivity('طباعة كشف حساب', "تم طباعة كشف الحساب بتصفية: ", $filters);
-
-            return view('reports.account_statement', compact(
-                'statement', 
-                'company', 
-                'from', 
-                'to', 
-                'account',
-                'opening_balance'
-            ));
-        } elseif($reportType == 'journal_entries') {
+        if($reportType == 'journal_entries') {
             $entries = JournalEntry::all();
             if($type && $type !== 'all') {
                 $entries = $entries->filter(function($entry) use($type) {
@@ -137,6 +99,56 @@ class ExportController extends Controller
             logActivity('طباعة قيد يومية', "تم طباعة القيد اليومي رقم " . $journal->code);
             return view('reports.journal_entry', compact('company', 'journal'));
         }
+    }
+
+    public function printAccountStatement(Request $request) {
+        $from = $request->input('from');
+        $to = $request->input('to');
+        $account = $request->input('account', null);
+        $costCenter = $request->input('cost_center', null);
+        if(!$account && !$costCenter) {
+            $statement = collect();
+        } else {
+            $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+                ->select('journal_entry_lines.*')
+                ->when($account, function($query, $account) {
+                    return $query->where('account_id', $account);
+                })
+                ->when($costCenter, function($query, $costCenter) {
+                    return $query->where('cost_center_id', $costCenter);
+                })
+                ->with(['journal', 'account', 'costCenter'])
+                ->orderBy('journal_entries.date')
+                ->orderBy('journal_entries.code')
+                ->get();
+        }
+
+        $opening_balance = 0;
+        if($from) {
+            $opening_lines = $statement->filter(function($line) use($from) {
+                $date = Carbon::parse($line->journal->date);
+                return $date->lt(Carbon::parse($from));
+            });
+            foreach($opening_lines as $line) {
+                $opening_balance += $line->debit - $line->credit;
+            }
+        }
+
+        $opening_balance = number_format($opening_balance, 2, '.', '');
+
+        if($from && $to) {
+            $statement = $statement->filter(function($line) use($from, $to) {
+                $date = Carbon::parse($line->journal->date);
+                return $date->between($from, $to);
+            });
+        }
+        
+        return view('reports.account_statement', compact(
+            'from',
+            'to',
+            'statement',
+            'opening_balance'
+        ));
     }
 
     public function printContract($id) {

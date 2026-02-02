@@ -5,7 +5,7 @@
 @section('content')
 
 <h5 class="fw-bold text-center mt-3">
-    كشف حساب: {{ $account->name }} ({{ $account->code }})
+    كشف حساب {{ $account->name ?? '' }} {{ $account->code ?? '' }}
 </h5>
 <p class="text-center fw-bold">من الفترة ({{ Carbon\Carbon::parse($from)->format('Y/m/d') }}) إلى الفترة ({{ Carbon\Carbon::parse($to)->format('Y/m/d') }})</p>
 
@@ -17,6 +17,7 @@
                     <th class="text-center">التاريخ</th>
                     <th class="text-center">رقم القيد</th>
                     <th class="text-center">نوع القيد</th>
+                    <th class="text-center">مركز التكلفة</th>
                     <th class="text-center">البيان</th>
                     <th class="text-center">مدين</th>
                     <th class="text-center">دائن</th>
@@ -25,6 +26,7 @@
             </thead>
             <tbody>
                 <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -45,14 +47,15 @@
                             <td>{{ Carbon\Carbon::parse($line->journal->date)->format('Y/m/d') }}</td>
                             <td>{{ $line->journal->code }}</td>
                             <td>{{ $line->journal->voucher->type ?? 'قيد يومي' }}</td>
+                            <td>{{ $line->costCenter->name ?? '-' }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ number_format($line->debit, 2) }}</td>
                             <td>{{ number_format($line->credit, 2) }}</td>
                             <td>{{ number_format($balance, 2) }}</td>
                         </tr>
                     @endforeach
-                    <tr class="fw-bold">
-                        <td colspan="4" class="text-center fs-6">
+                    <tr class="fw-bold table-primary border-dark">
+                        <td colspan="5" class="text-center fs-6">
                             الإجماليـــــات
                         </td>
                         <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->debit), 2) }}</td>
@@ -61,7 +64,7 @@
                     </tr>
                 @else
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>

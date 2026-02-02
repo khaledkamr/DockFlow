@@ -16,6 +16,7 @@ class Account extends Model
         'parent_id',
         'type_id',
         'level',
+        'cost_center_required',
         'is_active',
         'company_id',
     ];

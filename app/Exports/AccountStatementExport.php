@@ -25,12 +25,17 @@ class AccountStatementExport implements FromCollection, WithHeadings
     {
         $query = JournalEntryLine::query();
 
-        if (!empty($this->filters['account'])) {
-            $query->where('account_id', $this->filters['account']);
-        }
-
+        $account = $this->filters['account'] ?? null;
+        $costCenter = $this->filters['cost_center'] ?? null;
         $from = $this->filters['from'] ?? null;
         $to = $this->filters['to'] ?? null;
+
+        $query->when($account, function($q) use ($account) {
+            $q->where('account_id', $account);
+        });
+        $query->when($costCenter, function($q) use ($costCenter) {
+            $q->where('cost_center_id', $costCenter);
+        });
 
         if ($from && $to) {
             $query->whereHas('journal', function ($q) use ($from, $to) {
@@ -82,6 +87,7 @@ class AccountStatementExport implements FromCollection, WithHeadings
             'التاريخ'    => '',
             'رقم القيد'  => '',
             'نوع القيد'  => '',
+            'مركز التكلفة' => '',
             'البيان'     => 'رصيد افتتاحي',
             'مدين'       => '',
             'دائن'       => '',
@@ -97,6 +103,7 @@ class AccountStatementExport implements FromCollection, WithHeadings
                 Carbon::parse($line->journal->date)->format('Y/m/d'),
                 $line->journal->code,
                 $line->journal->type,
+                $line->costCenter->name ?? '',
                 $line->description,
                 number_format($line->debit, 2),
                 number_format($line->credit, 2),
@@ -113,6 +120,7 @@ class AccountStatementExport implements FromCollection, WithHeadings
             'التاريخ',
             'رقم القيد',
             'نوع القيد',
+            'مركز التكلفة',
             'البيان',
             'مدين',
             'دائن',

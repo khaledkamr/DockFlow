@@ -88,17 +88,18 @@
         <table class="table table-striped">
             <thead>
                 <tr class="table-dark">
-                    <th class="text-center" width="20%">رقم الحساب</th>
-                    <th class="text-center" width="25%">اسم الحساب</th>
-                    <th class="text-center" width="10%">مديــن</th>
-                    <th class="text-center" width="10%">دائــن</th>
-                    <th class="text-center" width="35%">البيـــان</th>
+                    <th class="text-center">رقم الحساب</th>
+                    <th class="text-center">اسم الحساب</th>
+                    <th class="text-center">مديــن</th>
+                    <th class="text-center">دائــن</th>
+                    <th class="text-center">مركز التكلفة</th>
+                    <th class="text-center">البيـــان</th>
                 </tr>
             </thead>
             <tbody>
                 @if($journal->lines->isEmpty())
                     <tr>
-                        <td colspan="5" class="text-center">
+                        <td colspan="6" class="text-center">
                             <div class="status-danger fs-6">هذا القيض فارغ!</div>
                         </td>
                     </tr>
@@ -109,6 +110,7 @@
                             <td class="fw-bold">{{ $line->account->name }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>
+                            <td class="fw-bold">{{ $line->costCenter->name ?? '-' }}</td>
                             <td>{{ $line->description ?? '-' }}</td>
                         </tr>
                     @endforeach
@@ -116,6 +118,7 @@
                         <td colspan="2" class="fs-6">إجمـــالـــي</td>
                         <td class="fs-6">{{ $journal->totalDebit }}</td>
                         <td class="fs-6">{{ $journal->totalCredit }}</td>
+                        <td></td>
                         <td></td>
                     </tr>
                 @endif

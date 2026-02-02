@@ -9,10 +9,13 @@
                     </button>
                 @endif
                 <div class="account-info">
-                    <div class="d-flex">
+                    <div class="d-flex align-items-center">
                         <div class="account-code">{{ $child->code }}</div>
                         <div class="account-name">{{ $child->name }}</div>
                         <div class="ms-2">({{ $child->level }})</div>
+                        @if($child->cost_center_required)
+                            <i class="fa-solid fa-circle-dollar-to-slot ms-2" title="مركز التكلفة مطلوب"></i>
+                        @endif
                     </div>
                     <div>
                         <button class="badge bg-danger text-white fs-6 rounded-1 border-0 "
@@ -125,6 +128,15 @@
                                 @error('code')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="cost_center_required" value="0">
+                                    <input class="form-check-input" type="checkbox" role="switch" 
+                                        id="cost_center_required{{ $child->id }}" name="cost_center_required" 
+                                        value="1" {{ $child->cost_center_required ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="cost_center_required{{ $child->id }}">مركز التكلفة مطلوب</label>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">

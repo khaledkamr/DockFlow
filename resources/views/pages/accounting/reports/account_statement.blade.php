@@ -1,12 +1,23 @@
 <form method="GET" action="" class="row g-3 bg-white p-3 rounded-3 shadow-sm border-0 mb-4">
     <input type="hidden" name="view" value="كشف حساب">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label class="form-label">اسم الحساب</label>
-        <select name="account" id="account_id" class="form-select border-primary" required>
+        <select name="account" id="account_id" class="form-select border-primary">
             <option value="">اختر الحساب</option>
             @foreach($accounts as $account)
                 <option value="{{ $account->id }}" {{ request('account') == $account->id ? 'selected' : '' }}>
                     {{ $account->name }} ({{ $account->code }})
+                </option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">مركز التكلفة</label>
+        <select name="cost_center" id="cost_center_id" class="form-select border-primary">
+            <option value="">اختر مركز التكلفة</option>
+            @foreach($costCenters as $costCenter)
+                <option value="{{ $costCenter->id }}" {{ request('cost_center') == $costCenter->id ? 'selected' : '' }}>
+                    {{ $costCenter->name }}
                 </option>
             @endforeach
         </select>
@@ -33,6 +44,7 @@
         <div class="export-buttons d-flex gap-2 align-items-center">
             <form action="{{ route('export.excel', 'account_statement') }}" method="GET">
                 <input type="hidden" name="account" value="{{ request()->query('account') }}">
+                <input type="hidden" name="cost_center" value="{{ request()->query('cost_center') }}">
                 <input type="hidden" name="from" value="{{ request()->query('from') }}">
                 <input type="hidden" name="to" value="{{ request()->query('to') }}">
                 <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title="تصدير Excel">
@@ -40,8 +52,7 @@
                 </button>
             </form>
             
-            <form action="{{ route('print', 'account_statement') }}" method="POST" target="_blank">
-                @csrf
+            <form action="{{ route('print.account.statement') }}" method="GET" target="_blank">
                 @foreach(request()->query() as $key => $value)
                     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                 @endforeach
@@ -58,6 +69,7 @@
                     <th class="bg-dark text-center text-white text-nowrap">تاريخ</th>
                     <th class="bg-dark text-center text-white text-nowrap">رقم القيد</th>
                     <th class="bg-dark text-center text-white text-nowrap">نوع القيد</th>
+                    <th class="bg-dark text-center text-white text-nowrap">مركز التكلفة</th>
                     <th class="bg-dark text-center text-white text-nowrap">البيان</th>
                     <th class="bg-dark text-center text-white text-nowrap">مدين</th>
                     <th class="bg-dark text-center text-white text-nowrap">دائن</th>
@@ -66,6 +78,7 @@
             </thead>
             <tbody>
                 <tr>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -90,6 +103,7 @@
                                 </a>
                             </td>
                             <td>{{ $line->journal->type }}</td>
+                            <td>{{ $line->costCenter->name ?? '-' }}</td>
                             <td>{{ $line->description }}</td>
                             <td>{{ number_format($line->debit, 2) }}</td>
                             <td>{{ number_format($line->credit, 2) }}</td>
@@ -97,14 +111,14 @@
                         </tr>
                     @endforeach
                     <tr class="table-primary fw-bold">
-                        <td colspan="4" class="text-center fs-6">الإجماليـــــات</td>
+                        <td colspan="5" class="text-center fs-6">الإجماليـــــات</td>
                         <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->debit), 2) }}</td>
                         <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->credit), 2) }}</td>
                         <td class="text-center">{{ number_format($balance, 2) }}</td>
                     </tr>
                 @else
                     <tr>
-                        <td colspan="9" class="text-center">
+                        <td colspan="10" class="text-center">
                             <div class="status-danger fs-6">لا توجد حركات</div>
                         </td>
                     </tr>
@@ -118,6 +132,10 @@
     $(document).ready(function() {
         $('#account_id').select2({
             placeholder: "اختر حساب",
+            allowClear: true
+        });
+        $('#cost_center_id').select2({
+            placeholder: "اختر مركز التكلفة",
             allowClear: true
         });
     });

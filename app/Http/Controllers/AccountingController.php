@@ -12,6 +12,7 @@ use App\Http\Requests\JournalRequest;
 use App\Http\Requests\VoucherRequest;
 use App\Models\Attachment;
 use App\Models\Company;
+use App\Models\CostCenter;
 use App\Models\Customer;
 use App\Models\Invoice;
 use Carbon\Carbon;
@@ -163,7 +164,8 @@ class AccountingController extends Controller
 
     public function createJournal() {
         $accounts = Account::where('level', 5)->get();
-        return view('pages.accounting.journal_entries.create_journal', compact('accounts'));
+        $costCenters = CostCenter::doesntHave('children')->get();
+        return view('pages.accounting.journal_entries.create_journal', compact('accounts', 'costCenters'));
     }
 
     public function storeJournal(JournalRequest $request) {
@@ -203,6 +205,7 @@ class AccountingController extends Controller
                 'account_id'       => $accountId,
                 'debit'            => $request->debit[$index] ?? 0,
                 'credit'           => $request->credit[$index] ?? 0,
+                'cost_center_id'  => $request->cost_center_id[$index] ?? null,
                 'description'      => $request->description[$index],
             ]);
         }
@@ -533,8 +536,9 @@ class AccountingController extends Controller
         }
 
         $accounts = Account::where('level', 5)->get();
+        $costCenters = CostCenter::doesntHave('children')->get();
 
-        return view('pages.accounting.journal_entries.edit_journal', compact('journal', 'accounts'));
+        return view('pages.accounting.journal_entries.edit_journal', compact('journal', 'accounts', 'costCenters'));
     }
 
     public function updateJournal(Request $request, JournalEntry $journal) {
@@ -556,6 +560,7 @@ class AccountingController extends Controller
                 'account_id'       => $accountId,
                 'debit'            => $request->debit[$index] ?? 0,
                 'credit'           => $request->credit[$index] ?? 0,
+                'cost_center_id'   => $request->cost_center_id[$index] ?? null,
                 'description'      => $request->description[$index],
             ]);
         }
@@ -765,16 +770,27 @@ class AccountingController extends Controller
             return view('pages.accounting.reports', compact('entries', 'perPage'));
         } elseif($view == 'كشف حساب') {
             $accounts = Account::where('level', 5)->get();
+            $costCenters = CostCenter::doesntHave('children')->get();
             $from = $request->input('from');
             $to = $request->input('to');
             $account = $request->input('account', null);
-
-            $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
-                ->select('journal_entry_lines.*')
-                ->where('account_id', $account)
-                ->orderBy('journal_entries.date')
-                ->orderBy('journal_entries.code')
-                ->get();
+            $costCenter = $request->input('cost_center', null);
+            if(!$account && !$costCenter) {
+                $statement = collect();
+            } else {
+                $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
+                    ->select('journal_entry_lines.*')
+                    ->when($account, function($query, $account) {
+                        return $query->where('account_id', $account);
+                    })
+                    ->when($costCenter, function($query, $costCenter) {
+                        return $query->where('cost_center_id', $costCenter);
+                    })
+                    ->with(['journal', 'account', 'costCenter'])
+                    ->orderBy('journal_entries.date')
+                    ->orderBy('journal_entries.code')
+                    ->get();
+            }
 
             $opening_balance = 0;
             if($from) {
@@ -798,6 +814,7 @@ class AccountingController extends Controller
 
             return view('pages.accounting.reports', compact(
                 'accounts',
+                'costCenters',
                 'statement',
                 'opening_balance'
             ));

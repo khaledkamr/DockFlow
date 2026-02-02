@@ -15,6 +15,7 @@
                 <th class="text-center bg-dark text-white">اسم السحاب</th>
                 <th class="text-center bg-dark text-white">مدين</th>
                 <th class="text-center bg-dark text-white">دائن</th>
+                <th class="text-center bg-dark text-white">مركز التكلفة</th>
                 <th class="text-center bg-dark text-white">البيان</th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
                     <td class="text-center fw-bold">{{ $line->account->name }}</td>
                     <td class="text-center">{{ number_format($line->debit, 2) }}</td>
                     <td class="text-center">{{ number_format($line->credit, 2) }}</td>
+                    <td class="text-center fw-bold">{{ $line->costCenter->name ?? '' }}</td>
                     <td class="text-center">{{ $line->description }}</td>
                 </tr>
             @endforeach
@@ -32,6 +34,7 @@
                 <td colspan="2" class="fs-6">إجمـــالـــي</td>
                 <td class="fs-6">{{ $journal->totalDebit }}</td>
                 <td class="fs-6">{{ $journal->totalCredit }}</td>
+                <td></td>
                 <td></td>
             </tr>
         </tbody>

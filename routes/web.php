@@ -321,6 +321,7 @@ Route::controller(CostCenterController::class)->middleware('auth')->group(functi
 
 Route::controller(ExportController::class)->group(function () {
     Route::post('/print/{reportType}', 'print')->name('print');
+    Route::get('/print/account/statement', 'printAccountStatement')->name('print.account.statement');
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');
     Route::get('/print/containers/report', 'printContainersReport')->name('print.containers.report');
     Route::get('/print/policies/report', 'printPoliciesReport')->name('print.policies.report');
@@ -328,7 +329,6 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/invoice/services/{code}', 'printInvoiceServices')->name('print.invoice.services');
     Route::get('/print/invoice/clearance/{code}', 'printClearanceInvoice')->name('print.invoice.clearance');
     Route::get('/print/invoice/statement/{code}', 'printInvoiceStatement')->name('print.invoice.statement');
-    Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
     Route::get('/export/transport/order/{transportOrder:id}', 'printTransportOrder')->name('export.transport.order');
     Route::get('/export/shipping-policy/{policy:id}', 'printShippingPolicy')->name('export.shipping.policy');
     Route::get('/print/invoice/shipping/{code}', 'printShippingInvoice')->name('print.invoice.shipping');
@@ -340,4 +340,5 @@ Route::controller(ExportController::class)->group(function () {
     Route::get('/print/trial/balance/reports', 'printTrialBalance')->name('print.trial.balance');
     Route::get('/print/user/activity/reports', 'printUserActivityReport')->name('print.user.activity.reports');
     Route::get('/print/aging/report', 'printAgingReport')->name('print.aging.report');
+    Route::get('/export/excel/{reportType}', 'excel')->name('export.excel');
 });

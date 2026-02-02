@@ -7,12 +7,14 @@
         <h1>إنشاء قيد يومية</h1>
         <div class="d-flex gap-2">
             @can('إنشاء قيد إقفال')
-                <a href="{{ route('money.create.opening.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="قيد إفتتاحي">
+                <a href="{{ route('money.create.opening.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="قيد إفتتاحي">
                     <i class="fa-solid fa-lock-open"></i>
                 </a>
             @endcan
             @can('إنشاء قيد إقفال')
-                <a href="{{ route('money.create.closing.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="قيد إقفال">
+                <a href="{{ route('money.create.closing.journal') }}" class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="قيد إقفال">
                     <i class="fa-solid fa-lock"></i>
                 </a>
             @endcan
@@ -26,17 +28,33 @@
         .bg-unbalanced {
             background-color: rgb(250, 203, 203);
         }
+
         .bg-balanced {
             background-color: rgb(203, 250, 203);
         }
+
         .select2-container .select2-selection {
             height: 38px;
             border-radius: 6px;
             border: 2px solid #dddddd;
             padding: 5px;
         }
+
         .select2-container .select2-selection__rendered {
             line-height: 30px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-container table {
+            min-width: 900px;
+        }
+
+        .cost-center-select {
+            min-width: 180px;
         }
     </style>
 
@@ -63,12 +81,13 @@
             <table class="table" id="journal-entries-table">
                 <thead>
                     <tr class="table-dark">
-                        <th class="text-center" width="2%">#</th>
-                        <th class="text-center" width="35%">اسم الحساب</th>
-                        <th class="text-center" width="15%">مديــن</th>
-                        <th class="text-center" width="15%">دائــن</th>
-                        <th class="text-center" width="28%">البيـــان</th>
-                        <th class="text-center" width="5%">إجراءات</th>
+                        <th class="text-center" style="min-width: 10px">#</th>
+                        <th class="text-center" style="min-width: 400px">اسم الحساب</th>
+                        <th class="text-center" style="min-width: 100px">مديــن</th>
+                        <th class="text-center" style="min-width: 100px">دائــن</th>
+                        <th class="text-center" style="min-width: 300px">مركز التكلفة</th>
+                        <th class="text-center" style="min-width: 400px">البيـــان</th>
+                        <th class="text-center" style="min-width: 50px">إجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +115,17 @@
                                     class="form-control text-center border-2">
                             </td>
                             <td class="px-2">
+                                <select name="cost_center_id[]" class="form-select cost_center_select cost-center-select"
+                                    style="width: 100%;">
+                                    <option value="">-- مركز التكلفة --</option>
+                                    @foreach ($costCenters as $costCenter)
+                                        <option value="{{ $costCenter->id }}">
+                                            {{ $costCenter->name }} ({{ $costCenter->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="px-2">
                                 <textarea name="description[]" class="form-control border-2" rows="1" style="resize: none; overflow: hidden;"
                                     onInput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px'"></textarea>
                             </td>
@@ -110,14 +140,18 @@
                         <td></td>
                         <td class="text-center fw-bold fs-5">الفــارق</td>
                         <td>
-                            <input type="text" id="debitSum" name="debitSum" class="form-control text-center fw-bold" value="0.00" readonly>
+                            <input type="text" id="debitSum" name="debitSum" class="form-control text-center fw-bold"
+                                value="0.00" readonly>
                         </td>
                         <td>
-                            <input type="text" id="creditSum" name="creditSum" class="form-control text-center fw-bold"value="0.00" readonly>
+                            <input type="text" id="creditSum" name="creditSum"
+                                class="form-control text-center fw-bold"value="0.00" readonly>
                         </td>
                         <td>
-                            <input type="text" id="diff" name="diff" class="form-control text-center fw-bold" value="0.00" readonly>
+                            <input type="text" id="diff" name="diff" class="form-control text-center fw-bold"
+                                value="0.00" readonly>
                         </td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </tbody>
@@ -171,13 +205,45 @@
                     });
             }
 
+            // Account cost center required mapping
+            const accountCostCenterRequired = {
+                @foreach ($accounts as $account)
+                    '{{ $account->id }}': {{ $account->cost_center_required ? 'true' : 'false' }},
+                @endforeach
+            };
+
             function initializeSelect2AndEvents() {
                 $('.account_name').select2({
                     placeholder: "ابحث عن الحساب...",
                     allowClear: true
                 });
 
-                $('.account_name').off('change.custom');
+                $('.cost_center_select').select2({
+                    placeholder: "ابحث عن مركز التكلفة...",
+                    allowClear: true
+                });
+
+                // Handle account change to set cost center required
+                $('.account_name').off('change.costcenter').on('change.costcenter', function() {
+                    let row = $(this).closest('tr');
+                    let accountId = $(this).val();
+                    let costCenterSelect = row.find('.cost_center_select');
+
+                    if (accountId && accountCostCenterRequired[accountId]) {
+                        costCenterSelect.attr('required', true);
+                        costCenterSelect.addClass('border-danger');
+                    } else {
+                        costCenterSelect.removeAttr('required');
+                        costCenterSelect.removeClass('border-danger');
+                    }
+                });
+
+                // Trigger change on existing account selects to set initial state
+                $('.account_name').each(function() {
+                    if ($(this).val()) {
+                        $(this).trigger('change.costcenter');
+                    }
+                });
             }
 
             initializeSelect2AndEvents();
@@ -203,6 +269,14 @@
                         </td>
                         <td class="px-2"><input type="text" name="debit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
                         <td class="px-2"><input type="text" name="credit[]" placeholder="0.00" class="form-control border-2 text-center"></td>
+                        <td class="px-2">
+                            <select name="cost_center_id[]" class="form-select cost_center_select cost-center-select" style="width: 100%;">
+                                <option value="">-- مركز التكلفة --</option>
+                                @foreach ($costCenters as $costCenter)
+                                    <option value="{{ $costCenter->id }}">{{ $costCenter->name }} ({{ $costCenter->code }})</option>
+                                @endforeach
+                            </select>
+                        </td>
                         <td class="px-2"><input type="text" name="description[]" class="form-control border-2"></td>
                         <td class="text-center px-2"><button type="button" class="btn btn-danger btn-sm remove-row"><i class="fas fa-trash-can"></i></button></td>
                     </tr>
@@ -222,6 +296,7 @@
                 if (e.target.classList.contains("remove-row")) {
                     let row = e.target.closest("tr");
                     $(row).find('.account_name').select2('destroy');
+                    $(row).find('.cost_center_select').select2('destroy');
                     row.remove();
                     updateRowNumbers();
                 }
