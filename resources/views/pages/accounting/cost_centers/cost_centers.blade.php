@@ -338,11 +338,6 @@
 
     <script>
         function toggleNode(node, event) {
-            // Prevent toggle if clicking on buttons or their children
-            if (event && (event.target.tagName === 'BUTTON' || event.target.closest('button'))) {
-                return;
-            }
-
             if (!node.classList.contains('has-children')) return;
 
             const toggleBtn = node.querySelector('.toggle-btn');
