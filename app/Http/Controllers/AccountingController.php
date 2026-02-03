@@ -866,9 +866,47 @@ class AccountingController extends Controller
             $customers = Customer::all();
             return view('pages.accounting.reports', compact('customers'));
         } elseif($view == 'أعمار الذمم') { 
+            $unpaidInvoices = collect();
+            $selectedCustomer = null;
             $customers = Customer::all();
 
-            return view('pages.accounting.reports', compact('customers'));
+            if($request->query('report_type') == 'single' && $request->query('customer_id')) {
+                $selectedCustomer = Customer::find($request->query('customer_id'));
+                $from = $request->query('from');
+                $to = $request->query('to');
+                
+                if ($selectedCustomer && $selectedCustomer->contract && $from && $to) {
+                    $unpaidInvoices = $selectedCustomer
+                        ->invoices()
+                        ->where('isPaid', 'لم يتم الدفع')
+                        ->whereBetween('date', [$from, $to])
+                        ->with('customer')
+                        ->get()
+                        ->map(function ($invoice) use ($selectedCustomer) {
+                            $paymentDueDate = Carbon::parse($invoice->date)->addDays(
+                                (int) ($selectedCustomer->contract->payment_grace_period ?? 0),
+                            );
+
+                            $lateDays = Carbon::now()->gt($paymentDueDate)
+                                ? Carbon::parse($paymentDueDate)->diffInDays(Carbon::now())
+                                : 0;
+
+                            $invoice->payment_due_date = $paymentDueDate;
+                            $invoice->late_days = $lateDays;
+
+                            return $invoice;
+                        });
+                } elseif ($selectedCustomer && !$selectedCustomer->contract && $from && $to) {
+                    $unpaidInvoices = $selectedCustomer
+                        ->invoices()
+                        ->where('isPaid', 'لم يتم الدفع')
+                        ->whereBetween('date', [$from, $to])
+                        ->with('customer')
+                        ->get();
+                }
+            }
+
+            return view('pages.accounting.reports', compact('customers', 'unpaidInvoices', 'selectedCustomer'));
         }
     }
 }

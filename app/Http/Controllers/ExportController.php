@@ -726,13 +726,57 @@ class ExportController extends Controller
 
     public function printAgingReport(Request $request) {
         $customers = Customer::all();
+        $unpaidInvoices = collect();
+        $selectedCustomer = null;
         $from = $request->input('from', null);
         $to = $request->input('to', null);
+
+        if($request->query('report_type') == 'single' && $request->query('customer_id')) {
+            $selectedCustomer = Customer::find($request->query('customer_id'));
+            $from = $request->query('from');
+            $to = $request->query('to');
+            
+            if ($selectedCustomer && $selectedCustomer->contract && $from && $to) {
+                $unpaidInvoices = $selectedCustomer
+                    ->invoices()
+                    ->where('isPaid', 'لم يتم الدفع')
+                    ->whereBetween('date', [$from, $to])
+                    ->with('customer')
+                    ->get()
+                    ->map(function ($invoice) use ($selectedCustomer) {
+                        $paymentDueDate = Carbon::parse($invoice->date)->addDays(
+                            (int) ($selectedCustomer->contract->payment_grace_period ?? 0),
+                        );
+
+                        $lateDays = Carbon::now()->gt($paymentDueDate)
+                            ? Carbon::parse($paymentDueDate)->diffInDays(Carbon::now())
+                            : 0;
+
+                        $invoice->payment_due_date = $paymentDueDate;
+                        $invoice->late_days = $lateDays;
+
+                        return $invoice;
+                    });
+            } elseif ($selectedCustomer && !$selectedCustomer->contract && $from && $to) {
+                $unpaidInvoices = $selectedCustomer
+                    ->invoices()
+                    ->where('isPaid', 'لم يتم الدفع')
+                    ->whereBetween('date', [$from, $to])
+                    ->with('customer')
+                    ->get();
+            }
+        }
 
         $filters = $request->all();
         logActivity('طباعة تقرير أعمار الذمم', "تم طباعة تقرير أعمار الذمم بتصفية: ", $filters);
 
-        return view('reports.aging_report', compact('customers', 'from', 'to'));
+        return view('reports.aging_report', compact(
+            'customers', 
+            'unpaidInvoices', 
+            'selectedCustomer',
+            'from', 
+            'to'
+        ));
     }
 
     public function printCostCenterStatement(Request $request) {
