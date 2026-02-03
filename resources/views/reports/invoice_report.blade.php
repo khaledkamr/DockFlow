@@ -6,7 +6,7 @@
 <h5 class="text-center fw-bold mb-4 mt-4">تقرير الفواتير من فترة ({{ $from }}) الى فترة ({{ Carbon\Carbon::parse($to)->format('Y-m-d') }})</h5>
 
 <div class="table-container">
-    <table class="table table-bordered">
+    <table class="table table-bordered border-dark">
         <thead class="table-dark">
             <tr class="text-center">
                 <th>#</th>
@@ -18,6 +18,7 @@
                 <th>المبلغ</th>
                 <th>الضريبة المضافة</th>
                 <th>الإجمالي</th>
+                <th>الدفع</th>
             </tr>
         </thead>
         <tbody>
@@ -39,6 +40,11 @@
                         <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                         <td class="text-center">{{ $invoice->tax }}</td>
                         <td class="text-center">{{ $invoice->total_amount }}</td>
+                        @if ($invoice->isPaid == 'تم الدفع')
+                            <td class="text-center">مدفوعة</td>
+                        @else
+                            <td class="text-center">غير مدفوعة</td>
+                        @endif
                     </tr>
                 @endforeach
             @endif

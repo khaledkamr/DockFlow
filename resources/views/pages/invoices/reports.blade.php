@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'تقارير الحاويات')
+@section('title', 'تقارير الفواتير')
 
 @section('content')
     <h1 class="mb-4">تقارير الفواتير</h1>
@@ -139,7 +139,7 @@
                         <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                         <th class="text-center bg-dark text-white text-nowrap">الضريبة المضافة</th>
                         <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
-                        <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الدفع</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,7 +182,11 @@
                                 <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                                 <td class="text-center">{{ $invoice->tax }}</td>
                                 <td class="text-center">{{ $invoice->total_amount }}</td>
-                                <td class="text-center">{{ $invoice->made_by->name }}</td>
+                                @if ($invoice->isPaid == 'تم الدفع')
+                                    <td class="text-center"><span class="badge status-delivered">مدفوعة</span></td>
+                                @else
+                                    <td class="text-center"><span class="badge status-danger">غير مدفوعة</span></td>
+                                @endif
                             </tr>
                         @endforeach
                     @endif
