@@ -29,10 +29,10 @@
             <div class="col-3">
                 <label for="type" class="form-label">نوع السنــد</label>
                 <select id="type" name="type" class="form-select border-primary" style="width:100%;">
+                    <option value="سند قبض تحويل بنكي">تحويل بنكي</option>
                     <option value="سند قبض نقدي">نقدي</option>
                     <option value="سند قبض بشيك">بشيك</option>
                     <option value="سند قبض فيزا">فيزا</option>
-                    <option value="سند قبض تحويل بنكي">تحويل بنكي</option>
                 </select>
             </div>
             <div class="col-3">
@@ -102,7 +102,7 @@
             </div>
         </div>
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-        <input type="hidden" name="invoice_id" id="invoice_id" value="">
+        <div id="invoice_ids_container"></div>
         <button type="submit" class="btn btn-primary fw-bold mt-2">حفظ السند</button>
     </form>
 
@@ -129,6 +129,9 @@
                             <table class="table table-hover table-striped">
                                 <thead class="table-dark">
                                     <tr>
+                                        <th class="text-center">
+                                            <input type="checkbox" id="selectAllInvoices" class="form-check-input" title="تحديد الكل">
+                                        </th>
                                         <th class="text-center">#</th>
                                         <th class="text-center">رقم الفاتورة</th>
                                         <th class="text-center">نوع الفاتورة</th>
@@ -138,7 +141,6 @@
                                         <th class="text-center">الإجمالي</th>
                                         <th class="text-center">طريقة الدفع</th>
                                         <th class="text-center">حالة الدفع</th>
-                                        <th class="text-center">تحديد</th>
                                         <th class="text-center">إجراءات</th>
                                     </tr>
                                 </thead>
@@ -151,10 +153,26 @@
                             <i class="fas fa-info-circle me-2"></i>
                             لا توجد فواتير لهذا العميل
                         </div>
+                        <!-- Selected Invoices Summary -->
+                        <div id="selectedInvoicesSummary" class="alert alert-primary d-none mt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <strong>الفواتير المحددة:</strong> <span id="selectedCount">0</span> فاتورة
+                                </div>
+                                <div>
+                                    <strong>إجمالي المبلغ:</strong> <span id="selectedTotal">0.00</span> ريال
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-success" id="submitSelectedInvoices" disabled>
+                        <i class="fas fa-check me-2"></i>
+                        تأكيد الفواتير المحددة
+                    </button>
                 </div>
             </div>
         </div>
@@ -162,6 +180,7 @@
 
     <script>
         let currentCustomerId = null;
+        let selectedInvoices = []; // Array to store selected invoices
 
         $('#account_name').select2({
             placeholder: "ابحث عن الحساب...",
@@ -179,7 +198,8 @@
             let customerName = selectedOption.data('customer-name');
             let accountId = selectedOption.val();
 
-            $('#invoice_id').val(''); // Clear previous invoice ID
+            $('#invoice_ids_container').empty(); // Clear previous invoice IDs
+            selectedInvoices = []; // Reset selected invoices
 
             // Show/hide customer button
             if (hasCustomer) {
@@ -198,6 +218,10 @@
 
             let customerName = $('#account_name').find(':selected').data('customer-name');
             $('#modalCustomerName').text(customerName);
+            
+            // Reset selected invoices when opening modal
+            selectedInvoices = [];
+            updateSelectedSummary();
             
             // Show modal
             const modal = new bootstrap.Modal(document.getElementById('customerInvoicesModal'));
@@ -218,7 +242,7 @@
                     console.error('Error fetching invoices:', error);
                     $('#invoicesLoadingSpinner').addClass('d-none');
                     $('#invoicesContent').removeClass('d-none');
-                    $('#invoicesTableBody').html('<tr><td colspan="10" class="text-center text-danger">حدث خطأ أثناء تحميل الفواتير</td></tr>');
+                    $('#invoicesTableBody').html('<tr><td colspan="11" class="text-center text-danger">حدث خطأ أثناء تحميل الفواتير</td></tr>');
                 }
             });
         });
@@ -230,6 +254,7 @@
             if (!invoices || invoices.length === 0) {
                 $('#invoicesTableBody').html('');
                 $('#noInvoicesMessage').removeClass('d-none');
+                $('#selectAllInvoices').prop('checked', false);
                 return;
             }
 
@@ -255,7 +280,13 @@
                     : '<span class="badge bg-danger">غير مدفوع</span>';
 
                 html += `
-                    <tr class="invoice-row" style="cursor: pointer;" data-invoice-id="${invoice.id}" data-invoice-code="${invoice.code}" data-invoice-amount="${invoice.total_amount}">
+                    <tr class="invoice-row" data-invoice-id="${invoice.id}" data-invoice-code="${invoice.code}" data-invoice-amount="${invoice.total_amount}">
+                        <td class="text-center">
+                            <input type="checkbox" class="form-check-input invoice-checkbox" 
+                                data-invoice-id="${invoice.id}" 
+                                data-invoice-code="${invoice.code}" 
+                                data-invoice-amount="${invoice.total_amount}">
+                        </td>
                         <td class="text-center">${index + 1}</td>
                         <td class="text-center fw-bold">${invoice.code}</td>
                         <td class="text-center">${invoice.type || '---'}</td>
@@ -266,12 +297,7 @@
                         <td class="text-center">${invoice.payment_method || '---'}</td>
                         <td class="text-center">${paymentStatusBadge}</td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-success select-invoice-btn" data-invoice-id="${invoice.id}" data-invoice-code="${invoice.code}" data-invoice-amount="${invoice.total_amount}">
-                                <i class="fas fa-check-circle"></i> اختيار
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <a href="${detailsUrl}" class="text-primary" target="_blank" title="عرض التفاصيل" onclick="event.stopPropagation();">
+                            <a href="${detailsUrl}" class="text-primary" target="_blank" title="عرض التفاصيل">
                                 <i class="fas fa-eye"></i>
                             </a>
                         </td>
@@ -281,33 +307,98 @@
 
             $('#invoicesTableBody').html(html);
             
-            // Add click event listeners to select buttons
-            $('.select-invoice-btn').on('click', function(e) {
-                e.stopPropagation();
-                selectInvoice($(this));
+            // Add click event listeners to checkboxes
+            $('.invoice-checkbox').on('change', function() {
+                const invoiceId = $(this).data('invoice-id');
+                const invoiceCode = $(this).data('invoice-code');
+                const invoiceAmount = parseFloat($(this).data('invoice-amount'));
+                
+                if ($(this).is(':checked')) {
+                    // Add to selected invoices
+                    selectedInvoices.push({
+                        id: invoiceId,
+                        code: invoiceCode,
+                        amount: invoiceAmount
+                    });
+                    $(this).closest('tr').addClass('table-success');
+                } else {
+                    // Remove from selected invoices
+                    selectedInvoices = selectedInvoices.filter(inv => inv.id !== invoiceId);
+                    $(this).closest('tr').removeClass('table-success');
+                }
+                
+                updateSelectedSummary();
+                updateSelectAllCheckbox();
             });
             
-            // Add click event to rows
+            // Add click event to rows (excluding checkbox and links)
             $('.invoice-row').on('click', function(e) {
-                if (!$(e.target).closest('a').length && !$(e.target).closest('.select-invoice-btn').length) {
-                    selectInvoice($(this));
+                if (!$(e.target).closest('a').length && !$(e.target).is('input[type="checkbox"]')) {
+                    const checkbox = $(this).find('.invoice-checkbox');
+                    checkbox.prop('checked', !checkbox.prop('checked')).trigger('change');
                 }
+            });
+            
+            // Select all checkbox
+            $('#selectAllInvoices').off('change').on('change', function() {
+                const isChecked = $(this).is(':checked');
+                $('.invoice-checkbox').each(function() {
+                    if ($(this).prop('checked') !== isChecked) {
+                        $(this).prop('checked', isChecked).trigger('change');
+                    }
+                });
             });
         }
         
-        function selectInvoice(element) {
-            const invoiceId = element.data('invoice-id');
-            const invoiceCode = element.data('invoice-code');
-            const invoiceAmount = element.data('invoice-amount');
+        function updateSelectedSummary() {
+            const count = selectedInvoices.length;
+            const total = selectedInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            
+            $('#selectedCount').text(count);
+            $('#selectedTotal').text(total.toFixed(2));
+            
+            if (count > 0) {
+                $('#selectedInvoicesSummary').removeClass('d-none');
+                $('#submitSelectedInvoices').prop('disabled', false);
+            } else {
+                $('#selectedInvoicesSummary').addClass('d-none');
+                $('#submitSelectedInvoices').prop('disabled', true);
+            }
+        }
+        
+        function updateSelectAllCheckbox() {
+            const totalCheckboxes = $('.invoice-checkbox').length;
+            const checkedCheckboxes = $('.invoice-checkbox:checked').length;
+            
+            if (totalCheckboxes === checkedCheckboxes && totalCheckboxes > 0) {
+                $('#selectAllInvoices').prop('checked', true);
+            } else {
+                $('#selectAllInvoices').prop('checked', false);
+            }
+        }
+        
+        // Submit selected invoices button
+        $('#submitSelectedInvoices').on('click', function() {
+            if (selectedInvoices.length === 0) return;
+            
+            // Calculate total amount
+            const totalAmount = selectedInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+            
+            // Get all invoice codes
+            const invoiceCodes = selectedInvoices.map(inv => inv.code).join(' - ');
+            
+            // Clear and populate invoice IDs as array
+            $('#invoice_ids_container').empty();
+            selectedInvoices.forEach(inv => {
+                $('#invoice_ids_container').append(
+                    `<input type="hidden" name="invoice_id[]" value="${inv.id}">`
+                );
+            });
             
             // Populate form fields
-            $('#invoice_id').val(invoiceId);
-            $('#amount').val(parseFloat(invoiceAmount).toFixed(2));
-            $('#hatching').val(numberToArabicMoney(parseFloat(invoiceAmount).toFixed(2)));
-            $('#description').val('تحصيل فاتورة رقم ' + invoiceCode);
-            
-            // Trigger amount change to update hatching
-            $('#amount').trigger('input');
+            $('#amount').val(totalAmount.toFixed(2));
+            $('#hatching').val(numberToArabicMoney(totalAmount.toFixed(2)));
+            $('#description').val('تحصيل فواتير: ' + invoiceCodes);
             
             // Close modal
             const modal = bootstrap.Modal.getInstance(document.getElementById('customerInvoicesModal'));
@@ -322,7 +413,7 @@
                 $('#hatching').removeClass('border-success border-2');
                 $('#description').removeClass('border-success border-2');
             }, 2000);
-        }
+        });
 
         function numberToArabicWords(num) {
             if (num === 0) return "صفر";

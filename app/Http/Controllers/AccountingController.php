@@ -672,9 +672,11 @@ class AccountingController extends Controller
         $new = Voucher::create($validated);
 
         if($request->invoice_id) {
-            $invoice = Invoice::findOrFail($request->invoice_id);
-            $invoice->isPaid = 'تم الدفع';
-            $invoice->save();
+            foreach($request->invoice_id as $invoiceId) {
+                $invoice = Invoice::findOrFail($invoiceId);
+                $invoice->isPaid = 'تم الدفع';
+                $invoice->save();
+            }
         }
 
         logActivity('إنشاء سند', "تم إنشاء سند جديد برقم " . $new->code, null, $new->toArray());
