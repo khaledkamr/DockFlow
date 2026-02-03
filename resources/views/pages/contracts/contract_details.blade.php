@@ -58,7 +58,8 @@
                     <div class="text-center">
                         <small class="text-muted">مدة السماح للدفع</small>
                         <h6 class="fw-bold">
-                            {{ $contract->payment_grace_period . ' ' . $contract->payment_grace_period_unit }}</h6>
+                            {{ $contract->payment_grace_period . ' ' . $contract->payment_grace_period_unit }}
+                        </h6>
                     </div>
                 </div>
             </div>

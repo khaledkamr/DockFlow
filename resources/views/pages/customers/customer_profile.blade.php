@@ -195,11 +195,15 @@
 <!-- Contract Information -->
 @if(isset($customer['contract']))
     <div class="card border-0 rounded-3 shadow-sm mb-3 mb-md-4">
-        <div class="card-header bg-dark text-white">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fs-6 fs-md-5">
                 <i class="fas fa-file-contract me-2"></i>
                 تفاصيل العقد
             </h5>
+            <a href="{{ route('contracts.details', $customer->contract) }}" class="btn btn-sm btn-primary">
+                عرض العقد
+                <i class="fas fa-eye ms-1"></i>
+            </a>
         </div>
         <div class="card-body">
             <div class="row g-3 mb-4">
@@ -220,9 +224,9 @@
                 <div class="col-6 col-md-4 d-none d-md-block">
                     <div class="text-center p-3 border rounded">
                         <i class="fas fa-hourglass-half text-warning fs-4 mb-2"></i>
-                        <div class="small text-muted">مدة العقد</div>
+                        <div class="small text-muted">مدة السماح للدفع</div>
                         <div class="fw-bold">
-                            {{ \Carbon\Carbon::parse($customer->contract->start_date)->diffInDays(\Carbon\Carbon::parse($customer->contract->end_date)) }} يوم
+                            {{ $customer->contract->payment_grace_period . ' ' . $customer->contract->payment_grace_period_unit }}
                         </div>
                     </div>
                 </div>
