@@ -19,8 +19,6 @@
     </form>
 </div>
 
-
-{{-- Filters Card --}}
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
         <form action="{{ route('admin.logs') }}" method="GET">
@@ -36,7 +34,6 @@
                         @endforeach
                     </select>
                 </div>
-
                 <div class="col-6 col-md-3">
                     <label class="form-label fw-semibold">الإجراء</label>
                     <select name="action" id="action" class="form-select border-primary">
@@ -48,18 +45,20 @@
                         @endforeach
                     </select>
                 </div>
-
                 <div class="col-6 col-md-3">
                     <label class="form-label fw-semibold">من تاريخ</label>
                     <input type="date" name="from" class="form-control border-primary" value="{{ request('from', now()->format('Y-m-d')) }}">
                 </div>
-
                 <div class="col-6 col-md-3">
                     <label class="form-label fw-semibold">إلى تاريخ</label>
                     <input type="date" name="to" class="form-control border-primary" value="{{ request('to', now()->format('Y-m-d')) }}">
                 </div>
 
-                <div class="col-12 mt-3">
+                <div class="col-12 col-md-6">
+                    <input type="text" name="search" class="form-control border-primary" placeholder="ابحث في السجلات..." value="{{ request('search') }}">
+                </div>
+
+                <div class="col-6 mt-3">
                     <button type="submit" class="btn btn-primary fw-bold px-4">
                         تصفية
                         <i class="fas fa-search me-1"></i>
@@ -191,7 +190,7 @@
 
 {{-- Pagination --}}
 <div class="mt-4">
-    {{ $logs->links() }}
+    {{ $logs->links('components.pagination') }}
 </div>
 
 <script>

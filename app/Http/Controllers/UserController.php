@@ -195,6 +195,9 @@ class UserController extends Controller
             ->when($request->user_id, fn($q) => $q->where('user_id', $request->user_id))
             ->when($request->from, fn($q) => $q->whereDate('created_at', '>=', $request->from))
             ->when($request->to, fn($q) => $q->whereDate('created_at', '<=', $request->to))
+            ->when($request->search, fn($q) => $q->where(function($q2) use ($request) {
+                $q2->where('description', 'like', '%' . $request->search . '%');
+            }))
             ->where('company_id', Auth::user()->company_id)
             ->orderBy('id', 'desc')
             ->paginate(100)->onEachSide(1)->withQueryString();
