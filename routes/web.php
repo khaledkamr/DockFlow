@@ -131,6 +131,7 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::patch('/policies/services/{policy:uuid}/update-container-service', 'updateServicePolicyContainers')->name('policies.services.update.container');
 
     Route::delete('/policies/delete/{policy:uuid}', 'deletePolicy')->name('policy.delete');
+    Route::delete('/policies/container/remove/{policy:uuid}/{containerId}', 'removeContainerFromPolicy')->name('policies.container.remove');
     Route::get('/policies/reports', 'reports')->name('policies.reports');
 });
 

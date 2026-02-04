@@ -331,9 +331,12 @@
                                     <td class="fw-bold">{{ $container->services->first()->pivot->price ?? '-' }}
                                         ريال</td>
                                     <td>{{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
-                                            <i class="fas fa-edit"></i>
+                                    <td class="d-flex justify-content-center gap-2">
+                                        <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
+                                            <i class="fas fa-edit text-primary"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#deleteContainerModal{{ $container->id }}">
+                                            <i class="fas fa-trash-can text-danger"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -376,6 +379,46 @@
                                                     <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                                 </div>
                                             </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Container Confirmation Modal -->
+                                <div class="modal fade" id="deleteContainerModal{{ $container->id }}" tabindex="-1" aria-labelledby="deleteContainerModalLabel{{ $container->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" id="deleteContainerModalLabel{{ $container->id }}">
+                                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                                    تأكيد إزالة الحاوية
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <h6 class="mb-3">هل أنت متأكد من إزالة هذه الحاوية من البوليصة؟</h6>
+                                                <p class="text-muted mb-0">
+                                                    سيتم إزالة الحاوية <strong>{{ $container->code }}</strong> من هذه البوليصة.
+                                                </p>
+                                                <div class="alert alert-danger mt-3 mb-0">
+                                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                                    <strong>تنبيه:</strong> هذا الإجراء سيؤدي إلى حذف الحاوية نهائياً من النظام.
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    <i class="fas fa-times me-1"></i>
+                                                    إلغاء
+                                                </button>
+                                                <form action="{{ route('policies.container.remove', [$policy, $container->id]) }}"
+                                                    method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">
+                                                        <i class="fas fa-trash-can me-1"></i>
+                                                        تأكيد الإزالة
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

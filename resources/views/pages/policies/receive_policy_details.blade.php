@@ -5,7 +5,8 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
                 <div>
                     <h2 class="h3 text-primary mb-1">
                         <i class="fas fa-clipboard-list me-2 d-none d-md-inline"></i>
@@ -24,12 +25,14 @@
                             <span class="d-inline">طباعة اذن خروج</span>
                         </button>
                     </form>
-                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editPolicyModal">
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                        data-bs-target="#editPolicyModal">
                         <i class="fas fa-edit me-1"></i>
                         تعديل البوليصة
                     </button>
-                    @if(auth()->user()->roles->contains('name', 'Admin'))
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    @if (auth()->user()->roles->contains('name', 'Admin'))
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal">
                             <i class="fas fa-trash me-1"></i>
                             <span class="d-inline">حذف البوليصة</span>
                         </button>
@@ -46,7 +49,8 @@
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 تأكيد حذف البوليصة
                             </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-center">
                             <div class="mb-3">
@@ -76,12 +80,15 @@
             </div>
 
             <!-- edit policy modal -->
-            <div class="modal fade" id="editPolicyModal" tabindex="-1" aria-labelledby="editPolicyModalLabel" aria-hidden="true">
+            <div class="modal fade" id="editPolicyModal" tabindex="-1" aria-labelledby="editPolicyModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header bg-primary">
-                            <h5 class="modal-title text-white fw-bold" id="editPolicyModalLabel">تعديل بيانات بوليصة الشحن</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h5 class="modal-title text-white fw-bold" id="editPolicyModalLabel">تعديل بيانات بوليصة الشحن
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <form action="{{ route('policies.receive.update', $policy) }}" method="POST">
                             @csrf
@@ -90,21 +97,24 @@
                                 <div class="row g-3">
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">رقم البوليصة</label>
-                                        <input type="text" class="form-control border-primary" name="code" value="{{ old('code', $policy->code) }}">
+                                        <input type="text" class="form-control border-primary" name="code"
+                                            value="{{ old('code', $policy->code) }}">
                                         @error('code')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">تاريخ البوليصة</label>
-                                        <input type="date" class="form-control border-primary" name="date" value="{{ old('date', \Carbon\Carbon::parse($policy->date)->format('Y-m-d')) }}">
+                                        <input type="date" class="form-control border-primary" name="date"
+                                            value="{{ old('date', \Carbon\Carbon::parse($policy->date)->format('Y-m-d')) }}">
                                         @error('date')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">العميل</label>
-                                        <select class="form-select border-primary" name="customer_id" id="customer_id" required>
+                                        <select class="form-select border-primary" name="customer_id" id="customer_id"
+                                            required>
                                             <option disabled selected>اختر العميل...</option>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}"
@@ -116,35 +126,40 @@
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">إســم السائق</label>
-                                        <input type="text" class="form-control border-primary" name="driver_name" value="{{ old('driver_name', $policy->driver_name) }}">
+                                        <input type="text" class="form-control border-primary" name="driver_name"
+                                            value="{{ old('driver_name', $policy->driver_name) }}">
                                         @error('driver_name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">هوية السائق</label>
-                                        <input type="text" class="form-control border-primary" name="driver_NID" value="{{ old('driver_NID', $policy->driver_NID) }}">
+                                        <input type="text" class="form-control border-primary" name="driver_NID"
+                                            value="{{ old('driver_NID', $policy->driver_NID) }}">
                                         @error('driver_NID')
                                             <div class="text-danger">{{ $message }}</div>
-                                        @enderror   
+                                        @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">رقم السائق</label>
-                                        <input type="text" class="form-control border-primary" name="driver_number" value="{{ old('driver_number', $policy->driver_number) }}">
+                                        <input type="text" class="form-control border-primary" name="driver_number"
+                                            value="{{ old('driver_number', $policy->driver_number) }}">
                                         @error('driver_number')
                                             <div class="text-danger">{{ $message }}</div>
-                                        @enderror   
+                                        @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">نوع السيارة</label>
-                                        <input type="text" class="form-control border-primary" name="driver_car" value="{{ old('driver_car', $policy->driver_car) }}">
+                                        <input type="text" class="form-control border-primary" name="driver_car"
+                                            value="{{ old('driver_car', $policy->driver_car) }}">
                                         @error('driver_car')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">لوحة السيارة</label>
-                                        <input type="text" class="form-control border-primary" name="car_code" value="{{ old('plate_number', $policy->car_code) }}">
+                                        <input type="text" class="form-control border-primary" name="car_code"
+                                            value="{{ old('plate_number', $policy->car_code) }}">
                                         @error('car_code')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -153,7 +168,8 @@
                             </div>
                             <div class="modal-footer d-flex justify-content-start">
                                 <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
-                                <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                <button type="button" class="btn btn-secondary fw-bold"
+                                    data-bs-dismiss="modal">إلغاء</button>
                             </div>
                         </form>
                     </div>
@@ -231,7 +247,8 @@
                             <i class="fas fa-boxes me-2"></i>
                             الحاويات المشمولة في البوليصة
                         </h5>
-                        <span class="badge bg-light text-dark d-none d-md-inline">{{ count($policy->containers) }} حاوية</span>
+                        <span class="badge bg-light text-dark d-none d-md-inline">{{ count($policy->containers) }}
+                            حاوية</span>
                     </div>
                 </div>
                 <div class="card-body p-0">
@@ -248,7 +265,7 @@
                                         <th class="border-0 text-center fw-bold text-nowrap">تاريخ الخروج</th>
                                         <th class="border-0 text-center fw-bold text-nowrap">تم الإستلام بواسطة</th>
                                         <th class="border-0 text-center fw-bold text-nowrap">تم التسليم بواسطة</th>
-                                        <th class="border-0 text-center fw-bold text-nowrap">ملاحظات</th>
+                                        <th class="border-0 text-center fw-bold text-nowrap">الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-center">
@@ -272,8 +289,49 @@
                                             <td>{{ \Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
                                             <td>{{ $container->received_by }}</td>
                                             <td>{{ $container->delivered_by }}</td>
-                                            <td>{{ $container->notes ?? '---' }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-link p-0" data-bs-toggle="modal"
+                                                    data-bs-target="#deleteContainerModal{{ $container->id }}">
+                                                    <i class="fas fa-trash-can text-danger"></i>
+                                                </button>
+                                            </td>
                                         </tr>
+
+                                        <!-- Delete Container Confirmation Modal -->
+                                        <div class="modal fade" id="deleteContainerModal{{ $container->id }}" tabindex="-1" aria-labelledby="deleteContainerModalLabel{{ $container->id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title" id="deleteContainerModalLabel{{ $container->id }}">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            تأكيد إزالة الحاوية
+                                                        </h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-center">
+                                                        <h6 class="mb-3">هل أنت متأكد من إزالة هذه الحاوية من البوليصة؟</h6>
+                                                        <p class="text-muted mb-0">
+                                                            سيتم إزالة الحاوية <strong>{{ $container->code }}</strong> من البوليصة.
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer justify-content-center">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                            <i class="fas fa-times me-1"></i>
+                                                            إلغاء
+                                                        </button>
+                                                        <form action="{{ route('policies.container.remove', [$policy, $container->id]) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger">
+                                                                <i class="fas fa-trash-can me-1"></i>
+                                                                تأكيد الإزالة
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
                                 </tbody>
                             </table>

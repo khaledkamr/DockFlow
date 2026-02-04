@@ -421,6 +421,34 @@ class PolicyController extends Controller
         return redirect()->route('policies')->with('success', 'تم حذف البوليصة بنجاح');
     }
 
+    public function removeContainerFromPolicy(Policy $policy, $containerId) {
+        if(Gate::denies('تعديل بوليصة تخزين')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل هذه البوليصة');
+        }
+        if($policy->containers->isNotEmpty() && $policy->containers->first()->invoices()->whereIn('type', ['تخزين', 'خدمات', 'تخليص'])->first()) {
+            return redirect()->back()->with('error', 'لا يمكن تعديل هذه البوليصة لارتباطها بفاتورة');
+        }
+
+        $container = Container::findOrFail($containerId);
+        if($policy->type == 'تخزين') {
+            $container->location = null;
+            $container->received_by = null;
+            $container->date = null;
+            $container->save();
+        } elseif($policy->type == 'تسليم') {
+            $container->status = 'في الساحة';
+            $container->delivered_by = null;
+            $container->exit_date = null;
+            $container->save();
+        } elseif($policy->type == 'خدمات') {
+            $container->delete();
+        }
+
+        $policy->containers()->detach($container->id);
+
+        return redirect()->back()->with('success', 'تم إزالة الحاوية من البوليصة بنجاح');
+    }
+
     public function reports(Request $request) {
         $customers = Customer::all();
         $types = ['تخزين', 'خدمات'];
