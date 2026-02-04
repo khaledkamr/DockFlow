@@ -106,15 +106,16 @@ class ExportController extends Controller
     public function printAccountStatement(Request $request) {
         $from = $request->input('from');
         $to = $request->input('to');
-        $account = $request->input('account', null);
+        $accountId = $request->input('account', null);
+        $account = Account::findOrFail($accountId);
         $costCenter = $request->input('cost_center', null);
-        if(!$account && !$costCenter) {
+        if(!$accountId && !$costCenter) {
             $statement = collect();
         } else {
             $statement = JournalEntryLine::join('journal_entries', 'journal_entries.id', '=', 'journal_entry_lines.journal_entry_id')
                 ->select('journal_entry_lines.*')
-                ->when($account, function($query, $account) {
-                    return $query->where('account_id', $account);
+                ->when($accountId, function($query, $accountId) {
+                    return $query->where('account_id', $accountId);
                 })
                 ->when($costCenter, function($query, $costCenter) {
                     return $query->where('cost_center_id', $costCenter);
@@ -146,6 +147,7 @@ class ExportController extends Controller
         }
         
         return view('reports.account_statement', compact(
+            'account',
             'from',
             'to',
             'statement',
