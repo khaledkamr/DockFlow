@@ -80,7 +80,7 @@ class ContractController extends Controller
             return redirect()->back()->with('error', 'ليس لديك صلاحية التعديل على بيانات العقد');
         }
 
-        $old = $contract->toArray();
+        $old = $contract->load('services')->toArray();
 
         if($request->has('start_date')) {
             $contract->start_date = $request->start_date;
@@ -115,7 +115,7 @@ class ContractController extends Controller
             }
         }
 
-        $new = $contract->toArray();
+        $new = $contract->load('services')->toArray();
         logActivity('تعديل عقد', "تم تعديل بيانات العقد رقم " . $contract->id, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات العقد بنجاح');
