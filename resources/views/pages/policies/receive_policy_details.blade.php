@@ -166,7 +166,7 @@
                         <div class="card-header bg-dark text-white">
                             <h5 class="card-title mb-0">
                                 <i class="fas fa-info-circle me-2"></i>
-                                معلومات الإتفاقية
+                                معلومات البوليصة
                             </h5>
                         </div>
                         <div class="card-body">

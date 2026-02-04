@@ -35,6 +35,9 @@ class PolicyController extends Controller
                     ->orWhereHas('customer', function($q) use ($search) {
                         $q->where('name', 'like', '%' . $search . '%');
                     })
+                    ->orWhereHas('containers', function($q) use ($search) {
+                        $q->where('code', 'like', '%' . $search . '%');
+                    })
                     ->orWhere('reference_number', 'like', $search)
                     ->orWhere('date', 'like', '%' . $search . '%');
             });

@@ -11,7 +11,7 @@
                 <label for="search" class="form-label text-dark fw-bold">بحث عن بوليصة:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن بوليصة بإسم العميل او بالرقم المرجعي... "
+                        placeholder=" ابحث عن بوليصة بإسم العميل او بالرقم المرجعي او برقم الحاوية... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span class="d-none d-sm-inline">بحث</span>
