@@ -118,16 +118,158 @@ class ContainerController extends Controller
         $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
         $serviceInvoice = $container->invoices->where('type', 'خدمات')->first();
 
+        $timeline = collect();
+
+        $timeline->push([
+            'type' => 'container_creation',
+            'title' => 'إنشاء الحاوية',
+            'icon' => 'fa-plus',
+            'date' => $container->created_at,
+            'description' => 'تم إنشاء الحاوية في النظام برقم <strong>' . $container->code . '</strong> من نوع <strong>' . ($container->containerType->name ?? 'N/A') . '</strong> في النظام بواسطة <strong>' . $container->made_by->name . '</strong>',
+            'link' => null,
+            'code' => $container->code,
+            'made_by' => $container->made_by->name,
+            'extra_info' => $container->notes ? [['icon' => 'fa-sticky-note', 'label' => 'الملاحظات', 'value' => $container->notes]] : null,
+            'model' => $container,
+        ]);
+
+        if ($servicePolicy) {
+            $timeline->push([
+                'type' => 'service_policy',
+                'title' => 'بوليصة خدمات',
+                'icon' => 'fa-file-contract',
+                'date' => $servicePolicy->created_at,
+                'description' => 'تم إضافة الحاوية إلى بوليصة خدمات رقم <a href="' . route('policies.services.details', $servicePolicy) . '" class="text-decoration-none fw-bold">' . $servicePolicy->code . '</a> بواسطة <strong>' . $servicePolicy->made_by->name . '</strong>',
+                'link' => route('policies.services.details', $servicePolicy),
+                'code' => $servicePolicy->code,
+                'made_by' => $servicePolicy->made_by->name,
+                'extra_info' => null,
+                'model' => $servicePolicy,
+            ]);
+        }
+
+        if ($serviceInvoice) {
+            $timeline->push([
+                'type' => 'service_invoice',
+                'title' => 'فاتورة خدمات',
+                'icon' => 'fa-file-invoice-dollar',
+                'date' => $serviceInvoice->created_at,
+                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.services.details', $serviceInvoice) . '" class="text-decoration-none fw-bold">' . $serviceInvoice->code . '</a> بواسطة <strong>' . $serviceInvoice->made_by->name . '</strong>',
+                'link' => route('invoices.services.details', $serviceInvoice),
+                'code' => $serviceInvoice->code,
+                'made_by' => $serviceInvoice->made_by->name,
+                'extra_info' => null,
+                'model' => $serviceInvoice,
+            ]);
+        }
+
+        if ($transaction) {
+            $timeline->push([
+                'type' => 'transaction',
+                'title' => 'معاملة تخليص',
+                'icon' => 'fa-file-contract',
+                'date' => $transaction->created_at,
+                'description' => 'تم إنشاء معاملة تخليص جمركي بموجب معاملة رقم <a class="fw-bold text-decoration-none" href="' . route('transactions.details', $transaction) . '">' . $transaction->code . '</a> بواسطة <strong>' . $transaction->made_by->name . '</strong>',
+                'link' => route('transactions.details', $transaction),
+                'code' => $transaction->code,
+                'made_by' => $transaction->made_by->name,
+                'extra_info' => [
+                    ['icon' => 'fa-file', 'label' => 'رقم البوليصة', 'value' => $transaction->policy_number],
+                    ['icon' => 'fa-file-alt', 'label' => 'البيان الجمركي', 'value' => $transaction->customs_declaration ?? 'N/A'],
+                    ['icon' => 'fa-calendar', 'label' => 'تاريخ البيان الجمركي', 'value' => $transaction->customs_declaration_date ?? 'N/A'],
+                ],
+                'model' => $transaction,
+            ]);
+        }
+
+        if ($transportOrder) {
+            $timeline->push([
+                'type' => 'transport_order',
+                'title' => 'اشعار نقل',
+                'icon' => 'fa-truck',
+                'date' => $transportOrder->created_at,
+                'description' => 'تم نقل للحاوية من ' . $transportOrder->from . ' الى ' . $transportOrder->to . ' بموجب اشعار نقل <a href="' . route('transactions.transportOrders.details', $transportOrder) . '" class="text-decoration-none fw-bold">' . $transportOrder->code . '</a> بواسطة <strong>' . $transportOrder->made_by->name . '</strong>',
+                'link' => route('transactions.transportOrders.details', $transportOrder),
+                'code' => $transportOrder->code,
+                'made_by' => $transportOrder->made_by->name,
+                'extra_info' => null,
+                'model' => $transportOrder,
+            ]);
+        }
+
+        if ($clearanceInvoice) {
+            $timeline->push([
+                'type' => 'clearance_invoice',
+                'title' => 'إنشاء فاتورة تخليص جمركي',
+                'icon' => 'fa-file-invoice-dollar',
+                'date' => $clearanceInvoice->created_at,
+                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.clearance.details', $clearanceInvoice) . '" class="text-decoration-none fw-bold">' . $clearanceInvoice->code . '</a> بواسطة <strong>' . ($clearanceInvoice->made_by->name ?? 'N/A') . '</strong>',
+                'link' => route('invoices.clearance.details', $clearanceInvoice),
+                'code' => $clearanceInvoice->code,
+                'made_by' => $clearanceInvoice->made_by->name ?? 'N/A',
+                'extra_info' => null,
+                'model' => $clearanceInvoice,
+            ]);
+        }
+
+        if ($storagePolicy) {
+            $timeline->push([
+                'type' => 'storage_policy',
+                'title' => 'بوليصة تخزين',
+                'icon' => 'fa-warehouse',
+                'date' => $storagePolicy->created_at,
+                'description' => 'تم تخزين الحاوية بموجب بوليصة رقم <a class="fw-bold text-decoration-none" href="' . route('policies.storage.details', $storagePolicy) . '">' . $storagePolicy->code . '</a> بواسطة <strong>' . $storagePolicy->made_by->name . '</strong> و موقعها في الساحه <i class="fas fa-map-marker-alt text-muted me-1 ms-1"></i> <strong>' . $container->location . '</strong>',
+                'link' => route('policies.storage.details', $storagePolicy),
+                'code' => $storagePolicy->code,
+                'made_by' => $storagePolicy->made_by->name,
+                'extra_info' => [
+                    ['icon' => 'fa-user', 'label' => 'السائق', 'value' => $storagePolicy->driver_name],
+                    ['icon' => 'fa-id-card', 'label' => 'هوية السائق', 'value' => $storagePolicy->driver_NID],
+                    ['icon' => 'fa-car', 'label' => null, 'value' => $storagePolicy->driver_car . ' - ' . $storagePolicy->car_code],
+                ],
+                'model' => $storagePolicy,
+            ]);
+        }
+
+        if ($receivePolicy) {
+            $timeline->push([
+                'type' => 'receive_policy',
+                'title' => 'بوليصة تسليم',
+                'icon' => 'fa-truck-fast',
+                'date' => $receivePolicy->created_at,
+                'description' => 'تم تسليم الحاوية للعميل <strong>' . $receivePolicy->customer->name . '</strong> بموجب بوليصة رقم <a class="fw-bold text-decoration-none" href="' . route('policies.receive.details', $receivePolicy) . '">' . $receivePolicy->code . '</a> بواسطة <strong>' . $receivePolicy->made_by->name . '</strong>',
+                'link' => route('policies.receive.details', $receivePolicy),
+                'code' => $receivePolicy->code,
+                'made_by' => $receivePolicy->made_by->name,
+                'extra_info' => [
+                    ['icon' => 'fa-user', 'label' => 'السائق', 'value' => $receivePolicy->driver_name],
+                    ['icon' => 'fa-id-card', 'label' => 'هوية السائق', 'value' => $receivePolicy->driver_NID],
+                    ['icon' => 'fa-car', 'label' => null, 'value' => $receivePolicy->driver_car . ' - ' . $receivePolicy->car_code],
+                ],
+                'model' => $receivePolicy,
+            ]);
+        }
+
+        if ($storageInvoice) {
+            $timeline->push([
+                'type' => 'storage_invoice',
+                'title' => 'إنشاء فاتورة تخزين',
+                'icon' => 'fa-file-invoice-dollar',
+                'date' => $storageInvoice->created_at,
+                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.details', $storageInvoice) . '" class="text-decoration-none fw-bold">' . $storageInvoice->code . '</a> بواسطة <strong>' . $storageInvoice->made_by->name . '</strong>',
+                'link' => route('invoices.details', $storageInvoice),
+                'code' => $storageInvoice->code,
+                'made_by' => $storageInvoice->made_by->name,
+                'extra_info' => null,
+                'model' => $storageInvoice,
+            ]);
+        }
+
+        $timeline = $timeline->sortBy('date')->values();
+
         return view('pages.containers.container_details', compact(
             'container', 
-            'transportOrder', 
-            'transaction', 
-            'storagePolicy', 
-            'receivePolicy', 
-            'servicePolicy',
-            'clearanceInvoice',
-            'storageInvoice',
-            'serviceInvoice'
+            'timeline'
         ));
     }
 

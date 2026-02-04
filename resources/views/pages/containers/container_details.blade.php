@@ -103,9 +103,10 @@
                 <h1 class="h3 h-md-2 mb-0">
                     تفاصيل الحاوية {{ $container->code }}
                 </h1>
-                @if(auth()->user()->roles->contains('name', 'Admin'))
+                @if (auth()->user()->roles->contains('name', 'Admin'))
                     <div class="mt-2">
-                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteContainerModal">
+                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#deleteContainerModal">
                             <i class="fas fa-trash me-1"></i>
                             حذف الحاوية
                         </button>
@@ -113,7 +114,8 @@
                 @endif
 
                 <!-- Delete Confirmation Modal -->
-                <div class="modal fade" id="deleteContainerModal" tabindex="-1" aria-labelledby="deleteContainerModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteContainerModal" tabindex="-1" aria-labelledby="deleteContainerModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-danger text-white">
@@ -121,7 +123,8 @@
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     تأكيد حذف الحاوية
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="text-center mb-3">
@@ -169,8 +172,9 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-6">
-                                <strong>العميل:</strong> 
-                                <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-decoration-none fw-bold">
+                                <strong>العميل:</strong>
+                                <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                    class="text-decoration-none fw-bold">
                                     {{ $container->customer->name ?? 'N/A' }}
                                 </a>
                             </div>
@@ -178,7 +182,8 @@
                                 <strong>نوع الحاوية:</strong> {{ $container->containerType->name ?? 'N/A' }}
                             </div>
                             <div class="col-6">
-                                <strong>تاريخ الدخول:</strong> {{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}
+                                <strong>تاريخ الدخول:</strong>
+                                {{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}
                             </div>
                             <div class="col-6">
                                 <strong>تاريخ الخروج:</strong>
@@ -192,7 +197,8 @@
                                 @if ($container->status == 'في الساحة')
                                     <div class="badge status-available">{{ $container->status }}</div>
                                 @elseif($container->status == 'تم التسليم')
-                                    <div class="badge status-delivered">{{ $container->status }} <i class="fa-solid fa-check"></i></div>
+                                    <div class="badge status-delivered">{{ $container->status }} <i
+                                            class="fa-solid fa-check"></i></div>
                                 @elseif($container->status == 'متأخر')
                                     <div class="badge status-danger">{{ $container->status }}</div>
                                 @elseif($container->status == 'خدمات')
@@ -272,8 +278,7 @@
         <!-- Timeline Section -->
         <div class="card shadow-sm border-0 mb-3 mb-md-4">
             <div class="card-header bg-dark text-white border-0">
-                <div
-                    class="d-flex flex-row align-items-start align-items-sm-center justify-content-between gap-2">
+                <div class="d-flex flex-row align-items-start align-items-sm-center justify-content-between gap-2">
                     <h5 class="card-title mb-0 fs-6 fs-md-5 d-flex align-items-center">
                         <i class="fas fa-route me-2"></i>
                         <span>الخط الزمني للحاوية</span>
@@ -290,348 +295,50 @@
                 <div class="position-relative px-2 px-md-3 py-3 py-md-4">
                     <div class="d-flex flex-column gap-3 position-relative">
 
-                        <!-- Container Creation -->
-                        <div class="timeline-state">
-                            <div class="state-connector"></div>
-                            <div class="position-relative" style="z-index: 3;">
-                                <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                    style="width: 48px; height: 48px;">
-                                    <i class="fas fa-plus"></i>
-                                </div>
-                                <div class="state-pulse"></div>
-                            </div>
-                            <div class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                <div
-                                    class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                    <h5 class="mb-0 fs-6">إنشاء الحاوية</h5>
-                                    <small class="d-flex flex-wrap align-items-center text-secondary">
-                                        <i class="far fa-calendar-alt me-1"></i>
-                                        <span>{{ \Carbon\Carbon::parse($container->created_at)->format('Y/m/d') }}</span>
-                                        <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                            {{ \Carbon\Carbon::parse($container->created_at)->format('h:i A') }}
-                                        </span>
-                                    </small>
-                                </div>
-                                <p class="text-muted mb-0 small mb-2">
-                                    تم إنشاء الحاوية في النظام برقم <strong>{{ $container->code }}</strong> من نوع
-                                    <strong>{{ $container->containerType->name ?? 'N/A' }}</strong> في النظام بواسطة
-                                    <strong>{{ $container->made_by->name }}</strong>
-                                </p>
-                                @if($container->notes)
-                                    <div class="bg-light p-2 p-md-3 rounded-3 d-flex flex-column flex-md-row gap-3">
-                                        <div class="small">
-                                            <i class="fas fa-sticky-note text-muted me-1"></i>
-                                            <span>الملاحظات: <strong>{{ $container->notes }}</strong></span>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-
-                        @if ($servicePolicy)
+                        @foreach ($timeline as $operation)
                             <div class="timeline-state">
                                 <div class="state-connector"></div>
                                 <div class="position-relative" style="z-index: 3;">
                                     <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
                                         style="width: 48px; height: 48px;">
-                                        <i class="fas fa-file-contract"></i>
+                                        <i class="fas {{ $operation['icon'] }}"></i>
                                     </div>
                                     <div class="state-pulse"></div>
                                 </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">بوليصة خدمات</h5>
+                                <div class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
+                                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
+                                        <h5 class="mb-0 fs-6">{{ $operation['title'] }}</h5>
                                         <small class="d-flex flex-wrap align-items-center text-secondary">
                                             <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($servicePolicy->created_at)->format('d M Y') }}</span>
+                                            <span>{{ \Carbon\Carbon::parse($operation['date'])->format('Y/m/d') }}</span>
                                             <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($servicePolicy->created_at)->format('h:i A') }}
+                                                {{ \Carbon\Carbon::parse($operation['date'])->format('h:i A') }}
                                             </span>
                                         </small>
                                     </div>
-                                    <p class="text-muted mb-0 small">
-                                        تم إضافة الحاوية إلى بوليصة خدمات رقم <a
-                                            href="{{ route('policies.services.details', $servicePolicy) }}"
-                                            class="text-decoration-none fw-bold">{{ $servicePolicy->code }}</a> بواسطة
-                                        <strong>{{ $servicePolicy->made_by->name }}</strong>
+                                    <p class="text-muted mb-0 small mb-2">
+                                        {!! $operation['description'] !!}
                                     </p>
+                                    @if ($operation['extra_info'])
+                                        <div class="bg-light p-2 p-md-3 rounded-3 d-flex flex-column flex-md-row gap-3">
+                                            @foreach ($operation['extra_info'] as $info)
+                                                <div class="small">
+                                                    <i class="fas {{ $info['icon'] }} text-muted me-1"></i>
+                                                    @if ($info['label'])
+                                                        <span>{{ $info['label'] }}:
+                                                            <strong>{{ $info['value'] }}</strong>
+                                                        </span>
+                                                    @else
+                                                        <span>{{ $info['value'] }}</span>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                        @endif
+                        @endforeach
 
-                        @if ($serviceInvoice)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">فاتورة خدمات</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($serviceInvoice->created_at)->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($serviceInvoice->created_at)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <p class="text-muted mb-0 small">
-                                        تم فوترة الحاوية بموجب فاتورة رقم <a
-                                            href="{{ route('invoices.services.details', $serviceInvoice) }}"
-                                            class="text-decoration-none fw-bold">{{ $serviceInvoice->code }}</a> بواسطة
-                                        <strong>{{ $serviceInvoice->made_by->name }}</strong>
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($transaction)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-file-contract"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">معاملة تخليص</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($transaction->created_at)->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($transaction->created_at)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <div class="text-muted small mb-2">
-                                        تم إنشاء معاملة تخليص جمركي بموجب معاملة رقم <a
-                                            class="fw-bold text-decoration-none"
-                                            href="{{ route('transactions.details', $transaction) }}">{{ $transaction->code }}</a>
-                                        بواسطة <strong>{{ $transaction->made_by->name }}</strong>
-                                    </div>
-                                    <div class="bg-light p-2 p-md-3 rounded-3 d-flex flex-column flex-md-row gap-3">
-                                        <div class="small">
-                                            <i class="fas fa-file text-muted me-1"></i>
-                                            <span>رقم البوليصة: <strong>{{ $transaction->policy_number }}</strong></span>
-                                        </div>
-                                        <div class="small">
-                                            <i class="fas fa-file-alt text-muted me-1"></i>
-                                            <span>البيان الجمركي: {{ $transaction->customs_declaration ?? 'N/A' }}</span>
-                                        </div>
-                                        <div class="small">
-                                            <i class="fas fa-calendar text-muted me-1"></i>
-                                            <span>تاريخ البيان الجمركي:
-                                                {{ $transaction->customs_declaration_date ?? 'N/A' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                        
-                        @if($transportOrder)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-truck"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">اشعار نقل</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($transportOrder->created_at)->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($transportOrder->created_at)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <p class="text-muted mb-0 small">
-                                        تم نقل للحاوية من {{ $transportOrder->from }} الى {{ $transportOrder->to }} بموجب اشعار نقل <a href="{{ route('transactions.transportOrders.details', $transportOrder) }}"
-                                            class="text-decoration-none fw-bold">{{ $transportOrder->code }}</a> بواسطة <strong>{{ $transportOrder->made_by->name }}</strong>
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($clearanceInvoice)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">إنشاء فاتورة تخليص جمركي</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($clearanceInvoice->created_at)->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($clearanceInvoice->created_at)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <p class="text-muted mb-0 small">
-                                        تم فوترة الحاوية بموجب فاتورة رقم <a href="{{ route('invoices.clearance.details', $clearanceInvoice) }}"
-                                            class="text-decoration-none fw-bold">{{ $clearanceInvoice->code }}</a> بواسطة
-                                        <strong>{{ $clearanceInvoice->made_by->name ?? 'N/A' }}</strong>
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($storagePolicy)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-warehouse"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">بوليصة تخزين</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($storagePolicy->created_at)->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($storagePolicy->created_at)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <div class="text-muted small mb-2">
-                                        تم تخزين الحاوية بموجب بوليصة رقم <a class="fw-bold text-decoration-none"
-                                            href="{{ route('policies.storage.details', $storagePolicy) }}">{{ $storagePolicy->code }}</a>
-                                        بواسطة <strong>{{ $storagePolicy->made_by->name }}</strong> و موقعها في الساحه <i
-                                            class="fas fa-map-marker-alt text-muted me-1 ms-1"></i>
-                                        <strong>{{ $container->location }}</strong>
-                                    </div>
-                                    <div class="bg-light p-2 p-md-3 rounded-3 d-flex flex-column flex-md-row gap-3">
-                                        <div class="small">
-                                            <i class="fas fa-user text-muted me-1"></i>
-                                            <span>السائق: <strong>{{ $storagePolicy->driver_name }}</strong></span>
-                                        </div>
-                                        <div class="small">
-                                            <i class="fas fa-id-card text-muted me-1"></i>
-                                            <span>هوية السائق: {{ $storagePolicy->driver_NID }}</span>
-                                        </div>
-                                        <div class="small">
-                                            <i class="fas fa-car text-muted me-1"></i>
-                                            <span>{{ $storagePolicy->driver_car }} - {{ $storagePolicy->car_code }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($receivePolicy)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-truck-fast"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">بوليصة تسليم</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ \Carbon\Carbon::parse($receivePolicy->created_at)->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ \Carbon\Carbon::parse($receivePolicy->created_at)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <div class="text-muted small mb-2">
-                                        تم تسليم الحاوية للعميل <strong>{{ $receivePolicy->customer->name }}</strong> بموجب
-                                        بوليصة رقم <a class="fw-bold text-decoration-none"
-                                            href="{{ route('policies.receive.details', $receivePolicy) }}">{{ $receivePolicy->code }}</a>
-                                        بواسطة <strong>{{ $receivePolicy->made_by->name }}</strong>
-                                    </div>
-                                    <div class="bg-light p-2 p-md-3 rounded-3 d-flex flex-column flex-md-row gap-3">
-                                        <div class="small">
-                                            <i class="fas fa-user text-muted me-1"></i>
-                                            <span>السائق: <strong>{{ $receivePolicy->driver_name }}</strong></span>
-                                        </div>
-                                        <div class="small">
-                                            <i class="fas fa-id-card text-muted me-1"></i>
-                                            <span>هوية السائق: {{ $receivePolicy->driver_NID }}</span>
-                                        </div>
-                                        <div class="small">
-                                            <i class="fas fa-car text-muted me-1"></i>
-                                            <span>{{ $receivePolicy->driver_car }} - {{ $receivePolicy->car_code }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        @if ($storageInvoice)
-                            <div class="timeline-state">
-                                <div class="state-connector"></div>
-                                <div class="position-relative" style="z-index: 3;">
-                                    <div class="timeline-icon d-flex align-items-center justify-content-center position-relative rounded-circle text-white fs-5 bg-primary"
-                                        style="width: 48px; height: 48px;">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </div>
-                                    <div class="state-pulse"></div>
-                                </div>
-                                <div
-                                    class="flex-grow-1 p-2 p-md-3 rounded-3 shadow-sm border-start border-4 border-primary">
-                                    <div
-                                        class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
-                                        <h5 class="mb-0 fs-6">إنشاء فاتورة تخزين</h5>
-                                        <small class="d-flex flex-wrap align-items-center text-secondary">
-                                            <i class="far fa-calendar-alt me-1"></i>
-                                            <span>{{ $storageInvoice->created_at->format('d M Y') }}</span>
-                                            <span class="rounded-5 px-2 ms-1" style="background-color: #e9ecef;">
-                                                {{ $storageInvoice->created_at->timezone(auth()->user()->timezone)->format('h:i A') }}
-                                            </span>
-                                        </small>
-                                    </div>
-                                    <p class="text-muted mb-0 small">
-                                        تم فوترة الحاوية بموجب فاتورة رقم <a
-                                            href="{{ route('invoices.details', $storageInvoice) }}"
-                                            class="text-decoration-none fw-bold">{{ $storageInvoice->code }}</a> بواسطة
-                                        <strong>{{ $storageInvoice->made_by->name }}</strong>
-                                    </p>
-                                </div>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
