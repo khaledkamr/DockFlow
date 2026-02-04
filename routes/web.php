@@ -14,6 +14,7 @@ use App\Http\Controllers\ExpenseInvoiceController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransportController;
@@ -32,6 +33,8 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('/', [DashboardController::class, 'handle'])->middleware('auth')->name('dashboard');
+
+Route::get('/search', [SearchController::class, 'search'])->middleware('auth')->name('search');
 
 Route::controller(AdminController::class)->middleware('auth')->group(function () {
     Route::get('admin/dashboard', 'dashboard')->name('admin.dashboard');
