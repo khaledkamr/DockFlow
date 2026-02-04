@@ -776,6 +776,7 @@ class AccountingController extends Controller
             $from = $request->input('from');
             $to = $request->input('to');
             $account = $request->input('account', null);
+            $selectedAccount = $account ? Account::findOrFail($account) : null;
             $costCenter = $request->input('cost_center', null);
             if(!$account && !$costCenter) {
                 $statement = collect();
@@ -815,6 +816,7 @@ class AccountingController extends Controller
             }
 
             return view('pages.accounting.reports', compact(
+                'selectedAccount',
                 'accounts',
                 'costCenters',
                 'statement',

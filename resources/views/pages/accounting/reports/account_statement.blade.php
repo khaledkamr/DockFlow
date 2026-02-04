@@ -40,7 +40,9 @@
 
 <div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-2">
-        <div></div>
+        <div>
+            <h5 class="mb-3 fw-bold">تقرير كشف حساب - {{ $selectedAccount ? $selectedAccount->name : '' }}</h5>
+        </div>
         <div class="export-buttons d-flex gap-2 align-items-center">
             <form action="{{ route('export.excel', 'account_statement') }}" method="GET">
                 <input type="hidden" name="account" value="{{ request()->query('account') }}">
