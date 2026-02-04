@@ -244,6 +244,7 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('invoice/clearance/{transaction:uuid}', 'storeClearanceInvoice')->name('invoices.clearance.store');
     Route::get('invoice/clearance/preview/{transaction:uuid}', 'previewClearanceInvoice')->name('invoices.clearance.preview');
     Route::get('invoice/clearance/details/{invoice:uuid}', 'clearanceInvoiceDetails')->name('invoices.clearance.details');
+    Route::patch('invoice/clearance/update/items/{invoice:uuid}', 'updateClearanceInvoiceItems')->name('invoices.clearance.update.items');
 
     Route::get('/invoices/statements', 'invoiceStatements')->name('invoices.statements');
     Route::get('/invoices/statements/create', 'createInvoiceStatement')->name('invoices.statements.create');

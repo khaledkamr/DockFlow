@@ -662,6 +662,60 @@ class InvoiceController extends Controller
             'qrCode',
         ));
     }
+
+    public function updateClearanceInvoiceItems(Request $request, Invoice $invoice) {
+        if(Gate::denies('تعديل فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل الفواتير');
+        }
+
+        $itemsData = $request->input('items', []);
+        $existingItemIds = collect($itemsData)->pluck('id')->filter()->toArray();
+        $totalAmountBeforeTax = 0;
+        $totalTax = 0;
+
+        $invoice->clearanceInvoiceItems()->whereNotIn('id', $existingItemIds)->delete();
+
+        foreach($itemsData as $itemData) {
+            if (!empty($itemData['id'])) {
+                $item = $invoice->clearanceInvoiceItems()->find($itemData['id']);
+                if ($item) {
+                    $item->update([
+                        'number' => $itemData['number'],
+                        'description' => $itemData['description'],
+                        'amount' => $itemData['amount'],
+                        'tax' => $itemData['tax'],
+                        'total' => $itemData['total'],
+                    ]);
+                }
+            } else {
+                // Create new item
+                $invoice->clearanceInvoiceItems()->create([
+                    'number' => $itemData['number'],
+                    'description' => $itemData['description'],
+                    'amount' => $itemData['amount'],
+                    'tax' => $itemData['tax'],
+                    'total' => $itemData['total'],
+                ]);
+            }
+            $totalAmountBeforeTax += $itemData['amount'];
+            $totalTax += $itemData['tax'];
+        }
+
+        $discountValue = ($invoice->discount ?? 0) / 100 * $totalAmountBeforeTax;
+        $amountAfterDiscount = $totalAmountBeforeTax - $discountValue;
+        $totalAmount = $amountAfterDiscount + $totalTax;
+
+        $invoice->update([
+            'amount_before_tax' => $totalAmountBeforeTax,
+            'tax' => $totalTax,
+            'amount_after_discount' => $amountAfterDiscount,
+            'total_amount' => $totalAmount,
+        ]);
+
+        logActivity('تعديل بنود فاتورة تخليص', "تم تعديل بنود فاتورة تخليص رقم " . $invoice->code, null, $invoice->toArray());
+
+        return redirect()->back()->with('success', 'تم تحديث بنود الفاتورة بنجاح.');
+    }
     
     public function createShippingInvoice(Request $request) {
         $customers = Customer::all(); 

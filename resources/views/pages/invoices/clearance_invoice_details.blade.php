@@ -358,8 +358,7 @@
 
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-4">
-            <div
-                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-{{ $invoice->isPaid == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
                         @if ($invoice->isPaid == 'تم الدفع')
@@ -556,9 +555,146 @@
                     <h5 class="mb-0 text-dark">
                         <i class="fas fa-list me-2"></i>تفاصيل البنود
                     </h5>
-                    <span class="badge bg-primary text-white">عدد البنود:
-                        {{ count($invoice->containers->first()->transactions->first()->items) }}</span>
+                    @if(auth()->user()->roles->pluck('name')->contains('Admin'))
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editItemsModal">
+                            <i class="fas fa-edit me-1"></i>تعديل البنود
+                        </button>
+                    @endif
                 </div>
+
+                <!-- Edit Items Modal -->
+                <div class="modal fade" id="editItemsModal" tabindex="-1" aria-labelledby="editItemsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                                <h5 class="modal-title text-white fw-bold" id="editItemsModalLabel">
+                                    <i class="fas fa-edit me-2"></i>تعديل بنود الفاتورة
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('invoices.clearance.update.items', $invoice) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <div class="modal-body text-dark">
+                                    @if ($invoice->is_posted)
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل تعديل البنود.
+                                        </div>
+                                    @endif
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="itemsTable">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th class="text-center text-nowrap">#</th>
+                                                    <th class="text-center text-nowrap">البند</th>
+                                                    <th class="text-center text-nowrap">المبلغ</th>
+                                                    <th class="text-center text-nowrap">الضريبة</th>
+                                                    <th class="text-center text-nowrap">الإجمالي</th>
+                                                    <th class="text-center text-nowrap">إجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($invoice->clearanceInvoiceItems->sortBy('number') as $index => $item)
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
+                                                            <input type="number" name="items[{{ $index }}][number]" class="form-control form-control-sm text-center" value="{{ $item->number }}" style="width: 60px;" required>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="items[{{ $index }}][description]" class="form-control form-control-sm" value="{{ $item->description }}" required>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" name="items[{{ $index }}][amount]" class="form-control form-control-sm text-center item-amount" value="{{ $item->amount }}" required>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" name="items[{{ $index }}][tax]" class="form-control form-control-sm text-center item-tax" value="{{ $item->tax }}" required>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" step="0.01" name="items[{{ $index }}][total]" class="form-control form-control-sm text-center item-total" value="{{ $item->total }}" readonly>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <button type="button" class="btn btn-sm btn-outline-danger remove-item-btn">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" id="addItemBtn">
+                                        <i class="fas fa-plus me-1"></i>إضافة بند جديد
+                                    </button>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-primary fw-bold" {{ $invoice->is_posted ? 'disabled' : '' }}>
+                                        <i class="fas fa-save me-2"></i>حفظ التعديلات
+                                    </button>
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        let itemIndex = {{ $invoice->clearanceInvoiceItems->count() }};
+                        
+                        document.getElementById('addItemBtn').addEventListener('click', function() {
+                            const tbody = document.querySelector('#itemsTable tbody');
+                            const newRow = document.createElement('tr');
+                            newRow.innerHTML = `
+                                <td class="text-center">
+                                    <input type="hidden" name="items[${itemIndex}][id]" value="">
+                                    <input type="number" name="items[${itemIndex}][number]" class="form-control form-control-sm text-center" value="${itemIndex + 1}" style="width: 60px;" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="items[${itemIndex}][description]" class="form-control form-control-sm" required>
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" name="items[${itemIndex}][amount]" class="form-control form-control-sm text-center item-amount" value="0" required>
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" name="items[${itemIndex}][tax]" class="form-control form-control-sm text-center item-tax" value="0" required>
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" name="items[${itemIndex}][total]" class="form-control form-control-sm text-center item-total" value="0" readonly>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-outline-danger remove-item-btn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tbody.appendChild(newRow);
+                            itemIndex++;
+                            attachRowEvents(newRow);
+                        });
+
+                        function attachRowEvents(row) {
+                            const amountInput = row.querySelector('.item-amount');
+                            const taxInput = row.querySelector('.item-tax');
+                            const totalInput = row.querySelector('.item-total');
+                            const removeBtn = row.querySelector('.remove-item-btn');
+
+                            function calculateTotal() {
+                                const amount = parseFloat(amountInput.value) || 0;
+                                const tax = parseFloat(taxInput.value) || 0;
+                                totalInput.value = (amount + tax).toFixed(2);
+                            }
+
+                            amountInput.addEventListener('input', calculateTotal);
+                            taxInput.addEventListener('input', calculateTotal);
+                            removeBtn.addEventListener('click', function() {
+                                row.remove();
+                            });
+                        }
+
+                        document.querySelectorAll('#itemsTable tbody tr').forEach(attachRowEvents);
+                    });
+                </script>
 
                 <div class="table-container" id="tableContainer">
                     <table class="table table-striped table-hover">
@@ -591,9 +727,9 @@
                             @endforeach
                             <tr class="table-secondary">
                                 <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                                <td class="text-center fw-bold">{{ number_format($invoice->amount_before_tax, 2) }}</td>
-                                <td class="text-center fw-bold">{{ number_format($invoice->tax, 2) }}</td>
-                                <td class="text-center fw-bold">{{ number_format($invoice->total_amount, 2) }} <i
+                                <td class="text-center fw-bold">{{ number_format($invoice->clearanceInvoiceItems->sum('amount'), 2) }}</td>
+                                <td class="text-center fw-bold">{{ number_format($invoice->clearanceInvoiceItems->sum('tax'), 2) }}</td>
+                                <td class="text-center fw-bold">{{ number_format($invoice->clearanceInvoiceItems->sum('total'), 2) }} <i
                                         data-lucide="saudi-riyal"></i></td>
                             </tr>
                         </tbody>
