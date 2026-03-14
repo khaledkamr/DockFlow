@@ -50,21 +50,7 @@
 @endphp
 <body onload="initPrint()">
     <div class="position-relative border-bottom border-dark border-2 pb-2 mb-2">
-        <div class="position-absolute start-0 top-0">
-            <div class="text-muted mb-1">
-                <span>الرقم الضريبي: </span>
-                <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
-            </div>
-            <div class="text-muted">
-                <span>السجل التجاري: </span>
-                <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
-            </div>
-            <div class="text-muted">
-                <span>العنوان الوطني: </span>
-                <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
-            </div>
-        </div>
-        <div class="logo-section text-center">
+        <div class="text-right">
             @if($company->logo)
                 @if($company->name == 'شركة شمس الخليج للتخليص الجمركي' || $company->name == 'شركة تاج الأعمال للخدمات اللوجستية')
                     <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 100px;">
@@ -77,6 +63,18 @@
             <h4 class="fw-bold">{{ $company->name }}</h4>
         </div>
         <div class="position-absolute end-0 top-0 text-end">
+            <div class="text-muted mb-1">
+                <span>الرقم الضريبي: </span>
+                <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
+            </div>
+            <div class="text-muted mb-1">
+                <span>السجل التجاري: </span>
+                <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
+            </div>
+            <div class="text-muted mb-1">
+                <span>العنوان الوطني: </span>
+                <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
+            </div>
             <div class="text-muted mb-1">
                 <span>رقم التواصل: </span>
                 <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
