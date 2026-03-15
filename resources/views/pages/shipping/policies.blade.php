@@ -85,7 +85,10 @@
                     <th class="text-center bg-dark text-white text-nowrap">تاريخ البوليصة</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
                     <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
+                    <th class="text-center bg-dark text-white text-nowrap">إسم السائق</th>
+                    <th class="text-center bg-dark text-white text-nowrap">لوحة السيارة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
@@ -117,20 +120,26 @@
                                 </span>
                             </td>
                             <td class="text-center text-nowrap">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
-                            <td class="text-center text-nowrap">
+                            <td class="text-center">
                                 <i class="fas fa-map-marker-alt text-danger"></i>{{ $policy->from }}
                             </td>
-                            <td class="text-center text-nowrap">
+                            <td class="text-center">
                                 <i class="fas fa-map-marker-alt text-danger"></i>{{ $policy->to }}
                             </td>
-                            <td class="text-center text-nowrap">
+                            <td class="text-center">
+                                {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
+                            <td class="text-center">
+                                {{ $policy->supplier ? $policy->vehicle_plate : $policy->vehicle->plate_number ?? '-' }}
+                            </td>
+                            <td class="text-center">
                                 @if ($policy->is_received)
                                     <span class="badge status-delivered">تم التسليم</span>
                                 @else
                                     <span class="badge status-waiting">في الانتظار</span>
                                 @endif
                             </td>
-                            <td class="text-center text-nowrap">
+                            <td class="text-center fw-bold">{{ $policy->total_cost }}</td>
+                            <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $policy->made_by) }}"
                                     class="text-dark text-decoration-none">
                                     {{ $policy->made_by->name ?? '-' }}
