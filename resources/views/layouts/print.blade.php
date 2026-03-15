@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'تقرير الطباعة')</title>
@@ -19,6 +20,7 @@
             background-color: #fff;
             color: #000;
         }
+
         .no-print {
             position: fixed;
             bottom: 30px;
@@ -26,15 +28,21 @@
             transform: translateX(-50%);
             z-index: 1000;
         }
+
         .no-print .btn {
             background: linear-gradient(135deg, #42b3af 0%, #0b56a9 100%);
             transition: 0.3s;
         }
+
         .no-print .btn:hover {
             transform: scale(1.1);
         }
+
         @media print {
-            .no-print { display: none !important; }
+            .no-print {
+                display: none !important;
+            }
+
             .table thead tr th {
                 background-color: #000 !important;
                 color: #fff !important;
@@ -42,46 +50,50 @@
                 print-color-adjust: exact !important;
             }
         }
-
     </style>
 </head>
 @php
     $company = auth()->user()->company;
 @endphp
+
 <body onload="initPrint()">
-    <div class="position-relative border-bottom border-dark border-2 pb-2 mb-2">
-        <div class="text-right">
-            @if($company->logo)
-                @if($company->name == 'شركة شمس الخليج للتخليص الجمركي' || $company->name == 'شركة تاج الأعمال للخدمات اللوجستية')
-                    <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 100px;">
+    <div class="border-bottom border-dark border-3 pb-3 mb-4">
+        <div class="d-flex justify-content-between align-items-start gap-4">
+            <!-- Logo and Company Name -->
+            <div class="d-flex align-items-center gap-3">
+                @if ($company->logo)
+                    <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo"
+                        style="width: 120px; height: auto;">
                 @else
-                    <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo" style="width: 150px;">
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px; height: auto;">
                 @endif
-            @else
-                <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px;">
-            @endif
-            <h4 class="fw-bold">{{ $company->name }}</h4>
-        </div>
-        <div class="position-absolute end-0 top-0 text-end">
-            <div class="text-muted mb-1">
-                <span>الرقم الضريبي: </span>
-                <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
+                <div>
+                    <h3 class="fw-bold mb-1">{{ $company->name }}</h3>
+                </div>
             </div>
-            <div class="text-muted mb-1">
-                <span>السجل التجاري: </span>
-                <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
-            </div>
-            <div class="text-muted mb-1">
-                <span>العنوان الوطني: </span>
-                <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
-            </div>
-            <div class="text-muted mb-1">
-                <span>رقم التواصل: </span>
-                <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
-            </div>
-            <div class="text-muted">
-                <span>البريد الإلكتروني: </span>
-                <span class="fw-semibold">{{ $company->email ?? 'غير محدد' }}</span>
+
+            <!-- Company Details -->
+            <div class="text-end">
+                <div class="mb-1">
+                    <span class="text-muted small">الرقم الضريبي:</span>
+                    <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-muted small">السجل التجاري:</span>
+                    <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-muted small">العنوان الوطني:</span>
+                    <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
+                </div>
+                <div class="mb-1">
+                    <span class="text-muted small">رقم التواصل:</span>
+                    <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
+                </div>
+                <div>
+                    <span class="text-muted small">البريد الإلكتروني:</span>
+                    <span class="fw-semibold">{{ $company->email ?? 'غير محدد' }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -117,4 +129,5 @@
         }
     </script>
 </body>
+
 </html>
