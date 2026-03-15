@@ -310,7 +310,7 @@
                     <div class="row g-3">
                         @if ($policy->type == 'ناقل داخلي')
                             <div class="col">
-                                <label class="text-muted small">الرقم القومي</label>
+                                <label class="text-muted small">هوية السائق</label>
                                 <p class="fw-semibold mb-0">{{ $policy->driver->NID ?? 'N/A' }}</p>
                             </div>
                             <div class="col">

@@ -39,7 +39,7 @@
                         @endforeach
                     </select>
                     @error('from')
-                        <div class="text-danger">{{ $message }}</div>
+                        <div class="text-danger">مكان التحميل مطلوب</div>
                     @enderror
                 </div>
                 <div class="col-6 col-md-6 col-lg-3">
@@ -53,7 +53,7 @@
                         @endforeach
                     </select>
                     @error('to')
-                        <div class="text-danger">{{ $message }}</div>
+                        <div class="text-danger">مكان التفريغ مطلوب</div>
                     @enderror
                 </div>
                 <div class="col-6 col-md-6 col-lg-3">
@@ -85,146 +85,153 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('driver_id')
+                        <div class="text-danger">إســم السائق مطلوب</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-md-6 col-lg-3 internal-field">
+                    <label class="form-label">هوية السائق</label>
+                    <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID"
+                        value="{{ old('driver_NID') }}" readonly>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3 internal-field">
+                    <label class="form-label">لوحة السيارة</label>
+                    <input type="text" class="form-control border-primary" name="plate_number" id="plate_number"
+                        value="{{ old('plate_number') }}" readonly>
+                    <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
+                </div>
+
+                <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
+                    <label class="form-label d-block">إســم المورد</label>
+                    <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
+                        <option value="">اختر المورد...</option>
+                        @foreach ($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}"
+                                {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                {{ $supplier->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
+                    <label class="form-label">إسم السائق</label>
+                    <input type="text" class="form-control border-primary" name="driver_name" id="driver_name">
                     @error('driver_name')
+                        <div class="text-danger">إسم السائق مطلوب</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
+                    <label class="form-label">لوحة السيارة</label>
+                    <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate">
+                    @error('vehicle_plate')
+                        <div class="text-danger">لوحة السيارة مطلوبة</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-sm-6 col-md-4 col-lg external-field">
+                    <label class="form-label">مصاريف المورد</label>
+                    <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
+                        value="{{ old('supplier_cost') ?? 0 }}">
+                    @error('supplier_cost')
                         <div class="text-danger">{{ $message }}</div>
-                        @endif
-                    </div>
-                    <div class="col-6 col-md-6 col-lg-3 internal-field">
-                        <label class="form-label">هوية السائق</label>
-                        <input type="text" class="form-control border-primary" name="driver_NID" id="driver_NID"
-                            value="{{ old('driver_NID') }}" readonly>
-                    </div>
-                    <div class="col-6 col-md-6 col-lg-3 internal-field">
-                        <label class="form-label">لوحة السيارة</label>
-                        <input type="text" class="form-control border-primary" name="plate_number" id="plate_number"
-                            value="{{ old('plate_number') }}" readonly>
-                        <input type="hidden" name="vehicle_id" id="vehicle_id" value="{{ old('vehicle_id') }}">
+                    @enderror
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
+                    <label class="form-label">مصاريف الديزل</label>
+                    <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
+                        value="{{ old('diesel_cost') ?? 0 }}">
+                    @error('diesel_cost')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
+                    <label class="form-label">عمولة السائق</label>
+                    <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
+                        value="{{ old('driver_wage') ?? 0 }}">
+                    @error('driver_wage')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg">
+                    <label class="form-label">مصاريف أخرى</label>
+                    <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
+                        value="{{ old('other_expenses') ?? 0 }}">
+                    @error('other_expenses')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg">
+                    <label class="form-label">سعر العميل</label>
+                    <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
+                        value="{{ old('client_cost') ?? 0 }}">
+                    @error('client_cost')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Goods Section -->
+            <div class="row mb-4" id="goods-section">
+                <div class="col-12">
+                    <h5 class="mb-3">البضائع</h5>
+                    <div class="table-container" id="tableContainer">
+                        <table class="table table-hover" id="goods-table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th class="text-center text-nowrap" style="min-width: 200px">الوصف</th>
+                                    <th class="text-center text-nowrap" style="min-width: 100px">الكمية</th>
+                                    <th class="text-center text-nowrap" style="min-width: 100px">الوزن</th>
+                                    <th class="text-center text-nowrap" style="min-width: 200px">ملاحظات</th>
+                                    <th class="text-center text-nowrap" style="min-width: 50px">إجراء</th>
+                                </tr>
+                            </thead>
+                            <tbody id="goods-tbody">
+                                <tr class="goods-row">
+                                    <td>
+                                        <input type="text" class="form-control" name="goods[0][description]" 
+                                            value="{{ old('goods.0.description') }}" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="1" class="form-control"
+                                            name="goods[0][quantity]" value="{{ old('goods.0.quantity') }}" min="0">
+                                    </td>
+                                    <td>
+                                        <input type="number" step="any" class="form-control"
+                                            name="goods[0][weight]" value="{{ old('goods.0.weight') }}" min="0">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="goods[0][notes]" value="{{ old('goods.0.notes') }}">
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-danger btn-sm delete-row" disabled>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
-                        <label class="form-label d-block">إســم المورد</label>
-                        <select name="supplier_id" id="supplier_id" class="form-select border-primary" style="width: 100%;">
-                            <option value="">اختر المورد...</option>
-                            @foreach ($suppliers as $supplier)
-                                <option value="{{ $supplier->id }}"
-                                    {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                                    {{ $supplier->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                    <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
+                        <i class="fa-solid fa-arrows-left-right me-1"></i>
+                        اسحب الجدول لليمين أو اليسار لرؤية المزيد
                     </div>
-                    <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
-                        <label class="form-label">إسم السائق</label>
-                        <input type="text" class="form-control border-primary" name="driver_name" id="driver_name">
-                    </div>
-                    <div class="col-6 col-md-6 col-lg-3 external-field" style="display: none">
-                        <label class="form-label">لوحة السيارة</label>
-                        <input type="text" class="form-control border-primary" name="vehicle_plate" id="vehicle_plate">
+
+                    <div class="text-center">
+                        <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 mt-3" id="add-goods-row">
+                            <i class="fas fa-plus"></i> <span>إضافة صف</span>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-6 col-sm-6 col-md-4 col-lg external-field">
-                        <label class="form-label">مصاريف المورد</label>
-                        <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
-                            value="{{ old('supplier_cost') ?? 0 }}">
-                        @error('supplier_cost')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
-                        <label class="form-label">مصاريف الديزل</label>
-                        <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
-                            value="{{ old('diesel_cost') ?? 0 }}">
-                        @error('diesel_cost')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
-                        <label class="form-label">عمولة السائق</label>
-                        <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
-                            value="{{ old('driver_wage') ?? 0 }}">
-                        @error('driver_wage')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-6 col-sm-6 col-md-3 col-lg">
-                        <label class="form-label">مصاريف أخرى</label>
-                        <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
-                            value="{{ old('other_expenses') ?? 0 }}">
-                        @error('other_expenses')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-6 col-sm-6 col-md-3 col-lg">
-                        <label class="form-label">سعر العميل</label>
-                        <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
-                            value="{{ old('client_cost') ?? 0 }}">
-                        @error('client_cost')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <!-- Goods Section -->
-                <div class="row mb-4" id="goods-section">
-                    <div class="col-12">
-                        <h5 class="mb-3">البضائع</h5>
-                        <div class="table-container" id="tableContainer">
-                            <table class="table table-hover" id="goods-table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th class="text-center text-nowrap" style="min-width: 200px">الوصف</th>
-                                        <th class="text-center text-nowrap" style="min-width: 100px">الكمية</th>
-                                        <th class="text-center text-nowrap" style="min-width: 100px">الوزن</th>
-                                        <th class="text-center text-nowrap" style="min-width: 200px">ملاحظات</th>
-                                        <th class="text-center text-nowrap" style="min-width: 50px">إجراء</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="goods-tbody">
-                                    <tr class="goods-row">
-                                        <td>
-                                            <input type="text" class="form-control" name="goods[0][description]" required>
-                                        </td>
-                                        <td>
-                                            <input type="number" step="1" class="form-control"
-                                                name="goods[0][quantity]" min="0">
-                                        </td>
-                                        <td>
-                                            <input type="number" step="any" class="form-control"
-                                                name="goods[0][weight]" min="0">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" name="goods[0][notes]">
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-danger btn-sm delete-row" disabled>
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="scroll-hint text-center text-muted mt-2 d-sm-block d-md-none">
-                            <i class="fa-solid fa-arrows-left-right me-1"></i>
-                            اسحب الجدول لليمين أو اليسار لرؤية المزيد
-                        </div>
-
-                        <div class="text-center">
-                            <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 mt-3" id="add-goods-row">
-                                <i class="fas fa-plus"></i> <span>إضافة صف</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary fw-bold col-12 col-sm-2">
-                    <span class="d-sm-inline">حفظ البوليصة</span>
-                </button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary fw-bold col-12 col-sm-2">
+                <span class="d-sm-inline">حفظ البوليصة</span>
+            </button>
+        </form>
+    </div>
 
         <script>
             const pickupInput = document.querySelector('#from');

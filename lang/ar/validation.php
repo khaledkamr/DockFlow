@@ -3,6 +3,8 @@
 
 return [
     'required' => ':attribute مطلوب.',
+    'required_if' => ':attribute مطلوب عندما يكون :other هو :value.',
+    'exists' => ':attribute غير موجود في النظام.',
     'numeric' => ':attribute يجب أن يكون رقمًا.',
     'email' => ':attribute يجب أن يكون بريد إلكتروني صحيح.',
     'string' => ':attribute يجب أن يكون نصًا.',
@@ -60,7 +62,9 @@ return [
         'to' => 'إلى',
         'driver_name' => 'اسم السائق',
         'plate_number' => 'رقم اللوحة',
+        'vehicle_plate' => 'لوحة السيارة',
         'attachment' => 'المرفق',
         'selected_containers' => 'اختيار حاوية',
+        'type' => 'النوع',
     ],
 ];
