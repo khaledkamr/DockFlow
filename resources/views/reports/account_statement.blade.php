@@ -31,8 +31,8 @@
                     <td></td>
                     <td></td>
                     <td class="text-center">الرصيد الافتتاحي</td>
-                    <td class="text-center">{{ $opening_balance < 0 ? $opening_balance : '0.00' }}</td>
                     <td class="text-center">{{ $opening_balance > 0 ? $opening_balance : '0.00' }}</td>
+                    <td class="text-center">{{ $opening_balance < 0 ? abs($opening_balance) : '0.00' }}</td>
                     <td class="text-center">{{ $opening_balance ?? '0.00' }}</td>
                 </tr>
                 @php
@@ -58,9 +58,9 @@
                         <td colspan="5" class="text-center fs-6">
                             الإجماليـــــات
                         </td>
-                        <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->debit), 2) }}</td>
-                        <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->credit), 2) }}</td>
-                        <td class="text-center">{{ number_format($balance, 2) }}</td>
+                        <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->debit) + ($opening_balance > 0 ? $opening_balance : 0), 2) }}</td>
+                        <td class="text-center">{{ number_format($statement->sum(fn($line) => $line->credit) + ($opening_balance < 0 ? abs($opening_balance) : 0), 2) }}</td>
+                        <td class="text-center">{{ number_format($balance + $opening_balance, 2) }}</td>
                     </tr>
                 @else
                     <tr>
