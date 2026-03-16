@@ -50,45 +50,25 @@ class Customer extends Model
     }
 
     public function agingBalance($from, $to, int $minDays, ?int $maxDays = null) {
-        if (!$this->contract) {
-            return 0;
-        }
 
         return $this->invoices()
             ->where('isPaid', 'لم يتم الدفع')
             ->whereBetween('date', [$from, $to])
             ->get()
             ->filter(function ($invoice) use ($minDays, $maxDays) {
-                $paymentDueDate = \Carbon\Carbon::parse($invoice->date)
-                    ->addDays((int) ($this->contract->payment_grace_period ?? 0));
-                
-                $lateDays = \Carbon\Carbon::now()->gt($paymentDueDate) 
-                    ? \Carbon\Carbon::parse($paymentDueDate)->diffInDays(\Carbon\Carbon::now()) 
-                    : 0;
-                
-                return $lateDays >= $minDays && ($maxDays === null || $lateDays <= $maxDays);
+                return $invoice->lateDays >= $minDays && ($maxDays === null || $invoice->lateDays <= $maxDays);
             })
             ->sum('total_amount');
     }
 
     public function agingBalanceCount($from, $to, int $minDays, ?int $maxDays = null) {
-        if (!$this->contract) {
-            return 0;
-        }
-
+    
         return $this->invoices()
             ->where('isPaid', 'لم يتم الدفع')
             ->whereBetween('date', [$from, $to])
             ->get()
             ->filter(function ($invoice) use ($minDays, $maxDays) {
-                $paymentDueDate = \Carbon\Carbon::parse($invoice->date)
-                    ->addDays((int) ($this->contract->payment_grace_period ?? 0));
-                
-                $lateDays = \Carbon\Carbon::now()->gt($paymentDueDate) 
-                    ? \Carbon\Carbon::parse($paymentDueDate)->diffInDays(\Carbon\Carbon::now()) 
-                    : 0;
-                
-                return $lateDays >= $minDays && ($maxDays === null || $lateDays <= $maxDays);
+                return $invoice->lateDays >= $minDays && ($maxDays === null || $invoice->lateDays <= $maxDays);
             })
             ->count();
     }
