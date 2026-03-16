@@ -61,14 +61,40 @@ class PoliciesExport implements FromCollection, WithHeadings
         return $query->get()->map(function($policy) {
             if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first()) {
                 $receivePolicy = $policy->containers->first()->policies->where('type', 'تسليم')->first()->code;
+                $receivePolicyDriverName = $policy->containers->first()->policies->where('type', 'تسليم')->first()->driver_name;
+                $receivePolicyCarCode = $policy->containers->first()->policies->where('type', 'تسليم')->first()->car_code;
             } else {
                 $receivePolicy = '-';
+                $receivePolicyDriverName = '-';
+                $receivePolicyCarCode = '-';
             }
 
             if($policy->type == 'تخزين') {
                 $storageDays = $policy->containers->first() ? $policy->containers->first()->storage_days : 0;
             } elseif($policy->type == 'خدمات') {
                 $storageDays = 0;
+            }
+
+            if($policy->type == 'تخزين') {
+                if($policy->containers->first()) {
+                    if($policy->containers->first()->storge_days > $policy->storage_duration && $policy->storage_duration) {
+                        $lateDays = $policy->containers->first()->storge_days - $policy->storage_duration;
+                    } else {
+                        $lateDays = 0;
+                    }
+                }
+            } elseif($policy->type == 'خدمات') {
+                $lateDays = 0;
+            }
+
+            if($policy->type == 'تخزين') {
+                $basePrice = number_format($policy->storage_price, 2);
+            } elseif($policy->type == 'خدمات') {
+                if($policy->containers->first() && $policy->containers->first()->services->first()) {
+                    $basePrice = number_format($policy->containers->first()->services->first()->pivot->price, 2);
+                } else {
+                    $basePrice = '-';
+                }
             }
 
             if($policy->containers->first()) {
@@ -89,8 +115,14 @@ class PoliciesExport implements FromCollection, WithHeadings
                 $policy->containers->first() ? $policy->containers->first()->code : '-',
                 $policy->reference_number ?? '-',
                 Carbon::parse($policy->containers->first()->date)->format('Y/m/d'),
+                $policy->driver_name,
+                $policy->car_code,
                 $policy->containers->first()->exit_date ? Carbon::parse($policy->containers->first()->exit_date)->format('Y/m/d') : '-',
+                $receivePolicyDriverName,
+                $receivePolicyCarCode,
                 $storageDays,
+                $lateDays,
+                $basePrice,
                 $invoice,
             ];
         });
@@ -106,8 +138,14 @@ class PoliciesExport implements FromCollection, WithHeadings
             'الحاوية',
             'الرقم المرجعي',
             'تاريخ الدخول',
+            'إسم السائق',
+            'لوحة السيارة',
             'تاريخ الخروج',
+            'إسم السائق',
+            'لوحة السيارة',
             'أيام التخزين',
+            'أيام التأخير',
+            'السعر الأساسي',
             'الفاتورة',
         ];
     }

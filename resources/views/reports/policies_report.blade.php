@@ -17,8 +17,14 @@
                 <th>الحاوية</th>
                 <th>الرقم المرجعي</th>
                 <th>تاريخ الدخول</th>
+                <th>إسم السائق</th>
+                <th>لوحة السيارة</th>
                 <th>تاريخ الخروج</th>
+                <th>إسم السائق</th>
+                <th>لوحة السيارة</th>
                 <th>أيام التخزين</th>
+                <th>أيام التأخير</th>
+                <th>السعر الأساسي</th>
                 <th>الفاتورة</th>
             </tr>
         </thead>
@@ -59,8 +65,28 @@
                             @endif
                         </td>
                         <td class="text-center">
+                            {{ $policy->driver_name }}
+                        </td>
+                        <td class="text-center">
+                            {{ $policy->car_code }}
+                        </td>
+                        <td class="text-center">
                             @if($policy->containers->first() && $policy->containers->first()->exit_date)
                                 {{ Carbon\Carbon::parse($policy->containers->first()->exit_date)->format('Y/m/d') ?? '-' }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->driver_name }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="text-center">
+                            @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->car_code }}
                             @else
                                 -
                             @endif
@@ -70,6 +96,25 @@
                                 {{ $policy->containers->first() ? $policy->containers->first()->storage_days : '-' }}
                             @elseif($policy->type == 'خدمات')
                                 0
+                            @endif
+                        </td>
+                        <td class="text-center text-nowrap">
+                            @if($policy->type == 'تخزين')
+                                @if($policy->containers->first())
+                                    {{ $policy->containers->first()->storage_days > $policy->storage_duration && $policy->storage_duration ? 
+                                        $policy->containers->first()->storage_days - $policy->storage_duration : 0 }}
+                                @else
+                                    0
+                                @endif
+                            @elseif($policy->type == 'خدمات')
+                                0
+                            @endif
+                        </td>
+                        <td class="text-center text-nowrap">
+                            @if($policy->type == 'تخزين')
+                                {{ number_format($policy->storage_price, 2) }}
+                            @elseif($policy->type == 'خدمات')
+                                {{ $policy->containers->first() ? number_format($policy->containers->first()->services->first()->pivot->price, 2) : '-' }}
                             @endif
                         </td>
                         <td class="text-center fw-bold">

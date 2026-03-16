@@ -319,7 +319,7 @@
                         <tbody class="text-center">
                             @foreach ($policy->containers as $index => $container)
                                 <tr>
-                                    <td>{{ $container->id }}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>
                                         <a href="{{ route('container.details', $container) }}"
                                             class="fw-bold text-decoration-none">

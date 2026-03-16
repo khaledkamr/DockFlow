@@ -435,9 +435,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($invoice->containers as $index => $container)
+                            @foreach ($invoice->containers as $container)
                                 <tr>
-                                    <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td class="text-center fw-bold">
                                         <a href="{{ route('policies.storage.details', $container->policies->where('type', 'تخزين')->first()) }}"
                                             class="text-decoration-none">

@@ -82,9 +82,9 @@
         <div class="mb-4">
             <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                 <h5 class="mb-0">بيانات الحاويات</h5>
-                <button type="button" class="btn btn-primary btn-sm" id="addContainerBtn">
+                {{-- <button type="button" class="btn btn-primary btn-sm" id="addContainerBtn">
                     <i class="fas fa-plus me-1"></i> <span class="d-none d-sm-inline">إضافة حاوية جديدة</span><span class="d-inline d-sm-none">إضافة حاوية</span>
-                </button>
+                </button> --}}
             </div>
             
             <div id="containersSection">

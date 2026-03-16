@@ -123,17 +123,23 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center bg-dark text-white text-nowrap">#</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">النوع</th>
-                        <th class="text-center bg-dark text-white text-nowrap">بوليصة التسليم</th>
-                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحاوية</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الرقم المرجعي</th>
-                        <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
-                        <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
-                        <th class="text-center bg-dark text-white text-nowrap">أيام التخزين</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الفاتورة</th>
+                        <th class="text-center bg-dark text-white">#</th>
+                        <th class="text-center bg-dark text-white">رقم البوليصة</th>
+                        <th class="text-center bg-dark text-white">النوع</th>
+                        <th class="text-center bg-dark text-white">بوليصة التسليم</th>
+                        <th class="text-center bg-dark text-white">العميل</th>
+                        <th class="text-center bg-dark text-white">الحاوية</th>
+                        <th class="text-center bg-dark text-white">الرقم المرجعي</th>
+                        <th class="text-center bg-dark text-white">تاريخ الدخول</th>
+                        <th class="text-center bg-dark text-white">إسم السائق</th>
+                        <th class="text-center bg-dark text-white">لوحة السيارة</th>
+                        <th class="text-center bg-dark text-white">تاريخ الخروج</th>
+                        <th class="text-center bg-dark text-white">إسم السائق</th>
+                        <th class="text-center bg-dark text-white">لوحة السيارة</th>
+                        <th class="text-center bg-dark text-white">أيام التخزين</th>
+                        <th class="text-center bg-dark text-white">أيام التأخير</th>
+                        <th class="text-center bg-dark text-white">السعر الأساسي</th>
+                        <th class="text-center bg-dark text-white">الفاتورة</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -198,9 +204,29 @@
                                         {{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') }}
                                     @endif
                                 </td>
+                                <td class="text-center">
+                                    {{ $policy->driver_name }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $policy->car_code }}
+                                </td>
                                 <td class="text-center text-nowrap">
                                     @if($policy->containers->first() && $policy->containers->first()->exit_date)
                                         {{ Carbon\Carbon::parse($policy->containers->first()->exit_date)->format('Y/m/d') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                        {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->driver_name }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                        {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->car_code }}
                                     @else
                                         -
                                     @endif
@@ -210,6 +236,25 @@
                                         {{ $policy->containers->first() ? $policy->containers->first()->storage_days : '-' }}
                                     @elseif($policy->type == 'خدمات')
                                         0
+                                    @endif
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if($policy->type == 'تخزين')
+                                        @if($policy->containers->first())
+                                            {{ $policy->containers->first()->storage_days > $policy->storage_duration && $policy->storage_duration ? 
+                                                $policy->containers->first()->storage_days - $policy->storage_duration : 0 }}
+                                        @else
+                                            0
+                                        @endif
+                                    @elseif($policy->type == 'خدمات')
+                                        0
+                                    @endif
+                                </td>
+                                <td class="text-center text-nowrap">
+                                    @if($policy->type == 'تخزين')
+                                        {{ number_format($policy->storage_price, 2) }}
+                                    @elseif($policy->type == 'خدمات')
+                                        {{ $policy->containers->first() ? number_format($policy->containers->first()->services->first()->pivot->price, 2) : '-' }}
                                     @endif
                                 </td>
                                 <td class="text-center">
