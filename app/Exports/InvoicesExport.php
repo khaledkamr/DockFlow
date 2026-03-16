@@ -53,10 +53,10 @@ class InvoicesExport implements FromCollection, WithHeadings
         return $query->get()->map(function ($invoice) {
             return [
                 $invoice->code,
-                Carbon::parse($invoice->date)->format('Y/m/d'),
-                $invoice->customer->name,
                 $invoice->type,
-                $invoice->payment_method,
+                $invoice->customer->name,
+                Carbon::parse($invoice->date)->format('Y/m/d'),
+                $invoice->paymentDueDate,
                 $invoice->amount_after_discount,
                 $invoice->tax,
                 $invoice->total_amount,
@@ -70,10 +70,10 @@ class InvoicesExport implements FromCollection, WithHeadings
     public function headings(): array {
         return [
             'رقم الفاتورة',
-            'تاريخ الفاتورة',
-            'اسم العميل',
             'نوع الفاتورة',
-            'طريقة الدفع',
+            'اسم العميل',
+            'تاريخ الفاتورة',
+            'موعد السداد',
             'المبلغ',
             'الضريبة المضافة',
             'الإجمالي',

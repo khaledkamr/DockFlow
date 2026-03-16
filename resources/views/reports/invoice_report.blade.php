@@ -11,10 +11,10 @@
             <tr class="text-center">
                 <th>#</th>
                 <th>رقم الفاتورة</th>
-                <th>التاريخ</th>
-                <th>العميل</th>
                 <th>نوع الفاتورة</th>
-                <th>طريقة الدفع</th>
+                <th>العميل</th>
+                <th>التاريخ</th>
+                <th>موعد السداد</th>
                 <th>المبلغ</th>
                 <th>الضريبة المضافة</th>
                 <th>الإجمالي</th>
@@ -33,10 +33,10 @@
                     <tr>
                         <td class="text-center">{{ $loop->iteration }}</td>
                         <td class="text-center fw-bold">{{ $invoice->code }}</td>
-                        <td class="text-center">{{ (Carbon\Carbon::parse($invoice->date)->format('Y/m/d')) }}</td>
-                        <td class="text-center">{{ $invoice->customer->name }}</td>
                         <td class="text-center">{{ $invoice->type }}</td>
-                        <td class="text-center">{{ $invoice->payment_method }}</td>
+                        <td class="text-center">{{ $invoice->customer->name }}</td>
+                        <td class="text-center">{{ (Carbon\Carbon::parse($invoice->date)->format('Y/m/d')) }}</td>
+                        <td class="text-center">{{ $invoice->paymentDueDate }}</td>
                         <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                         <td class="text-center">{{ $invoice->tax }}</td>
                         <td class="text-center">{{ $invoice->total_amount }}</td>

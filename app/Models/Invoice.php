@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\BelongsToCompany;
 use App\Traits\HasUuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
@@ -32,6 +33,36 @@ class Invoice extends Model
         'company_id',
         'notes',
     ];
+
+    protected $appends = ['paymentDueDate', 'lateDays'];
+
+    public function getPaymentDueDateAttribute() {
+        if($this->customer->contract) {
+            $paymentGracePeriod = (int) $this->customer->contract->payment_grace_period ?? 15; // Default to 15 days if not set
+        } else {
+            $paymentGracePeriod = 15; // Default to 15 days if no contract
+        }
+
+        if ($this->date) {
+            return Carbon::parse($this->date)->addDays($paymentGracePeriod)->format('Y/m/d');
+        }
+
+        return null;
+    }
+
+    public function getLateDaysAttribute() {
+        if ($this->isPaid == 'تم الدفع' || !$this->date) {
+            return 0;
+        }
+
+        $paymentDueDate = Carbon::parse($this->payment_due_date);
+        $currentDate = Carbon::now();
+        if($currentDate->greaterThan($paymentDueDate)) {
+            return (int) $paymentDueDate->diffInDays($currentDate);
+        }
+
+        return 0;
+    }
 
     public function customer() {
         return $this->belongsTo(Customer::class);

@@ -132,10 +132,10 @@
                     <tr>
                         <th class="text-center bg-dark text-white text-nowrap">#</th>
                         <th class="text-center bg-dark text-white text-nowrap">رقم الفاتورة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
                         <th class="text-center bg-dark text-white text-nowrap">نوع الفاتورة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">طريقة الدفع</th>
+                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
+                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
+                        <th class="text-center bg-dark text-white text-nowrap">موعد السداد</th>
                         <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                         <th class="text-center bg-dark text-white text-nowrap">الضريبة المضافة</th>
                         <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
@@ -155,7 +155,7 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
                                     @if ($invoice->type == 'تخزين')
-                                        <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
+                                        <a href="{{ route('invoices.details', $invoice) }}" target="_blank" class="text-decoration-none">
                                             {{ $invoice->code }}
                                         </a>
                                     @elseif($invoice->type == 'خدمات')
@@ -175,10 +175,10 @@
                                         </a>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
-                                <td class="text-center text-nowrap">{{ $invoice->customer->name }}</td>
                                 <td class="text-center">{{ $invoice->type }}</td>
-                                <td class="text-center">{{ $invoice->payment_method }}</td>
+                                <td class="text-center">{{ $invoice->customer->name }}</td>
+                                <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
+                                <td class="text-center">{{ $invoice->paymentDueDate }}</td>
                                 <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                                 <td class="text-center">{{ $invoice->tax }}</td>
                                 <td class="text-center">{{ $invoice->total_amount }}</td>

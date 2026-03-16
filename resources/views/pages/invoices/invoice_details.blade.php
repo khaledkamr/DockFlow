@@ -278,16 +278,12 @@
                         @endif
                     </span>
                     @if ($invoice->isPaid == 'لم يتم الدفع' && $invoice->customer->contract)
-                        @php
-                            $paymentDueDate = Carbon\Carbon::parse($invoice->date)->addDays((int) ($invoice->customer->contract->payment_grace_period ?? 0));
-                            $lateDays = Carbon\Carbon::now()->gt($paymentDueDate) ? Carbon\Carbon::parse($paymentDueDate)->diffInDays(Carbon\Carbon::now()) : 0;
-                        @endphp
                         <span class="badge bg-primary fs-6 px-3 py-2">
-                            <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $paymentDueDate->format('Y/m/d') }}
+                            <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $invoice->paymentDueDat }}
                         </span>
                         @if($lateDays > 0)
                             <span class="badge bg-danger fs-6 px-3 py-2">
-                                <i class="fas fa-exclamation-circle me-1"></i>متأخر منذ {{ (int) $lateDays }} يوم
+                                <i class="fas fa-exclamation-circle me-1"></i>متأخر منذ {{ $invoice->lateDays }} يوم
                             </span>
                         @endif
                     @endif
