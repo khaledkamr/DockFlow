@@ -26,6 +26,7 @@
                     <th>المبلغ</th>
                 @elseif(request('net_profit') == '1')
                     <th>تكلفة المورد</th>
+                    <th>عمولة المندوب</th>
                     <th>سعر العميل</th>
                     <th>صافي الربح</th>
                 @endif
@@ -65,8 +66,9 @@
                             <td class="text-center">{{ $policy->total_cost }}</td>
                         @elseif(request('net_profit') == '1')
                             <td class="text-center">{{ $policy->supplier_cost }}</td>
+                            <td class="text-center">{{ $policy->commission }}</td>
                             <td class="text-center">{{ $policy->total_cost }}</td>
-                            <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost }}</td>
+                            <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost - $policy->commission }}</td>
                         @endif
                         <td class="text-center fw-bold">{{ $policy->invoices->where('type', 'شحن')->first()->code ?? '-' }}</td>
                     </tr>
@@ -80,10 +82,10 @@
                             {{ $policies->sum('supplier_cost') }}
                         </td>
                         <td class="text-center">
-                            {{ $policies->sum('total_cost') }}
+                            {{ $policies->sum('commission') }}
                         </td>
                         <td class="text-center">
-                            {{ $policies->sum('total_cost') - $policies->sum('supplier_cost') }}
+                            {{ $policies->sum('total_cost') - $policies->sum('supplier_cost') - $policies->sum('commission') }}
                         </td>
                         <td></td>
                     </tr>

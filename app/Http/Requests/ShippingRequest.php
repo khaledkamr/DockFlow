@@ -31,7 +31,9 @@ class ShippingRequest extends FormRequest
             'supplier_cost' => 'nullable|numeric|min:0',
             'diesel_cost' => 'nullable|numeric|min:0',
             'driver_wage' => 'nullable|numeric|min:0',
-            'other_expenses' => 'nullable|numeric|min:0',
+            'clearance_fee' => 'nullable|numeric|min:0',
+            'late_fee' => 'nullable|numeric|min:0',
+            'commission' => 'nullable|numeric|min:0',
             'user_id' => 'required|exists:users,id',
         ];
     }

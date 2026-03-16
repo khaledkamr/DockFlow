@@ -223,6 +223,7 @@
                             <th class="text-center bg-dark text-white">المبلغ</th>
                         @elseif(request('net_profit') == '1')
                             <th class="text-center bg-dark text-white">تكلفة المورد</th>
+                            <th class="text-center bg-dark text-white">عمولة المندوب</th>
                             <th class="text-center bg-dark text-white">سعر العميل</th>
                             <th class="text-center bg-dark text-white">صافي الربح</th>
                         @endif
@@ -274,8 +275,9 @@
                                     <td class="text-center">{{ $policy->total_cost }}</td>
                                 @elseif(request('net_profit') == '1')
                                     <td class="text-center">{{ $policy->supplier_cost }}</td>
+                                    <td class="text-center">{{ $policy->commission }}</td>
                                     <td class="text-center">{{ $policy->total_cost }}</td>
-                                    <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost }}</td>
+                                    <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost - $policy->commission }}</td>
                                 @endif
                                 <td class="text-center">
                                     @if($policy->invoices->where('type', 'شحن')->isEmpty())
@@ -298,10 +300,10 @@
                                     {{ $policies->sum('supplier_cost') }}
                                 </td>
                                 <td class="text-center">
-                                    {{ $policies->sum('total_cost') }}
+                                    {{ $policies->sum('commission') }}
                                 </td>
                                 <td class="text-center">
-                                    {{ $policies->sum('total_cost') - $policies->sum('supplier_cost') }}
+                                    {{ $policies->sum('total_cost') - $policies->sum('supplier_cost') - $policies->sum('commission') }}
                                 </td>
                                 <td></td>
                             </tr>

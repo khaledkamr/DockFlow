@@ -58,16 +58,18 @@
         <table class="table table-bordered border-dark mb-0">
             <thead>
                 <tr class="table-dark">
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">#</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم البوليصة</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">تاريخ البوليصة</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">البيان</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">اسم السائق</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم اللوحة</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">مكان التحميل</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">مكان التسليم</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">مصاريف اخرى</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">المبلغ</th>
+                    <th class="text-center fw-semibold">#</th>
+                    <th class="text-center fw-semibold">رقم البوليصة</th>
+                    <th class="text-center fw-semibold">تاريخ البوليصة</th>
+                    <th class="text-center fw-semibold">البيان</th>
+                    <th class="text-center fw-semibold">اسم السائق</th>
+                    <th class="text-center fw-semibold">رقم اللوحة</th>
+                    <th class="text-center fw-semibold">مكان التحميل</th>
+                    <th class="text-center fw-semibold">مكان التسليم</th>
+                    <th class="text-center fw-semibold">رسوم فسح</th>
+                    <th class="text-center fw-semibold">غرامة تأخير</th>
+                    <th class="text-center fw-semibold">المبلغ</th>
+                    <th class="text-center fw-semibold">الإجمالي</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,8 +88,10 @@
                         @endif
                         <td class="text-center small">{{ $policy->from }}</td>
                         <td class="text-center small">{{ $policy->to }}</td>
-                        <td class="text-center small">{{ $policy->other_expenses }}</td>
-                        <td class="text-center small">{{ number_format($policy->pivot->amount, 2) }}</td>
+                        <td class="text-center small">{{ number_format($policy->clearance_fee, 2) }}</td>
+                        <td class="text-center small">{{ number_format($policy->late_fee, 2) }}</td>
+                        <td class="text-center small">{{ number_format($policy->client_cost, 2) }}</td>
+                        <td class="text-center small">{{ number_format($policy->total_cost, 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>

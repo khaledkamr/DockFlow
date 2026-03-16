@@ -26,6 +26,7 @@
                     <th>المبلغ</th>
                 @elseif(request('net_profit') == '1')
                     <th>تكلفة المورد</th>
+                    <th>عمولة المندوب</th>
                     <th>سعر العميل</th>
                     <th>صافي الربح</th>
                 @endif
@@ -58,8 +59,9 @@
                             <td class="text-center">{{ $transportOrder->total_cost }}</td>
                         @elseif(request('net_profit') == '1')
                             <td class="text-center">{{ $transportOrder->supplier_cost }}</td>
+                            <td class="text-center">{{ $transportOrder->commission }}</td>
                             <td class="text-center">{{ $transportOrder->total_cost }}</td>
-                            <td class="text-center fw-bold">{{ $transportOrder->total_cost - $transportOrder->supplier_cost }}</td>
+                            <td class="text-center fw-bold">{{ $transportOrder->total_cost - $transportOrder->supplier_cost - $transportOrder->commission }}</td>
                         @endif
                     </tr>
                 @endforeach
@@ -69,8 +71,9 @@
                         <td colspan="7"></td>
                         <td class="text-center">الإجمالي</td>
                         <td class="text-center">{{ $transportOrders->sum('supplier_cost') }}</td>
+                        <td class="text-center">{{ $transportOrders->sum('commission') }}</td>
                         <td class="text-center">{{ $transportOrders->sum('total_cost') }}</td>
-                        <td class="text-center">{{ $transportOrders->sum('total_cost') - $transportOrders->sum('supplier_cost') }}</td>
+                        <td class="text-center">{{ $transportOrders->sum('total_cost') - $transportOrders->sum('supplier_cost') - $transportOrders->sum('commission') }}</td>
                     </tr>
                 @endif
             @endif

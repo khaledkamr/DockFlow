@@ -414,7 +414,8 @@
                                 <th class="text-center bg-dark text-white text-nowrap">رقم اللوحة</th>
                                 <th class="text-center bg-dark text-white text-nowrap">مكان التحميل</th>
                                 <th class="text-center bg-dark text-white text-nowrap">مكان التسليم</th>
-                                <th class="text-center bg-dark text-white text-nowrap">مصاريف اخرى</th>
+                                <th class="text-center bg-dark text-white text-nowrap">رسوم فسح</th>
+                                <th class="text-center bg-dark text-white text-nowrap">غرامة تأخير</th>
                                 <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                                 <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
                             </tr>
@@ -448,7 +449,10 @@
                                         <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
                                     </td>
                                     <td class="text-center fw-bold text-dark">
-                                        {{ $policy->other_expenses }}</i>
+                                        {{ number_format($policy->clearance_fee, 2) }}</i>
+                                    </td>
+                                    <td class="text-center fw-bold text-dark">
+                                        {{ number_format($policy->late_fee, 2) }}</i>
                                     </td>
                                     <td class="text-center fw-bold text-dark">
                                         {{ number_format($policy->client_cost, 2) }}</i>

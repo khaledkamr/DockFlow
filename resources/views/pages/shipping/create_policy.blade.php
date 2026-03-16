@@ -33,7 +33,8 @@
                     <select class="form-select border-primary" id="from" name="from">
                         <option value="">اختر مكان التحميل...</option>
                         @foreach ($destinations as $destination)
-                            <option value="{{ $destination->name }}" {{ old('from') == $destination->name ? 'selected' : '' }}>
+                            <option value="{{ $destination->name }}"
+                                {{ old('from') == $destination->name ? 'selected' : '' }}>
                                 {{ $destination->name }}
                             </option>
                         @endforeach
@@ -47,7 +48,8 @@
                     <select class="form-select border-primary" id="to" name="to">
                         <option value="">اختر مكان التفريغ...</option>
                         @foreach ($destinations as $destination)
-                            <option value="{{ $destination->name }}" {{ old('to') == $destination->name ? 'selected' : '' }}>
+                            <option value="{{ $destination->name }}"
+                                {{ old('to') == $destination->name ? 'selected' : '' }}>
                                 {{ $destination->name }}
                             </option>
                         @endforeach
@@ -132,7 +134,7 @@
             <div class="row g-3 mb-4">
                 <div class="col-6 col-sm-6 col-md-4 col-lg external-field">
                     <label class="form-label">مصاريف المورد</label>
-                    <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
+                    <input type="number" step="any" min="0" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
                         value="{{ old('supplier_cost') ?? 0 }}">
                     @error('supplier_cost')
                         <div class="text-danger">{{ $message }}</div>
@@ -140,7 +142,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
                     <label class="form-label">مصاريف الديزل</label>
-                    <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
+                    <input type="number" step="any" min="0" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
                         value="{{ old('diesel_cost') ?? 0 }}">
                     @error('diesel_cost')
                         <div class="text-danger">{{ $message }}</div>
@@ -148,23 +150,39 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg internal-field">
                     <label class="form-label">عمولة السائق</label>
-                    <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
+                    <input type="number" step="any" min="0" class="form-control border-primary" name="driver_wage" id="driver_wage"
                         value="{{ old('driver_wage') ?? 0 }}">
                     @error('driver_wage')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg">
-                    <label class="form-label">مصاريف أخرى</label>
-                    <input type="number" class="form-control border-primary" name="other_expenses" id="other_expenses"
-                        value="{{ old('other_expenses') ?? 0 }}">
-                    @error('other_expenses')
+                    <label class="form-label">عمولة المندوب</label>
+                    <input type="number" step="any" min="0" class="form-control border-primary" name="commission" id="commission"
+                        value="{{ old('commission') ?? 0 }}">
+                    @error('commission')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg">
+                    <label class="form-label">رسوم فسح</label>
+                    <input type="number" step="any" min="0" class="form-control border-primary" name="clearance_fee" id="clearance_fee"
+                        value="{{ old('clearance_fee') ?? 0 }}">
+                    @error('clearance_fee')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="col-6 col-sm-6 col-md-3 col-lg">
+                    <label class="form-label">غرامة تأخير</label>
+                    <input type="number" step="any" min="0" class="form-control border-primary" name="late_fee" id="late_fee"
+                        value="{{ old('late_fee') ?? 0 }}">
+                    @error('late_fee')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg">
                     <label class="form-label">سعر العميل</label>
-                    <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
+                    <input type="number" step="any" min="0" class="form-control border-primary" id="client_cost" name="client_cost"
                         value="{{ old('client_cost') ?? 0 }}">
                     @error('client_cost')
                         <div class="text-danger">{{ $message }}</div>
@@ -190,19 +208,21 @@
                             <tbody id="goods-tbody">
                                 <tr class="goods-row">
                                     <td>
-                                        <input type="text" class="form-control" name="goods[0][description]" 
+                                        <input type="text" class="form-control" name="goods[0][description]"
                                             value="{{ old('goods.0.description') }}" required>
                                     </td>
                                     <td>
                                         <input type="number" step="1" class="form-control"
-                                            name="goods[0][quantity]" value="{{ old('goods.0.quantity') }}" min="0">
+                                            name="goods[0][quantity]" value="{{ old('goods.0.quantity') }}"
+                                            min="0">
                                     </td>
                                     <td>
                                         <input type="number" step="any" class="form-control"
                                             name="goods[0][weight]" value="{{ old('goods.0.weight') }}" min="0">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" name="goods[0][notes]" value="{{ old('goods.0.notes') }}">
+                                        <input type="text" class="form-control" name="goods[0][notes]"
+                                            value="{{ old('goods.0.notes') }}">
                                     </td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-danger btn-sm delete-row" disabled>
@@ -233,93 +253,94 @@
         </form>
     </div>
 
-        <script>
-            const pickupInput = document.querySelector('#from');
-            const dropoffInput = document.querySelector('#to');
-            const clientPriceInput = document.querySelector('#client_cost');
-            const customerId = document.querySelector('#customer_id');
+    <script>
+        const pickupInput = document.querySelector('#from');
+        const dropoffInput = document.querySelector('#to');
+        const clientPriceInput = document.querySelector('#client_cost');
+        const customerId = document.querySelector('#customer_id');
 
-            $(pickupInput).select2({
-                placeholder: "",
-                allowClear: true,
-                width: '100%',
-                tags: true,
-            });
+        $(pickupInput).select2({
+            placeholder: "",
+            allowClear: true,
+            width: '100%',
+            tags: true,
+        });
 
-            $(dropoffInput).select2({
-                placeholder: "",
-                allowClear: true,
-                width: '100%',
-                tags: true,
-            });
+        $(dropoffInput).select2({
+            placeholder: "",
+            allowClear: true,
+            width: '100%',
+            tags: true,
+        });
 
-            function checkService() {
-                const pickup = pickupInput.value;
-                const dropoff = dropoffInput.value;
+        function checkService() {
+            const pickup = pickupInput.value;
+            const dropoff = dropoffInput.value;
 
-                if (!pickup || !dropoff) return;
+            if (!pickup || !dropoff) return;
 
-                fetch(
-                        `{{ route('customer.check.service') }}?customer_id=${customerId.value}&pickup=${pickup}&dropoff=${dropoff}`)
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log("DATA:", data);
-                        if (data.exists) {
-                            console.log("Service exists. Price:", data.price);
-                            clientPriceInput.value = data.price;
-                        }
-                    });
-            }
-
-            pickupInput.addEventListener('change', checkService);
-            dropoffInput.addEventListener('change', checkService);
-
-            $('#customer_id').select2({
-                placeholder: "ابحث عن إسم العميل...",
-                allowClear: true
-            });
-
-            $(document).ready(function() {
-                function toggleFields() {
-                    const selected = $('#type').val();
-                    $('.internal-field, .external-field').hide();
-
-                    if (selected === "ناقل داخلي") {
-                        $('.internal-field').show();
-                        $('#supplier_id').val(null).trigger('change');
-                    } else if (selected === "ناقل خارجي") {
-                        $('.external-field').show();
-                        $('#driver_id').val(null).trigger('change');
+            fetch(
+                    `{{ route('customer.check.service') }}?customer_id=${customerId.value}&pickup=${pickup}&dropoff=${dropoff}`
+                )
+                .then(res => res.json())
+                .then(data => {
+                    console.log("DATA:", data);
+                    if (data.exists) {
+                        console.log("Service exists. Price:", data.price);
+                        clientPriceInput.value = data.price;
                     }
+                });
+        }
+
+        pickupInput.addEventListener('change', checkService);
+        dropoffInput.addEventListener('change', checkService);
+
+        $('#customer_id').select2({
+            placeholder: "ابحث عن إسم العميل...",
+            allowClear: true
+        });
+
+        $(document).ready(function() {
+            function toggleFields() {
+                const selected = $('#type').val();
+                $('.internal-field, .external-field').hide();
+
+                if (selected === "ناقل داخلي") {
+                    $('.internal-field').show();
+                    $('#supplier_id').val(null).trigger('change');
+                } else if (selected === "ناقل خارجي") {
+                    $('.external-field').show();
+                    $('#driver_id').val(null).trigger('change');
                 }
-                $('#type').on('change', toggleFields);
-                toggleFields();
-            })
+            }
+            $('#type').on('change', toggleFields);
+            toggleFields();
+        })
 
-            $('#driver_id').select2({
-                placeholder: "ابحث عن إسم السائق...",
-                allowClear: true,
-            });
+        $('#driver_id').select2({
+            placeholder: "ابحث عن إسم السائق...",
+            allowClear: true,
+        });
 
-            $('#driver_id').on('change', function() {
-                let nid = $(this).find(':selected').data('nid');
-                $('#driver_NID').val(nid || '');
-                let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
-                $('#plate_number').val(vehiclePlate || '');
-                let vehicleId = $(this).find(':selected').data('vehicle-id');
-                $('#vehicle_id').val(vehicleId || '');
-            });
+        $('#driver_id').on('change', function() {
+            let nid = $(this).find(':selected').data('nid');
+            $('#driver_NID').val(nid || '');
+            let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
+            $('#plate_number').val(vehiclePlate || '');
+            let vehicleId = $(this).find(':selected').data('vehicle-id');
+            $('#vehicle_id').val(vehicleId || '');
+        });
 
-            $('#supplier_id').select2({
-                placeholder: "ابحث عن إسم المورد...",
-                allowClear: true,
-            });
+        $('#supplier_id').select2({
+            placeholder: "ابحث عن إسم المورد...",
+            allowClear: true,
+        });
 
-            let goodsRowIndex = 1;
+        let goodsRowIndex = 1;
 
-            // Add new row
-            $('#add-goods-row').on('click', function() {
-                const newRow = `
+        // Add new row
+        $('#add-goods-row').on('click', function() {
+            const newRow = `
                     <tr class="goods-row">
                         <td>
                             <input type="text" class="form-control" name="goods[${goodsRowIndex}][description]" required>
@@ -341,121 +362,123 @@
                     </tr>
                 `;
 
-                $('#goods-tbody').append(newRow);
-                goodsRowIndex++;
-                updateDeleteButtons();
-            });
+            $('#goods-tbody').append(newRow);
+            goodsRowIndex++;
+            updateDeleteButtons();
+        });
 
-            // Delete row
-            $(document).on('click', '.delete-row', function() {
-                $(this).closest('tr').remove();
-                updateDeleteButtons();
-                reindexRows();
-            });
+        // Delete row
+        $(document).on('click', '.delete-row', function() {
+            $(this).closest('tr').remove();
+            updateDeleteButtons();
+            reindexRows();
+        });
 
-            // Update delete buttons state
-            function updateDeleteButtons() {
-                const rowCount = $('#goods-tbody tr').length;
-                if (rowCount === 1) {
-                    $('.delete-row').prop('disabled', true);
-                } else {
-                    $('.delete-row').prop('disabled', false);
-                }
+        // Update delete buttons state
+        function updateDeleteButtons() {
+            const rowCount = $('#goods-tbody tr').length;
+            if (rowCount === 1) {
+                $('.delete-row').prop('disabled', true);
+            } else {
+                $('.delete-row').prop('disabled', false);
             }
+        }
 
-            // Reindex rows after deletion
-            function reindexRows() {
-                $('#goods-tbody tr').each(function(index) {
-                    $(this).find('input').each(function() {
-                        let name = $(this).attr('name');
-                        if (name) {
-                            let newName = name.replace(/\[\d+\]/, `[${index}]`);
-                            $(this).attr('name', newName);
-                        }
-                    });
-                });
-                goodsRowIndex = $('#goods-tbody tr').length;
-            }
-
-            // Initialize on page load
-            $(document).ready(function() {
-                updateDeleteButtons();
-            });
-
-            document.addEventListener('DOMContentLoaded', function() {
-                const tableContainer = document.getElementById('tableContainer');
-                
-                // Check if table needs scrolling
-                function checkScroll() {
-                    if (tableContainer.scrollWidth > tableContainer.clientWidth) {
-                        tableContainer.classList.add('has-scroll');
-                    } else {
-                        tableContainer.classList.remove('has-scroll');
+        // Reindex rows after deletion
+        function reindexRows() {
+            $('#goods-tbody tr').each(function(index) {
+                $(this).find('input').each(function() {
+                    let name = $(this).attr('name');
+                    if (name) {
+                        let newName = name.replace(/\[\d+\]/, `[${index}]`);
+                        $(this).attr('name', newName);
                     }
-                }
-                
-                // Check on load and resize
-                checkScroll();
-                window.addEventListener('resize', checkScroll);
-                
-                // Remove scroll hint after first interaction
-                const scrollHint = document.querySelector('.scroll-hint');
-                if (scrollHint) {
-                    tableContainer.addEventListener('scroll', function() {
-                        scrollHint.style.display = 'none';
-                    }, { once: true });
-                }
+                });
             });
-        </script>
+            goodsRowIndex = $('#goods-tbody tr').length;
+        }
 
-        <style>
-            .select2-container .select2-selection {
-                height: 38px;
-                border-radius: 8px;
-                border: 1px solid #0d6efd;
-                padding: 5px;
+        // Initialize on page load
+        $(document).ready(function() {
+            updateDeleteButtons();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableContainer = document.getElementById('tableContainer');
+
+            // Check if table needs scrolling
+            function checkScroll() {
+                if (tableContainer.scrollWidth > tableContainer.clientWidth) {
+                    tableContainer.classList.add('has-scroll');
+                } else {
+                    tableContainer.classList.remove('has-scroll');
+                }
             }
 
-            .select2-container .select2-selection__rendered {
-                line-height: 30px;
-            }
+            // Check on load and resize
+            checkScroll();
+            window.addEventListener('resize', checkScroll);
 
-            .container-card {
-                cursor: pointer;
-                transition: all 0.2s ease;
-                border: 2px solid #dee2e6;
+            // Remove scroll hint after first interaction
+            const scrollHint = document.querySelector('.scroll-hint');
+            if (scrollHint) {
+                tableContainer.addEventListener('scroll', function() {
+                    scrollHint.style.display = 'none';
+                }, {
+                    once: true
+                });
             }
+        });
+    </script>
 
-            .container-card:hover {
-                border-color: #0d6efd;
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
+    <style>
+        .select2-container .select2-selection {
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid #0d6efd;
+            padding: 5px;
+        }
 
-            .container-card.border-primary {
-                border-color: #0d6efd !important;
-            }
+        .select2-container .select2-selection__rendered {
+            line-height: 30px;
+        }
 
-            .bg-primary-subtle {
-                background-color: rgba(13, 110, 253, 0.1) !important;
-            }
+        .container-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid #dee2e6;
+        }
 
-            .container-info {
-                margin-left: 10px;
-            }
+        .container-card:hover {
+            border-color: #0d6efd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-            .form-check-input:checked {
-                background-color: #0d6efd;
-                border-color: #0d6efd;
-            }
+        .container-card.border-primary {
+            border-color: #0d6efd !important;
+        }
 
-            .form-check-label {
-                cursor: pointer;
-            }
+        .bg-primary-subtle {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
 
-            #container-search {
-                min-width: 250px;
-            }
-        </style>
+        .container-info {
+            margin-left: 10px;
+        }
 
-    @endsection
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .form-check-label {
+            cursor: pointer;
+        }
+
+        #container-search {
+            min-width: 250px;
+        }
+    </style>
+
+@endsection
