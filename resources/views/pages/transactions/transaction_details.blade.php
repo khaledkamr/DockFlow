@@ -420,12 +420,19 @@
                                                 <button type="button" class="btn-close btn-close-white"
                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+                                            
                                             <form action="{{ route('transactions.item.update', $item) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="modal-body">
-                                                    <input type="hidden" name="transaction_id"
-                                                        value="{{ $item->transaction->id }}">
+                                                    @if ($item->is_posted)
+                                                        <div class="alert alert-warning">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            <strong>تنبيه:</strong> هذا البد تم ترحيله مسبقاً بالفعل. يجب حذف القيد المرتبط أولاً قبل
+                                                            تعديل البند.
+                                                        </div>
+                                                    @endif
+                                                    <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
                                                     <div class="row g-3 mb-3">
                                                         <div class="col-2">
                                                             <label class="form-label">الرقم</label>
@@ -522,7 +529,14 @@
                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center text-dark">
-                                                هل انت متأكد من البند <strong>{{ $item->description }}</strong>؟
+                                                @if ($item->is_posted)
+                                                    <div class="alert alert-warning">
+                                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                                        <strong>تنبيه:</strong> هذا البد تم ترحيله مسبقاً بالفعل. يجب حذف القيد المرتبط أولاً قبل
+                                                        حذف البند.
+                                                    </div>
+                                                @endif
+                                                هل انت متأكد من حذف البند <strong>{{ $item->description }}</strong>؟
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary fw-bold"

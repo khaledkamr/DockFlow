@@ -165,9 +165,6 @@ class TransactionController extends Controller
         if($item->transaction->containers->first()->invoices->where('type', 'تخليص')->first()) {
             return redirect()->back()->with('error', 'لا يمكن تعديل بند من معاملة تم إصدار فاتورة لها');
         }
-        if($item->is_posted) {
-            return redirect()->back()->with('error', 'لا يمكن تعديل بند تم ترحيله مسبقاً');
-        }
 
         $old = $item->toArray();
         $validated = $request->validated();
@@ -227,9 +224,6 @@ class TransactionController extends Controller
         }
         if($item->transaction->containers->first()->invoices->where('type', 'تخليص')->first()) {
             return redirect()->back()->with('error', 'لا يمكن حذف بند من معاملة تم إصدار فاتورة لها');
-        }
-        if($item->is_posted) {
-            return redirect()->back()->with('error', 'لا يمكن حذف بند تم ترحيله مسبقاً');
         }
 
         $old = $item->toArray();
