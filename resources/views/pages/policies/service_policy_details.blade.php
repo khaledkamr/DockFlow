@@ -180,7 +180,7 @@
     <!-- Create Invoice Modal -->
     <div class="modal fade" id="createInvoice" tabindex="-1" aria-labelledby="createInvoiceLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title text-dark fw-bold" id="createInvoiceLabel">إنشاء فاتورة جديدة</h5>
@@ -214,12 +214,13 @@
                                     <option value="0">غير خاضع للضريبة</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <input type="hidden" name="discount" value="0">
+                            {{-- <div class="col-12 col-md-6">
                                 <label class="form-label">نسبة الخصم(%)</label>
                                 <input type="number" name="discount" id="discount"
-                                    class="form-control border-primary" min="0" max="100" step="1"
+                                    class="form-control border-primary" min="0" max="100" step="any"
                                     value="0" placeholder="0.00" required>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-start">

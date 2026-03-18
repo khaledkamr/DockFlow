@@ -146,7 +146,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-4 col-sm-4 col-lg-3">
+                        <div class="col-4 col-sm-4 col-lg">
                             <label for="payment_method" class="form-label fw-bold">
                                 <i class="fas fa-money-bill me-1"></i>
                                 طريقة الدفع
@@ -158,7 +158,7 @@
                                 <option value="تحويل بنكي">تحويل بنكي</option>
                             </select>
                         </div>
-                        <div class="col-4 col-sm-4 col-lg-3">
+                        <div class="col-4 col-sm-4 col-lg">
                             <label for="tax_rate" class="form-label fw-bold">
                                 <i class="fas fa-receipt me-1"></i>
                                 الضريبة المضافة
@@ -168,16 +168,25 @@
                                 <option value="0">غير خاضع للضريبة</option>
                             </select>
                         </div>
-                        <div class="col-4 col-sm-4 col-lg-3">
+                        <div class="col-4 col-sm-4 col-lg">
                             <label for="discount" class="form-label fw-bold">
                                 <i class="fas fa-percent me-1"></i>
                                 نسبة الخصم (%)
                             </label>
                             <input type="number" name="discount" id="discount" class="form-control border-primary"
-                                min="0" max="100" step="1" value="0" placeholder="0.00"
+                                min="0" max="100" step="any" value="0" placeholder="0.00"
                                 required>
                         </div>
-                        <div class="col-4 col-sm-4 col-lg-3">
+                        <div class="col-4 col-sm-4 col-lg">
+                            <label for="discount" class="form-label fw-bold">
+                                <i class="fas fa-wallet me-1"></i>
+                                مبلغ الخصم
+                            </label>
+                            <input type="number" name="discount_amount" id="discount_amount"
+                                class="form-control border-primary" min="0" max="100" step="any"
+                                value="0" placeholder="0.00" required>
+                        </div>
+                        <div class="col-4 col-sm-4 col-lg">
                             <label for="date" class="form-label fw-bold">
                                 <i class="fas fa-calendar-alt me-1"></i>
                                 تاريخ الفاتورة
@@ -193,7 +202,7 @@
                             <div class="card bg-light">
                                 <div class="card-body">
                                     <div class="row text-center g-3">
-                                        <div class="col-6 col-sm-3 col-md-3">
+                                        <div class="col-6 col-sm-3 col-md">
                                             <div class="p-2">
                                                 <small class="text-muted d-block">إجمالي التكلفة</small>
                                                 <div class="d-flex justify-content-center align-items-center mb-1">
@@ -202,7 +211,26 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-6 col-sm-3 col-md-3">
+                                        <div class="col-6 col-sm-3 col-md">
+                                            <div class="p-2">
+                                                <small class="text-muted d-block">قيمة الخصم</small>
+                                                <div class="d-flex justify-content-center align-items-center mb-1">
+                                                    <h4 class="text-danger mb-0" id="summary-discount">0.00</h4>
+                                                    <i data-lucide="saudi-riyal" class="text-danger ms-1"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-sm-3 col-md">
+                                            <div class="p-2">
+                                                <small class="text-muted d-block">التكلفة بعد الخصم</small>
+                                                <div class="d-flex justify-content-center align-items-center mb-1">
+                                                    <h4 class="text-primary mb-0" id="summary-total-after-discount">0.00
+                                                    </h4>
+                                                    <i data-lucide="saudi-riyal" class="text-primary ms-1"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-sm-3 col-md">
                                             <div class="p-2">
                                                 <small class="text-muted d-block">الضريبة المضافة</small>
                                                 <div class="d-flex justify-content-center align-items-center mb-1">
@@ -211,18 +239,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-6 col-sm-3 col-md-3">
-                                            <div class="p-2">
-                                                <small class="text-muted d-block">قيمة الخصم</small>
-                                                <div
-                                                    class="d-flex justify-content-center align-items
-                                            const summaryTax = document.getElementById('summary-tax');-center mb-1">
-                                                    <h4 class="text-danger mb-0" id="summary-discount">0.00</h4>
-                                                    <i data-lucide="saudi-riyal" class="text-danger ms-1"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-sm-3 col-md-3">
+                                        <div class="col-6 col-sm-3 col-md">
                                             <div class="p-2">
                                                 <small class="text-muted d-block">المبلغ النهائي</small>
                                                 <div class="d-flex justify-content-center align-items-center mb-1">
@@ -286,9 +303,11 @@
                 const searchTerm = document.getElementById('search-term');
                 const taxRateSelect = document.getElementById('tax_rate');
                 const discountInput = document.getElementById('discount');
+                const discountAmountInput = document.getElementById('discount_amount');
                 const summaryTotal = document.getElementById('summary-total');
-                const summaryTax = document.getElementById('summary-tax');
                 const summaryDiscount = document.getElementById('summary-discount');
+                const summaryTotalAfterDiscount = document.getElementById('summary-total-after-discount');
+                const summaryTax = document.getElementById('summary-tax');
                 const summaryFinal = document.getElementById('summary-final');
 
                 const rows = document.querySelectorAll('.policy-row');
@@ -324,18 +343,45 @@
                 }
 
                 // Update summary
-                function updateSummary() {
+                function updateSummary(source) {
                     const total = calculateTotalCost();
-                    const discountPercent = parseFloat(discountInput.value) || 0;
-                    const discountAmount = (total * discountPercent) / 100;
+                    let discountAmount = 0;
+                    let discountPercent = 0;
+
+                    if (source === 'discountPercent') {
+                        discountPercent = parseFloat(discountInput.value) || 0;
+                        discountAmount = (total * discountPercent) / 100;
+                        if (discountAmountInput) {
+                            discountAmountInput.value = discountAmount.toFixed(2);
+                        }
+                    } else if (source === 'discountAmount') {
+                        discountAmount = parseFloat(discountAmountInput.value) || 0;
+                        if (total > 0) {
+                            discountPercent = (discountAmount * 100) / total;
+                            if (discountInput) {
+                                discountInput.value = discountPercent.toFixed(2);
+                            }
+                        }
+                    } else {
+                        // Default behavior when called without source
+                        if (discountInput) {
+                            discountPercent = parseFloat(discountInput.value) || 0;
+                            discountAmount = (total * discountPercent) / 100;
+                            if (discountAmountInput) {
+                                discountAmountInput.value = discountAmount.toFixed(2);
+                            }
+                        }
+                    }
+
                     const finalAmount = total - discountAmount;
                     const taxRate = parseFloat(taxRateSelect.value) || 0;
                     const taxAmount = (finalAmount * taxRate) / 100;
                     const finalWithTax = finalAmount + taxAmount;
 
                     if (summaryTotal) summaryTotal.textContent = total.toFixed(2);
-                    if (summaryTax) summaryTax.textContent = taxAmount.toFixed(2);
                     if (summaryDiscount) summaryDiscount.textContent = discountAmount.toFixed(2);
+                    if (summaryTotalAfterDiscount) summaryTotalAfterDiscount.textContent = finalAmount.toFixed(2);
+                    if (summaryTax) summaryTax.textContent = taxAmount.toFixed(2);
                     if (summaryFinal) summaryFinal.textContent = finalWithTax.toFixed(2);
                 }
 
@@ -521,10 +567,19 @@
 
                 // Discount input change
                 if (discountInput) {
-                    discountInput.addEventListener('input', updateSummary);
+                    discountInput.addEventListener('input', function() {
+                        updateSummary('discountPercent');
+                    });
+                }
+                if (discountAmountInput) {
+                    discountAmountInput.addEventListener('input', function() {
+                        updateSummary('discountAmount');
+                    });
                 }
                 if (taxRateSelect) {
-                    taxRateSelect.addEventListener('change', updateSummary);
+                    taxRateSelect.addEventListener('change', function() {
+                        updateSummary();
+                    });
                 }
 
                 // Select/Deselect all functionality

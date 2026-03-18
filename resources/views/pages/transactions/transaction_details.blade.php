@@ -19,7 +19,8 @@
                 <ol class="breadcrumb">
                     @if ($transaction->customer->contract)
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $transaction->customer->contract) }}" target="_blank" class="text-decoration-none">
+                            <a href="{{ route('contracts.details', $transaction->customer->contract) }}" target="_blank"
+                                class="text-decoration-none">
                                 <i class="fas fa-link"></i> عقد {{ $transaction->customer->name }}
                             </a>
                         </li>
@@ -28,7 +29,8 @@
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if ($transaction->containers->first()->invoices &&
+            @if (
+                $transaction->containers->first()->invoices &&
                     $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.clearance.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
@@ -48,7 +50,7 @@
                 <i class="fas fa-edit me-1"></i>
                 تعديل المعاملة
             </button>
-            @if(auth()->user()->roles()->pluck('name')->contains('Admin'))
+            @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
                 <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
                     data-bs-target="#deleteTransactionModal">
                     <i class="fas fa-trash-can me-1"></i>
@@ -59,7 +61,8 @@
     </div>
 
     <!-- Delete Transaction Modal -->
-    <div class="modal fade" id="deleteTransactionModal" tabindex="-1" aria-labelledby="deleteTransactionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteTransactionModal" tabindex="-1" aria-labelledby="deleteTransactionModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
@@ -74,7 +77,8 @@
                     @if ($transaction->items->where('is_posted', true)->count() > 0)
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-circle me-1"></i>
-                            تحذير: يوجد عدد {{ $transaction->items->where('is_posted', true)->count() }} بنود مرحلة في هذه المعاملة.
+                            تحذير: يوجد عدد {{ $transaction->items->where('is_posted', true)->count() }} بنود مرحلة في هذه
+                            المعاملة.
                         </div>
                     @endif
                 </div>
@@ -108,7 +112,7 @@
                         value="{{ $transaction->containers->pluck('id')->join(',') }}">
                     <div class="modal-body text-dark">
                         <div class="row g-3 mb-4">
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md">
                                 <label class="form-label">طريقة الدفع</label>
                                 <select class="form-select border-primary" name="payment_method" required>
                                     <option value="آجل">آجل</option>
@@ -116,13 +120,19 @@
                                     <option value="تحويل بنكي">تحويل بنكي</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-4">
+                            <input type="hidden" name="discount" value="0">
+                            {{-- <div class="col-12 col-md">
                                 <label class="form-label">نسبة الخصم(%)</label>
                                 <input type="number" name="discount" id="discount" class="form-control border-primary"
-                                    min="0" max="100" step="1" value="0" placeholder="0.00"
-                                    oninput="calculatePreviewDiscount()">
+                                    min="0" max="100" step="any" value="0" placeholder="0.00">
                             </div>
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md">
+                                <label class="form-label">مبلغ الخصم</label>
+                                <input type="number" name="discount_amount" id="discount_amount"
+                                    class="form-control border-primary" min="0" step="any" value="0"
+                                    placeholder="0.00">
+                            </div> --}}
+                            <div class="col-12 col-md">
                                 <label class="form-label">تاريخ الفاتورة</label>
                                 <input type="date" name="date" class="form-control border-primary"
                                     value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
@@ -183,7 +193,8 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
-                        <button type="submit" class="btn btn-primary fw-bold" id="createInvoiceBtn">إنشاء الفاتورة</button>
+                        <button type="submit" class="btn btn-primary fw-bold" id="createInvoiceBtn">إنشاء
+                            الفاتورة</button>
                         <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                     </div>
                 </form>
@@ -420,7 +431,7 @@
                                                 <button type="button" class="btn-close btn-close-white"
                                                     data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            
+
                                             <form action="{{ route('transactions.item.update', $item) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
@@ -428,11 +439,13 @@
                                                     @if ($item->is_posted)
                                                         <div class="alert alert-warning">
                                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                                            <strong>تنبيه:</strong> هذا البد تم ترحيله مسبقاً بالفعل. يجب حذف القيد المرتبط أولاً قبل
+                                                            <strong>تنبيه:</strong> هذا البد تم ترحيله مسبقاً بالفعل. يجب
+                                                            حذف القيد المرتبط أولاً قبل
                                                             تعديل البند.
                                                         </div>
                                                     @endif
-                                                    <input type="hidden" name="transaction_id" value="{{ $item->transaction->id }}">
+                                                    <input type="hidden" name="transaction_id"
+                                                        value="{{ $item->transaction->id }}">
                                                     <div class="row g-3 mb-3">
                                                         <div class="col-2">
                                                             <label class="form-label">الرقم</label>
@@ -532,7 +545,8 @@
                                                 @if ($item->is_posted)
                                                     <div class="alert alert-warning">
                                                         <i class="fas fa-exclamation-triangle me-2"></i>
-                                                        <strong>تنبيه:</strong> هذا البد تم ترحيله مسبقاً بالفعل. يجب حذف القيد المرتبط أولاً قبل
+                                                        <strong>تنبيه:</strong> هذا البد تم ترحيله مسبقاً بالفعل. يجب حذف
+                                                        القيد المرتبط أولاً قبل
                                                         حذف البند.
                                                     </div>
                                                 @endif
@@ -1136,6 +1150,14 @@
         // Load invoice preview when modal opens
         $('#createInvoice').on('show.bs.modal', function() {
             loadInvoicePreview();
+
+            // Add event listeners for discount inputs
+            $('#discount').off('input').on('input', function() {
+                calculatePreviewDiscount('discountPercent');
+            });
+            $('#discount_amount').off('input').on('input', function() {
+                calculatePreviewDiscount('discountAmount');
+            });
         });
 
         function loadInvoicePreview() {
@@ -1207,19 +1229,34 @@
             calculatePreviewDiscount();
         }
 
-        function calculatePreviewDiscount() {
+        function calculatePreviewDiscount(source) {
             if (!invoicePreviewData) return;
 
-            const discountPercent = parseFloat($('#discount').val()) || 0;
             const totalAmount = invoicePreviewData.totals.amount;
+            let discountPercent = parseFloat($('#discount').val()) || 0;
+            let discountAmount = parseFloat($('#discount_amount').val()) || 0;
 
-            if (discountPercent > 0) {
-                const discountAmount = (totalAmount * discountPercent) / 100;
+            // Handle bidirectional sync
+            if (source === 'discountPercent') {
+                discountAmount = (totalAmount * discountPercent) / 100;
+                $('#discount_amount').val(discountAmount.toFixed(2));
+            } else if (source === 'discountAmount') {
+                if (totalAmount > 0) {
+                    discountPercent = (discountAmount * 100) / totalAmount;
+                    $('#discount').val(discountPercent.toFixed(2));
+                }
+            } else {
+                // Default behavior when called without source
+                discountAmount = (totalAmount * discountPercent) / 100;
+                $('#discount_amount').val(discountAmount.toFixed(2));
+            }
+
+            if (discountPercent > 0 || discountAmount > 0) {
                 const finalAmount = invoicePreviewData.totals.total - discountAmount;
 
                 $('#previewDiscountRow').show();
                 $('#previewFinalRow').show();
-                $('#previewDiscountPercent').text(discountPercent);
+                $('#previewDiscountPercent').text(discountPercent.toFixed(2));
                 $('#previewDiscountAmount').text('-' + formatNumber(discountAmount));
                 $('#previewFinalAmount').text(formatNumber(finalAmount));
             } else {

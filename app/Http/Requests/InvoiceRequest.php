@@ -20,6 +20,7 @@ class InvoiceRequest extends FormRequest
             'customer_id' => 'required',
             'user_id' => 'required',
             'discount' => 'required|numeric',
+            'discount_amount' => 'nullable|numeric',
             'payment_method' => ['required', Rule::in(Invoice::PAYMENT_METHODS)],
             'date' => 'required|date',
         ];

@@ -480,29 +480,36 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-muted">الإجمالي قبل الضريبة:</span>
-                                <span class="fw-bold fs-5">{{ number_format($invoice->amount_before_tax, 2) }} <i
-                                        data-lucide="saudi-riyal"></i></span>
+                                <span class="fw-bold fs-5">
+                                    {{ number_format($invoice->amount_before_tax, 2) }} <i data-lucide="saudi-riyal"></i>
+                                </span>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-muted">الخصم ({{ $invoice->discount }}):</span>
-                                <span
-                                    class="fw-bold fs-5">{{ number_format(($invoice->amount_before_tax * ($invoice->discount ?? 0)) / 100, 2) }}
-                                    <i data-lucide="saudi-riyal"></i></span>
+                                <span class="text-muted">
+                                    الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }}):
+                                </span>
+                                <span class="fw-bold fs-5">
+                                    {{ number_format(($invoice->amount_before_tax * ($invoice->discount ?? 0)) / 100, 2) }}
+                                    <i data-lucide="saudi-riyal"></i>
+                                </span>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-muted">الضريبة المضافة ({{ $invoice->tax_rate }}%):</span>
-                                <span class="fw-bold fs-5 text-dark"> {{ number_format($invoice->tax, 2) }} <i
-                                        data-lucide="saudi-riyal"></i></span>
+                                <span class="fw-bold fs-5 text-dark"> 
+                                    {{ number_format($invoice->tax, 2) }} <i data-lucide="saudi-riyal"></i>
+                                </span>
                             </div>
 
                             <hr class="my-3">
 
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold fs-4 text-success">الإجمالي النهائي:</span>
-                                <span class="fw-bold fs-3 text-success">{{ number_format($invoice->total_amount, 2) }} <i
-                                        data-lucide="saudi-riyal" style="width: 32px; height: 32px;"></i></span>
+                                <span class="fw-bold fs-3 text-success">
+                                    {{ number_format($invoice->total_amount, 2) }} 
+                                    <i data-lucide="saudi-riyal" style="width: 32px; height: 32px;"></i>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -518,13 +525,11 @@
                             <div class="row g-3 mb-3 d-none d-md-flex">
                                 <div class="col-12 col-sm-6">
                                     <p><strong>تاريخ الإنشاء:</strong></p>
-                                    <p><small class="text-muted">{{ $invoice->created_at->format('d/m/Y - H:i') }}</small>
-                                    </p>
+                                    <p><small class="text-muted">{{ $invoice->created_at->format('d/m/Y - H:i') }}</small></p>
                                 </div>
                                 <div class="col-12 col-sm-6">
                                     <p><strong>آخر تحديث:</strong></p>
-                                    <p><small class="text-muted">{{ $invoice->updated_at->format('d/m/Y - H:i') }}</small>
-                                    </p>
+                                    <p><small class="text-muted">{{ $invoice->updated_at->format('d/m/Y - H:i') }}</small></p>
                                 </div>
                             </div>
 
