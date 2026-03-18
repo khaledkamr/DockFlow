@@ -91,7 +91,7 @@
     </div>
     <div class="d-flex justify-content-between align-items-center py-2">
         <span class="fw-semibold text-secondary">الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }})</span>
-        <span class="fw-bold text-dark">- {{ number_format($discountValue, 2) }} ر.س</span>
+        <span class="fw-bold text-dark">- {{ number_format($invoice->discount_amount, 2) }} ر.س</span>
     </div>
     <div class="d-flex justify-content-between align-items-center py-2 mt-3 pt-3 summary-total">
         <span class="fw-bold fs-5 text-dark">الإجمالي بعد الضريبة</span>

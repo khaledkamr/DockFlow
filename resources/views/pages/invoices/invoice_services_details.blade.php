@@ -465,7 +465,8 @@
                                     الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }}):
                                 </span>
                                 <span class="fw-bold fs-5"> 
-                                    {{ number_format($discountValue, 2) }} <i data-lucide="saudi-riyal"></i>
+                                    {{ number_format($invoice->discount_amount, 2) }}
+                                    <i data-lucide="saudi-riyal"></i>
                                 </span>
                             </div>
 
