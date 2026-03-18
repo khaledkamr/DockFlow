@@ -25,6 +25,7 @@ use App\Models\Voucher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -101,6 +102,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:255',
             'role' => 'required',
         ]);
+
         if($request->password) {
             if($request->password != $request->password_confirmation) {
                 return redirect()->back()->withErrors(['password' => 'كلمة المرور غير متطابقة']);
@@ -108,7 +110,9 @@ class UserController extends Controller
                 return redirect()->back()->withErrors(['password' => 'كلمة المرور يجب أن تكون على الأقل 3 أحرف']);
             }
             $validated['password'] = Hash::make($request->password);
+            DB::table('sessions')->where('user_id', $user->id)->delete();
         }
+
         $user->update($validated);
         $user->roles()->sync($request->role);
         return redirect()->back()->with('success', 'تم تحديث بيانات المستخدم بنجاح');

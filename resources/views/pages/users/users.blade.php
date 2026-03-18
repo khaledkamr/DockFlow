@@ -233,6 +233,16 @@
                                             </div>
                                             <div class="row g-3 mb-3">
                                                 <div class="col-12 col-md-6">
+                                                    <label class="form-label">كلمة السر الجديدة</label>
+                                                    <input type="text" class="form-control border-primary" name="password">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label">تأكيد كلمة السر</label>
+                                                    <input type="text" class="form-control border-primary" name="password_confirmation">
+                                                </div>
+                                            </div>
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-12 col-md-6">
                                                     <label class="form-label">رقم الهاتف</label>
                                                     <input type="text" class="form-control border-primary"
                                                         name="phone" value="{{ $user->phone }}">
