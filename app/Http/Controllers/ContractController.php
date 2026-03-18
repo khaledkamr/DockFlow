@@ -36,7 +36,7 @@ class ContractController extends Controller
         if($search) {
             $contracts->whereHas('customer', function($q) use($search) {
                 $q->where('name', 'like', '%' . $search . '%');
-            })->orWhere('date', 'like', '%' . $search . '%');
+            })->orWhere('start_date', 'like', '%' . $search . '%');
         }
 
         $contracts = $contracts->with(['customer', 'made_by'])->orderBy('created_at', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
