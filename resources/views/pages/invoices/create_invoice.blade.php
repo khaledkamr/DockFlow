@@ -196,7 +196,7 @@
                                             <div class="p-2">
                                                 <small class="text-muted d-block">إجمالي التكلفة</small>
                                                 <div class="d-flex justify-content-center align-items-center mb-1">
-                                                    <h4 class="text-primary mb-0" id="summary-total">0.00</h4>
+                                                    <h4 class="text-primary mb-0" id="ي">0.00</h4>
                                                     <i data-lucide="saudi-riyal" class="text-primary ms-1"></i>
                                                 </div>
                                             </div>

@@ -741,7 +741,7 @@ class ExportController extends Controller
             if ($selectedCustomer && $selectedCustomer->contract && $from && $to) {
                 $unpaidInvoices = $selectedCustomer
                     ->invoices()
-                    ->where('isPaid', 'لم يتم الدفع')
+                    ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                     ->whereBetween('date', [$from, $to])
                     ->with('customer')
                     ->get()
@@ -762,7 +762,7 @@ class ExportController extends Controller
             } elseif ($selectedCustomer && !$selectedCustomer->contract && $from && $to) {
                 $unpaidInvoices = $selectedCustomer
                     ->invoices()
-                    ->where('isPaid', 'لم يتم الدفع')
+                    ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                     ->whereBetween('date', [$from, $to])
                     ->with('customer')
                     ->get();

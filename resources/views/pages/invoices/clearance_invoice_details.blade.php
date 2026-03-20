@@ -60,11 +60,11 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="isPaid" class="form-label">حالة الدفع</label>
-                                <select name="isPaid" class="form-select border-primary" required>
-                                    <option value="تم الدفع" {{ $invoice->isPaid == 'تم الدفع' ? 'selected' : '' }}>تم الدفع
+                                <label for="status" class="form-label">حالة الدفع</label>
+                                <select name="status" class="form-select border-primary" required>
+                                    <option value="تم الدفع" {{ $invoice->status == 'تم الدفع' ? 'selected' : '' }}>تم الدفع
                                     </option>
-                                    <option value="لم يتم الدفع" {{ $invoice->isPaid == 'لم يتم الدفع' ? 'selected' : '' }}>
+                                    <option value="لم يتم الدفع" {{ $invoice->status == 'لم يتم الدفع' ? 'selected' : '' }}>
                                         لم يتم الدفع</option>
                                 </select>
                             </div>
@@ -123,8 +123,8 @@
                     <div class="modal-body text-dark">
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="isPaid" class="form-label">عملية الدفع</label>
-                                <select name="isPaid" class="form-select border-primary" required>
+                                <label for="status" class="form-label">عملية الدفع</label>
+                                <select name="status" class="form-select border-primary" required>
                                     <option value="" selected disabled>اختر عملية الدفع</option>
                                     <option value="تم الدفع">تم الدفع</option>
                                     <option value="لم يتم الدفع">لم يتم الدفع</option>
@@ -360,18 +360,24 @@
         <div class="card-body p-4">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-{{ $invoice->isPaid == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
-                        @if ($invoice->isPaid == 'تم الدفع')
-                            <i class="fas fa-check-circle me-1"></i>مدفوعة
-                        @elseif($invoice->isPaid == 'لم يتم الدفع')
-                            <i class="fas fa-clock me-1"></i>غير مدفوعة
-                        @endif
-                    </span>
-                    @if ($invoice->isPaid == 'لم يتم الدفع')
+                    @if ($invoice->status == 'تم الدفع')
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                            <i class="fas fa-check-circle me-1"></i>مسددة
+                        </span>
+                    @elseif($invoice->status == 'تم الدفع جزئياً')
+                        <span class="badge bg-warning fs-6 px-3 py-2">
+                            <i class="fas fa-clock me-1"></i>مسددة جزئياً
+                        </span>
+                    @elseif($invoice->status == 'لم يتم الدفع')
+                        <span class="badge bg-danger fs-6 px-3 py-2">
+                            <i class="fas fa-clock me-1"></i>غير مسددة
+                        </span>
+                    @endif
+                    @if ($invoice->status == 'لم يتم الدفع')
                         <span class="badge bg-primary fs-6 px-3 py-2">
                             <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $invoice->paymentDueDate }}
                         </span>
-                        @if($invoice->lateDays > 0)
+                        @if ($invoice->lateDays > 0)
                             <span class="badge bg-danger fs-6 px-3 py-2">
                                 <i class="fas fa-exclamation-circle me-1"></i>متأخر منذ {{ $invoice->lateDays }} يوم
                             </span>
@@ -391,7 +397,7 @@
                             </button>
                         @endcan
                     @endif
-                    @if ($invoice->isPaid == 'لم يتم الدفع')
+                    @if ($invoice->status == 'لم يتم الدفع')
                         <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
                             data-bs-target="#updateInvoice">
                             <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الحالة
@@ -415,7 +421,8 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">اسم العميل:</strong>
                                         <span class="fw-bold">
-                                            <a href="{{ route('users.customer.profile', $invoice->customer) }}" class="text-decoration-none text-dark">
+                                            <a href="{{ route('users.customer.profile', $invoice->customer) }}"
+                                                class="text-decoration-none text-dark">
                                                 {{ $invoice->customer->name }}
                                             </a>
                                         </span>
@@ -551,22 +558,25 @@
                     <h5 class="mb-0 text-dark">
                         <i class="fas fa-list me-2"></i>تفاصيل البنود
                     </h5>
-                    @if(auth()->user()->roles->pluck('name')->contains('Admin'))
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editItemsModal">
+                    @if (auth()->user()->roles->pluck('name')->contains('Admin'))
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#editItemsModal">
                             <i class="fas fa-edit me-1"></i>تعديل البنود
                         </button>
                     @endif
                 </div>
 
                 <!-- Edit Items Modal -->
-                <div class="modal fade" id="editItemsModal" tabindex="-1" aria-labelledby="editItemsModalLabel" aria-hidden="true">
+                <div class="modal fade" id="editItemsModal" tabindex="-1" aria-labelledby="editItemsModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
                                 <h5 class="modal-title text-white fw-bold" id="editItemsModalLabel">
                                     <i class="fas fa-edit me-2"></i>تعديل بنود الفاتورة
                                 </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <form action="{{ route('invoices.clearance.update.items', $invoice) }}" method="POST">
                                 @csrf
@@ -575,7 +585,8 @@
                                     @if ($invoice->is_posted)
                                         <div class="alert alert-warning">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
-                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل تعديل البنود.
+                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط
+                                            أولاً قبل تعديل البنود.
                                         </div>
                                     @endif
                                     <div class="table-responsive">
@@ -594,23 +605,41 @@
                                                 @foreach ($invoice->clearanceInvoiceItems->sortBy('number') as $index => $item)
                                                     <tr>
                                                         <td class="text-center">
-                                                            <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
-                                                            <input type="number" name="items[{{ $index }}][number]" class="form-control form-control-sm text-center" value="{{ $item->number }}" style="width: 60px;" required>
+                                                            <input type="hidden" name="items[{{ $index }}][id]"
+                                                                value="{{ $item->id }}">
+                                                            <input type="number"
+                                                                name="items[{{ $index }}][number]"
+                                                                class="form-control form-control-sm text-center"
+                                                                value="{{ $item->number }}" style="width: 60px;"
+                                                                required>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="items[{{ $index }}][description]" class="form-control form-control-sm" value="{{ $item->description }}" required>
+                                                            <input type="text"
+                                                                name="items[{{ $index }}][description]"
+                                                                class="form-control form-control-sm"
+                                                                value="{{ $item->description }}" required>
                                                         </td>
                                                         <td>
-                                                            <input type="number" step="0.01" name="items[{{ $index }}][amount]" class="form-control form-control-sm text-center item-amount" value="{{ $item->amount }}" required>
+                                                            <input type="number" step="0.01"
+                                                                name="items[{{ $index }}][amount]"
+                                                                class="form-control form-control-sm text-center item-amount"
+                                                                value="{{ $item->amount }}" required>
                                                         </td>
                                                         <td>
-                                                            <input type="number" step="0.01" name="items[{{ $index }}][tax]" class="form-control form-control-sm text-center item-tax" value="{{ $item->tax }}" required>
+                                                            <input type="number" step="0.01"
+                                                                name="items[{{ $index }}][tax]"
+                                                                class="form-control form-control-sm text-center item-tax"
+                                                                value="{{ $item->tax }}" required>
                                                         </td>
                                                         <td>
-                                                            <input type="number" step="0.01" name="items[{{ $index }}][total]" class="form-control form-control-sm text-center item-total" value="{{ $item->total }}" readonly>
+                                                            <input type="number" step="0.01"
+                                                                name="items[{{ $index }}][total]"
+                                                                class="form-control form-control-sm text-center item-total"
+                                                                value="{{ $item->total }}" readonly>
                                                         </td>
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-sm btn-outline-danger remove-item-btn">
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-outline-danger remove-item-btn">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </td>
@@ -624,10 +653,12 @@
                                     </button>
                                 </div>
                                 <div class="modal-footer d-flex justify-content-start">
-                                    <button type="submit" class="btn btn-primary fw-bold" {{ $invoice->is_posted ? 'disabled' : '' }}>
+                                    <button type="submit" class="btn btn-primary fw-bold"
+                                        {{ $invoice->is_posted ? 'disabled' : '' }}>
                                         <i class="fas fa-save me-2"></i>حفظ التعديلات
                                     </button>
-                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                    <button type="button" class="btn btn-secondary fw-bold"
+                                        data-bs-dismiss="modal">إلغاء</button>
                                 </div>
                             </form>
                         </div>
@@ -637,7 +668,7 @@
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         let itemIndex = {{ $invoice->clearanceInvoiceItems->count() }};
-                        
+
                         document.getElementById('addItemBtn').addEventListener('click', function() {
                             const tbody = document.querySelector('#itemsTable tbody');
                             const newRow = document.createElement('tr');
@@ -723,9 +754,12 @@
                             @endforeach
                             <tr class="table-secondary">
                                 <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                                <td class="text-center fw-bold">{{ number_format($invoice->clearanceInvoiceItems->sum('amount'), 2) }}</td>
-                                <td class="text-center fw-bold">{{ number_format($invoice->clearanceInvoiceItems->sum('tax'), 2) }}</td>
-                                <td class="text-center fw-bold">{{ number_format($invoice->clearanceInvoiceItems->sum('total'), 2) }} <i
+                                <td class="text-center fw-bold">
+                                    {{ number_format($invoice->clearanceInvoiceItems->sum('amount'), 2) }}</td>
+                                <td class="text-center fw-bold">
+                                    {{ number_format($invoice->clearanceInvoiceItems->sum('tax'), 2) }}</td>
+                                <td class="text-center fw-bold">
+                                    {{ number_format($invoice->clearanceInvoiceItems->sum('total'), 2) }} <i
                                         data-lucide="saudi-riyal"></i></td>
                             </tr>
                         </tbody>
@@ -734,7 +768,7 @@
             </div>
 
             <!-- Summary Section -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-12 col-lg-4">
                     <div class="card border-dark h-100">
                         <div class="card-header bg-dark text-white">
@@ -762,7 +796,7 @@
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-muted">إجمالي الضريبة المضافة:</span>
-                                <span class="fw-bold fs-5 text-dark"> 
+                                <span class="fw-bold fs-5 text-dark">
                                     {{ number_format($invoice->tax, 2) }} <i data-lucide="saudi-riyal"></i>
                                 </span>
                             </div>
@@ -772,7 +806,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold fs-4 text-success">الإجمالي النهائي:</span>
                                 <span class="fw-bold fs-3 text-success">
-                                    {{ number_format($invoice->total_amount, 2) }} <i data-lucide="saudi-riyal" style="width: 32px; height: 32px;"></i>
+                                    {{ number_format($invoice->total_amount, 2) }} <i data-lucide="saudi-riyal"
+                                        style="width: 32px; height: 32px;"></i>
                                 </span>
                             </div>
                         </div>
@@ -789,11 +824,13 @@
                             <div class="row g-3 mb-3 d-none d-md-flex">
                                 <div class="col-12 col-sm-6">
                                     <p><strong>تاريخ الإنشاء:</strong></p>
-                                    <p><small class="text-muted">{{ $invoice->created_at->format('d/m/Y - H:i') }}</small></p>
+                                    <p><small class="text-muted">{{ $invoice->created_at->format('d/m/Y - H:i') }}</small>
+                                    </p>
                                 </div>
                                 <div class="col-12 col-sm-6">
                                     <p><strong>آخر تحديث:</strong></p>
-                                    <p><small class="text-muted">{{ $invoice->updated_at->format('d/m/Y - H:i') }}</small></p>
+                                    <p><small class="text-muted">{{ $invoice->updated_at->format('d/m/Y - H:i') }}</small>
+                                    </p>
                                 </div>
                             </div>
 
@@ -808,8 +845,50 @@
                 </div>
             </div>
 
-            <!-- Attachments Section -->
+            <!-- Invoice Payments History -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 text-dark">
+                        <i class="fas fa-clipboard me-2"></i>سجل دفع الفاتورة
+                    </h5>
+                    <span class="badge bg-primary text-white">المبلغ المتبقي: {{ $invoice->total_amount - $invoice->paid_amount }} ر.س</span>
+                </div>
+
+                <div class="table-container" id="tableContainer">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="text-center bg-dark text-white text-nowrap">#</th>
+                                <th class="text-center bg-dark text-white text-nowrap">رقم السند</th>
+                                <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
+                                <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($invoice->payments as $payment)
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">
+                                        <a href="{{ route('voucher.details', $payment->voucher) }}" class="text-decoration-none">
+                                            {{ $payment->voucher->code ?? '---' }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <small>{{ $payment->created_at->format('d/m/Y') }}</small>
+                                    </td>
+                                    <td class="text-center fw-bold text-nowrap">
+                                        {{ $payment->amount }} <i data-lucide="saudi-riyal"></i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attachments And Notes Section -->
             <div class="row mt-4">
+                <!-- Attachments Section -->
                 <div class="col-12 col-md-6">
                     <div class="card border-dark">
                         <div class="card-header bg-dark text-white">
@@ -820,7 +899,8 @@
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-12">
-                                    <form action="{{ route('invoices.add.file', $invoice) }}" method="POST" enctype="multipart/form-data"
+                                    <form action="{{ route('invoices.add.file', $invoice) }}" method="POST"
+                                        enctype="multipart/form-data"
                                         class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
                                         @csrf
                                         <div class="flex-grow-1">
@@ -969,6 +1049,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Notes Section -->
                 <div class="col-12 col-md-6">
                     <div class="card border-dark h-100">
                         <div class="card-header bg-dark text-white">

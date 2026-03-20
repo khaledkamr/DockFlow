@@ -15,38 +15,37 @@
                 <table class="table table-bordered border-dark">
                     <thead>
                         <tr>
-                            <th class="text-center">اسم العميل</th>
+                            <th class="text-center">#</th>
                             <th class="text-center">رقم الفاتورة</th>
                             <th class="text-center">نوع الفاتورة</th>
                             <th class="text-center">تاريخ الفاتورة</th>
                             <th class="text-center">موعد السداد</th>
                             <th class="text-center">أيام التأخير</th>
                             <th class="text-center">المبلغ</th>
+                            <th class="text-center">المبلغ مسدد</th>
+                            <th class="text-center">المبلغ المتبقي</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($unpaidInvoices as $invoice)
                             <tr>
-                                <td class="text-center fw-bold">
-                                    <a href="{{ route('users.customer.profile', $selectedCustomer) }}"
-                                        class="text-decoration-none text-dark">
-                                        {{ $selectedCustomer->name }}
-                                    </a>
-                                </td>
+                                <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">{{ $invoice->code }}</td>
                                 <td class="text-center">{{ $invoice->type }}</td>
                                 <td class="text-center text-nowrap">{{ \Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                                 <td class="text-center text-nowrap">
-                                    {{ $invoice->payment_due_date ?  $invoice->payment_due_date->format('Y/m/d') : '' }}
+                                    {{ $invoice->payment_due_date ?  \Carbon\Carbon::parse($invoice->payment_due_date)->format('Y/m/d') : '' }}
                                 </td>
                                 <td class="text-center fw-bold text-nowrap">
                                     {{ (int) $invoice->late_days }} يوم
                                 </td>
                                 <td class="text-center text-nowrap">{{ number_format($invoice->total_amount, 2) }} ر.س</td>
+                                <td class="text-center text-nowrap">{{ number_format($invoice->paid_amount, 2) }} ر.س</td>
+                                <td class="text-center text-nowrap">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }} ر.س</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">لا توجد فواتير غير مسددة</td>
+                                <td colspan="9" class="text-center text-muted">لا توجد فواتير غير مسددة</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -55,6 +54,12 @@
                             <td class="text-center text-nowrap" colspan="6">الإجمالي</td>
                             <td class="text-center text-nowrap">
                                 {{ number_format($unpaidInvoices->sum('total_amount'), 2) }} ر.س
+                            </td>
+                            <td class="text-center text-nowrap">
+                                {{ number_format($unpaidInvoices->sum('paid_amount'), 2) }} ر.س
+                            </td>
+                            <td class="text-center text-nowrap">
+                                {{ number_format($unpaidInvoices->sum('total_amount') - $unpaidInvoices->sum('paid_amount'), 2) }} ر.س
                             </td>
                         </tr>
                     </tfoot>

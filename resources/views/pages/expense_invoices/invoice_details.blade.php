@@ -11,8 +11,7 @@
                     <i class="fas fa-trash me-1"></i>حذف الفاتورة
                 </button>
 
-                <div class="modal fade" id="deleteModal" tabindex="-1"
-                    aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-danger text-white">
@@ -26,8 +25,8 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary fw-bold"
                                     data-bs-dismiss="modal">إلغاء</button>
-                                <form action="{{ route('expense.invoices.delete', $invoice) }}"
-                                    method="POST" style="display: inline;">
+                                <form action="{{ route('expense.invoices.delete', $invoice) }}" method="POST"
+                                    style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger fw-bold">حذف</button>
@@ -42,7 +41,8 @@
 
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-4">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+            <div
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div>
                     <span class="badge bg-{{ $invoice->is_paid ? 'success' : 'danger' }} fs-6 px-3 py-2">
                         @if ($invoice->is_paid)
@@ -89,7 +89,7 @@
                             <div class="modal-body text-dark">
                                 <div class="row mb-3">
                                     <div class="col">
-                                        <label for="isPaid" class="form-label">عملية الدفع</label>
+                                        <label for="status" class="form-label">عملية الدفع</label>
                                         <select name="is_paid" class="form-select border-primary" required>
                                             <option value="" selected disabled>اختر عملية الدفع</option>
                                             <option value="1">تم الدفع</option>
@@ -140,7 +140,8 @@
                                                 <td class="text-center">{{ $counter++ }}</td>
                                                 <td class="text-center">{{ $item->account->code }}</td>
                                                 <td class="text-center fw-semibold">{{ $item->account->name }}</td>
-                                                <td class="text-center fw-bold text-success">{{ number_format($item->amount, 2) }}</td>
+                                                <td class="text-center fw-bold text-success">
+                                                    {{ number_format($item->amount, 2) }}</td>
                                                 <td class="text-center">0.00</td>
                                                 <td class="text-center">
                                                     {{ $item->description ?: 'بند فاتورة مصاريف رقم ' . $invoice->code }}
@@ -153,27 +154,34 @@
                                                 <td class="text-center">{{ $counter++ }}</td>
                                                 <td class="text-center">{{ $tax_account->code ?? '-' }}</td>
                                                 <td class="text-center fw-semibold">{{ $tax_account->name ?? '-' }}</td>
-                                                <td class="text-center fw-bold text-success">{{ number_format($invoice->tax, 2) }}</td>
+                                                <td class="text-center fw-bold text-success">
+                                                    {{ number_format($invoice->tax, 2) }}</td>
                                                 <td class="text-center">0.00</td>
-                                                <td class="text-center">ضريبة قيمة مضافة فاتورة مصاريف رقم {{ $invoice->code }}</td>
+                                                <td class="text-center">ضريبة قيمة مضافة فاتورة مصاريف رقم
+                                                    {{ $invoice->code }}</td>
                                             </tr>
                                         @endif
 
                                         <tr class="table-warning border-secondary">
                                             <td class="text-center">{{ $counter++ }}</td>
                                             <td class="text-center">{{ $invoice->supplier->account->code ?? '-' }}</td>
-                                            <td class="text-center fw-semibold">{{ $invoice->supplier->account->name ?? 'مورد' }}</td>
+                                            <td class="text-center fw-semibold">
+                                                {{ $invoice->supplier->account->name ?? 'مورد' }}</td>
                                             <td class="text-center">0.00</td>
-                                            <td class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</td>
+                                            <td class="text-center fw-bold text-danger">
+                                                {{ number_format($invoice->total_amount, 2) }}</td>
                                             <td class="text-center">فاتورة مصاريف رقم {{ $invoice->code }}</td>
                                         </tr>
 
                                         @if ($invoice->payment_method !== 'آجل')
                                             <tr class="table-info border-secondary">
                                                 <td class="text-center">{{ $counter++ }}</td>
-                                                <td class="text-center">{{ $invoice->supplier->account->code ?? '-' }}</td>
-                                                <td class="text-center fw-semibold">{{ $invoice->supplier->name ?? 'مورد' }}</td>
-                                                <td class="text-center fw-bold text-success">{{ number_format($invoice->total_amount, 2) }}</td>
+                                                <td class="text-center">{{ $invoice->supplier->account->code ?? '-' }}
+                                                </td>
+                                                <td class="text-center fw-semibold">
+                                                    {{ $invoice->supplier->name ?? 'مورد' }}</td>
+                                                <td class="text-center fw-bold text-success">
+                                                    {{ number_format($invoice->total_amount, 2) }}</td>
                                                 <td class="text-center">0.00</td>
                                                 <td class="text-center">سداد فاتورة مصاريف رقم {{ $invoice->code }}</td>
                                             </tr>
@@ -181,9 +189,11 @@
                                             <tr class="table-info border-secondary">
                                                 <td class="text-center">{{ $counter++ }}</td>
                                                 <td class="text-center">{{ $invoice->expense_account->code ?? '-' }}</td>
-                                                <td class="text-center fw-semibold">{{ $invoice->expense_account->name ?? '-' }}</td>
+                                                <td class="text-center fw-semibold">
+                                                    {{ $invoice->expense_account->name ?? '-' }}</td>
                                                 <td class="text-center">0.00</td>
-                                                <td class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</td>
+                                                <td class="text-center fw-bold text-danger">
+                                                    {{ number_format($invoice->total_amount, 2) }}</td>
                                                 <td class="text-center">سداد فاتورة مصاريف رقم {{ $invoice->code }}</td>
                                             </tr>
                                         @endif
@@ -215,7 +225,8 @@
                             </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-start">
-                            <form action="{{ route('expense.invoices.post', $invoice) }}" method="GET" class="d-inline">
+                            <form action="{{ route('expense.invoices.post', $invoice) }}" method="GET"
+                                class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-primary fw-bold">
                                     <i class="fas fa-check me-2"></i>تأكيد الترحيل

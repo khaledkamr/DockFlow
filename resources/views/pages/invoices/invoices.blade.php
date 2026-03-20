@@ -25,16 +25,16 @@
                 <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب الدفــع:</label>
                 <label class="form-label text-dark fw-bold d-inline d-md-none">الدفــع:</label>
                 <div class="d-flex">
-                    <select name="isPaid" class="form-select border-primary" onchange="this.form.submit()">
+                    <select name="status" class="form-select border-primary" onchange="this.form.submit()">
                         <option value="all"
-                            {{ request()->query('isPaid') === 'all' || !request()->query('isPaid') ? 'selected' : '' }}>
+                            {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
                             جميع الفواتير</option>
-                        <option value="تم الدفع" {{ request()->query('isPaid') === 'تم الدفع' ? 'selected' : '' }}>
+                        <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>
                             تم الدفع</option>
-                        <option value="لم يتم الدفع" {{ request()->query('isPaid') === 'لم يتم الدفع' ? 'selected' : '' }}>
+                        <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>
                             لم يتم الدفع</option>
                     </select>
-                    @foreach (request()->except('isPaid') as $key => $value)
+                    @foreach (request()->except('status') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </div>
@@ -101,10 +101,12 @@
                             </td>
                             <td class="text-center">{{ $invoice->payment_method }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
-                            @if ($invoice->isPaid == 'تم الدفع')
-                                <td class="text-center"><span class="badge status-delivered">تم الدفع</span></td>
+                            @if ($invoice->status == 'تم الدفع')
+                                <td class="text-center"><span class="badge status-delivered">مسددة</span></td>
+                            @elseif ($invoice->status == 'تم الدفع جزئياً')
+                                <td class="text-center"><span class="badge status-waiting">مسددة جزئياً</span></td>
                             @else
-                                <td class="text-center"><span class="badge status-danger">لم يتم الدفع</span></td>
+                                <td class="text-center"><span class="badge status-danger">غير مسددة</span></td>
                             @endif
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $invoice->made_by) }}"
@@ -150,21 +152,24 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title fw-bold" id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                    <h5 class="modal-title fw-bold"
+                                                        id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body fs-6">
                                                     هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟
-                                                    @if($invoice->is_posted)
+                                                    @if ($invoice->is_posted)
                                                         <div class="alert alert-danger mt-3">
                                                             <i class="fas fa-exclamation-circle me-2"></i>
-                                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل حذف الفاتورة.
+                                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف
+                                                            القيد المرتبط أولاً قبل حذف الفاتورة.
                                                         </div>
                                                     @endif
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
+                                                    <button type="button"
+                                                        class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
                                                     <form action="{{ route('invoices.delete', $invoice) }}"
                                                         method="POST" style="display: inline;">
                                                         @csrf
@@ -196,7 +201,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -205,17 +210,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>

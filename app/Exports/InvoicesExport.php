@@ -61,7 +61,9 @@ class InvoicesExport implements FromCollection, WithHeadings
                 $invoice->tax,
                 $invoice->total_amount,
                 $invoice->is_posted ? 'تم الترحيل' : 'لم يتم الترحيل',
-                $invoice->isPaid,
+                $invoice->status,
+                $invoice->paid_amount,
+                $invoice->total_amount - $invoice->paid_amount,
                 $invoice->made_by->name,
             ];
         });
@@ -78,7 +80,9 @@ class InvoicesExport implements FromCollection, WithHeadings
             'الضريبة المضافة',
             'الإجمالي',
             'الترحيل',
-            'الدفع',
+            'الحالة',
+            'المبلغ المسدد',
+            'المبلغ المتبقي',
             'تم بواسطة',
         ];
     }

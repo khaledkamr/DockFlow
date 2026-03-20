@@ -48,13 +48,13 @@
                 <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب الدفــع:</label>
                 <label class="form-label text-dark fw-bold d-inline d-md-none">الدفــع:</label>
                 <div class="d-flex">
-                    <select name="isPaid" class="form-select border-primary" onchange="this.form.submit()">
+                    <select name="status" class="form-select border-primary" onchange="this.form.submit()">
                         <option value="all"
-                            {{ request()->query('isPaid') === 'all' || !request()->query('isPaid') ? 'selected' : '' }}>
+                            {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
                             جميع الفواتير</option>
-                        <option value="تم الدفع" {{ request()->query('isPaid') === 'تم الدفع' ? 'selected' : '' }}>
+                        <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>
                             تم الدفع</option>
-                        <option value="لم يتم الدفع" {{ request()->query('isPaid') === 'لم يتم الدفع' ? 'selected' : '' }}>
+                        <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>
                             لم يتم الدفع</option>
                     </select>
                     @if (request()->query('search'))
@@ -97,7 +97,8 @@
                             </td>
                             <td class="text-center">{{ $invoice->supplier->name }}</td>
                             <td class="text-center">{{ $invoice->supplier_invoice_number }}</td>
-                            <td class="text-center fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i></td>
+                            <td class="text-center fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i>
+                            </td>
                             <td class="text-center">{{ $invoice->payment_method }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                             @if ($invoice->is_paid)
@@ -129,9 +130,10 @@
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title fw-bold" id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                    <h5 class="modal-title fw-bold"
+                                                        id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body fs-6">
                                                     هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟

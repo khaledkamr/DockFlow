@@ -12,6 +12,7 @@ use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
@@ -28,11 +29,11 @@ class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
         $invoices = Invoice::query();
-        $paymentFilter = request()->query('isPaid');
+        $paymentFilter = request()->query('status');
         $search = $request->input('search', null);
 
         if ($paymentFilter && $paymentFilter !== 'all') {
-            $invoices->where('isPaid', $paymentFilter);
+            $invoices->where('status', $paymentFilter);
         }
         if($search) {
             $invoices->where(function($q) use ($search) {
@@ -134,7 +135,7 @@ class InvoiceController extends Controller
 
         return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData) {
             $validated = $request->validated();
-            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
             
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
@@ -229,7 +230,7 @@ class InvoiceController extends Controller
 
         return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData) {
             $validated = $request->validated();
-            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
 
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
@@ -270,6 +271,8 @@ class InvoiceController extends Controller
             number_format($invoice->total_amount, 2, '.', ''),
             number_format($invoice->tax, 2, '.', '')
         );
+
+        $invoice->load('payments.voucher');
 
         return view('pages.invoices.invoice_services_details', compact(
             'invoice', 
@@ -592,7 +595,7 @@ class InvoiceController extends Controller
             }
 
             $validated = $request->validated();
-            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
 
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
@@ -759,7 +762,7 @@ class InvoiceController extends Controller
 
         return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $policyData) {
             $validated = $request->validated();
-            $validated['isPaid'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
 
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
@@ -1007,7 +1010,7 @@ class InvoiceController extends Controller
     public function createInvoiceStatement(Request $request) {
         $customers = Customer::all();
         $customer_id = $request->input('customer_id');
-        $invoices = Invoice::where('customer_id', $customer_id)->where('isPaid', 'لم يتم الدفع')->get();
+        $invoices = Invoice::where('customer_id', $customer_id)->where('status', 'لم يتم الدفع')->get();
 
         return view('pages.invoices.create_statement', compact('customers', 'invoices'));
     }
@@ -1033,7 +1036,7 @@ class InvoiceController extends Controller
         $invoiceStatement->invoices()->attach(array_map(fn($invoice) => $invoice->id, $invoices));
 
         foreach($invoices as $invoice) {
-            $invoice->isPaid = 'تم الدفع';
+            $invoice->status = 'تم الدفع';
             $invoice->save();
         }
 

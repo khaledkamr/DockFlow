@@ -180,7 +180,7 @@ class CustomerController extends Controller
 
             // Get all invoices for this customer
             $invoices = $customer->invoices()
-                ->where('isPaid' , '!=', 'تم الدفع')
+                ->where('status' , '!=', 'تم الدفع')
                 // ->where('is_posted', true)
                 ->orderBy('date', 'desc')
                 ->orderBy('created_at', 'desc')
@@ -195,8 +195,9 @@ class CustomerController extends Controller
                         'amount_before_tax' => $invoice->amount_before_tax,
                         'tax' => $invoice->tax,
                         'total_amount' => $invoice->total_amount,
+                        'paid_amount' => $invoice->paid_amount,
                         'payment_method' => $invoice->payment_method,
-                        'isPaid' => $invoice->isPaid,
+                        'status' => $invoice->status,
                         'is_posted' => $invoice->is_posted,
                     ];
                 });

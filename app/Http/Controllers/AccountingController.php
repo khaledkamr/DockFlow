@@ -15,6 +15,7 @@ use App\Models\Company;
 use App\Models\CostCenter;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -671,16 +672,29 @@ class AccountingController extends Controller
         $validated = $request->validated();
         $new = Voucher::create($validated);
 
-        if($request->invoice_id) {
-            foreach($request->invoice_id as $invoiceId) {
-                $invoice = Invoice::findOrFail($invoiceId);
-                $invoice->isPaid = 'تم الدفع';
+        if($request->payments) {
+            foreach($request->payments as $payment) {
+                $invoice = Invoice::findOrFail($payment['invoice_id']);
+
+                InvoicePayment::create([
+                    'invoice_id' => $invoice->id,
+                    'voucher_id' => $new->id,
+                    'amount' => $payment['amount'],
+                ]);
+
+                $invoice->paid_amount += $payment['amount'];
+
+                if($invoice->paid_amount >= $invoice->total_amount) {
+                    $invoice->status = 'تم الدفع';
+                } elseif($invoice->paid_amount > 0) {
+                    $invoice->status = 'تم الدفع جزئياً';
+                }
+
                 $invoice->save();
             }
         }
 
         logActivity('إنشاء سند', "تم إنشاء سند جديد برقم " . $new->code, null, $new->toArray());
-
         return redirect()->back()->with('success', 'تم إنشاء سند جديد بنجاح');
     }
 
@@ -882,7 +896,7 @@ class AccountingController extends Controller
                 if ($selectedCustomer && $selectedCustomer->contract && $from && $to) {
                     $unpaidInvoices = $selectedCustomer
                         ->invoices()
-                        ->where('isPaid', 'لم يتم الدفع')
+                        ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                         ->whereBetween('date', [$from, $to])
                         ->with('customer')
                         ->get()
@@ -903,7 +917,7 @@ class AccountingController extends Controller
                 } elseif ($selectedCustomer && !$selectedCustomer->contract && $from && $to) {
                     $unpaidInvoices = $selectedCustomer
                         ->invoices()
-                        ->where('isPaid', 'لم يتم الدفع')
+                        ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                         ->whereBetween('date', [$from, $to])
                         ->with('customer')
                         ->get();

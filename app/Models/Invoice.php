@@ -25,10 +25,11 @@ class Invoice extends Model
         'discount',
         'amount_after_discount',
         'total_amount',
+        'paid_amount',
         'payment_method',
         'date',
         'is_posted',
-        'isPaid',
+        'status',
         'user_id',
         'company_id',
         'notes',
@@ -51,7 +52,7 @@ class Invoice extends Model
     }
 
     public function getLateDaysAttribute() {
-        if ($this->isPaid == 'تم الدفع' || !$this->date) {
+        if ($this->status == 'تم الدفع' || !$this->date) {
             return 0;
         }
 
@@ -94,6 +95,10 @@ class Invoice extends Model
 
     public function attachments() {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function payments() {
+        return $this->hasMany(InvoicePayment::class);
     }
 
     protected static function booted()

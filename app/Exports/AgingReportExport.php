@@ -44,7 +44,7 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
             if ($this->selectedCustomer && $this->selectedCustomer->contract && $from && $to) {
                 $this->unpaidInvoices = $this->selectedCustomer
                     ->invoices()
-                    ->where('isPaid', 'لم يتم الدفع')
+                    ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                     ->whereBetween('date', [$from, $to])
                     ->with('customer')
                     ->get()
@@ -65,7 +65,7 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
             } elseif ($this->selectedCustomer && !$this->selectedCustomer->contract && $from && $to) {
                 $this->unpaidInvoices = $this->selectedCustomer
                     ->invoices()
-                    ->where('isPaid', 'لم يتم الدفع')
+                    ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                     ->whereBetween('date', [$from, $to])
                     ->with('customer')
                     ->get();
@@ -73,7 +73,7 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
         } else {
             if ($from && $to) {
                 $this->customers = Customer::whereHas('invoices', function ($query) use ($from, $to) {
-                    $query->where('isPaid', 'لم يتم الدفع')
+                    $query->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
                         ->whereBetween('date', [$from, $to]);
                 })->get();
             } else {
@@ -93,7 +93,7 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
 
         if ($this->isSingleCustomer) {
             $rows = $this->unpaidInvoices->map(function ($invoice) {
-                $paymentDueDate = $invoice->payment_due_date ? $invoice->payment_due_date->format('Y/m/d') : '';
+                $paymentDueDate = $invoice->payment_due_date ? Carbon::parse($invoice->payment_due_date)->format('Y/m/d') : '';
                 $lateDays = $paymentDueDate != '' ? (int) $invoice->late_days . ' يوم' : '0 يوم';
                 return [
                     $invoice->customer->name ?? $this->selectedCustomer->name,
@@ -103,6 +103,8 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
                     $paymentDueDate,
                     $lateDays,
                     number_format($invoice->total_amount, 2, '.', ''),
+                    number_format($invoice->paid_amount, 2, '.', ''),
+                    number_format($invoice->total_amount - $invoice->paid_amount, 2, '.', ''),
                 ];
             });
 
@@ -115,6 +117,8 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
                 '',
                 '',
                 number_format($this->unpaidInvoices->sum('total_amount'), 2, '.', ''),
+                number_format($this->unpaidInvoices->sum('paid_amount'), 2, '.', ''),
+                number_format($this->unpaidInvoices->sum('total_amount') - $this->unpaidInvoices->sum('paid_amount'), 2, '.', ''),
             ]);
 
             return $rows;
@@ -156,6 +160,8 @@ class AgingReportExport implements FromCollection, WithHeadings, WithStyles
                 'موعد السداد',
                 'أيام التأخير',
                 'المبلغ',
+                'المبلغ المسدد',
+                'المبلغ المتبقي'
             ];
         }
 

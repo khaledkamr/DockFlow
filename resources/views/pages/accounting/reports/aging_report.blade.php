@@ -75,24 +75,21 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="bg-dark text-center text-white text-nowrap">اسم العميل</th>
+                            <th class="bg-dark text-center text-white text-nowrap">#</th>
                             <th class="bg-dark text-center text-white text-nowrap">رقم الفاتورة</th>
                             <th class="bg-dark text-center text-white text-nowrap">نوع الفاتورة</th>
                             <th class="bg-dark text-center text-white text-nowrap">تاريخ الفاتورة</th>
                             <th class="bg-dark text-center text-white text-nowrap">موعد السداد</th>
                             <th class="bg-dark text-center text-white text-nowrap">أيام التأخير</th>
                             <th class="bg-dark text-center text-white text-nowrap">المبلغ</th>
+                            <th class="bg-dark text-center text-white text-nowrap">المبلغ المسدد</th>
+                            <th class="bg-dark text-center text-white text-nowrap">المبلغ المتبقي</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($unpaidInvoices as $invoice)
                             <tr>
-                                <td class="text-center fw-bold">
-                                    <a href="{{ route('users.customer.profile', $selectedCustomer) }}"
-                                        class="text-decoration-none text-dark">
-                                        {{ $selectedCustomer->name }}
-                                    </a>
-                                </td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
                                     @if ($invoice->type == 'خدمات')
                                         <a href="{{ route('invoices.services.details', $invoice) }}"
@@ -124,10 +121,12 @@
                                     {{ (int) $invoice->late_days }} يوم
                                 </td>
                                 <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->total_amount, 2) }} ر.س</td>
+                                <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->paid_amount, 2) }} ر.س</td>
+                                <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }} ر.س</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">لا توجد فواتير غير مسددة</td>
+                                <td colspan="9" class="text-center text-muted">لا توجد فواتير غير مسددة</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -136,6 +135,12 @@
                             <td class="text-center text-nowrap" colspan="6">الإجمالي</td>
                             <td class="text-center text-nowrap">
                                 {{ number_format($unpaidInvoices->sum('total_amount'), 2) }} ر.س
+                            </td>
+                            <td class="text-center text-nowrap">
+                                {{ number_format($unpaidInvoices->sum('paid_amount'), 2) }} ر.س
+                            </td>
+                            <td class="text-center text-nowrap">
+                                {{ number_format($unpaidInvoices->sum('total_amount') - $unpaidInvoices->sum('paid_amount'), 2) }} ر.س
                             </td>
                         </tr>
                     </tfoot>

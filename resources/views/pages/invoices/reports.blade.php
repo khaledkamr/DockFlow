@@ -92,8 +92,8 @@
             <div class="flex-grow-1 mx-2">
                 <form method="GET" action="">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control border-primary" 
-                            placeholder="ابحث عن فاتورة بالرقم او بإسم العميل او بتاريخ الفاتورة..." 
+                        <input type="text" name="search" class="form-control border-primary"
+                            placeholder="ابحث عن فاتورة بالرقم او بإسم العميل او بتاريخ الفاتورة..."
                             value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-search"></i>
@@ -106,11 +106,11 @@
             </div>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('export.excel', 'invoices') }}">
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="تصدير Excel">
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="تصدير Excel">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                 </form>
@@ -119,8 +119,8 @@
                     @foreach (request()->except('page', 'per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="طباعة">
+                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="طباعة">
                         <i class="fa-solid fa-print"></i>
                     </button>
                 </form>
@@ -139,7 +139,9 @@
                         <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                         <th class="text-center bg-dark text-white text-nowrap">الضريبة المضافة</th>
                         <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الدفع</th>
+                        <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
+                        <th class="text-center bg-dark text-white text-nowrap">المبلغ المسدد</th>
+                        <th class="text-center bg-dark text-white text-nowrap">المبلغ المتبقي</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -155,7 +157,8 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
                                     @if ($invoice->type == 'تخزين')
-                                        <a href="{{ route('invoices.details', $invoice) }}" target="_blank" class="text-decoration-none">
+                                        <a href="{{ route('invoices.details', $invoice) }}" target="_blank"
+                                            class="text-decoration-none">
                                             {{ $invoice->code }}
                                         </a>
                                     @elseif($invoice->type == 'خدمات')
@@ -176,17 +179,26 @@
                                     @endif
                                 </td>
                                 <td class="text-center">{{ $invoice->type }}</td>
-                                <td class="text-center">{{ $invoice->customer->name }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('users.customer.profile', $invoice->customer) }}"
+                                        class="text-dark text-decoration-none">
+                                        {{ $invoice->customer->name }}
+                                    </a>
+                                </td>
                                 <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                                 <td class="text-center">{{ $invoice->paymentDueDate }}</td>
                                 <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                                 <td class="text-center">{{ $invoice->tax }}</td>
                                 <td class="text-center">{{ $invoice->total_amount }}</td>
-                                @if ($invoice->isPaid == 'تم الدفع')
-                                    <td class="text-center"><span class="badge status-delivered">مدفوعة</span></td>
+                                @if ($invoice->status == 'تم الدفع')
+                                    <td class="text-center"><span class="badge status-delivered">مسددة</span></td>
+                                @elseif ($invoice->status == 'تم الدفع جزئياً')
+                                    <td class="text-center"><span class="badge status-waiting">مسددة جزئياً</span></td>
                                 @else
-                                    <td class="text-center"><span class="badge status-danger">غير مدفوعة</span></td>
+                                    <td class="text-center"><span class="badge status-danger">غير مسددة</span></td>
                                 @endif
+                                <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
+                                <td class="text-center">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}</td>
                             </tr>
                         @endforeach
                     @endif
@@ -212,7 +224,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -221,17 +233,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>

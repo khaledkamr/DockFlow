@@ -52,19 +52,21 @@ class Customer extends Model
     public function agingBalance($from, $to, int $minDays, ?int $maxDays = null) {
 
         return $this->invoices()
-            ->where('isPaid', 'لم يتم الدفع')
+            ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
             ->whereBetween('date', [$from, $to])
             ->get()
             ->filter(function ($invoice) use ($minDays, $maxDays) {
                 return $invoice->lateDays >= $minDays && ($maxDays === null || $invoice->lateDays <= $maxDays);
             })
-            ->sum('total_amount');
+            ->sum(function ($invoice) {
+                return $invoice->total_amount - $invoice->paid_amount;
+            });
     }
 
     public function agingBalanceCount($from, $to, int $minDays, ?int $maxDays = null) {
     
         return $this->invoices()
-            ->where('isPaid', 'لم يتم الدفع')
+            ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
             ->whereBetween('date', [$from, $to])
             ->get()
             ->filter(function ($invoice) use ($minDays, $maxDays) {
@@ -75,14 +77,14 @@ class Customer extends Model
 
     public function totalAgingBalance($from, $to) {
         return $this->invoices()
-            ->where('isPaid', 'لم يتم الدفع')
+            ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
             ->whereBetween('date', [$from, $to])
             ->sum('total_amount');
     }
 
     public function totalAgingBalanceCount($from, $to) {
         return $this->invoices()
-            ->where('isPaid', 'لم يتم الدفع')
+            ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
             ->whereBetween('date', [$from, $to])
             ->count();
     }

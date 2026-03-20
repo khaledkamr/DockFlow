@@ -244,7 +244,7 @@
                     detailsUrl = `{{ route('invoices.shipping.details', '') }}/${invoice.uuid}`;
                 }
 
-                let paymentStatusBadge = invoice.isPaid == 'تم الدفع'
+                let paymentStatusBadge = invoice.status == 'تم الدفع'
                     ? '<span class="badge bg-success">مدفوع</span>' 
                     : '<span class="badge bg-danger">غير مدفوع</span>';
 

@@ -5,13 +5,15 @@
 @section('content')
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">عرض الفاتورة الضريبية</h2>
-        @if(auth()->user()->roles()->pluck('name')->contains('Admin'))
+        @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
             <div class="d-flex gap-2">
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editInvoiceModal">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                    data-bs-target="#editInvoiceModal">
                     <i class="fas fa-edit me-2"></i>تعديل الفاتورة
                 </button>
 
-                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteInvoiceModal">
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
+                    data-bs-target="#deleteInvoiceModal">
                     <i class="fas fa-trash me-2"></i>حذف الفاتورة
                 </button>
             </div>
@@ -24,7 +26,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title text-white fw-bold" id="editInvoiceModalLabel">تعديل بيانات الفاتورة</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('invoices.update', $invoice) }}" method="POST">
                     @csrf
@@ -33,55 +36,67 @@
                         @if ($invoice->is_posted)
                             <div class="alert alert-warning">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل تعديل الفاتورة.
+                                <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل
+                                تعديل الفاتورة.
                             </div>
                         @endif
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label for="code" class="form-label">رقم الفاتورة</label>
-                                <input type="text" name="code" class="form-control border-primary" value="{{ $invoice->code }}" required>
+                                <input type="text" name="code" class="form-control border-primary"
+                                    value="{{ $invoice->code }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="date" class="form-label">التاريخ</label>
-                                <input type="date" name="date" class="form-control border-primary" value="{{ Carbon\Carbon::parse($invoice->date)->format('Y-m-d') }}" required>
+                                <input type="date" name="date" class="form-control border-primary"
+                                    value="{{ Carbon\Carbon::parse($invoice->date)->format('Y-m-d') }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="is_posted" class="form-label">حالة الترحيل</label>
                                 <select name="is_posted" class="form-select border-primary" required>
-                                    <option value="0" {{ !$invoice->is_posted ? 'selected' : '' }}>لم يتم الترحيل</option>
+                                    <option value="0" {{ !$invoice->is_posted ? 'selected' : '' }}>لم يتم الترحيل
+                                    </option>
                                     <option value="1" {{ $invoice->is_posted ? 'selected' : '' }}>تم الترحيل</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="isPaid" class="form-label">حالة الدفع</label>
-                                <select name="isPaid" class="form-select border-primary" required>
-                                    <option value="تم الدفع" {{ $invoice->isPaid == 'تم الدفع' ? 'selected' : '' }}>تم الدفع</option>
-                                    <option value="لم يتم الدفع" {{ $invoice->isPaid == 'لم يتم الدفع' ? 'selected' : '' }}>لم يتم الدفع</option>
+                                <label for="status" class="form-label">حالة الدفع</label>
+                                <select name="status" class="form-select border-primary" required>
+                                    <option value="تم الدفع" {{ $invoice->status == 'تم الدفع' ? 'selected' : '' }}>تم الدفع
+                                    </option>
+                                    <option value="لم يتم الدفع" {{ $invoice->status == 'لم يتم الدفع' ? 'selected' : '' }}>
+                                        لم يتم الدفع</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <label for="amount_before_tax" class="form-label">المبلغ قبل الضريبة</label>
-                                <input type="number" step="0.01" name="amount_before_tax" class="form-control border-primary" value="{{ $invoice->amount_before_tax }}" required>
+                                <input type="number" step="0.01" name="amount_before_tax"
+                                    class="form-control border-primary" value="{{ $invoice->amount_before_tax }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="tax_rate" class="form-label">نسبة الضريبة (%)</label>
-                                <input type="number" step="0.01" name="tax_rate" class="form-control border-primary" value="{{ $invoice->tax_rate }}" required>
+                                <input type="number" step="0.01" name="tax_rate" class="form-control border-primary"
+                                    value="{{ $invoice->tax_rate }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="tax" class="form-label">قيمة الضريبة</label>
-                                <input type="number" step="0.01" name="tax" class="form-control border-primary" value="{{ $invoice->tax }}" required>
+                                <input type="number" step="0.01" name="tax" class="form-control border-primary"
+                                    value="{{ $invoice->tax }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="discount" class="form-label">الخصم (%)</label>
-                                <input type="number" step="0.01" name="discount" class="form-control border-primary" value="{{ $invoice->discount }}">
+                                <input type="number" step="0.01" name="discount" class="form-control border-primary"
+                                    value="{{ $invoice->discount }}">
                             </div>
                             <div class="col-md-3">
                                 <label for="amount_after_discount" class="form-label">المبلغ بعد الخصم</label>
-                                <input type="number" step="0.01" name="amount_after_discount" class="form-control border-primary" value="{{ $invoice->amount_after_discount }}">
+                                <input type="number" step="0.01" name="amount_after_discount"
+                                    class="form-control border-primary" value="{{ $invoice->amount_after_discount }}">
                             </div>
                             <div class="col-md-3">
                                 <label for="total_amount" class="form-label">المبلغ الإجمالي</label>
-                                <input type="number" step="0.01" name="total_amount" class="form-control border-primary" value="{{ $invoice->total_amount }}" required>
+                                <input type="number" step="0.01" name="total_amount"
+                                    class="form-control border-primary" value="{{ $invoice->total_amount }}" required>
                             </div>
                         </div>
                     </div>
@@ -94,13 +109,13 @@
         </div>
     </div>
 
-    <div class="modal fade" id="updateInvoice" tabindex="-1" aria-labelledby="updateInvoiceLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="updateInvoice" tabindex="-1" aria-labelledby="updateInvoiceLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title text-white fw-bold" id="updateInvoiceLabel">تحديث بيانات الفاتورة</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('invoices.update', $invoice) }}" method="POST">
                     @csrf
@@ -108,8 +123,8 @@
                     <div class="modal-body text-dark">
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="isPaid" class="form-label">عملية الدفع</label>
-                                <select name="isPaid" class="form-select border-primary" required>
+                                <label for="status" class="form-label">عملية الدفع</label>
+                                <select name="status" class="form-select border-primary" required>
                                     <option value="" selected disabled>اختر عملية الدفع</option>
                                     <option value="تم الدفع">تم الدفع</option>
                                     <option value="لم يتم الدفع">لم يتم الدفع</option>
@@ -119,8 +134,7 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
                         <button type="submit" class="btn btn-primary fw-bold">حفظ الفاتورة</button>
-                        <button type="button" class="btn btn-secondary fw-bold"
-                            data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                     </div>
                 </form>
             </div>
@@ -128,19 +142,22 @@
     </div>
 
     <!-- Delete Invoice Modal -->
-    <div class="modal fade" id="deleteInvoiceModal" tabindex="-1" aria-labelledby="deleteInvoiceModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteInvoiceModal" tabindex="-1" aria-labelledby="deleteInvoiceModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title text-white fw-bold" id="deleteInvoiceModalLabel">تأكيد حذف الفاتورة</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-dark">
                     <p class="text-center fw-bold mb-3">هل أنت متأكد من حذف هذه الفاتورة؟</p>
-                    @if($invoice->is_posted)
+                    @if ($invoice->is_posted)
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-circle me-2"></i>
-                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل حذف الفاتورة.
+                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف القيد المرتبط أولاً قبل حذف
+                            الفاتورة.
                         </div>
                     @endif
                     <div class="alert alert-warning">
@@ -172,7 +189,8 @@
                         <h5 class="modal-title text-white fw-bold" id="postInvoiceModalLabel">
                             <i class="fas fa-file-export me-2"></i>معاينة القيد قبل الترحيل
                         </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body text-dark">
                         <div class="table-responsive">
@@ -212,22 +230,29 @@
                                     <tr>
                                         <td class="text-center">ضريبة القيمة المضافة من الايرادات</td>
                                         <td class="text-center">0.00</td>
-                                        <td class="text-center text-success fw-bold">{{ number_format($invoice->tax, 2) }}</td>
-                                        <td class="text-center">قيمة مضافة فاتورة {{ $invoice->type }} رقم {{ $invoice->code }}</td>
+                                        <td class="text-center text-success fw-bold">{{ number_format($invoice->tax, 2) }}
+                                        </td>
+                                        <td class="text-center">قيمة مضافة فاتورة {{ $invoice->type }} رقم
+                                            {{ $invoice->code }}</td>
                                     </tr>
                                     {{-- سطر العميل --}}
                                     <tr>
-                                        <td class="text-center">{{ $invoice->customer->account->name ?? $invoice->customer->name }}</td>
-                                        <td class="text-center text-danger fw-bold">{{ number_format($invoice->total_amount, 2) }}</td>
+                                        <td class="text-center">
+                                            {{ $invoice->customer->account->name ?? $invoice->customer->name }}</td>
+                                        <td class="text-center text-danger fw-bold">
+                                            {{ number_format($invoice->total_amount, 2) }}</td>
                                         <td class="text-center">0.00</td>
-                                        <td class="text-center">استحقاق فاتورة {{ $invoice->type }} رقم {{ $invoice->code }}</td>
+                                        <td class="text-center">استحقاق فاتورة {{ $invoice->type }} رقم
+                                            {{ $invoice->code }}</td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="table-dark">
                                     <tr>
                                         <th class="text-center fw-bold">الإجمالي</th>
-                                        <th class="text-center fw-bold text-danger">{{ number_format($invoice->total_amount, 2) }}</th>
-                                        <th class="text-center fw-bold text-success">{{ number_format($invoice->total_amount, 2) }}</th>
+                                        <th class="text-center fw-bold text-danger">
+                                            {{ number_format($invoice->total_amount, 2) }}</th>
+                                        <th class="text-center fw-bold text-success">
+                                            {{ number_format($invoice->total_amount, 2) }}</th>
                                         <th></th>
                                     </tr>
                                 </tfoot>
@@ -255,18 +280,24 @@
         <div class="card-body p-4">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-{{ $invoice->isPaid == 'تم الدفع' ? 'success' : 'danger' }} fs-6 px-3 py-2">
-                        @if ($invoice->isPaid == 'تم الدفع')
-                            <i class="fas fa-check-circle me-1"></i>مدفوعة
-                        @elseif($invoice->isPaid == 'لم يتم الدفع')
-                            <i class="fas fa-clock me-1"></i>غير مدفوعة
-                        @endif
-                    </span>
-                    @if ($invoice->isPaid == 'لم يتم الدفع')
+                    @if ($invoice->status == 'تم الدفع')
+                        <span class="badge bg-success fs-6 px-3 py-2">
+                            <i class="fas fa-check-circle me-1"></i>مسددة
+                        </span>
+                    @elseif($invoice->status == 'تم الدفع جزئياً')
+                        <span class="badge bg-warning fs-6 px-3 py-2">
+                            <i class="fas fa-clock me-1"></i>مسددة جزئياً
+                        </span>
+                    @elseif($invoice->status == 'لم يتم الدفع')
+                        <span class="badge bg-danger fs-6 px-3 py-2">
+                            <i class="fas fa-clock me-1"></i>غير مسددة
+                        </span>
+                    @endif
+                    @if ($invoice->status == 'لم يتم الدفع')
                         <span class="badge bg-primary fs-6 px-3 py-2">
                             <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $invoice->paymentDueDate }}
                         </span>
-                        @if($invoice->lateDays > 0)
+                        @if ($invoice->lateDays > 0)
                             <span class="badge bg-danger fs-6 px-3 py-2">
                                 <i class="fas fa-exclamation-circle me-1"></i>متأخر منذ {{ $invoice->lateDays }} يوم
                             </span>
@@ -286,7 +317,7 @@
                             </button>
                         @endcan
                     @endif
-                    @if ($invoice->isPaid == 'لم يتم الدفع')
+                    @if ($invoice->status == 'لم يتم الدفع')
                         <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
                             data-bs-target="#updateInvoice">
                             <i class="fa-solid fa-pen-to-square me-1"></i> تحديث الحالة
@@ -310,7 +341,8 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <strong class="text-muted">اسم العميل:</strong>
                                         <span class="fw-bold">
-                                            <a href="{{ route('users.customer.profile', $invoice->customer) }}" class="text-decoration-none text-dark">
+                                            <a href="{{ route('users.customer.profile', $invoice->customer) }}"
+                                                class="text-decoration-none text-dark">
                                                 {{ $invoice->customer->name }}
                                             </a>
                                         </span>
@@ -412,9 +444,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($invoice->containers as $index => $container)
+                            @foreach ($invoice->containers as $container)
                                 <tr>
-                                    <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td class="text-center fw-bold">
                                         <a href="{{ route('policies.services.details', $container->policies->where('type', 'خدمات')->first()) }}"
                                             class="text-decoration-none">
@@ -433,7 +465,8 @@
                                     <td class="text-center">
                                         <small>{{ $container->exit_date ? \Carbon\Carbon::parse($container->exit_date)->format('d/m/Y') : '---' }}</small>
                                     </td>
-                                    <td class="text-center fw-bold text-nowrap">{{ $container->services->first()->description }}</td>
+                                    <td class="text-center fw-bold text-nowrap">
+                                        {{ $container->services->first()->description }}</td>
                                     <td class="text-center fw-bold">{{ $container->services->first()->pivot->price }} <i
                                             data-lucide="saudi-riyal"></i></td>
                                 </tr>
@@ -444,7 +477,7 @@
             </div>
 
             <!-- Summary Section -->
-            <div class="row g-3">
+            <div class="row g-3 mb-4">
                 <div class="col-12 col-lg-4">
                     <div class="card border-dark">
                         <div class="card-header bg-dark text-white">
@@ -464,7 +497,7 @@
                                 <span class="text-muted">
                                     الخصم ({{ $invoice->discount ? $invoice->discount . '%' : '0%' }}):
                                 </span>
-                                <span class="fw-bold fs-5"> 
+                                <span class="fw-bold fs-5">
                                     {{ number_format($invoice->discount_amount, 2) }}
                                     <i data-lucide="saudi-riyal"></i>
                                 </span>
@@ -472,7 +505,7 @@
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-muted">الضريبة المضافة ({{ $invoice->tax_rate }}%):</span>
-                                <span class="fw-bold fs-5 text-dark"> 
+                                <span class="fw-bold fs-5 text-dark">
                                     {{ number_format($invoice->tax, 2) }} <i data-lucide="saudi-riyal"></i>
                                 </span>
                             </div>
@@ -482,7 +515,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold fs-4 text-success">الإجمالي النهائي:</span>
                                 <span class="fw-bold fs-3 text-success">
-                                    {{ number_format($invoice->total_amount, 2) }} 
+                                    {{ number_format($invoice->total_amount, 2) }}
                                     <i data-lucide="saudi-riyal" style="width: 32px; height: 32px;"></i>
                                 </span>
                             </div>
@@ -500,11 +533,13 @@
                             <div class="row g-3 mb-3 d-none d-md-flex">
                                 <div class="col-12 col-sm-6">
                                     <p><strong>تاريخ الإنشاء:</strong></p>
-                                    <p><small class="text-muted">{{ $invoice->created_at->format('d/m/Y - H:i') }}</small></p>
+                                    <p><small class="text-muted">{{ $invoice->created_at->format('d/m/Y - H:i') }}</small>
+                                    </p>
                                 </div>
                                 <div class="col-12 col-sm-6">
                                     <p><strong>آخر تحديث:</strong></p>
-                                    <p><small class="text-muted">{{ $invoice->updated_at->format('d/m/Y - H:i') }}</small></p>
+                                    <p><small class="text-muted">{{ $invoice->updated_at->format('d/m/Y - H:i') }}</small>
+                                    </p>
                                 </div>
                             </div>
 
@@ -518,9 +553,51 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Invoice Payments History -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 text-dark">
+                        <i class="fas fa-clipboard me-2"></i>سجل دفع الفاتورة
+                    </h5>
+                    <span class="badge bg-primary text-white">المبلغ المتبقي: {{ $invoice->total_amount - $invoice->paid_amount }} ر.س</span>
+                </div>
 
-            <!-- Attachments Section -->
+                <div class="table-container" id="tableContainer">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="text-center bg-dark text-white text-nowrap">#</th>
+                                <th class="text-center bg-dark text-white text-nowrap">رقم السند</th>
+                                <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
+                                <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($invoice->payments as $payment)
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                    <td class="text-center fw-bold">
+                                        <a href="{{ route('voucher.details', $payment->voucher) }}" class="text-decoration-none">
+                                            {{ $payment->voucher->code ?? '---' }}
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <small>{{ $payment->created_at->format('d/m/Y') }}</small>
+                                    </td>
+                                    <td class="text-center fw-bold text-nowrap">
+                                        {{ $payment->amount }} <i data-lucide="saudi-riyal"></i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Attachments And Notes Section -->
             <div class="row mt-4">
+                <!-- Attachments Section -->
                 <div class="col-12 col-md-6">
                     <div class="card border-dark">
                         <div class="card-header bg-dark text-white">
@@ -531,7 +608,8 @@
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-12">
-                                    <form action="{{ route('invoices.add.file', $invoice) }}" method="POST" enctype="multipart/form-data"
+                                    <form action="{{ route('invoices.add.file', $invoice) }}" method="POST"
+                                        enctype="multipart/form-data"
                                         class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
                                         @csrf
                                         <div class="flex-grow-1">
@@ -547,19 +625,23 @@
                                     </small>
                                 </div>
                             </div>
-    
-                            @if($invoice->attachments && $invoice->attachments->count() > 0)
+
+                            @if ($invoice->attachments && $invoice->attachments->count() > 0)
                                 <div class="row g-3">
-                                    @foreach($invoice->attachments as $attachment)
+                                    @foreach ($invoice->attachments as $attachment)
                                         <div class="col-12">
-                                            <div class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
+                                            <div
+                                                class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
                                                 <div class="d-flex align-items-center">
                                                     <div class="me-3">
                                                         @php
-                                                            $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
+                                                            $extension = pathinfo(
+                                                                $attachment->file_name,
+                                                                PATHINFO_EXTENSION,
+                                                            );
                                                             $iconClass = 'fas fa-file';
                                                             $iconColor = 'text-secondary';
-    
+
                                                             switch (strtolower($extension)) {
                                                                 case 'pdf':
                                                                     $iconClass = 'fas fa-file-pdf';
@@ -588,19 +670,22 @@
                                                                     break;
                                                             }
                                                         @endphp
-                                                        <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
+                                                        <i class="{{ $iconClass }} {{ $iconColor }}"
+                                                            style="font-size: 2rem;"></i>
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-1 alert-heading">{{ $attachment->file_name }}</h6>
                                                         <small class="text-muted" style="font-size: 0.75rem;">
-                                                            أرفق بواسطة {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }} في 
+                                                            أرفق بواسطة
+                                                            {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }}
+                                                            في
                                                             {{ $attachment->created_at->format('Y/m/d') }}
                                                         </small>
                                                     </div>
                                                 </div>
                                                 <div class="d-flex gap-2">
-                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
-                                                        class="btn btn-sm btn-outline-primary">
+                                                    <a href="{{ asset('storage/' . $attachment->file_path) }}"
+                                                        target="_blank" class="btn btn-sm btn-outline-primary">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <a href="{{ asset('storage/' . $attachment->file_path) }}"
@@ -608,25 +693,30 @@
                                                         class="btn btn-sm btn-primary">
                                                         <i class="fas fa-download"></i>
                                                     </a>
-                                                    <button class="btn btn-sm btn-outline-danger"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
+                                                    <button class="btn btn-sm btn-outline-danger" type="button"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
                                                         title="حذف المرفق">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
-    
+
                                         <!-- Delete Attachment Modal -->
-                                        <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
-                                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
+                                        <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}"
+                                            tabindex="-1"
+                                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}"
+                                            aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-danger">
-                                                        <h5 class="modal-title text-white fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                                        <h5 class="modal-title text-white fw-bold"
+                                                            id="deleteAttachmentModalLabel{{ $attachment->id }}">
                                                             تأكيد حذف المرفق
                                                         </h5>
-                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <button type="button" class="btn-close btn-close-white"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body text-dark">
                                                         <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
@@ -637,15 +727,20 @@
                                                             <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
                                                         </div>
                                                     </div>
-                                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
-                                                        <form action="{{ route('invoices.delete.file', $attachment) }}" method="POST" class="d-inline">
+                                                    <div
+                                                        class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                        <form action="{{ route('invoices.delete.file', $attachment) }}"
+                                                            method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
+                                                            <button type="submit"
+                                                                class="btn btn-danger fw-bold order-1 order-sm-1">
                                                                 حذف المرفق
                                                             </button>
                                                         </form>
-                                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
+                                                        <button type="button"
+                                                            class="btn btn-secondary fw-bold order-2 order-sm-2"
+                                                            data-bs-dismiss="modal">
                                                             إلغاء
                                                         </button>
                                                     </div>
@@ -663,6 +758,8 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Notes Section -->
                 <div class="col-12 col-md-6">
                     <div class="card border-dark h-100">
                         <div class="card-header bg-dark text-white">
@@ -716,10 +813,12 @@
             max-width: 100px;
             height: auto;
         }
+
         .table-responsive {
             border-radius: 10px;
             overflow: hidden;
         }
+
         .btn-lg {
             padding: 12px 24px;
             font-size: 1.1em;
