@@ -118,12 +118,12 @@
                                 <td class="text-center">{{ $invoice->type }}</td>
                                 <td class="text-center text-nowrap">{{ \Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                                 <td class="text-center text-nowrap">
-                                    {{ $invoice->payment_due_date ?  $invoice->payment_due_date->format('Y/m/d') : '' }}
+                                    {{ $invoice->payment_due_date ?  \Carbon\Carbon::parse($invoice->payment_due_date)->format('Y/m/d') : '' }}
                                 </td>
                                 <td class="text-center fw-bold text-nowrap {{ $invoice->late_days > 0 ? 'text-danger' : 'text-success' }}">
                                     {{ (int) $invoice->late_days }} يوم
                                 </td>
-                                <td class="text-center text-nowrap">{{ number_format($invoice->total_amount, 2) }} ر.س</td>
+                                <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->total_amount, 2) }} ر.س</td>
                             </tr>
                         @empty
                             <tr>
