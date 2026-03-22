@@ -565,6 +565,21 @@
                                 href="{{ route('yard.containers.reports') }}">
                                 <i class="fa-solid fa-file-lines ms-2 me-2"></i> تقارير الحاويات
                             </a>
+                            <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                                style="{{ request()->routeIs('yard.bulk.inventory') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                                href="{{ route('yard.bulk.inventory') }}">
+                                <i class="fa-solid fa-boxes ms-2 me-2"></i> البضـــــائــــــع
+                            </a>
+                            <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                                style="{{ request()->routeIs('yard.bulk.items.types') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                                href="{{ route('yard.bulk.items.types') }}">
+                                <i class="fa-solid fa-cube ms-2 me-2"></i> انواع البضـائـع
+                            </a>
+                            <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                                style="{{ request()->routeIs('yard.bulk.inventory.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                                href="{{ route('yard.bulk.inventory.reports') }}">
+                                <i class="fa-solid fa-file-lines ms-2 me-2"></i> تقرير البضـائــع
+                            </a>
                         </div>
                     </li>
                 @endcan

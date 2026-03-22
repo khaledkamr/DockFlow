@@ -23,6 +23,7 @@ class Policy extends Model
         'car_code',
         'date',
         'type',
+        'goods_type',
         'tax_statement',
         'storage_price',
         'storage_duration',

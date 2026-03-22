@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
 use Illuminate\Http\Request;
+use App\Models\BulkInventory;
 use App\Models\Customer;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
@@ -132,6 +133,28 @@ class CustomerController extends Controller
             'late_fee' => $lateService ? $lateService->pivot->price : null,
             'late_fee_20ft' => $late_Service_20ft ? $late_Service_20ft->pivot->price : null,
             'late_fee_40ft' => $late_Service_40ft ? $late_Service_40ft->pivot->price : null,
+        ]);
+    }
+
+    public function getBulkInventory($customerId, $itemId) {
+        $inventory = BulkInventory::where('customer_id', $customerId)
+            ->where('item_id', $itemId)
+            ->first();
+
+        if ($inventory) {
+            return response()->json([
+                'exists' => true,
+                'inventory_id' => $inventory->id,
+                'price_per_unit' => $inventory->price_per_unit,
+                'balance' => $inventory->balance,
+            ]);
+        }
+
+        return response()->json([
+            'exists' => false,
+            'inventory_id' => null,
+            'price_per_unit' => null,
+            'balance' => null,
         ]);
     }
 

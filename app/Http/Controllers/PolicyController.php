@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ContractRequest;
 use App\Http\Requests\PolicyRequest;
 use App\Models\Account;
+use App\Models\BulkInventory;
+use App\Models\BulkItem;
 use App\Models\Company;
 use App\Models\Container;
 use App\Models\Container_type;
@@ -57,12 +59,14 @@ class PolicyController extends Controller
         $customers = Customer::with('contract.services')->orderBy('name', 'asc')->get();
         $containerTypes = Container_type::all();
         $containers = Container::where('date', null)->get();
+        $items = BulkItem::all();
 
         return view('pages.policies.storage_policy', compact(
             'company', 
             'customers', 
             'containerTypes', 
-            'containers'
+            'containers',
+            'items'
         ));
     }
 
@@ -105,6 +109,39 @@ class PolicyController extends Controller
 
         $new = $policy->load('containers')->toArray();
         logActivity('إنشاء بوليصة تخزين', "تم إنشاء بوليصة تخزين جديدة برقم " . $policy->code, null, $new);
+
+        return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض البوليصة؟</a>');
+    }
+
+    public function storeStoragePolicyBulk(PolicyRequest $request) {
+        return $request;
+        $validated = $request->validated();
+        $policy = Policy::create($validated);
+
+        if ($request->inventory_exists == '0') {
+            // Create new inventory
+            BulkInventory::create([
+                'customer_id' => $validated['customer_id'],
+                'item_id' => $request->item_id,
+                'balance' => $request->quantity,
+                'price_per_unit' => $request->storage_price,
+            ]);
+
+            $logMessage = "تم إنشاء بوليصة تخزين جديدة لبضائع سائبة برقم {$policy->code} مع إنشاء مخزون جديد";
+        } else {
+            // Update existing inventory balance
+            $inventory = BulkInventory::findOrFail($request->inventory_id);
+            $oldBalance = $inventory->balance;
+            $inventory->increment('balance', $request->quantity);
+
+            logActivity('تحديث رصيد المخزون', "تم تحديث رصيد مخزون الصنف من {$oldBalance} إلى {$inventory->balance}", 
+                ['old_balance' => $oldBalance], ['new_balance' => $inventory->balance]);
+
+            $logMessage = "تم إنشاء بوليصة تخزين جديدة لبضائع سائبة برقم {$policy->code} مع تحديث المخزون الموجود";
+        }
+
+        $new = $policy->load('customer')->toArray();
+        logActivity('إنشاء بوليصة تخزين', $logMessage, null, $new);
 
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.storage.details', $policy).'">عرض البوليصة؟</a>');
     }

@@ -28,7 +28,7 @@
             <tbody>
                 @if ($invoices->isEmpty())
                     <tr>
-                        <td colspan="10" class="text-center">
+                        <td colspan="12" class="text-center">
                             <div class="status-danger fs-6">لم يتم العثور على اي فواتير!</div>
                         </td>
                     </tr>

@@ -20,6 +20,7 @@ class PolicyRequest extends FormRequest
             'user_id' => 'required',
             'date' => 'required',
             'type' => 'required',
+            'goods_type' => 'nullable',
             'driver_name' => 'required',
             'driver_NID' => 'required',
             'driver_number' => 'nullable|string',

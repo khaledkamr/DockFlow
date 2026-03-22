@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BulkInventoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\ContractController;
@@ -88,6 +89,7 @@ Route::controller(CustomerController::class)->middleware('auth')->group(function
     Route::put('/customer/update/{customer:uuid}', 'updateCustomer')->name('users.customer.update');
     Route::delete('/customer/delete/{customer:uuid}', 'deleteCustomer')->name('users.customer.delete');
     Route::get('/customers/{id}/contract', 'getContract')->name('customers.get.contract');
+    Route::get('/customers/{customerId}/inventory/{itemId}', 'getBulkInventory')->name('customers.get.bulk.inventory');
     Route::get('/customers/check-service', 'checkService')->name('customer.check.service');
     Route::get('/api/customers/account/{accountId}/invoices', 'getCustomerInvoicesByAccount')->name('api.customers.invoices.by.account');
 });
@@ -115,10 +117,25 @@ Route::controller(ContainerController::class)->middleware('auth')->group(functio
     Route::delete('/yard/containers/delete/{container:uuid}', 'deleteContainer')->name('containers.delete');
 });
 
+Route::controller(BulkInventoryController::class)->middleware('auth')->group(function () {
+    Route::get('/yard/bulk/items', 'items')->name('yard.bulk.items.types');
+    Route::post('/yard/bulk/items/store', 'addItem')->name('yard.bulk.items.store');
+    Route::put('/yard/bulk/items/update/{item}', 'updateItem')->name('yard.bulk.items.update');
+    Route::delete('/yard/bulk/items/delete/{item}', 'deleteItem')->name('yard.bulk.items.delete');
+
+    Route::get('/yard/bulk/inventory', 'inventory')->name('yard.bulk.inventory');
+    Route::post('/yard/bulk/inventory/store', 'addInventory')->name('yard.bulk.inventory.store');
+    Route::put('/yard/bulk/inventory/update/{inventory}', 'updateInventory')->name('yard.bulk.inventory.update');
+    Route::delete('/yard/bulk/inventory/delete/{inventory}', 'deleteInventory')->name('yard.bulk.inventory.delete');
+
+    Route::get('/yard/bulk/inventory/reports', 'reports')->name('yard.bulk.inventory.reports');
+});
+
 Route::controller(PolicyController::class)->middleware('auth')->group(function () {
     Route::get('/policies', 'policies')->name('policies');
     Route::get('/policies/storage/create', 'storagePolicy')->name('policies.storage.create');
     Route::post('/policies/storage/store', 'storeStoragePolicy')->name('policies.storage.store');
+    Route::post('/policies/storage/store/bulk', 'storeStoragePolicyBulk')->name('policies.storage.store.bulk');
     Route::get('/policies/storage/details/{policy:uuid}', 'storagePolicyDetails')->name('policies.storage.details');
     Route::patch('/policies/storage/update/{policy:uuid}', 'updateStoragePolicy')->name('policies.storage.update');
 
