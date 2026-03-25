@@ -84,7 +84,7 @@ class InvoiceController extends Controller
     }
     
     public function storeInvoice(InvoiceRequest $request) {
-        return $request;
+        
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
