@@ -194,8 +194,10 @@
                                     <td class="text-center"><span class="badge status-delivered">مسددة</span></td>
                                 @elseif ($invoice->status == 'تم الدفع جزئياً')
                                     <td class="text-center"><span class="badge status-waiting">مسددة جزئياً</span></td>
-                                @else
+                                @elseif ($invoice->status == 'لم يتم الدفع')
                                     <td class="text-center"><span class="badge status-danger">غير مسددة</span></td>
+                                @elseif ($invoice->status == 'مسودة')
+                                    <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
                                 @endif
                                 <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
                                 <td class="text-center">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}</td>

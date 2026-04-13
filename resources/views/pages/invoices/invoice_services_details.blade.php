@@ -292,6 +292,42 @@
                         <span class="badge bg-danger fs-6 px-3 py-2">
                             <i class="fas fa-clock me-1"></i>غير مسددة
                         </span>
+                    @elseif($invoice->status == 'مسودة')
+                        <span class="badge bg-secondary fs-6 px-3 py-2">
+                            <i class="fas fa-file me-1"></i>مسودة
+                        </span>
+                        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
+                            data-bs-target="#approveInvoiceModal">
+                            <i class="fas fa-check me-2"></i>اعتماد الفاتورة
+                        </button>
+                        <div class="modal fade" id="approveInvoiceModal" tabindex="-1" aria-labelledby="approveInvoiceModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary">
+                                        <h5 class="modal-title text-white fw-bold" id="approveInvoiceModalLabel">تأكيد اعتماد الفاتورة</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-dark">
+                                        <p class="text-center fw-bold mb-3">هل أنت متأكد من اعتماد هذه الفاتورة؟</p>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>سيتم تحويل هذه الفاتورة الى فاتورة ضريبية</strong>
+                                        </div>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-circle me-2"></i>
+                                            <strong>هذا الإجراء لا يمكن التراجع عنه</strong>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer d-flex justify-content-start">
+                                        <form action="{{ route('invoices.approve', $invoice) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary fw-bold">اعتماد الفاتورة</button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @endif
                     @if ($invoice->status == 'لم يتم الدفع')
                         <span class="badge bg-primary fs-6 px-3 py-2">
@@ -574,7 +610,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($invoice->payments as $payment)
+                            @forelse ($invoice->payments as $payment)
                                 <tr>
                                     <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td class="text-center fw-bold">
@@ -589,7 +625,15 @@
                                         {{ $payment->amount }} <i data-lucide="saudi-riyal"></i>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <span class="status-danger fs-6">
+                                            لا توجد دفعات مسجلة لهذه الفاتورة
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

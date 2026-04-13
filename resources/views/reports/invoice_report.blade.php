@@ -22,7 +22,7 @@
                     <th>الإجمالي</th>
                     <th>الحالة</th>
                     <th>المبلغ المسدد</th>
-                    <th>الميلغ المتبقي</th>
+                    <th>المبلغ المتبقي</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,13 +44,7 @@
                             <td class="text-center">{{ $invoice->amount_before_tax }}</td>
                             <td class="text-center">{{ $invoice->tax }}</td>
                             <td class="text-center">{{ $invoice->total_amount }}</td>
-                            @if ($invoice->status == 'تم الدفع')
-                                <td class="text-center">مسددة</td>
-                            @elseif ($invoice->status == 'تم الدفع جزئياً')
-                                <td class="text-center">مسددة جزئياً</td>
-                            @else
-                                <td class="text-center">غير مسددة</td>
-                            @endif
+                            <td class="text-center">{{ $invoice->status }}</td>
                             <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
                             <td class="text-center">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}</td>
                         </tr>

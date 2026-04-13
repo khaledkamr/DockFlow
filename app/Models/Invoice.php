@@ -11,9 +11,9 @@ class Invoice extends Model
 {
     use BelongsToCompany, HasUuid;
 
-    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن',];
+    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن', 'مسودة'];
     public const PAYMENT_METHODS = [ 'كاش', 'آجل', 'تحويل بنكي',];
-    public const PAYMENT_STATUS = [ 'تم الدفع', 'لم يتم الدفع',];
+    public const PAYMENT_STATUS = [ 'تم الدفع', 'لم يتم الدفع', 'تم الدفع جزئياً', 'مسودة'];
     
     protected $fillable = [
         'type',
@@ -105,8 +105,13 @@ class Invoice extends Model
     {
         static::creating(function ($invoice) {
             $year = $invoice->date ? date('Y', strtotime($invoice->date)) : date('Y');
-            $prefix = 'IN';
-            $lastInvoice = self::whereYear('date', $year)->latest('code')->first();
+            if($invoice->status == 'مسودة') {
+                $prefix = 'DR';
+            } else {
+                $prefix = 'IN';
+            }
+
+            $lastInvoice = self::where('code', 'like', $year . $prefix . '%')->whereYear('date', $year)->latest('code')->first();
             if ($lastInvoice && $lastInvoice->code) {
                 $lastNumber = (int) substr($lastInvoice->code, -5);
                 $newNumber = $lastNumber + 1;

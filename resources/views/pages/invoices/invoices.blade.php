@@ -33,6 +33,8 @@
                             تم الدفع</option>
                         <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>
                             لم يتم الدفع</option>
+                        <option value="مسودة" {{ request()->query('status') === 'مسودة' ? 'selected' : '' }}>
+                            مسودة</option>
                     </select>
                     @foreach (request()->except('status') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
@@ -52,7 +54,7 @@
                     <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                     <th class="text-center bg-dark text-white text-nowrap">طريقـة الدفـع</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريـخ الفـاتورة</th>
-                    <th class="text-center bg-dark text-white text-nowrap">عملية الدفع</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجرائات</th>
                 </tr>
@@ -105,8 +107,10 @@
                                 <td class="text-center"><span class="badge status-delivered">مسددة</span></td>
                             @elseif ($invoice->status == 'تم الدفع جزئياً')
                                 <td class="text-center"><span class="badge status-waiting">مسددة جزئياً</span></td>
-                            @else
+                            @elseif ($invoice->status == 'لم يتم الدفع')
                                 <td class="text-center"><span class="badge status-danger">غير مسددة</span></td>
+                            @elseif ($invoice->status == 'مسودة')
+                                <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
                             @endif
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $invoice->made_by) }}"

@@ -214,6 +214,13 @@
                                     <option value="0">غير خاضع للضريبة</option>
                                 </select>
                             </div>
+                            <div class="col-12 col-md">
+                                <label class="form-label">نوع الفاتورة</label>
+                                <select class="form-select border-primary" name="invoice_type" required>
+                                    <option value="ضريبية">فاتورة ضريبية</option>
+                                    <option value="مسودة">فاتورة مسودة</option>
+                                </select>
+                            </div>
                             <input type="hidden" name="discount" value="0">
                             {{-- <div class="col-12 col-md-6">
                                 <label class="form-label">نسبة الخصم(%)</label>

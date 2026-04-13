@@ -317,6 +317,15 @@
             display: inline-block;
         }
 
+        .status-secondary {
+            background-color: #d6dadd;
+            color: #5a6066;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
         /* Nav tabs */
         .nav-tabs .nav-link {
             color: #495057;

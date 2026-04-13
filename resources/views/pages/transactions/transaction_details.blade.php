@@ -133,6 +133,13 @@
                                     placeholder="0.00">
                             </div> --}}
                             <div class="col-12 col-md">
+                                <label class="form-label">نوع الفاتورة</label>
+                                <select class="form-select border-primary" name="invoice_type" required>
+                                    <option value="ضريبية">فاتورة ضريبية</option>
+                                    <option value="مسودة">فاتورة مسودة</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md">
                                 <label class="form-label">تاريخ الفاتورة</label>
                                 <input type="date" name="date" class="form-control border-primary"
                                     value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>

@@ -96,6 +96,7 @@ class InvoiceController extends Controller
     }
     
     public function storeInvoice(InvoiceRequest $request) {
+        // return $request;
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
@@ -146,8 +147,12 @@ class InvoiceController extends Controller
 
         return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData) {
             $validated = $request->validated();
-            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-            
+            if($request->invoice_type == 'مسودة') {
+                $validated['status'] = 'مسودة';
+            } else {
+                $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            }
+
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
                 'tax_rate' => $tax_rate_percent,
@@ -241,8 +246,12 @@ class InvoiceController extends Controller
 
         return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData) {
             $validated = $request->validated();
-            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
-
+            if($request->invoice_type == 'مسودة') {
+                $validated['status'] = 'مسودة';
+            } else {
+                $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            }
+            
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
                 'tax_rate' => $tax_rate_percent,
@@ -608,7 +617,11 @@ class InvoiceController extends Controller
             }
 
             $validated = $request->validated();
-            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            if($request->invoice_type == 'مسودة') {
+                $validated['status'] = 'مسودة';
+            } else {
+                $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            }
 
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
@@ -775,7 +788,11 @@ class InvoiceController extends Controller
 
         return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $policyData) {
             $validated = $request->validated();
-            $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            if($request->invoice_type == 'مسودة') {
+                $validated['status'] = 'مسودة';
+            } else {
+                $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            }
 
             $invoice = Invoice::create(array_merge($validated, [
                 'amount_before_tax' => $amountBeforeTax,
@@ -996,6 +1013,35 @@ class InvoiceController extends Controller
         logActivity('ترحيل فاتورة', "تم ترحيل الفاتورة رقم " . $invoice->code . " إلى القيد رقم " . $journal->code, null, $new);
 
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
+    }
+
+    public function approveInvoice(Invoice $invoice) {
+        // if(Gate::denies('اعتماد فاتورة')) {
+        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لاعتماد الفواتير');
+        // }
+
+        $currentYear = Carbon::now()->year;
+        $lastInvoice = Invoice::whereYear('date', $currentYear)->orderBy('code', 'desc')->first();
+        $prefix = $currentYear . 'IN';
+
+        if ($lastInvoice && strpos($lastInvoice->code, $prefix) === 0) {
+            $lastNumber = (int) substr($lastInvoice->code, strlen($prefix));
+            $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '00001';
+        }
+
+        $invoice->code = $prefix . $newNumber;
+        $invoice->save();
+
+        $invoice->status = 'لم يتم الدفع';
+        $invoice->date = Carbon::now();
+        $invoice->save();
+
+        $new = $invoice->toArray();
+        logActivity('اعتماد فاتورة', "تم اعتماد الفاتورة رقم " . $invoice->code, null, $new);
+
+        return redirect()->back()->with('success', 'تم اعتماد الفاتورة بنجاح');
     }
 
     public function invoiceStatements(Request $request) {

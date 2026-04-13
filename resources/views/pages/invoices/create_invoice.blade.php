@@ -186,6 +186,21 @@
                         </div>
                     </div>
 
+                    <div class="btn-group w-100 pt-3" role="group">
+                        <input type="radio" class="btn-check" name="invoice_type" id="invoice_type_tax"
+                            value="ضريبية" checked>
+                        <label class="btn btn-outline-primary fw-bold flex-grow-1" for="invoice_type_tax">
+                            <i class="fas fa-receipt me-2"></i>
+                            فاتورة ضريبية
+                        </label>
+                        <input type="radio" class="btn-check" name="invoice_type" id="invoice_type_draft"
+                            value="مسودة">
+                        <label class="btn btn-outline-primary fw-bold flex-grow-1" for="invoice_type_draft">
+                            <i class="fas fa-file me-2"></i>
+                            فاتورة مسودة
+                        </label>
+                    </div>
+
                     <!-- Summary Section -->
                     <div class="row mt-4">
                         <div class="col-12">
