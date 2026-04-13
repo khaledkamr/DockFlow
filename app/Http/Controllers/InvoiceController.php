@@ -16,6 +16,7 @@ use App\Models\InvoicePayment;
 use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
+use App\Models\Policy;
 use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -59,6 +60,17 @@ class InvoiceController extends Controller
             })->isEmpty();
         });
 
+        // add the containers that are linked to the customer by policies but not linked by customer_id on the container itself, 
+        // this is for the case when the container is linked to the customer by a storage policy but the customer_id on the container is not set for some reason
+        $policies = Policy::where('customer_id', $customer_id)->where('type', 'تخزين')->get();
+        foreach($policies as $policy) {
+            if($policy->containers()->where('status', 'تم التسليم')->exists() && !$policy->containers()->whereHas('invoices', function($q) {
+                $q->where('type', 'تخزين');
+            })->exists()) {
+                $containers = $containers->merge($policy->containers()->where('status', 'تم التسليم')->get());
+            }
+        }
+
         foreach($containers as $container) {
             $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
             $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
@@ -84,7 +96,6 @@ class InvoiceController extends Controller
     }
     
     public function storeInvoice(InvoiceRequest $request) {
-        
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
@@ -92,11 +103,11 @@ class InvoiceController extends Controller
         $containerIds = $request->input('container_ids', []);
         $containers = Container::with(['transactions', 'policies', 'services'])->whereIn('id', $containerIds)->get();
 
-        foreach($containers as $container) {
-            if($container->transactions->first()) {
-                return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة تخزين على حاوية مرتبطة بمعاملة تخليص');
-            }
-        }
+        // foreach($containers as $container) {
+        //     if($container->transactions->first()) {
+        //         return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة تخزين على حاوية مرتبطة بمعاملة تخليص');
+        //     }
+        // }
 
         $amountBeforeTax = 0;
         $containerData = []; 
@@ -389,6 +400,7 @@ class InvoiceController extends Controller
         foreach($transaction->containers as $container) {
             if($container->invoices->isEmpty() 
                 && $container->policies->where('type', 'تخزين')->isNotEmpty() 
+                && $container->policies->where('type', 'تخزين')->first()->customer_id == $transaction->customer_id  // make sure the policy is linked to the customer, this is for the case when there are multiple policies on the container and one of them is linked to the customer but not the one that is currently being checked in the loop
                 && $container->status == 'تم التسليم') {
                 $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
                 $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
@@ -548,6 +560,7 @@ class InvoiceController extends Controller
             $containerStorageAmount = 0;
             if($container->invoices->isEmpty() 
                 && $container->policies->where('type', 'تخزين')->isNotEmpty() 
+                && $container->policies->where('type', 'تخزين')->first()->customer_id == $transaction->customer_id // make sure the policy is linked to the customer, this is for the case when there are multiple policies on the container and one of them is linked to the customer but not the one that is currently being checked in the loop
                 && $container->status == 'تم التسليم') {
                 $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
                 $storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;

@@ -57,7 +57,7 @@
             <thead>
                 <tr class="table-dark">
                     <th class="text-center fw-semibold" style="white-space: nowrap;">#</th>
-                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم الإتفاقية</th>
+                    <th class="text-center fw-semibold" style="white-space: nowrap;">رقم البوليصة</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">رقم الحاوية</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">تاريخ الدخول</th>
                     <th class="text-center fw-semibold" style="white-space: nowrap;">تاريخ الخروج</th>
