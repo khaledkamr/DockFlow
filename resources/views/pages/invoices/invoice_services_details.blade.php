@@ -60,12 +60,17 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="status" class="form-label">حالة الدفع</label>
+                                <label for="status" class="form-label">الحالة</label>
                                 <select name="status" class="form-select border-primary" required>
-                                    <option value="تم الدفع" {{ $invoice->status == 'تم الدفع' ? 'selected' : '' }}>تم الدفع
+                                    <option value="تم الدفع" {{ $invoice->status == 'تم الدفع' ? 'selected' : '' }}>
+                                        مسددة
                                     </option>
                                     <option value="لم يتم الدفع" {{ $invoice->status == 'لم يتم الدفع' ? 'selected' : '' }}>
-                                        لم يتم الدفع</option>
+                                        غير مسددة
+                                    </option>
+                                    <option value="مسودة" {{ $invoice->status == 'مسودة' ? 'selected' : '' }}>
+                                        مسودة
+                                    </option>
                                 </select>
                             </div>
                             <div class="col-md-3">
