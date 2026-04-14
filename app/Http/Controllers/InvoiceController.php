@@ -30,9 +30,15 @@ class InvoiceController extends Controller
 {
     public function invoices(Request $request) {
         $invoices = Invoice::query();
+        $invoiceType = request()->query('invoice_type', 'ضريبية');
         $paymentFilter = request()->query('status');
         $search = $request->input('search', null);
 
+        if($invoiceType && $invoiceType == 'ضريبية') {
+            $invoices->where('status', '!=', 'مسودة');
+        } elseif ($invoiceType && $invoiceType == 'مسودة') {
+            $invoices->where('status', 'مسودة');
+        }
         if ($paymentFilter && $paymentFilter !== 'all') {
             $invoices->where('status', $paymentFilter);
         }

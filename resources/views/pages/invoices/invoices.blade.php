@@ -6,7 +6,7 @@
     <h1 class="mb-4">الفواتير</h1>
 
     <div class="row g-3 mb-4">
-        <div class="col-12 col-md-9">
+        <div class="col-12 col-md-6">
             <form method="GET" action="" class="d-flex flex-column">
                 <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
                 <div class="d-flex">
@@ -22,7 +22,26 @@
         </div>
         <div class="col-6 col-md-3">
             <form method="GET" action="" class="d-flex flex-column">
-                <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب الدفــع:</label>
+                <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب النوع:</label>
+                <label class="form-label text-dark fw-bold d-inline d-md-none">الدفــع:</label>
+                <div class="d-flex">
+                    <select name="invoice_type" class="form-select border-primary" onchange="this.form.submit()">
+                        <option value="ضريبية" {{ request()->query('invoice_type') === 'ضريبية' || !request()->query('invoice_type') ? 'selected' : '' }}>
+                            فواتير ضريبية
+                        </option>
+                        <option value="مسودة" {{ request()->query('invoice_type') === 'مسودة' ? 'selected' : '' }}>
+                            فواتير مسودة
+                        </option>
+                    </select>
+                    @foreach (request()->except('invoice_type') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </div>
+            </form>
+        </div>
+        <div class="col-6 col-md-3">
+            <form method="GET" action="" class="d-flex flex-column">
+                <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب الحالة:</label>
                 <label class="form-label text-dark fw-bold d-inline d-md-none">الدفــع:</label>
                 <div class="d-flex">
                     <select name="status" class="form-select border-primary" onchange="this.form.submit()">
