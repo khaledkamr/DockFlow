@@ -144,7 +144,7 @@
                         <div class="col-12">
                             <label class="form-label">النوع</label>
                             <input type="text" class="form-control border-primary bg-light" name="type"
-                                value="مصروف" readonly>
+                                value="مصروف">
                         </div>
                         <div class="col-12">
                             <label class="form-label">حساب المدين</label>
