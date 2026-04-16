@@ -362,7 +362,7 @@ class TransportController extends Controller
 
     public function storeDestination(Request $request) {
         $request->validate([
-            'name' => 'required|string|unique:places,name',
+            'name' => 'required|string',
         ]);
 
         $new = Places::create([
