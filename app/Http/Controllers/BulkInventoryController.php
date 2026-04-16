@@ -74,7 +74,7 @@ class BulkInventoryController extends Controller
         }
 
         $inventory = BulkInventory::create($validated);
-        logActivity('إضافة مخزون جديد', "تمت إضافة المخزون الجديد للعميل ID: {$inventory->customer_id}، البضاعة ID: {$inventory->item_id}، الرصيد: {$inventory->balance}، سعر الوحدة: {$inventory->price_per_unit}، نوع السعر: {$inventory->price_type}", null, $inventory->toArray());
+        logActivity('إضافة مخزون جديد', "تمت إضافة المخزون الجديد للعميل : {$inventory->customer->name}، البضاعة : {$inventory->item->name}، الرصيد: {$inventory->balance}، سعر الوحدة: {$inventory->price_per_unit}، نوع السعر: {$inventory->price_type}", null, $inventory->toArray());
 
         return redirect()->back()->with('success', 'تم إضافة المخزون الجديد بنجاح.');
     }
@@ -90,16 +90,21 @@ class BulkInventoryController extends Controller
         $inventory->update($validated);
         $new = $inventory->toArray();
 
-        logActivity('تحديث بيانات مخزون', "تم تحديث بيانات المخزون ID: {$inventory->id} للعميل ID: {$inventory->customer_id}، البضاعة ID: {$inventory->item_id}، الرصيد: {$inventory->balance}، سعر الوحدة: {$inventory->price_per_unit}، نوع السعر: {$inventory->price_type}", $old, $new);
+        logActivity('تحديث بيانات مخزون', "تم تحديث بيانات المخزون ID: {$inventory->id} للعميل : {$inventory->customer->name}، البضاعة : {$inventory->item->name}، الرصيد: {$inventory->balance}، سعر الوحدة: {$inventory->price_per_unit}، نوع السعر: {$inventory->price_type}", $old, $new);
         return redirect()->back()->with('success', 'تم تحديث بيانات المخزون بنجاح.');
     }
 
     public function deleteInventory(BulkInventory $inventory) {
         $old = $inventory->toArray();
         $inventory->delete();
-        logActivity('حذف مخزون', "تم حذف المخزون ID: {$inventory->id} للعميل ID: {$inventory->customer_id}، البضاعة ID: {$inventory->item_id}، الرصيد: {$inventory->balance}، سعر الوحدة: {$inventory->price_per_unit}، نوع السعر: {$inventory->price_type}", $old, null);
+        logActivity('حذف مخزون', "تم حذف المخزون ID: {$inventory->id} للعميل : {$inventory->customer->name}، البضاعة : {$inventory->item->name}، الرصيد: {$inventory->balance}، سعر الوحدة: {$inventory->price_per_unit}، نوع السعر: {$inventory->price_type}", $old, null);
 
         return redirect()->back()->with('success', 'تم حذف المخزون بنجاح.');
+    }
+
+    public function inventoryDetails(BulkInventory $inventory) {
+        $inventory->load(['customer', 'item', 'transactions.policy']);
+        return view('pages.bulk_inventory.inventory_details', compact('inventory'));
     }
 
     public function reports() {

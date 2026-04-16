@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class BulkInventory extends Model
 {
-    protected $table = 'bulk_inventory';
-
+    use HasUuid;
+    
     protected $fillable = [
         'customer_id',
         'item_id',
@@ -22,5 +23,13 @@ class BulkInventory extends Model
 
     public function item() {
         return $this->belongsTo(BulkItem::class);
+    }
+
+    public function transactions() {
+        return $this->hasMany(BulkTransaction::class);
+    }
+
+    public function batches() {
+        return $this->hasMany(BulkBatch::class);
     }
 }

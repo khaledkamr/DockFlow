@@ -125,8 +125,9 @@ Route::controller(BulkInventoryController::class)->middleware('auth')->group(fun
 
     Route::get('/yard/bulk/inventory', 'inventory')->name('yard.bulk.inventory');
     Route::post('/yard/bulk/inventory/store', 'addInventory')->name('yard.bulk.inventory.store');
-    Route::put('/yard/bulk/inventory/update/{inventory}', 'updateInventory')->name('yard.bulk.inventory.update');
-    Route::delete('/yard/bulk/inventory/delete/{inventory}', 'deleteInventory')->name('yard.bulk.inventory.delete');
+    Route::put('/yard/bulk/inventory/update/{inventory:uuid}', 'updateInventory')->name('yard.bulk.inventory.update');
+    Route::delete('/yard/bulk/inventory/delete/{inventory:uuid}', 'deleteInventory')->name('yard.bulk.inventory.delete');
+    Route::get('/yard/bulk/inventory/{inventory:uuid}', 'inventoryDetails')->name('yard.bulk.inventory.details');
 
     Route::get('/yard/bulk/inventory/reports', 'reports')->name('yard.bulk.inventory.reports');
 });

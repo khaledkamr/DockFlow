@@ -577,7 +577,7 @@
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('yard.bulk.inventory') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                                 href="{{ route('yard.bulk.inventory') }}">
-                                <i class="fa-solid fa-boxes ms-2 me-2"></i> البضـــــائــــــع
+                                <i class="fa-solid fa-boxes ms-2 me-1"></i> مخزون البضائع
                             </a>
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('yard.bulk.items.types') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('bulk_batches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bulk_inventory_id')->constrained('bulk_inventory')->cascadeOnDelete();
+            $table->foreignId('bulk_inventory_id')->constrained()->cascadeOnDelete();
             $table->decimal('quantity_in', 15, 2);
             $table->decimal('quantity_remaining', 15, 2);
             $table->date('entry_date');

@@ -327,137 +327,199 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-5">
-        <div class="card-header bg-dark text-white">
-            <div class="d-flex flex-row justify-content-between align-items-center text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-boxes me-2"></i>
-                    الحاويات المشمولة في البوليصة
-                </h5>
-                <span class="badge bg-light text-dark d-none d-sm-block">{{ count($policy->containers) }} حاوية</span>
+    @if($policy->goods_type == 'containers')
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-header bg-dark text-white">
+                <div class="d-flex flex-row justify-content-between align-items-center text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-boxes me-2"></i>
+                        الحاويات المشمولة في البوليصة
+                    </h5>
+                    <span class="badge bg-light text-dark d-none d-sm-block">{{ count($policy->containers) }} حاوية</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if (count($policy->containers) > 0)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-primary">
+                                <tr class="">
+                                    <th class="text-center fw-bold text-nowrap">#</th>
+                                    <th class="text-center fw-bold text-nowrap">رقم الحاوية</th>
+                                    <th class="text-center fw-bold text-nowrap">نوع الحاوية</th>
+                                    <th class="text-center fw-bold text-nowrap">العميل</th>
+                                    <th class="text-center fw-bold text-nowrap">الحالة</th>
+                                    <th class="text-center fw-bold text-nowrap">الموقع</th>
+                                    <th class="text-center fw-bold text-nowrap">تم الإستلام بواسطة</th>
+                                    <th class="text-center fw-bold text-nowrap">تم التسليم بواسطة</th>
+                                    <th class="text-center fw-bold text-nowrap">الإجرائات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($policy->containers as $index => $container)
+                                    <tr class="text-center">
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>
+                                            <a href="{{ route('container.details', $container) }}"
+                                                class="fw-bold text-decoration-none">
+                                                {{ $container->code }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold">{{ $container->containerType->name }}</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                                class="text-dark text-decoration-none fw-bold">
+                                                {{ $container->customer->name }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @if ($container->status == 'في الساحة')
+                                                <div class="badge status-available">{{ $container->status }}</div>
+                                            @elseif($container->status == 'تم التسليم')
+                                                <div class="badge status-delivered">
+                                                    {{ $container->status }} <i class="fa-solid fa-check"></i>
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">
+                                            {{ $container->location ?? 'لم يحدد بعد' }}
+                                        </td>
+                                        <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">
+                                            {{ $container->received_by ?? 'لم يتم الأستلام بعد' }}
+                                        </td>
+                                        <td class="{{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
+                                            {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#addServiceModal-{{ $container->id }}"
+                                                {{ $container->status == 'تم التسليم' ? 'disabled' : '' }}>
+                                                <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span
+                                                    class="d-none d-sm-inline">إضافة خدمة</span><span
+                                                    class="d-inline d-sm-none">خدمة</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <div class="modal fade" id="addServiceModal-{{ $container->id }}"
+                                        tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <form action="{{ route('containers.add.service', $container->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-primary text-white">
+                                                        <h5 class="modal-title fw-bold">إضافة خدمة للحاوية
+                                                            {{ $container->code }}</h5>
+                                                        <button type="button" class="btn-close btn-close-white"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">الخدمة</label>
+                                                            <select name="service_id"
+                                                                class="form-select border-primary" required>
+                                                                <option value="" disabled selected>اختر خدمة
+                                                                </option>
+                                                                @foreach ($services as $service)
+                                                                    <option value="{{ $service->id }}">
+                                                                        {{ $service->description }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">السعر</label>
+                                                            <input type="number" name="price"
+                                                                class="form-control border-primary" step="0.01">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">ملاحظات</label>
+                                                            <textarea name="notes" class="form-control border-primary"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit"
+                                                            class="btn btn-primary fw-bold">حفظ</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-5">
+                        <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد حاويات مرتبطة بهذه البوليصة</h5>
+                    </div>
+                @endif
             </div>
         </div>
-        <div class="card-body p-0">
-            @if (count($policy->containers) > 0)
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-primary">
-                            <tr class="">
-                                <th class="text-center fw-bold text-nowrap">#</th>
-                                <th class="text-center fw-bold text-nowrap">رقم الحاوية</th>
-                                <th class="text-center fw-bold text-nowrap">نوع الحاوية</th>
-                                <th class="text-center fw-bold text-nowrap">العميل</th>
-                                <th class="text-center fw-bold text-nowrap">الحالة</th>
-                                <th class="text-center fw-bold text-nowrap">الموقع</th>
-                                <th class="text-center fw-bold text-nowrap">تم الإستلام بواسطة</th>
-                                <th class="text-center fw-bold text-nowrap">تم التسليم بواسطة</th>
-                                <th class="text-center fw-bold text-nowrap">الإجرائات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($policy->containers as $index => $container)
-                                <tr class="text-center">
-                                    <td class="text-center">{{ $container->id }}</td>
-                                    <td>
-                                        <a href="{{ route('container.details', $container) }}"
-                                            class="fw-bold text-decoration-none">
-                                            {{ $container->code }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold">{{ $container->containerType->name }}</div>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{ route('users.customer.profile', $container->customer) }}"
-                                            class="text-dark text-decoration-none fw-bold">
-                                            {{ $container->customer->name }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @if ($container->status == 'في الساحة')
-                                            <div class="badge status-available">{{ $container->status }}</div>
-                                        @elseif($container->status == 'تم التسليم')
-                                            <div class="badge status-delivered">
-                                                {{ $container->status }} <i class="fa-solid fa-check"></i>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td class="{{ $container->location ? 'fw-bold' : 'text-muted' }}">
-                                        {{ $container->location ?? 'لم يحدد بعد' }}
-                                    </td>
-                                    <td class="{{ $container->received_by ? 'text-dark' : 'text-muted' }}">
-                                        {{ $container->received_by ?? 'لم يتم الأستلام بعد' }}
-                                    </td>
-                                    <td class="{{ $container->delivered_by ? 'text-dark' : 'text-muted' }}">
-                                        {{ $container->delivered_by ?? 'لم يتم التسليم بعد' }}
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#addServiceModal-{{ $container->id }}"
-                                            {{ $container->status == 'تم التسليم' ? 'disabled' : '' }}>
-                                            <i class="fas fa-plus me-1 d-none d-sm-inline"></i><span
-                                                class="d-none d-sm-inline">إضافة خدمة</span><span
-                                                class="d-inline d-sm-none">خدمة</span>
-                                        </button>
-                                    </td>
+    @elseif($policy->goods_type == 'bulk')
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-header bg-dark text-white">
+                <div class="d-flex flex-row justify-content-between align-items-center text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-boxes me-2"></i>
+                        البضاعة المشمولة في البوليصة
+                    </h5>
+                    <span class="badge bg-light text-dark d-none d-sm-block">{{ $policy->bulkBatch->quantity_in ?? 0 }} {{ $policy->bulkBatch->bulkInventory->item->unit }} </span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if ($policy->bulkBatch)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-primary">
+                                <tr class="">
+                                    <th class="text-center fw-bold text-nowrap">#</th>
+                                    <th class="text-center fw-bold text-nowrap">نوع البضاعة</th>
+                                    <th class="text-center fw-bold text-nowrap">العميل</th>
+                                    <th class="text-center fw-bold text-nowrap">الكمية الداخلة</th>
+                                    <th class="text-center fw-bold text-nowrap">الكمية المتبقية</th>
+                                    <th class="text-center fw-bold text-nowrap">الإجرائات</th>
                                 </tr>
-
-                                <div class="modal fade" id="addServiceModal-{{ $container->id }}"
-                                    tabindex="-1">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <form action="{{ route('containers.add.service', $container->id) }}"
-                                            method="POST">
-                                            @csrf
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-primary text-white">
-                                                    <h5 class="modal-title fw-bold">إضافة خدمة للحاوية
-                                                        {{ $container->code }}</h5>
-                                                    <button type="button" class="btn-close btn-close-white"
-                                                        data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label class="form-label">الخدمة</label>
-                                                        <select name="service_id"
-                                                            class="form-select border-primary" required>
-                                                            <option value="" disabled selected>اختر خدمة
-                                                            </option>
-                                                            @foreach ($services as $service)
-                                                                <option value="{{ $service->id }}">
-                                                                    {{ $service->description }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">السعر</label>
-                                                        <input type="number" name="price"
-                                                            class="form-control border-primary" step="0.01">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">ملاحظات</label>
-                                                        <textarea name="notes" class="form-control border-primary"></textarea>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit"
-                                                        class="btn btn-primary fw-bold">حفظ</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="text-center py-5">
-                    <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
-                    <h5 class="text-muted">لا توجد حاويات مرتبطة بهذه البوليصة</h5>
-                </div>
-            @endif
+                            </thead>
+                            <tbody>
+                                <tr class="text-center">
+                                    <td class="text-center">1</td>
+                                    <td><div class="fw-bold">{{ $policy->bulkBatch->bulkInventory->item->name }}</div></td>
+                                    <td class="text-center">
+                                        <a href="{{ route('users.customer.profile', $policy->bulkBatch->bulkInventory->customer) }}"
+                                            class="text-dark text-decoration-none fw-bold">
+                                            {{ $policy->bulkBatch->bulkInventory->customer->name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">
+                                            {{ $policy->bulkBatch->quantity_in ?? 0 }} 
+                                            {{ $policy->bulkBatch->bulkInventory->item->unit }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">
+                                            {{ $policy->bulkBatch->quantity_remaining ?? 0 }} 
+                                            {{ $policy->bulkBatch->bulkInventory->item->unit }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-5">
+                        <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد حاويات مرتبطة بهذه البوليصة</h5>
+                    </div>
+                @endif
+            </div>
         </div>
-    </div>
+    @endif
 
     <div class="text-center mt-4 mb-5">
         <small class="text-muted">

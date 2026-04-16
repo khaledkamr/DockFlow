@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BulkBatches extends Model
+class BulkBatch extends Model
 {
     protected $fillable = [
         'bulk_inventory_id',

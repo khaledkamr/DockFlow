@@ -108,14 +108,15 @@
                     @foreach ($inventories as $inventory)
                         <tr>
                             <td class="text-center text-primary fw-bold">{{ $loop->iteration }}</td>
-                            <td class="text-center text-nowrap">
+                            <td class="text-center text-nowrap fw-bold">
                                 <a href="{{ route('users.customer.profile', $inventory->customer) }}"
                                     class="text-dark text-decoration-none">
                                     {{ $inventory->customer->name }}
                                 </a>
                             </td>
                             <td class="text-center text-nowrap">{{ $inventory->item->name }}</td>
-                            <td class="text-center text-nowrap">{{ $inventory->balance }} {{ $inventory->item->unit }}</td>
+                            <td class="text-center text-nowrap">{{ $inventory->balance }} {{ $inventory->item->unit }}
+                            </td>
                             <td class="text-center text-success fw-bold text-nowrap">{{ $inventory->price_per_unit }} ريال
                             </td>
                             <td class="action-icons text-center">
@@ -124,11 +125,10 @@
                                     <i class="fa-solid fa-pen-to-square pe-1"></i>
                                     تعديل
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary ms-2" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#detailsBulkInventoryModal{{ $inventory->id }}">
+                                <a href="{{ route('yard.bulk.inventory.details', $inventory) }}" class="btn btn-sm btn-outline-primary ms-2">
                                     <i class="fa-solid fa-circle-info pe-1"></i>
                                     التفاصيل
-                                </button>
+                                </a>
                             </td>
                         </tr>
 

@@ -8,9 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('bulk_transaction', function (Blueprint $table) {
+        Schema::create('bulk_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bulk_inventory_id')->constrained('bulk_inventory')->cascadeOnDelete();
+            $table->foreignId('bulk_inventory_id')->constrained()->cascadeOnDelete();
             $table->enum('transaction_type', ['in', 'out']);
             $table->decimal('quantity', 15, 2);
             $table->decimal('balance_after', 15, 2);
@@ -23,6 +23,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('bulk_transaction');
+        Schema::dropIfExists('bulk_transactions');
     }
 };

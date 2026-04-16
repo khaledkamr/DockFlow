@@ -27,6 +27,7 @@
 
     <!-- Tab Content -->
     <div class="tab-content" id="policyTabContent">
+        <!-- Container Content -->
         <div class="tab-pane fade show active" id="container-content" role="tabpanel" aria-labelledby="container-tab">
             <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
                 <form action="{{ route('policies.storage.store') }}" method="POST">
@@ -226,6 +227,7 @@
             </div>
         </div>
 
+        <!-- Bulk Content -->
         <div class="tab-pane fade" id="bulk-content" role="tabpanel" aria-labelledby="bulk-tab">
             <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
                 <form action="{{ route('policies.storage.store.bulk') }}" method="POST">
@@ -248,7 +250,7 @@
                                 @endforeach
                             </select>
                             @error('customer_id')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="text-danger">إسم العميل مطلوب</div>
                             @enderror
                         </div>
                         <input type="hidden" id="bulk_customer_id" name="customer_id">

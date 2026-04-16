@@ -52,6 +52,14 @@ class Policy extends Model
         return $this->belongsTo(Company::class);
     }
 
+    public function bulkBatch() {
+        return $this->hasOne(BulkBatch::class);
+    }
+    
+    public function bulkTransactions() {
+        return $this->hasMany(BulkTransaction::class);
+    }
+
     protected static function booted()
     {
         static::creating(function ($policy) {
