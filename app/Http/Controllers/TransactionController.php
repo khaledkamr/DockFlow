@@ -317,7 +317,7 @@ class TransactionController extends Controller
     }
 
     public function storeProcedure(Request $request) {
-        if(Gate::denies('إنشاء إجراء جديد')) {
+        if(Gate::denies('إضافة إجراء جديد')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية إنشاء إجراء جديد');
         }
 
