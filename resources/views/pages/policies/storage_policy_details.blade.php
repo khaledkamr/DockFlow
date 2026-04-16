@@ -327,7 +327,67 @@
         </div>
     </div>
 
-    @if($policy->goods_type == 'containers')
+    @if($policy->goods_type == 'bulk')
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-header bg-dark text-white">
+                <div class="d-flex flex-row justify-content-between align-items-center text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-boxes me-2"></i>
+                        البضاعة المشمولة في البوليصة
+                    </h5>
+                    <span class="badge bg-light text-dark d-none d-sm-block">{{ $policy->bulkBatch->quantity_in ?? 0 }} {{ $policy->bulkBatch->bulkInventory->item->unit }} </span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                @if ($policy->bulkBatch)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-primary">
+                                <tr class="">
+                                    <th class="text-center fw-bold text-nowrap">#</th>
+                                    <th class="text-center fw-bold text-nowrap">نوع البضاعة</th>
+                                    <th class="text-center fw-bold text-nowrap">العميل</th>
+                                    <th class="text-center fw-bold text-nowrap">الكمية الداخلة</th>
+                                    <th class="text-center fw-bold text-nowrap">الكمية المتبقية</th>
+                                    <th class="text-center fw-bold text-nowrap">الإجرائات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center">
+                                    <td class="text-center">1</td>
+                                    <td><div class="fw-bold">{{ $policy->bulkBatch->bulkInventory->item->name }}</div></td>
+                                    <td class="text-center">
+                                        <a href="{{ route('users.customer.profile', $policy->bulkBatch->bulkInventory->customer) }}"
+                                            class="text-dark text-decoration-none fw-bold">
+                                            {{ $policy->bulkBatch->bulkInventory->customer->name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">
+                                            {{ $policy->bulkBatch->quantity_in ?? 0 }} 
+                                            {{ $policy->bulkBatch->bulkInventory->item->unit }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">
+                                            {{ $policy->bulkBatch->quantity_remaining ?? 0 }} 
+                                            {{ $policy->bulkBatch->bulkInventory->item->unit }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-5">
+                        <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد حاويات مرتبطة بهذه البوليصة</h5>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @else
         <div class="card border-0 shadow-sm mb-5">
             <div class="card-header bg-dark text-white">
                 <div class="d-flex flex-row justify-content-between align-items-center text-white">
@@ -448,66 +508,6 @@
                                         </div>
                                     </div>
                                 @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="text-center py-5">
-                        <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">لا توجد حاويات مرتبطة بهذه البوليصة</h5>
-                    </div>
-                @endif
-            </div>
-        </div>
-    @elseif($policy->goods_type == 'bulk')
-        <div class="card border-0 shadow-sm mb-5">
-            <div class="card-header bg-dark text-white">
-                <div class="d-flex flex-row justify-content-between align-items-center text-white">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-boxes me-2"></i>
-                        البضاعة المشمولة في البوليصة
-                    </h5>
-                    <span class="badge bg-light text-dark d-none d-sm-block">{{ $policy->bulkBatch->quantity_in ?? 0 }} {{ $policy->bulkBatch->bulkInventory->item->unit }} </span>
-                </div>
-            </div>
-            <div class="card-body p-0">
-                @if ($policy->bulkBatch)
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-primary">
-                                <tr class="">
-                                    <th class="text-center fw-bold text-nowrap">#</th>
-                                    <th class="text-center fw-bold text-nowrap">نوع البضاعة</th>
-                                    <th class="text-center fw-bold text-nowrap">العميل</th>
-                                    <th class="text-center fw-bold text-nowrap">الكمية الداخلة</th>
-                                    <th class="text-center fw-bold text-nowrap">الكمية المتبقية</th>
-                                    <th class="text-center fw-bold text-nowrap">الإجرائات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="text-center">
-                                    <td class="text-center">1</td>
-                                    <td><div class="fw-bold">{{ $policy->bulkBatch->bulkInventory->item->name }}</div></td>
-                                    <td class="text-center">
-                                        <a href="{{ route('users.customer.profile', $policy->bulkBatch->bulkInventory->customer) }}"
-                                            class="text-dark text-decoration-none fw-bold">
-                                            {{ $policy->bulkBatch->bulkInventory->customer->name }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold">
-                                            {{ $policy->bulkBatch->quantity_in ?? 0 }} 
-                                            {{ $policy->bulkBatch->bulkInventory->item->unit }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold">
-                                            {{ $policy->bulkBatch->quantity_remaining ?? 0 }} 
-                                            {{ $policy->bulkBatch->bulkInventory->item->unit }}
-                                        </div>
-                                    </td>
-                                    <td></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
