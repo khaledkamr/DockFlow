@@ -52,6 +52,8 @@ class PolicyController extends Controller
         return view('pages.policies.policies', compact('policies', 'customers'));
     }
 
+    // ------------------- Storage Policies ------------------- تخزيــــــن
+
     public function storagePolicy(Request $request) {
         if(Gate::denies('إنشاء اتفاقية')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى هذه الصفحة');
@@ -116,7 +118,6 @@ class PolicyController extends Controller
     }
 
     public function storeStoragePolicyBulk(PolicyRequest $request) {
-        // return $request;
         $validated = $request->validated();
         $policy = Policy::create($validated);
 
@@ -232,6 +233,8 @@ class PolicyController extends Controller
             'customers',
         ));
     }
+
+    // ------------------- Receive Policies ------------------- تسليــــــم
     
     public function createReceivePolicy() {
         if(Gate::denies('إنشاء اتفاقية')) {
@@ -262,6 +265,54 @@ class PolicyController extends Controller
         $policy->containers()->attach($containers);
 
         $new = $policy->load('containers')->toArray();
+        logActivity('إنشاء بوليصة استلام', "تم إنشاء بوليصة استلام جديدة برقم " . $policy->code, null, $new);
+
+        return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض البوليصة؟</a>');
+    }
+
+    public function storeReceivePolicyBulk(PolicyRequest $request) {
+        $validated = $request->validated();
+        $policy = Policy::create($validated);
+
+        $inventory = BulkInventory::findOrFail($request->bulk_inventory_id);
+        $oldBalance = $inventory->balance;
+        if($inventory->balance < $request->quantity) {
+            return redirect()->back()->with('error', 'رصيد المخزون الحالي أقل من الكمية المطلوبة');
+        }
+        $inventory->decrement('balance', $request->quantity);
+
+        BulkBatch::where('bulk_inventory_id', $inventory->id)
+                    ->where('quantity_remaining', '>', 0)
+                    ->orderBy('entry_date', 'asc')
+                    ->chunk(100, function($batches) use ($request, $policy, $inventory) {
+                        $remainingQuantity = $request->quantity;
+                        
+                        foreach($batches as $batch) {
+                            if($remainingQuantity <= 0) break;
+                            
+                            if($batch->quantity_remaining >= $remainingQuantity) {
+                                $batch->quantity_remaining -= $remainingQuantity;
+                                $remainingQuantity = 0;
+                            } else {
+                                $remainingQuantity -= $batch->quantity_remaining;
+                                $batch->quantity_remaining = 0;
+                            }
+                            
+                            $batch->save();
+                        }
+                    });
+
+        BulkTransaction::create([
+            'bulk_inventory_id' => $inventory->id,
+            'transaction_type' => 'out',
+            'quantity' => $request->quantity,
+            'balance_after' => $inventory->balance,
+            'policy_id' => $policy->id,
+            'date' => $request->date,
+            'notes' => $request->notes,
+        ]);
+
+        $new = $policy->load('customer')->toArray();
         logActivity('إنشاء بوليصة استلام', "تم إنشاء بوليصة استلام جديدة برقم " . $policy->code, null, $new);
 
         return redirect()->back()->with('success', 'تم إنشاء بوليصة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('policies.receive.details', $policy).'">عرض البوليصة؟</a>');
@@ -321,6 +372,8 @@ class PolicyController extends Controller
 
         return view('pages.policies.service_policy', compact('company', 'customers', 'containerTypes', 'services'));
     }
+
+    // ------------------- Service Policies ------------------- خدمــــــات
 
     public function storeServicePolicy(Request $request) {
         $validated = $request->validate([
@@ -458,6 +511,8 @@ class PolicyController extends Controller
             'services'
         ));
     }
+
+    // ------------------- Common Methods -------------------
 
     public function deletePolicy(Policy $policy) {
         if(Gate::denies('حذف بوليصة تخزين')) {

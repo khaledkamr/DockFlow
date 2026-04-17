@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    // ----------------------- Users -----------------------
     public function users(Request $request) {
         if(Gate::denies('إدارة المستخدمين')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى إدارة المستخدمين');
@@ -155,6 +156,8 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'تم حذف المستخدم بنجاح');
     }
 
+    // ----------------------- Roles & Permissions -----------------------
+
     public function roles() {
         $roles = Role::all();
         $permissions = Permission::all();
@@ -189,10 +192,8 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'تم إضافة صلاحية جديدة بنجاح');
     }
 
-    public function settings() {
-        return view('pages.settings.settings');
-    }
-    
+    // ----------------------- User Logs & Activity -----------------------
+
     public function logs(Request $request) {
         $logs = UserLog::query()
             ->when($request->action, fn($q) => $q->where('action', $request->action))
@@ -233,18 +234,6 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'تم حذف السجلات بنجاح');
     }
 
-    public function updateTimezone(Request $request) {
-        $request->validate([
-            'timezone' => 'required|string|in:Africa/Cairo,Asia/Riyadh',
-        ]);
-
-        $user = Auth::user();
-        $user->timezone = $request->timezone;
-        $user->save();
-
-        return redirect()->back()->with('success', 'تم تحديث المنطقة الزمنية بنجاح');
-    }
-
     public function userActivityReport(Request $request) {
         $activities = UserLog::query()
             ->when($request->action, fn($q) => $q->where('action', $request->action))
@@ -259,5 +248,23 @@ class UserController extends Controller
         $perPage = 100;
 
         return view('pages.users.user_activity_report', compact('activities', 'actions', 'users', 'perPage'));
+    }
+
+    // ----------------------- Settings -----------------------
+
+    public function settings() {
+        return view('pages.settings.settings');
+    }
+
+    public function updateTimezone(Request $request) {
+        $request->validate([
+            'timezone' => 'required|string|in:Africa/Cairo,Asia/Riyadh',
+        ]);
+
+        $user = Auth::user();
+        $user->timezone = $request->timezone;
+        $user->save();
+
+        return redirect()->back()->with('success', 'تم تحديث المنطقة الزمنية بنجاح');
     }
 }

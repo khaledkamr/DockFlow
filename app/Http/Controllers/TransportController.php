@@ -25,6 +25,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
 class TransportController extends Controller
 {
+    // ----------------------- Transport Orders -----------------------
     public function transportOrders(Request $request) {
         $transportOrders = TransportOrder::query();
 
@@ -231,6 +232,8 @@ class TransportController extends Controller
         return redirect()->back()->with('success', 'تم حذف اشعار النقل بنجاح');
     }
 
+    // ----------------------- Drivers & Vehicles -----------------------
+
     public function driversAndVehicles(Request $request) {
         $view = $request->query('view', 'السائقين');
         $drivers = Driver::with('vehicle')->get();
@@ -359,6 +362,8 @@ class TransportController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف الشاحنة بنجاح');
     }
+
+    // ----------------------- Destinations -----------------------
 
     public function storeDestination(Request $request) {
         $request->validate([

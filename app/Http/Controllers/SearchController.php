@@ -34,8 +34,7 @@ class SearchController extends Controller
         'SV' => ['name' => 'بوليصة خدمات', 'icon' => 'fa-tools', 'model' => Policy::class, 'route' => 'policies.services.details'],
     ];
 
-    public function search(Request $request)
-    {
+    public function search(Request $request) {
         $query = $request->input('q', '');
         $results = [];
 
@@ -90,8 +89,7 @@ class SearchController extends Controller
         ]);
     }
 
-    private function extractCodeType($query)
-    {
+    private function extractCodeType($query) {
         // Pattern: YYYY{CODE}XXXXX or just {CODE} anywhere
         // Extract 2-letter code type from the query
         foreach (array_keys($this->codeTypes) as $code) {
@@ -102,8 +100,7 @@ class SearchController extends Controller
         return null;
     }
 
-    private function searchInModel($config, $query, $companyId)
-    {
+    private function searchInModel($config, $query, $companyId) {
         $results = [];
         $model = $config['model'];
         
@@ -139,8 +136,7 @@ class SearchController extends Controller
         return $results;
     }
 
-    private function searchCustomers($query, $companyId)
-    {
+    private function searchCustomers($query, $companyId) {
         $results = [];
         
         try {
@@ -164,8 +160,7 @@ class SearchController extends Controller
         return $results;
     }
 
-    private function searchContainers($query, $companyId)
-    {
+    private function searchContainers($query, $companyId) {
         $results = [];
         
         try {

@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Gate;
 
 class AccountingController extends Controller
 {
+    // ----------------------- Chart of Accounts -----------------------
     public function tree() {
         $accounts = Account::where('parent_id', null)->get();
         return view('pages.accounting.tree.parents', compact('accounts'));
@@ -76,6 +77,8 @@ class AccountingController extends Controller
         logActivity('حذف حساب', "تم حذف الحساب '" . $name . "' من دليل الحسابات", $old, null);
         return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");
     }
+
+    // ----------------------- Journal Entries -----------------------
 
     public function entries(Request $request) {
         $view = $request->query('view', 'قيود يومية');
@@ -652,6 +655,8 @@ class AccountingController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
+
+    // ----------------------- Vouchers -----------------------
 
     public function createPaymentVoucher() {
         $accounts = Account::where('level', 5)->with('customer')->get();

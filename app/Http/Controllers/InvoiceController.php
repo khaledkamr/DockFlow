@@ -56,6 +56,8 @@ class InvoiceController extends Controller
         return view('pages.invoices.invoices', compact('invoices'));
     }
 
+    // ----------------------- Storage Invoices -----------------------
+
     public function createInvoice(Request $request) {
         $customers = Customer::all(); 
         $customer_id = $request->input('customer_id');
@@ -141,7 +143,7 @@ class InvoiceController extends Controller
             $containerData[$container->id] = ['amount' => $totalForThisContainer];
         }
 
-        if($amountBeforeTax <= 0) {
+        if($amountBeforeTax <= 0 && $request->invoice_type != 'مسودة') {
             return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من أسعار التخزين والخدمات.');
         }
 
@@ -223,6 +225,8 @@ class InvoiceController extends Controller
         ));
     }
 
+    // ----------------------- Service Invoices -----------------------
+
     public function storeServiceInvoice(InvoiceRequest $request) {
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
@@ -240,7 +244,7 @@ class InvoiceController extends Controller
             $containerData[$container->id] = ['amount' => $services];
         }
 
-        if($amountBeforeTax <= 0) {
+        if($amountBeforeTax <= 0 && $request->invoice_type != 'مسودة') {
             return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من أسعار الخدمات.');
         }
 
@@ -307,6 +311,8 @@ class InvoiceController extends Controller
             'qrCode',
         ));
     }
+
+    // ----------------------- Clearance Invoices -----------------------
 
     public function previewClearanceInvoice(Transaction $transaction) {
         $previewItems = collect();
@@ -752,6 +758,8 @@ class InvoiceController extends Controller
 
         return redirect()->back()->with('success', 'تم تحديث بنود الفاتورة بنجاح.');
     }
+
+    // ----------------------- Shipping Invoices -----------------------
     
     public function createShippingInvoice(Request $request) {
         $customers = Customer::all(); 
@@ -782,7 +790,7 @@ class InvoiceController extends Controller
             $policyData[$policy->id] = ['amount' => $policy->total_cost];
         }
 
-        if($amountBeforeTax <= 0) {
+        if($amountBeforeTax <= 0 && $request->invoice_type != 'مسودة') {
             return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من تكاليف الشحن.');
         }
 
@@ -836,6 +844,8 @@ class InvoiceController extends Controller
             'qrCode',
         ));
     }
+
+    // ----------------------- Posting Invoices -----------------------
 
     public function postInvoice(Invoice $invoice) {
         if($invoice->is_posted) {
@@ -1021,34 +1031,7 @@ class InvoiceController extends Controller
         return redirect()->back()->with('success', "تم ترحيل الفاتورة بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
 
-    public function approveInvoice(Invoice $invoice) {
-        // if(Gate::denies('اعتماد فاتورة')) {
-        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لاعتماد الفواتير');
-        // }
-
-        $currentYear = Carbon::now()->year;
-        $lastInvoice = Invoice::whereYear('date', $currentYear)->orderBy('code', 'desc')->first();
-        $prefix = $currentYear . 'IN';
-
-        if ($lastInvoice && strpos($lastInvoice->code, $prefix) === 0) {
-            $lastNumber = (int) substr($lastInvoice->code, strlen($prefix));
-            $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
-        } else {
-            $newNumber = '00001';
-        }
-
-        $invoice->code = $prefix . $newNumber;
-        $invoice->save();
-
-        $invoice->status = 'لم يتم الدفع';
-        $invoice->date = Carbon::now();
-        $invoice->save();
-
-        $new = $invoice->toArray();
-        logActivity('اعتماد فاتورة', "تم اعتماد الفاتورة رقم " . $invoice->code, null, $new);
-
-        return redirect()->back()->with('success', 'تم اعتماد الفاتورة بنجاح');
-    }
+    // ----------------------- Invoice Statements -----------------------
 
     public function invoiceStatements(Request $request) {
         $invoiceStatements = InvoiceStatement::orderBy('id', 'desc')->get();
@@ -1116,6 +1099,8 @@ class InvoiceController extends Controller
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoiceStatement->amount, 2));
         return view('pages.invoices.statement_details', compact('invoiceStatement', 'hatching_total'));
     }
+
+    // ----------------------- Extra Methods -----------------------
 
     public function invoicesReports(Request $request) {
         $invoices = Invoice::query();
@@ -1209,6 +1194,35 @@ class InvoiceController extends Controller
         logActivity('تعديل فاتورة', "تم تعديل بيانات الفاتورة رقم " . $invoice->code, $old, $new);
 
         return redirect()->back()->with('success', 'تم تحديث بيانات الفاتورة');
+    }
+
+    public function approveInvoice(Invoice $invoice) {
+        // if(Gate::denies('اعتماد فاتورة')) {
+        //     return redirect()->back()->with('error', 'ليس لديك الصلاحية لاعتماد الفواتير');
+        // }
+
+        $currentYear = Carbon::now()->year;
+        $lastInvoice = Invoice::whereYear('date', $currentYear)->orderBy('code', 'desc')->first();
+        $prefix = $currentYear . 'IN';
+
+        if ($lastInvoice && strpos($lastInvoice->code, $prefix) === 0) {
+            $lastNumber = (int) substr($lastInvoice->code, strlen($prefix));
+            $newNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+        } else {
+            $newNumber = '00001';
+        }
+
+        $invoice->code = $prefix . $newNumber;
+        $invoice->save();
+
+        $invoice->status = 'لم يتم الدفع';
+        $invoice->date = Carbon::now();
+        $invoice->save();
+
+        $new = $invoice->toArray();
+        logActivity('اعتماد فاتورة', "تم اعتماد الفاتورة رقم " . $invoice->code, null, $new);
+
+        return redirect()->back()->with('success', 'تم اعتماد الفاتورة بنجاح');
     }
 
     public function attachFile(Request $request, Invoice $invoice) {
