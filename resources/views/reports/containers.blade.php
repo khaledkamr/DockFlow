@@ -3,7 +3,8 @@
 @section('title', 'تقرير الحاويات')
 
 @section('content')
-<h5 class="text-center fw-bold mb-4 mt-4">تقرير الحاويات من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
+<h1 class="text-center fw-bold">تقرير الحاويات</h1>
+<h5 class="text-center fw-bold mb-4">من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
 
 <div class="table-container">
     <table class="table table-bordered border-dark">

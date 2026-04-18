@@ -3,7 +3,8 @@
 @section('title', 'تقرير بوالص التخزين')
 
 @section('content')
-<h5 class="text-center fw-bold mb-4 mt-4">تقرير بوالص التخزين من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
+<h1 class="text-center fw-bold">تقرير بوالص التخزين</h1>
+<h5 class="text-center fw-bold mb-4">من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
 
 <div class="table-container">
     <table class="table table-bordered border-dark">
@@ -13,7 +14,7 @@
                 <th>رقم البوليصة</th>
                 <th>النوع</th>
                 <th>بوليصة التسليم</th>
-                <th>العميل</th>
+                <th>إسم العميل</th>
                 <th>الحاوية</th>
                 <th>الرقم المرجعي</th>
                 <th>تاريخ الدخول</th>
@@ -119,8 +120,8 @@
                         </td>
                         <td class="text-center fw-bold">
                             @if($policy->containers->first())
-                                @if ($policy->containers->first()->invoices->where('type', 'تخزين')->first())
-                                    {{ $policy->containers->first()->invoices->where('type', 'تخزين')->first()->code }}
+                                @if ($policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first())
+                                    {{ $policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first()->code }}
                                 @elseif($policy->containers->first()->invoices->where('type', 'تخليص')->first())
                                     {{ $policy->containers->first()->invoices->where('type', 'تخليص')->first()->code }}
                                 @elseif($policy->containers->first()->invoices->where('type', 'خدمات')->first())

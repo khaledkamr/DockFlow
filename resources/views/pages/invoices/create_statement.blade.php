@@ -99,7 +99,7 @@
                                 </td>
                                 <td class="fw-bold row-number">{{ $loop->iteration }}</td>
                                 <td class="text-primary fw-bold">
-                                    <a href="{{ route('invoices.details', $invoice) }}"
+                                    <a href="{{ route('invoices.unified.details', $invoice) }}"
                                         class="text-decoration-none invoice-code">
                                         {{ $invoice->code }}
                                     </a>
@@ -172,7 +172,8 @@
                                 <i class="fas fa-info-circle me-1"></i>
                                 سيتم إنشاء مطالبة دفع للفواتير المحددة
                             </div>
-                            <button type="submit" class="btn btn-primary fw-bold col-12 col-md-auto" id="create-statement-btn" disabled>
+                            <button type="submit" class="btn btn-primary fw-bold col-12 col-md-auto"
+                                id="create-statement-btn" disabled>
                                 <i class="fas fa-plus me-1"></i>
                                 إنشاء مطالبة دفع
                             </button>

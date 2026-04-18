@@ -11,7 +11,7 @@
         </h1>
         <div class="d-flex flex-row gap-2">
             @if ($policy->invoices->where('type', 'شحن')->first())
-                <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}"
+                <a href="{{ route('invoices.unified.details', $policy->invoices->where('type', 'شحن')->first()) }}"
                     target="_blank" class="btn btn-outline-primary flex-fill">
                     <i class="fa-solid fa-scroll"></i> <span class="d-inline">عرض الفاتورة</span>
                 </a>
@@ -191,8 +191,9 @@
                                 </div>
                                 <div class="col-12 col-md-2 external-field">
                                     <label class="form-label">مصاريف المورد</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" name="supplier_cost"
-                                        id="supplier_cost" value="{{ old('supplier_cost', $policy->supplier_cost) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        name="supplier_cost" id="supplier_cost"
+                                        value="{{ old('supplier_cost', $policy->supplier_cost) }}">
                                     @error('supplier_cost')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -209,48 +210,53 @@
                                 </div>
                                 <div class="col-12 col-md internal-field">
                                     <label class="form-label">مصاريف الديزل</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" name="diesel_cost"
-                                        id="diesel_cost" value="{{ old('diesel_cost', $policy->diesel_cost) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        name="diesel_cost" id="diesel_cost"
+                                        value="{{ old('diesel_cost', $policy->diesel_cost) }}">
                                     @error('diesel_cost')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12 col-md internal-field">
                                     <label class="form-label">عمولة السائق</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" name="driver_wage"
-                                        id="driver_wage" value="{{ old('driver_wage', $policy->driver_wage) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        name="driver_wage" id="driver_wage"
+                                        value="{{ old('driver_wage', $policy->driver_wage) }}">
                                     @error('driver_wage')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12 col-md">
                                     <label class="form-label">عمولة المندوب</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" name="commission"
-                                        id="commission" value="{{ old('commission', $policy->commission) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        name="commission" id="commission"
+                                        value="{{ old('commission', $policy->commission) }}">
                                     @error('commission')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12 col-md">
                                     <label class="form-label">رسوم فسح</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" name="clearance_fee"
-                                        id="clearance_fee" value="{{ old('clearance_fee', $policy->clearance_fee) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        name="clearance_fee" id="clearance_fee"
+                                        value="{{ old('clearance_fee', $policy->clearance_fee) }}">
                                     @error('clearance_fee')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12 col-md">
                                     <label class="form-label">غرامة تأخير</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" name="late_fee"
-                                        id="late_fee" value="{{ old('late_fee', $policy->late_fee) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        name="late_fee" id="late_fee" value="{{ old('late_fee', $policy->late_fee) }}">
                                     @error('late_fee')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12 col-md">
                                     <label class="form-label">سعر العميل</label>
-                                    <input type="number" step="any" min="0" class="form-control border-primary" id="client_cost"
-                                        name="client_cost" value="{{ old('client_cost', $policy->client_cost) }}">
+                                    <input type="number" step="any" min="0" class="form-control border-primary"
+                                        id="client_cost" name="client_cost"
+                                        value="{{ old('client_cost', $policy->client_cost) }}">
                                     @error('client_cost')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -410,7 +416,7 @@
                     </div>
                     <div class="col-6 col-sm-4 col-md-3 col-lg">
                         <label class="text-muted small">رسوم فسح</label>
-                        <p class="fw-bold mb-0">{{ number_format($policy->clearance_fee, 2) }} 
+                        <p class="fw-bold mb-0">{{ number_format($policy->clearance_fee, 2) }}
                             <i data-lucide="saudi-riyal"></i>
                         </p>
                     </div>

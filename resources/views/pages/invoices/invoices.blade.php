@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'الفواتير')
+@section('title', 'فواتير المبيعات')
 
 @section('content')
-    <h1 class="mb-4">الفواتير</h1>
+    <h1 class="mb-4">فواتيــر المبيعــات</h1>
 
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-6">
@@ -49,11 +49,11 @@
                             {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
                             جميع الفواتير</option>
                         <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>
-                            تم الدفع</option>
+                            مسددة</option>
                         <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>
-                            لم يتم الدفع</option>
-                        <option value="مسودة" {{ request()->query('status') === 'مسودة' ? 'selected' : '' }}>
-                            مسودة</option>
+                            غير مسدد</option>
+                        <option value="تم الدفع جزئياً" {{ request()->query('status') === 'تم الدفع جزئياً' ? 'selected' : '' }}>
+                            مسددة جزئياً</option>
                     </select>
                     @foreach (request()->except('status') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
@@ -89,26 +89,10 @@
                     @foreach ($invoices as $invoice)
                         <tr>
                             <td class="text-center text-primary fw-bold">
-                                @if ($invoice->type == 'خدمات')
-                                    <a href="{{ route('invoices.services.details', $invoice) }}"
-                                        class="text-decoration-none">
-                                        {{ $invoice->code }}
-                                    </a>
-                                @elseif($invoice->type == 'تخزين')
-                                    <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
-                                        {{ $invoice->code }}
-                                    </a>
-                                @elseif($invoice->type == 'تخليص')
-                                    <a href="{{ route('invoices.clearance.details', $invoice) }}"
-                                        class="text-decoration-none">
-                                        {{ $invoice->code }}
-                                    </a>
-                                @elseif($invoice->type == 'شحن')
-                                    <a href="{{ route('invoices.shipping.details', $invoice) }}"
-                                        class="text-decoration-none">
-                                        {{ $invoice->code }}
-                                    </a>
-                                @endif
+                                <a href="{{ route('invoices.unified.details', $invoice) }}"
+                                    class="text-decoration-none">
+                                    {{ $invoice->code }}
+                                </a>
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $invoice->customer) }}"
@@ -138,30 +122,10 @@
                                 </a>
                             </td>
                             <td class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                @if ($invoice->type == 'خدمات')
-                                    <a href="{{ route('invoices.services.details', $invoice) }}"
-                                        class="btn btn-sm btn-primary">
-                                        <span class="d-none d-sm-inline">عرض</span><i
-                                            class="fa-solid fa-eye d-inline d-sm-none"></i>
-                                    </a>
-                                @elseif($invoice->type == 'تخزين')
-                                    <a href="{{ route('invoices.details', $invoice) }}" class="btn btn-sm btn-primary">
-                                        <span class="d-none d-sm-inline">عرض</span><i
-                                            class="fa-solid fa-eye d-inline d-sm-none"></i>
-                                    </a>
-                                @elseif($invoice->type == 'تخليص')
-                                    <a href="{{ route('invoices.clearance.details', $invoice) }}"
-                                        class="btn btn-sm btn-primary">
-                                        <span class="d-none d-sm-inline">عرض</span><i
-                                            class="fa-solid fa-eye d-inline d-sm-none"></i>
-                                    </a>
-                                @elseif($invoice->type == 'شحن')
-                                    <a href="{{ route('invoices.shipping.details', $invoice) }}"
-                                        class="btn btn-sm btn-primary">
-                                        <span class="d-none d-sm-inline">عرض</span><i
-                                            class="fa-solid fa-eye d-inline d-sm-none"></i>
-                                    </a>
-                                @endif
+                                <a href="{{ route('invoices.unified.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                    <span class="d-none d-sm-inline">عرض</span>
+                                    <i class="fa-solid fa-eye d-inline d-sm-none"></i>
+                                </a>
 
                                 @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"

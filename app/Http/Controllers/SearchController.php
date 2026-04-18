@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Auth;
 class SearchController extends Controller
 {
     private $codeTypes = [
-        'IN' => ['name' => 'فاتورة', 'icon' => 'fa-file-invoice-dollar', 'model' => Invoice::class, 'route' => ['تخزين' => 'invoices.details', 'خدمات' => 'invoices.services.details', 'تخليص' => 'invoices.clearance.details', 'شحن' => 'invoices.shipping.details']],
-        'EI' => ['name' => 'فاتورة مصاريف', 'icon' => 'fa-file-invoice', 'model' => ExpenseInvoice::class, 'route' => 'expense.invoices.details'],
+        'IN' => ['name' => 'فاتورة', 'icon' => 'fa-file-invoice-dollar', 'model' => Invoice::class, 'route' => ['تخزين' => 'invoices.unified.details', 'خدمات' => 'invoices.unified.details', 'تخليص' => 'invoices.unified.details', 'شحن' => 'invoices.unified.details']],
+        'EI' => ['name' => 'فاتورة مصاريف', 'icon' => 'fa-file-invoice', 'model' => ExpenseInvoice::class, 'route' => 'expense.invoices.unified.details'],
         'IS' => ['name' => 'مطالبة فواتير', 'icon' => 'fa-file-invoice', 'model' => InvoiceStatement::class, 'route' => 'invoices.statements.details'],
         'JD' => ['name' => 'قيد يومي', 'icon' => 'fa-money-bill-transfer', 'model' => JournalEntry::class, 'route' => 'journal.details'],
         'VR' => ['name' => 'سند صرف', 'icon' => 'fa-money-bill', 'model' => Voucher::class, 'route' => 'voucher.details'],

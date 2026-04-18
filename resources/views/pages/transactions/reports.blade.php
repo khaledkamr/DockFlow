@@ -88,8 +88,8 @@
             <div class="flex-grow-1 mx-2">
                 <form method="GET" action="">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control border-primary" 
-                            placeholder="ابحث عن معاملة برقم المعاملة أو برقم البوليصة  أو بالبيان الجمركي أو بإسم العميل أو برقم الحاوية..." 
+                        <input type="text" name="search" class="form-control border-primary"
+                            placeholder="ابحث عن معاملة برقم المعاملة أو برقم البوليصة  أو بالبيان الجمركي أو بإسم العميل أو برقم الحاوية..."
                             value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-search"></i>
@@ -102,11 +102,11 @@
             </div>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('export.excel', 'transactions') }}">
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="تصدير Excel">
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="تصدير Excel">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                 </form>
@@ -165,14 +165,16 @@
                                 </td>
                                 <td class="text-center fw-bold">{{ $transaction->containers()->count() }}</td>
                                 <td class="text-center">
-                                    <span class="badge status-{{  $transaction->status == 'مغلقة' ? 'delivered' : 'waiting' }}">
+                                    <span
+                                        class="badge status-{{ $transaction->status == 'مغلقة' ? 'delivered' : 'waiting' }}">
                                         {{ $transaction->status }}
                                     </span>
                                 </td>
-                                <td class="text-center">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}</td>
+                                <td class="text-center">{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}
+                                </td>
                                 <td class="text-center">
                                     @if ($transaction->containers()->first()->invoices->where('type', 'تخليص')->first())
-                                        <a href="{{ route('invoices.clearance.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}"
+                                        <a href="{{ route('invoices.unified.details', $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()) }}"
                                             class="text-decoration-none fw-bold">
                                             {{ $transaction->containers()->first()->invoices->where('type', 'تخليص')->first()->code }}
                                         </a>
@@ -180,11 +182,16 @@
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td class="text-center">{{ $transaction->items->where('type', 'مصروف')->sum('amount') }}</td>
-                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد تخليص')->sum('amount') }}</td>
-                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد نقل')->sum('amount') }}</td>
-                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد عمال')->sum('amount') }}</td>
-                                <td class="text-center">{{ $transaction->items->where('type', 'ايراد سابر')->sum('amount') }}</td>
+                                <td class="text-center">{{ $transaction->items->where('type', 'مصروف')->sum('amount') }}
+                                </td>
+                                <td class="text-center">
+                                    {{ $transaction->items->where('type', 'ايراد تخليص')->sum('amount') }}</td>
+                                <td class="text-center">
+                                    {{ $transaction->items->where('type', 'ايراد نقل')->sum('amount') }}</td>
+                                <td class="text-center">
+                                    {{ $transaction->items->where('type', 'ايراد عمال')->sum('amount') }}</td>
+                                <td class="text-center">
+                                    {{ $transaction->items->where('type', 'ايراد سابر')->sum('amount') }}</td>
                             </tr>
                         @endforeach
                         <tr class="table-primary">

@@ -129,17 +129,17 @@
                                     <td class="text-center fw-bold">{{ $index + 1 }}</td>
                                     <td class="text-center text-primary fw-bold">
                                         @if ($invoice->type == 'خدمات')
-                                            <a href="{{ route('invoices.services.details', $invoice) }}"
+                                            <a href="{{ route('invoices.unified.details', $invoice) }}"
                                                 class="text-decoration-none">
                                                 {{ $invoice->code }}
                                             </a>
                                         @elseif($invoice->type == 'تخزين')
-                                            <a href="{{ route('invoices.details', $invoice) }}"
+                                            <a href="{{ route('invoices.unified.details', $invoice) }}"
                                                 class="text-decoration-none">
                                                 {{ $invoice->code }}
                                             </a>
                                         @elseif($invoice->type == 'تخليص')
-                                            <a href="{{ route('invoices.clearance.details', $invoice) }}"
+                                            <a href="{{ route('invoices.unified.details', $invoice) }}"
                                                 class="text-decoration-none">
                                                 {{ $invoice->code }}
                                             </a>
@@ -153,19 +153,19 @@
                                     <td class="text-center">{{ $invoice->made_by->name ?? '-' }}</td>
                                     <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                                         @if ($invoice->type == 'خدمات')
-                                            <a href="{{ route('invoices.services.details', $invoice) }}"
+                                            <a href="{{ route('invoices.unified.details', $invoice) }}"
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-eye d-inline d-sm-none"></i><span
                                                     class="d-none d-sm-inline">عرض</span>
                                             </a>
                                         @elseif($invoice->type == 'تخزين')
-                                            <a href="{{ route('invoices.details', $invoice) }}"
+                                            <a href="{{ route('invoices.unified.details', $invoice) }}"
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-eye d-inline d-sm-none"></i><span
                                                     class="d-none d-sm-inline">عرض</span>
                                             </a>
                                         @elseif($invoice->type == 'تخليص')
-                                            <a href="{{ route('invoices.clearance.details', $invoice) }}"
+                                            <a href="{{ route('invoices.unified.details', $invoice) }}"
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-eye d-inline d-sm-none"></i><span
                                                     class="d-none d-sm-inline">عرض</span>

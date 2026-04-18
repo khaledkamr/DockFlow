@@ -345,7 +345,8 @@
 
     <!-- Invoices -->
     <div class="card border-0 rounded-3 shadow-sm mb-3 mb-md-4">
-        <div class="card-header bg-dark text-white d-flex flex-row justify-content-between align-items-start align-items-md-center gap-2">
+        <div
+            class="card-header bg-dark text-white d-flex flex-row justify-content-between align-items-start align-items-md-center gap-2">
             <h5 class="mb-0 fs-6 fs-md-5">
                 <i class="fas fa-file-invoice-dollar me-2"></i>
                 الفواتير ({{ count($customer->invoices) }})
@@ -382,26 +383,10 @@
                             <tr>
                                 <td class="fw-bold text-primary">{{ $loop->iteration }}</td>
                                 <td class="fw-bold text-primary">
-                                    @if ($invoice->type == 'خدمات')
-                                        <a href="{{ route('invoices.services.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'تخزين')
-                                        <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'تخليص')
-                                        <a href="{{ route('invoices.clearance.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'شحن')
-                                        <a href="{{ route('invoices.shipping.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @endif
+                                    <a href="{{ route('invoices.unified.details', $invoice) }}"
+                                        class="text-decoration-none">
+                                        {{ $invoice->code }}
+                                    </a>
                                 </td>
                                 <td>{{ $invoice->type }}</td>
                                 <td class="fw-bold">{{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i></td>

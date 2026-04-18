@@ -77,7 +77,7 @@
                         <td class="text-center small">{{ $container->code }}</td>
                         <td class="text-center small" style="white-space: nowrap;">{{ Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
                         <td class="text-center small" style="white-space: nowrap;">{{ Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') }}</td>
-                        <td class="text-center small">{{ $container->period }}</td>
+                        <td class="text-center small">{{ $container->storage_days }}</td>
                         <td class="text-center small">{{ number_format($container->storage_price, 2) }}</td>
                         <td class="text-center small">{{ $container->late_days }}</td>
                         <td class="text-center small">{{ number_format($container->late_fee, 2) }}</td>

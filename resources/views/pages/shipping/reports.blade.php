@@ -148,8 +148,7 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-3 p-3">
-        <div
-            class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+        <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
@@ -168,8 +167,8 @@
             <div class="flex-grow-1 mx-2">
                 <form method="GET" action="">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control border-primary" 
-                            placeholder="ابحث عن بوليصة بالرقم او بإسم العميل او برقم الحاوية..." 
+                        <input type="text" name="search" class="form-control border-primary"
+                            placeholder="ابحث عن بوليصة بالرقم او بإسم العميل او برقم الحاوية..."
                             value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-search"></i>
@@ -182,7 +181,7 @@
             </div>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('export.excel', 'shipping_policies') }}">
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                     <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
@@ -192,7 +191,7 @@
                 </form>
                 <form action="{{ route('print.shipping.reports') }}" method="GET" target="_blank">
                     @csrf
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                     <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
@@ -211,7 +210,7 @@
                         <th class="text-center bg-dark text-white">التاريخ</th>
                         <th class="text-center bg-dark text-white">العميل</th>
                         <th class="text-center bg-dark text-white">المورد</th>
-                        @if(request('net_profit') == '0')
+                        @if (request('net_profit') == '0')
                             <th class="text-center bg-dark text-white">السائق</th>
                             <th class="text-center bg-dark text-white">السيارة</th>
                             <th class="text-center bg-dark text-white">البيان</th>
@@ -219,7 +218,7 @@
                         <th class="text-center bg-dark text-white">مكان التحميل</th>
                         <th class="text-center bg-dark text-white">مكان التسليم</th>
                         <th class="text-center bg-dark text-white">الحالة</th>
-                        @if(request('net_profit') == '0')
+                        @if (request('net_profit') == '0')
                             <th class="text-center bg-dark text-white">المبلغ</th>
                         @elseif(request('net_profit') == '1')
                             <th class="text-center bg-dark text-white">تكلفة المورد</th>
@@ -231,7 +230,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if ($policies->isEmpty() || !request()->hasAny(['customer','from','to','type','status','invoice_status','supplier','driver','vehicle','loading_location','delivery_location',]))
+                    @if (
+                        $policies->isEmpty() ||
+                            !request()->hasAny([
+                                'customer',
+                                'from',
+                                'to',
+                                'type',
+                                'status',
+                                'invoice_status',
+                                'supplier',
+                                'driver',
+                                'vehicle',
+                                'loading_location',
+                                'delivery_location',
+                            ]))
                         <tr>
                             <td colspan="14" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
@@ -249,12 +262,13 @@
                                 </td>
                                 <td class="text-center">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('users.customer.profile', $policy->customer) }}" class="text-decoration-none text-dark" target="_blank">
+                                    <a href="{{ route('users.customer.profile', $policy->customer) }}"
+                                        class="text-decoration-none text-dark" target="_blank">
                                         {{ $policy->customer->name }}
                                     </a>
                                 </td>
                                 <td class="text-center">{{ $policy->supplier->name ?? '-' }}</td>
-                                @if(request('net_profit') == '0')
+                                @if (request('net_profit') == '0')
                                     <td class="text-center">
                                         {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
                                     <td class="text-center">
@@ -271,28 +285,32 @@
                                         <div class="badge status-waiting">تحت التسليم</div>
                                     @endif
                                 </td>
-                                @if(request('net_profit') == '0')
+                                @if (request('net_profit') == '0')
                                     <td class="text-center">{{ $policy->total_cost }}</td>
                                 @elseif(request('net_profit') == '1')
                                     <td class="text-center">{{ $policy->supplier_cost }}</td>
                                     <td class="text-center">{{ $policy->commission }}</td>
                                     <td class="text-center">{{ $policy->total_cost }}</td>
-                                    <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost - $policy->commission }}</td>
+                                    <td class="text-center">
+                                        {{ $policy->total_cost - $policy->supplier_cost - $policy->commission }}</td>
                                 @endif
                                 <td class="text-center">
-                                    @if($policy->invoices->where('type', 'شحن')->isEmpty())
-                                        -
-                                    @else
-                                        <a href="{{ route('invoices.shipping.details', $policy->invoices->where('type', 'شحن')->first()) }}" target="_blank"
-                                            class="text-decoration-none fw-bold">
-                                            {{ $policy->invoices->where('type', 'شحن')->first()->code }}
+                                    @php
+                                        $shippingInvoice = $policy->invoices()->where('type', 'LIKE', '%شحن%')->first();
+                                    @endphp
+                                    @if ($shippingInvoice)
+                                        <a href="{{ route('invoices.unified.details', $shippingInvoice) }}"
+                                            target="_blank" class="text-decoration-none fw-bold">
+                                            {{ $shippingInvoice->code }}
                                         </a>
+                                    @else
+                                        -
                                     @endif
                                 </td>
                             </tr>
                         @endforeach
 
-                        @if(request('net_profit') == '1')
+                        @if (request('net_profit') == '1')
                             <tr class="table-primary fw-bold">
                                 <td colspan="7"></td>
                                 <td class="text-center">الإجمالي</td>
@@ -351,7 +369,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -360,17 +378,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>

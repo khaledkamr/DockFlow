@@ -111,7 +111,8 @@
                                 <div class="col-12 mb-3">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <strong class="text-muted">البيان:</strong>
-                                        <span class="fw-bold text-end" style="max-width: 60%;">{{ $voucher->description ?? 'لا يوجد بيان' }}</span>
+                                        <span class="fw-bold text-end"
+                                            style="max-width: 60%;">{{ $voucher->description ?? 'لا يوجد بيان' }}</span>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -208,7 +209,7 @@
                                         <strong>رقم الفاتورة:</strong>
                                         <span class="ms-2">{{ $voucher->invoice->code }}</span>
                                     </div>
-                                    <a href="{{ route('invoices.details', $voucher->invoice->uuid) }}"
+                                    <a href="{{ route('invoices.unified.details', $voucher->invoice->uuid) }}"
                                         class="btn btn-sm btn-info" target="_blank">
                                         <i class="fas fa-eye me-1"></i>عرض الفاتورة
                                     </a>
@@ -229,37 +230,47 @@
                             </h6>
                         </div>
                         <div class="card-body">
-                            @if($voucher->attachments && count($voucher->attachments) > 0)
+                            @if ($voucher->attachments && count($voucher->attachments) > 0)
                                 <div class="row g-3">
-                                    @foreach($voucher->attachments as $attachment)
+                                    @foreach ($voucher->attachments as $attachment)
                                         <div class="col-12 col-md-6 col-lg-4">
                                             <div class="card border-light">
                                                 <div class="card-body text-center">
                                                     <div class="mb-2">
                                                         @php
-                                                            $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
+                                                            $extension = pathinfo(
+                                                                $attachment->file_name,
+                                                                PATHINFO_EXTENSION,
+                                                            );
                                                         @endphp
-                                                        @if(in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif']))
-                                                            <i class="fas fa-image text-success" style="font-size: 2rem;"></i>
+                                                        @if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif']))
+                                                            <i class="fas fa-image text-success"
+                                                                style="font-size: 2rem;"></i>
                                                         @elseif(strtolower($extension) == 'pdf')
-                                                            <i class="fas fa-file-pdf text-danger" style="font-size: 2rem;"></i>
+                                                            <i class="fas fa-file-pdf text-danger"
+                                                                style="font-size: 2rem;"></i>
                                                         @elseif(in_array(strtolower($extension), ['doc', 'docx']))
-                                                            <i class="fas fa-file-word text-primary" style="font-size: 2rem;"></i>
+                                                            <i class="fas fa-file-word text-primary"
+                                                                style="font-size: 2rem;"></i>
                                                         @elseif(in_array(strtolower($extension), ['xls', 'xlsx']))
-                                                            <i class="fas fa-file-excel text-success" style="font-size: 2rem;"></i>
+                                                            <i class="fas fa-file-excel text-success"
+                                                                style="font-size: 2rem;"></i>
                                                         @else
-                                                            <i class="fas fa-file text-secondary" style="font-size: 2rem;"></i>
+                                                            <i class="fas fa-file text-secondary"
+                                                                style="font-size: 2rem;"></i>
                                                         @endif
                                                     </div>
                                                     <p class="mb-2 fw-bold">{{ $attachment->original_name }}</p>
-                                                    <small class="text-muted">{{ number_format($attachment->file_size / 1024, 2) }} KB</small>
+                                                    <small
+                                                        class="text-muted">{{ number_format($attachment->file_size / 1024, 2) }}
+                                                        KB</small>
                                                     <div class="mt-3">
-                                                        <a href="{{ Storage::url($attachment->file_path) }}" target="_blank" 
-                                                           class="btn btn-sm btn-outline-primary me-2">
+                                                        <a href="{{ Storage::url($attachment->file_path) }}"
+                                                            target="_blank" class="btn btn-sm btn-outline-primary me-2">
                                                             <i class="fas fa-eye"></i> عرض
                                                         </a>
-                                                        <a href="{{ Storage::url($attachment->file_path) }}" download 
-                                                           class="btn btn-sm btn-outline-secondary">
+                                                        <a href="{{ Storage::url($attachment->file_path) }}" download
+                                                            class="btn btn-sm btn-outline-secondary">
                                                             <i class="fas fa-download"></i> تحميل
                                                         </a>
                                                     </div>

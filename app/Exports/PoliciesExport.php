@@ -98,8 +98,8 @@ class PoliciesExport implements FromCollection, WithHeadings
             }
 
             if($policy->containers->first()) {
-                if($policy->containers->first()->invoices->where('type', 'تخزين')->first()) {
-                    $invoice = $policy->containers->first()->invoices->where('type', 'تخزين')->first()->code;
+                if($policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first()) {
+                    $invoice = $policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first()->code;
                 } elseif($policy->containers->first()->invoices->where('type', 'خدمات')->first()) {
                     $invoice = $policy->containers->first()->invoices->where('type', 'خدمات')->first()->code;
                 } else {

@@ -83,8 +83,8 @@
             <div class="flex-grow-1 mx-2">
                 <form method="GET" action="">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control border-primary" 
-                            placeholder="ابحث عن بوليصة برقم البوليصة أو بإسم العميل أو برقم الحاوية أو بالرقم المرجعي..." 
+                        <input type="text" name="search" class="form-control border-primary"
+                            placeholder="ابحث عن بوليصة برقم البوليصة أو بإسم العميل أو برقم الحاوية أو بالرقم المرجعي..."
                             value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-search"></i>
@@ -97,22 +97,22 @@
             </div>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('export.excel', 'policies_report') }}">
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="تصدير Excel">
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="تصدير Excel">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                 </form>
 
                 <form action="{{ route('print.policies.report') }}" method="GET" target="_blank">
                     @csrf
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="طباعة">
+                    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="طباعة">
                         <i class="fa-solid fa-print"></i>
                     </button>
                 </form>
@@ -145,7 +145,7 @@
                 <tbody>
                     @if ($policies->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type']))
                         <tr>
-                            <td colspan="11" class="text-center">
+                            <td colspan="17" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي بوالص!</div>
                             </td>
                         </tr>
@@ -174,8 +174,9 @@
                                     @endif
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
-                                        <a href="{{ route('policies.receive.details', $policy->containers->first()->policies->where('type', 'تسليم')->first()) }}" class="text-decoration-none fw-bold">
+                                    @if ($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                        <a href="{{ route('policies.receive.details', $policy->containers->first()->policies->where('type', 'تسليم')->first()) }}"
+                                            class="text-decoration-none fw-bold">
                                             {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->code }}
                                         </a>
                                     @else
@@ -183,13 +184,15 @@
                                     @endif
                                 </td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('users.customer.profile', $policy->customer) }}" class="text-decoration-none text-dark">
+                                    <a href="{{ route('users.customer.profile', $policy->customer) }}"
+                                        class="text-decoration-none text-dark">
                                         {{ $policy->customer->name }}
                                     </a>
                                 </td>
                                 <td class="text-center fw-bold">
-                                    @if($policy->containers->first())
-                                        <a href="{{ route('container.details', $policy->containers->first()) }}" class="text-decoration-none text-dark">
+                                    @if ($policy->containers->first())
+                                        <a href="{{ route('container.details', $policy->containers->first()) }}"
+                                            class="text-decoration-none text-dark">
                                             {{ $policy->containers->first()->code }}
                                         </a>
                                     @else
@@ -200,7 +203,7 @@
                                     {{ $policy->reference_number ?? '-' }}
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    @if($policy->containers->first())
+                                    @if ($policy->containers->first())
                                         {{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') }}
                                     @endif
                                 </td>
@@ -211,38 +214,39 @@
                                     {{ $policy->car_code }}
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    @if($policy->containers->first() && $policy->containers->first()->exit_date)
+                                    @if ($policy->containers->first() && $policy->containers->first()->exit_date)
                                         {{ Carbon\Carbon::parse($policy->containers->first()->exit_date)->format('Y/m/d') }}
                                     @else
                                         -
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                    @if ($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
                                         {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->driver_name }}
                                     @else
                                         -
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
+                                    @if ($policy->containers->first() && $policy->containers->first()->policies->where('type', 'تسليم')->first())
                                         {{ $policy->containers->first()->policies->where('type', 'تسليم')->first()->car_code }}
                                     @else
                                         -
                                     @endif
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    @if($policy->type == 'تخزين')
+                                    @if ($policy->type == 'تخزين')
                                         {{ $policy->containers->first() ? $policy->containers->first()->storage_days : '-' }}
                                     @elseif($policy->type == 'خدمات')
                                         0
                                     @endif
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    @if($policy->type == 'تخزين')
-                                        @if($policy->containers->first())
-                                            {{ $policy->containers->first()->storage_days > $policy->storage_duration && $policy->storage_duration ? 
-                                                $policy->containers->first()->storage_days - $policy->storage_duration : 0 }}
+                                    @if ($policy->type == 'تخزين')
+                                        @if ($policy->containers->first())
+                                            {{ $policy->containers->first()->storage_days > $policy->storage_duration && $policy->storage_duration
+                                                ? $policy->containers->first()->storage_days - $policy->storage_duration
+                                                : 0 }}
                                         @else
                                             0
                                         @endif
@@ -251,24 +255,27 @@
                                     @endif
                                 </td>
                                 <td class="text-center text-nowrap">
-                                    @if($policy->type == 'تخزين')
+                                    @if ($policy->type == 'تخزين')
                                         {{ number_format($policy->storage_price, 2) }}
                                     @elseif($policy->type == 'خدمات')
                                         {{ $policy->containers->first() ? number_format($policy->containers->first()->services->first()->pivot->price, 2) : '-' }}
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if($policy->containers->first())
-                                        @if ($policy->containers->first()->invoices->where('type', 'تخزين')->first())
-                                            <a href="{{ route('invoices.details', $policy->containers->first()->invoices->where('type', 'تخزين')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
-                                                {{ $policy->containers->first()->invoices->where('type', 'تخزين')->first()->code }}
+                                    @if ($policy->containers->first())
+                                        @if ($policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first())
+                                            <a href="{{ route('invoices.unified.details', $policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first()) }}"
+                                                target="_blank" class="text-decoration-none fw-bold">
+                                                {{ $policy->containers->first()->invoices()->where('type', 'LIKE', '%تخزين%')->first()->code }}
                                             </a>
                                         @elseif($policy->containers->first()->invoices->where('type', 'تخليص')->first())
-                                            <a href="{{ route('invoices.clearance.details', $policy->containers->first()->invoices->where('type', 'تخليص')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                            <a href="{{ route('invoices.unified.details', $policy->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
+                                                target="_blank" class="text-decoration-none fw-bold">
                                                 {{ $policy->containers->first()->invoices->where('type', 'تخليص')->first()->code }}
                                             </a>
                                         @elseif($policy->containers->first()->invoices->where('type', 'خدمات')->first())
-                                            <a href="{{ route('invoices.services.details', $policy->containers->first()->invoices->where('type', 'خدمات')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                            <a href="{{ route('invoices.unified.details', $policy->containers->first()->invoices->where('type', 'خدمات')->first()) }}"
+                                                target="_blank" class="text-decoration-none fw-bold">
                                                 {{ $policy->containers->first()->invoices->where('type', 'خدمات')->first()->code }}
                                             </a>
                                         @else
@@ -287,7 +294,7 @@
             <i class="fa-solid fa-arrows-left-right me-1"></i>
             اسحب الجدول لليمين أو اليسار لرؤية المزيد
         </div>
-        
+
         <div class="mt-4">
             {{ $policies->links('components.pagination') }}
         </div>
@@ -301,7 +308,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -310,17 +317,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>
@@ -332,6 +341,7 @@
             border: 1px solid #0d6efd;
             padding: 5px;
         }
+
         .select2-container .select2-selection__rendered {
             line-height: 30px;
         }

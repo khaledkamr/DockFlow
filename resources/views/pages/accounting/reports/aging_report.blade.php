@@ -3,8 +3,7 @@
 
     <div class="col-md-2">
         <label class="form-label">نوع التقرير</label>
-        <select name="report_type" id="report_type" class="form-select border-primary"
-            onchange="toggleCustomerSelect()">
+        <select name="report_type" id="report_type" class="form-select border-primary" onchange="toggleCustomerSelect()">
             <option value="all" {{ request('report_type', 'all') == 'all' ? 'selected' : '' }}>جميع العملاء</option>
             <option value="single" {{ request('report_type') == 'single' ? 'selected' : '' }}>عميل محدد</option>
         </select>
@@ -43,7 +42,8 @@
 <div id="report" class="bg-white p-3 rounded-3 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-end mb-2">
         <div>
-            <h5 class="mb-3 fw-bold">تقرير أعمار الذمم - {{ $selectedCustomer ? $selectedCustomer->name : 'جميع العملاء' }}</h5>
+            <h5 class="mb-3 fw-bold">تقرير أعمار الذمم -
+                {{ $selectedCustomer ? $selectedCustomer->name : 'جميع العملاء' }}</h5>
         </div>
         <div class="export-buttons d-flex gap-2 align-items-center">
             <form action="{{ route('export.excel', 'aging_report') }}" method="GET">
@@ -91,38 +91,26 @@
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
-                                    @if ($invoice->type == 'خدمات')
-                                        <a href="{{ route('invoices.services.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'تخزين')
-                                        <a href="{{ route('invoices.details', $invoice) }}" class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'تخليص')
-                                        <a href="{{ route('invoices.clearance.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'شحن')
-                                        <a href="{{ route('invoices.shipping.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @endif
+                                    <a href="{{ route('invoices.unified.details', $invoice) }}"
+                                        class="text-decoration-none">
+                                        {{ $invoice->code }}
+                                    </a>
                                 </td>
                                 <td class="text-center">{{ $invoice->type }}</td>
-                                <td class="text-center text-nowrap">{{ \Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                                 <td class="text-center text-nowrap">
-                                    {{ $invoice->payment_due_date ?  \Carbon\Carbon::parse($invoice->payment_due_date)->format('Y/m/d') : '' }}
+                                    {{ \Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
+                                <td class="text-center text-nowrap">
+                                    {{ $invoice->payment_due_date ? \Carbon\Carbon::parse($invoice->payment_due_date)->format('Y/m/d') : '' }}
                                 </td>
                                 <td class="text-center fw-bold text-nowrap {{ $invoice->late_days > 0 ? 'text-danger' : 'text-success' }}">
                                     {{ (int) $invoice->late_days }} يوم
                                 </td>
-                                <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->total_amount, 2) }} ر.س</td>
-                                <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->paid_amount, 2) }} ر.س</td>
-                                <td class="text-center fw-bold text-nowrap">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }} ر.س</td>
+                                <td class="text-center fw-bold text-nowrap">
+                                    {{ number_format($invoice->total_amount, 2) }} ر.س</td>
+                                <td class="text-center fw-bold text-nowrap">
+                                    {{ number_format($invoice->paid_amount, 2) }} ر.س</td>
+                                <td class="text-center fw-bold text-nowrap">
+                                    {{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }} ر.س</td>
                             </tr>
                         @empty
                             <tr>
@@ -140,7 +128,8 @@
                                 {{ number_format($unpaidInvoices->sum('paid_amount'), 2) }} ر.س
                             </td>
                             <td class="text-center text-nowrap">
-                                {{ number_format($unpaidInvoices->sum('total_amount') - $unpaidInvoices->sum('paid_amount'), 2) }} ر.س
+                                {{ number_format($unpaidInvoices->sum('total_amount') - $unpaidInvoices->sum('paid_amount'), 2) }}
+                                ر.س
                             </td>
                         </tr>
                     </tfoot>
@@ -279,7 +268,8 @@
             placeholder: "اختر العميل",
             allowClear: true,
             dir: "rtl",
-            language: "ar"
+            language: "ar",
+            width: '100%',
         });
 
         // Initialize visibility on page load

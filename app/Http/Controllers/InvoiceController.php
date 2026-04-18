@@ -173,7 +173,7 @@ class InvoiceController extends Controller
 
             logActivity('إنشاء فاتورة تخزين', "تم إنشاء فاتورة تخزين رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
 
-            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.details', $invoice).'">عرض الفاتورة</a>');
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.unified.details', $invoice).'">عرض الفاتورة</a>');
         });
     }
 
@@ -204,8 +204,6 @@ class InvoiceController extends Controller
             $amountBeforeTax += $container->total;  
         }
 
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
-
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
@@ -218,8 +216,6 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.invoice_details', compact(
             'invoice', 
-            'services', 
-            'discountValue', 
             'hatching_total', 
             'qrCode',
         ));
@@ -274,24 +270,12 @@ class InvoiceController extends Controller
 
             logActivity('إنشاء فاتورة خدمات', "تم إنشاء فاتورة خدمات رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
 
-            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.services.details', $invoice).'">عرض الفاتورة</a>');
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.unified.details', $invoice).'">عرض الفاتورة</a>');
         });
     }
 
     public function invoiceServicesDetails(Invoice $invoice) {
-        $amountBeforeTax = 0;
-
-        foreach($invoice->containers as $container) {
-            $services = 0;
-            foreach($container->services as $service) {
-                $services += $service->pivot->price;
-            }
-            $container->total = $services;
-            $amountBeforeTax += $container->total;  
-        }
-
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
-
+        
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
@@ -306,7 +290,6 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.invoice_services_details', compact(
             'invoice', 
-            'discountValue', 
             'hatching_total', 
             'qrCode',
         ));
@@ -672,7 +655,7 @@ class InvoiceController extends Controller
 
             logActivity('إنشاء فاتورة تخليص', "تم إنشاء فاتورة تخليص رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
 
-            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.clearance.details', $invoice).'">عرض الفاتورة</a>');
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.unified.details', $invoice).'">عرض الفاتورة</a>');
         });
     }
 
@@ -683,8 +666,6 @@ class InvoiceController extends Controller
                 $query->whereIn('container_id', $containerIds);
             })
             ->first();
-
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
 
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
@@ -698,8 +679,6 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.clearance_invoice_details', compact(
             'invoice', 
-            'transaction',
-            'discountValue', 
             'hatching_total', 
             'qrCode',
         ));
@@ -820,13 +799,11 @@ class InvoiceController extends Controller
 
             logActivity('إنشاء فاتورة شحن', "تم إنشاء فاتورة شحن رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
 
-            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.shipping.details', $invoice).'">عرض الفاتورة</a>');
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route('invoices.unified.details', $invoice).'">عرض الفاتورة</a>');
         });  
     }
 
     public function shippingInvoiceDetails(Invoice $invoice) {
-        $discountValue = ($invoice->discount ?? 0) / 100 * $invoice->amount_before_tax;
-
         $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
 
         $qrCode = QrHelper::generateZatcaQr(
@@ -839,10 +816,290 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.shipping_invoice_details', compact(
             'invoice', 
-            'discountValue', 
             'hatching_total', 
             'qrCode',
         ));
+    }
+
+    // ----------------------- Unified Invoice Creation -----------------------
+
+    public function createUnifiedInvoice(Request $request) {
+        $customers = Customer::all(); 
+        $invoiceType = $request->input('type');
+        $customer_id = $request->input('customer_id');
+
+        // Initialize arrays
+        $containers = collect();
+        $shippingPolicies = collect();
+
+        if ($customer_id) {
+            // Get containers for storage invoices
+            if ($invoiceType === 'تخزين' || $invoiceType === 'تخزين و شحن') {
+                $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
+                $containers = $containers->filter(function($container) {
+                    return $container->invoices->filter(function($invoice) {
+                        return $invoice->type == 'تخزين' || $invoice->type == 'تخليص' || $invoice->type == 'تخزين و شحن';
+                    })->isEmpty();
+                });
+
+                // Add containers linked by policies
+                $policies = Policy::where('customer_id', $customer_id)->where('type', 'تخزين')->get();
+                foreach($policies as $policy) {
+                    if($policy->containers()->where('status', 'تم التسليم')->exists() && !$policy->containers()->whereHas('invoices', function($q) {
+                        $q->where('type', 'تخزين')->orWhere('type', 'تخزين و شحن');
+                    })->exists()) {
+                        $containers = $containers->merge($policy->containers()->where('status', 'تم التسليم')->get());
+                    }
+                }
+
+                // Prepare container details
+                foreach($containers as $container) {
+                    $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+                    $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+                    $storage_duration = $container->policies->where('type', 'تخزين')->first()->storage_duration;
+                    if($storage_duration && $container->period > $storage_duration) {
+                        $days = (int) Carbon::parse($container->date)
+                            ->addDays((int) $storage_duration)
+                            ->diffInDays(Carbon::parse($container->exit_date));
+                        $container->late_days = $days;
+                        $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+                    } else {
+                        $container->late_days = 'لا يوجد';
+                        $container->late_fee = 0;
+                    }
+                    $services = 0;
+                    foreach($container->services as $service) {
+                        $services += $service->pivot->price;
+                    }
+                    $container->total = $container->storage_price + $container->late_fee + $services;
+                }
+            }
+
+            // Get shipping policies for shipping invoices
+            if ($invoiceType === 'شحن' || $invoiceType === 'تخزين و شحن') {
+                $shippingPolicies = ShippingPolicy::where('is_received', true)->where('customer_id', $customer_id)->get();
+                $shippingPolicies = $shippingPolicies->filter(function($policy) {
+                    return $policy->invoices->filter(function($invoice) {
+                        return $invoice->type == 'شحن' || $invoice->type == 'تخزين و شحن';
+                    })->isEmpty();
+                });
+            }
+        }
+
+        return view('pages.invoices.create_unified_invoice', compact('customers', 'containers', 'shippingPolicies', 'invoiceType'));
+    }
+
+    public function storeUnifiedInvoice(InvoiceRequest $request) {
+        // return $request;
+        if(Gate::denies('إنشاء فاتورة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
+        }
+
+        $invoiceType = $request->input('type');
+        $amountBeforeTax = 0;
+        $containerData = [];
+        $policyData = [];
+
+        // Handle storage invoices
+        if ($invoiceType === 'تخزين' || $invoiceType === 'تخزين و شحن') {
+            $containerIds = $request->input('container_ids', []);
+            $containers = Container::with(['transactions', 'policies', 'services'])->whereIn('id', $containerIds)->get();
+
+            foreach($containers as $container) {
+                $policy = $container->policies->where('type', 'تخزين')->first();
+                if (!$policy) continue;
+
+                $period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+                $storage_price = $policy->storage_price;
+                
+                $late_fee = 0;
+                if($period > $policy->storage_duration) {
+                    $days = (int) Carbon::parse($container->date)
+                        ->addDays((int) $policy->storage_duration)
+                        ->diffInDays(Carbon::parse($container->exit_date));
+                    $late_fee = $days * $policy->late_fee;
+                }
+
+                $servicesSum = $container->services->sum('pivot.price');
+                $totalForThisContainer = $storage_price + $late_fee + $servicesSum;
+
+                $amountBeforeTax += $totalForThisContainer;
+                $containerData[$container->id] = ['amount' => $totalForThisContainer];
+            }
+        }
+
+        // Handle shipping invoices
+        if ($invoiceType === 'شحن' || $invoiceType === 'تخزين و شحن') {
+            $policyIds = $request->input('shipping_policy_ids', []);
+            $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
+
+            foreach($shippingPolicies as $policy) {
+                $amountBeforeTax += $policy->total_cost;
+                $policyData[$policy->id] = ['amount' => $policy->total_cost];
+            }
+        }
+
+        if($amountBeforeTax <= 0 && $request->invoice_type != 'مسودة') {
+            return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من أسعار التخزين والشحن والخدمات.');
+        }
+
+        $discountValue = ($request->discount ?? 0) / 100 * $amountBeforeTax;
+        $amountAfterDiscount = $amountBeforeTax - $discountValue;
+        $tax_rate_percent = $request->input('tax_rate', 15);
+        $tax = $amountAfterDiscount * ($tax_rate_percent / 100);
+        $totalAmount = $amountAfterDiscount + $tax;
+
+        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData, $policyData, $invoiceType) {
+            $validated = $request->validated();
+            if($request->invoice_type == 'مسودة') {
+                $validated['status'] = 'مسودة';
+            } else {
+                $validated['status'] = $request->payment_method == 'آجل' ? 'لم يتم الدفع' : 'تم الدفع';
+            }
+
+            $invoice = Invoice::create(array_merge($validated, [
+                'type' => $invoiceType,
+                'amount_before_tax' => $amountBeforeTax,
+                'tax_rate' => $tax_rate_percent,
+                'tax' => $tax,
+                'amount_after_discount' => $amountAfterDiscount,
+                'total_amount' => $totalAmount,
+            ]));
+
+            // Attach containers if applicable
+            if (!empty($containerData)) {
+                $invoice->containers()->attach($containerData);
+            }
+
+            // Attach shipping policies if applicable
+            if (!empty($policyData)) {
+                $invoice->shippingPolicies()->attach($policyData);
+            }
+
+            $typeLabel = $invoiceType === 'تخزين و شحن' ? 'فاتورة مدمجة (تخزين و شحن)' : ($invoiceType === 'تخزين' ? 'فاتورة تخزين' : 'فاتورة شحن');
+            logActivity('إنشاء فاتورة', "تم إنشاء $typeLabel رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+            // Determine appropriate route based on invoice type
+            $routeName = ($invoiceType === 'تخزين') ? 'invoices.unified.details' : (($invoiceType === 'شحن') ? 'invoices.unified.details' : 'invoices.unified.details');
+
+            return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route($routeName, $invoice).'">عرض الفاتورة</a>');
+        });  
+    }
+
+    public function unifiedInvoiceDetails(Invoice $invoice) {
+        if($invoice->type == 'تخزين' || $invoice->type == 'تخزين و شحن') {
+            $invoice->load('customer', 'containers.customer', 'containers.policies', 'containers.services');
+
+            $storage_amount = 0;
+            $services = 0;
+
+            foreach($invoice->containers as $container) {
+                $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+                $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+                $storage_duration = $container->policies->where('type', 'تخزين')->first()->storage_duration;
+                if($storage_duration && $container->period > $storage_duration) {
+                    $days = (int) Carbon::parse($container->date)
+                        ->addDays((int) $storage_duration)
+                        ->diffInDays(Carbon::parse($container->exit_date));
+                    $container->late_days = $days;
+                    $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+                } else {
+                    $container->late_days = 'لا يوجد';
+                    $container->late_fee = 0;
+                }
+                $services = 0;
+                foreach($container->services as $service) {
+                    $services += $service->pivot->price;
+                }
+                $container->total_services = $services;
+                $container->total = $container->storage_price + $container->late_fee + $services;
+                $storage_amount += $container->total;  
+            }
+
+            $invoice->storage_amount = $storage_amount;
+        }
+
+        if($invoice->type == 'شحن' || $invoice->type == 'تخزين و شحن') {
+            $invoice->load('customer', 'shippingPolicies');
+            $shipping_amount = $invoice->shippingPolicies->sum('total_cost');
+            $invoice->shipping_amount = $shipping_amount;
+        } 
+        
+        if($invoice->type == 'خدمات') {
+            $invoice->load('customer', 'containers.customer', 'containers.policies', 'containers.services');
+        }
+        
+        if($invoice->type == 'تخليص') {
+            $invoice->load('customer', 'containers.customer', 'containers.policies', 'containers.services', 'containers.transactions.items');
+        }
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        return view('pages.invoices.unified_invoice_details', compact(
+            'invoice', 
+            'hatching_total', 
+            'qrCode',
+        ));
+    }
+
+    public function printUnifiedInvoice(Invoice $invoice) {
+        if($invoice->type == 'تخزين' || $invoice->type == 'تخزين و شحن') {
+            $invoice->load('customer', 'containers.customer', 'containers.policies', 'containers.services');
+
+            $amountBeforeTax = 0;
+            $services = 0;
+
+            foreach($invoice->containers as $container) {
+                $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
+                $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+                $storage_duration = $container->policies->where('type', 'تخزين')->first()->storage_duration;
+                if($storage_duration && $container->period > $storage_duration) {
+                    $days = (int) Carbon::parse($container->date)
+                        ->addDays((int) $storage_duration)
+                        ->diffInDays(Carbon::parse($container->exit_date));
+                    $container->late_days = $days;
+                    $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+                } else {
+                    $container->late_days = 'لا يوجد';
+                    $container->late_fee = 0;
+                }
+                $services = 0;
+                foreach($container->services as $service) {
+                    $services += $service->pivot->price;
+                }
+                $container->total_services = $services;
+                $container->total = $container->storage_price + $container->late_fee + $services;
+                $amountBeforeTax += $container->total;  
+            }
+        } elseif($invoice->type == 'شحن' || $invoice->type == 'تخزين و شحن') {
+            $invoice->load('customer', 'shippingPolicies');
+        } elseif($invoice->type == 'خدمات') {
+            $invoice->load('customer', 'containers.customer', 'containers.policies', 'containers.services');
+        } elseif($invoice->type == 'تخليص') {
+            $invoice->load('customer', 'containers.customer', 'containers.policies', 'containers.services', 'containers.transactions.items');
+        }
+
+        $hatching_total = ArabicNumberConverter::numberToArabicMoney(number_format($invoice->total_amount, 2));
+
+        $qrCode = QrHelper::generateZatcaQr(
+            $invoice->company->name,
+            $invoice->company->vatNumber,
+            $invoice->created_at->toIso8601String(),
+            number_format($invoice->total_amount, 2, '.', ''),
+            number_format($invoice->tax, 2, '.', '')
+        );
+
+        logActivity('طباعة فاتورة', "تم طباعة فاتورة رقم " . $invoice->code);
+
+        return view('pages.invoices.print_unified_invoice', compact('invoice', 'hatching_total', 'qrCode'));
     }
 
     // ----------------------- Posting Invoices -----------------------
@@ -871,13 +1128,31 @@ class InvoiceController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
-        JournalEntryLine::create([
-            'journal_entry_id' => $journal->id,
-            'account_id' => $incomeAccount->id,
-            'debit' => 0.00,
-            'credit' => $invoice->amount_after_discount,
-            'description' => 'ايرادات ' . ($invoice->type == 'تخزين' || $invoice->type == 'تخليص' || $invoice->type == 'شحن' ? $invoice->type : 'متنوعة') . ' فاتورة رقم ' . $invoice->code
-        ]);
+        if($invoice->type == 'تخزين و شحن') {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $incomeAccount->id,
+                'debit' => 0.00,
+                'credit' => $invoice->amount_after_discount,
+                'description' => 'ايرادات تخزين فاتورة رقم '. $invoice->code
+            ]);
+
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $incomeAccount->id,
+                'debit' => 0.00,
+                'credit' => $invoice->amount_after_discount,
+                'description' => 'ايرادات شحن فاتورة رقم ' . $invoice->code
+            ]);
+        } else {
+            JournalEntryLine::create([
+                'journal_entry_id' => $journal->id,
+                'account_id' => $incomeAccount->id,
+                'debit' => 0.00,
+                'credit' => $invoice->amount_after_discount,
+                'description' => 'ايرادات ' . ($invoice->type == 'خدمات' ? 'متنوعة' : $invoice->type) . ' فاتورة رقم ' . $invoice->code
+            ]);
+        }
 
         JournalEntryLine::create([
             'journal_entry_id' => $journal->id,
@@ -1124,6 +1399,7 @@ class InvoiceController extends Controller
         $type = $request->input('type', 'all');
         $payment_method = $request->input('payment_method', 'all');
         $is_posted = $request->input('is_posted', 'all');
+        $status = $request->input('status', 'all');
         $perPage = $request->input('per_page', 100);
         $search = $request->input('search', null);
 
@@ -1138,13 +1414,16 @@ class InvoiceController extends Controller
             $invoices->where('date', '<=', $to);
         }
         if($type !== 'all') {
-            $invoices->where('type', $type);
+            $invoices->where('type', 'LIKE', "%$type%");
         }
         if($payment_method !== 'all') {
             $invoices->where('payment_method', $payment_method);
         }
         if($is_posted !== 'all') {
             $invoices->where('is_posted', $is_posted == 'true' ? true : false);
+        }
+        if($status !== 'all') {
+            $invoices->where('status', $status);
         }
         if($search) {
             $invoices->where(function($q) use ($search) {

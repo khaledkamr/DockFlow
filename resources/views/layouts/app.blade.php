@@ -692,16 +692,21 @@
                         data-bs-toggle="collapse" href="#invoice-management" role="button"
                         aria-expanded="{{ request()->routeIs(['invoices*']) ? 'true' : 'false' }}"
                         aria-controls="invoice-management">
-                        <i class="fa-solid fa-receipt ms-2 me-2"></i> إدارة الفــــواتيــــــر
+                        <i class="fa-solid fa-receipt ms-2 me-2"></i> المبيــــعـــــــــــــات
                     </a>
                     <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['invoices*']) ? 'show' : '' }}"
                         id="invoice-management">
                         <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                             style="{{ request()->routeIs('invoices') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                             href="{{ route('invoices') }}">
-                            <i class="fa-solid fa-scroll ms-2 me-2"></i> الفــــواتيـــــر
+                            <i class="fa-solid fa-scroll ms-2 me-2"></i> فواتير المبيعات
                         </a>
-                        @if (auth()->user()->company->hasModule('تخزين'))
+                        <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                            style="{{ request()->routeIs('invoices.create.unified', 'invoices.create', 'invoices.shipping.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                            href="{{ route('invoices.create.unified') }}">
+                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشــاء فاتــورة
+                        </a>
+                        {{-- @if (auth()->user()->company->hasModule('تخزين'))
                             <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                                 style="{{ request()->routeIs('invoices.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                                 href="{{ route('invoices.create') }}">
@@ -714,21 +719,21 @@
                                 href="{{ route('invoices.shipping.create') }}">
                                 <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء فاتورة شحن
                             </a>
-                        @endif
+                        @endif --}}
                         <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                             style="{{ request()->routeIs('invoices.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                             href="{{ route('invoices.reports') }}">
-                            <i class="fa-solid fa-chart-line ms-2 me-2"></i> تقارير الفواتير
+                            <i class="fa-solid fa-chart-line ms-2 me-2"></i> تقاريـر الفواتيـر
                         </a>
                         <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                             style="{{ request()->routeIs('invoices.statements') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                             href="{{ route('invoices.statements') }}">
-                            <i class="fa-solid fa-layer-group ms-2 me-2"></i> المطالبــــــات
+                            <i class="fa-solid fa-layer-group ms-2 me-2"></i> المطالبــــــــات
                         </a>
                         <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                             style="{{ request()->routeIs('invoices.statements.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                             href="{{ route('invoices.statements.create') }}">
-                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشاء مطالبة
+                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشـاء مطالبـة
                         </a>
                     </div>
                 </li>

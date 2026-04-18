@@ -277,6 +277,11 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::post('/invoices/shipping/store', 'storeShippingInvoice')->name('invoices.shipping.store');
     Route::get('/invoices/shipping/{invoice:uuid}', 'shippingInvoiceDetails')->name('invoices.shipping.details');
     
+    Route::get('/invoices/create/unified', 'createUnifiedInvoice')->name('invoices.create.unified');
+    Route::post('/invoices/store/unified', 'storeUnifiedInvoice')->name('invoices.store.unified');
+    Route::get('/invoices/unified/{invoice:uuid}', 'unifiedInvoiceDetails')->name('invoices.unified.details');
+    Route::get('/invoices/unified/{invoice:uuid}/print', 'printUnifiedInvoice')->name('invoices.unified.print');
+    
     Route::get('/invoices/reports', 'invoicesReports')->name('invoices.reports');
 
     Route::post('/invoices/{invoice:uuid}/add/file', 'attachFile')->name('invoices.add.file');

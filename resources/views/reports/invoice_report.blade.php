@@ -1,9 +1,10 @@
 @extends('layouts.print')
 
-@section('title', 'تقرير الفواتير')
+@section('title', 'تقرير الفواتير المبيعات')
 
 @section('content')
-    <h5 class="text-center fw-bold mb-4 mt-4">تقرير الفواتير من فترة ({{ $from }}) الى فترة
+    <h1 class="text-center fw-bold">تقرير فواتير المبيعات</h1>
+    <h5 class="text-center fw-bold mb-4"> من فترة ({{ $from }}) الى فترة
         ({{ Carbon\Carbon::parse($to)->format('Y-m-d') }})
     </h5>
 
@@ -14,7 +15,7 @@
                     <th>#</th>
                     <th>رقم الفاتورة</th>
                     <th>نوع الفاتورة</th>
-                    <th>العميل</th>
+                    <th>إسم العميل</th>
                     <th>التاريخ</th>
                     <th>موعد السداد</th>
                     <th>المبلغ</th>

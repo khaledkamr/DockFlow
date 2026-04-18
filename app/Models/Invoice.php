@@ -11,7 +11,7 @@ class Invoice extends Model
 {
     use BelongsToCompany, HasUuid;
 
-    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن', 'مسودة'];
+    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن', 'مسودة', 'تخزين و شحن'];
     public const PAYMENT_METHODS = [ 'كاش', 'آجل', 'تحويل بنكي',];
     public const PAYMENT_STATUS = [ 'تم الدفع', 'لم يتم الدفع', 'تم الدفع جزئياً', 'مسودة'];
     

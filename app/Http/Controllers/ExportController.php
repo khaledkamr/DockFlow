@@ -855,8 +855,8 @@ class ExportController extends Controller
             return Excel::download(new TransportOrdersExport($filters), 'تقرير اشعارات النقل.xlsx');
         } elseif($reportType == 'invoices') {
             $filters = $request->all();
-            logActivity('تصدير تقرير الفواتير الى اكسيل', "تم تصدير تقرير الفواتير الى اكسيل بتصفية: ", $filters);
-            return Excel::download(new InvoicesExport($filters), 'تقرير الفواتير.xlsx');
+            logActivity('تصدير تقرير فواتير المبيعات الى اكسيل', "تم تصدير تقرير فواتير المبيعات الى اكسيل بتصفية: ", $filters);
+            return Excel::download(new InvoicesExport($filters), 'تقرير فواتير المبيعات.xlsx');
         } elseif($reportType == 'transactions') {
             $filters = $request->all();
             logActivity('تصدير تقرير معاملات التخليص الى اكسيل', "تم تصدير تقرير معاملات التخليص الى اكسيل بتصفية: ", $filters);

@@ -91,7 +91,8 @@
                     @foreach ($expenseInvoices as $invoice)
                         <tr>
                             <td class="text-center text-primary fw-bold">
-                                <a href="{{ route('expense.invoices.details', $invoice) }}" class="text-decoration-none">
+                                <a href="{{ route('expense.invoices.unified.details', $invoice) }}"
+                                    class="text-decoration-none">
                                     {{ $invoice->code }}
                                 </a>
                             </td>
@@ -113,7 +114,8 @@
                                 </a>
                             </td>
                             <td class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                <a href="{{ route('expense.invoices.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('expense.invoices.unified.details', $invoice) }}"
+                                    class="btn btn-sm btn-primary">
                                     <span class="d-none d-sm-inline">عرض</span><i
                                         class="fa-solid fa-eye d-inline d-sm-none"></i>
                                 </a>

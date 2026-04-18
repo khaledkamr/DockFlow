@@ -115,7 +115,7 @@ class ContainerController extends Controller
         $servicePolicy = $container->policies->where('type', 'خدمات')->first();
 
         $clearanceInvoice = $container->invoices->where('type', 'تخليص')->first();
-        $storageInvoice = $container->invoices->where('type', 'تخزين')->first();
+        $storageInvoice = $container->invoices()->where('type', 'LIKE', "%تخزين%")->first();
         $serviceInvoice = $container->invoices->where('type', 'خدمات')->first();
 
         $timeline = collect();
@@ -154,8 +154,8 @@ class ContainerController extends Controller
                 'title' => 'فاتورة خدمات',
                 'icon' => 'fa-file-invoice-dollar',
                 'date' => $serviceInvoice->created_at,
-                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.services.details', $serviceInvoice) . '" class="text-decoration-none fw-bold">' . $serviceInvoice->code . '</a> بواسطة <strong>' . $serviceInvoice->made_by->name . '</strong>',
-                'link' => route('invoices.services.details', $serviceInvoice),
+                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.unified.details', $serviceInvoice) . '" class="text-decoration-none fw-bold">' . $serviceInvoice->code . '</a> بواسطة <strong>' . $serviceInvoice->made_by->name . '</strong>',
+                'link' => route('invoices.unified.details', $serviceInvoice),
                 'code' => $serviceInvoice->code,
                 'made_by' => $serviceInvoice->made_by->name,
                 'extra_info' => null,
@@ -203,8 +203,8 @@ class ContainerController extends Controller
                 'title' => 'إنشاء فاتورة تخليص جمركي',
                 'icon' => 'fa-file-invoice-dollar',
                 'date' => $clearanceInvoice->created_at,
-                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.clearance.details', $clearanceInvoice) . '" class="text-decoration-none fw-bold">' . $clearanceInvoice->code . '</a> بواسطة <strong>' . ($clearanceInvoice->made_by->name ?? 'N/A') . '</strong>',
-                'link' => route('invoices.clearance.details', $clearanceInvoice),
+                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.unified.details', $clearanceInvoice) . '" class="text-decoration-none fw-bold">' . $clearanceInvoice->code . '</a> بواسطة <strong>' . ($clearanceInvoice->made_by->name ?? 'N/A') . '</strong>',
+                'link' => route('invoices.unified.details', $clearanceInvoice),
                 'code' => $clearanceInvoice->code,
                 'made_by' => $clearanceInvoice->made_by->name ?? 'N/A',
                 'extra_info' => null,
@@ -256,8 +256,8 @@ class ContainerController extends Controller
                 'title' => 'إنشاء فاتورة تخزين',
                 'icon' => 'fa-file-invoice-dollar',
                 'date' => $storageInvoice->created_at,
-                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.details', $storageInvoice) . '" class="text-decoration-none fw-bold">' . $storageInvoice->code . '</a> بواسطة <strong>' . $storageInvoice->made_by->name . '</strong>',
-                'link' => route('invoices.details', $storageInvoice),
+                'description' => 'تم فوترة الحاوية بموجب فاتورة رقم <a href="' . route('invoices.unified.details', $storageInvoice) . '" class="text-decoration-none fw-bold">' . $storageInvoice->code . '</a> بواسطة <strong>' . $storageInvoice->made_by->name . '</strong>',
+                'link' => route('invoices.unified.details', $storageInvoice),
                 'code' => $storageInvoice->code,
                 'made_by' => $storageInvoice->made_by->name,
                 'extra_info' => null,

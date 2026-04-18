@@ -3,7 +3,8 @@
 @section('title', 'تقرير بوالص الشحن')
 
 @section('content')
-<h5 class="text-center fw-bold mb-4 mt-4">تقرير بوالص الشحن من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
+<h1 class="text-center fw-bold">تقرير بوالص الشحن</h1>
+<h5 class="text-center fw-bold mb-4">من فترة ({{ $from }}) الى فترة ({{ $to }})</h5>
 
 <div class="table-container">
     <table class="table table-bordered border-dark">
@@ -70,7 +71,7 @@
                             <td class="text-center">{{ $policy->total_cost }}</td>
                             <td class="text-center">{{ $policy->total_cost - $policy->supplier_cost - $policy->commission }}</td>
                         @endif
-                        <td class="text-center fw-bold">{{ $policy->invoices->where('type', 'شحن')->first()->code ?? '-' }}</td>
+                        <td class="text-center fw-bold">{{ $policy->invoices()->where('type', 'LIKE', '%شحن%')->first()->code ?? '-' }}</td>
                     </tr>
                 @endforeach
 

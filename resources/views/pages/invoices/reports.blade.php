@@ -61,6 +61,18 @@
                         </option>
                     </select>
                 </div>
+                <div class="col-6 col-sm-6 col-md">
+                    <label class="form-label">الحالة</label>
+                    <select name="status" class="form-select border-primary">
+                        <option value="all" {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
+                            الكل
+                        </option>
+                        <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>مسددة</option>
+                        <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>غير مسدد</option>
+                        <option value="تم الدفع جزئياً" {{ request()->query('status') === 'تم الدفع جزئياً' ? 'selected' : '' }}>مسددة جزئياً</option>
+                        <option value="مسودة" {{ request()->query('status') === 'مسودة' ? 'selected' : '' }}>مسودة</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row">
@@ -130,18 +142,18 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="text-center bg-dark text-white text-nowrap">#</th>
-                        <th class="text-center bg-dark text-white text-nowrap">رقم الفاتورة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">نوع الفاتورة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">العميل</th>
-                        <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">موعد السداد</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الضريبة المضافة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
-                        <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المبلغ المسدد</th>
-                        <th class="text-center bg-dark text-white text-nowrap">المبلغ المتبقي</th>
+                        <th class="text-center bg-dark text-white">#</th>
+                        <th class="text-center bg-dark text-white">رقم الفاتورة</th>
+                        <th class="text-center bg-dark text-white">نوع الفاتورة</th>
+                        <th class="text-center bg-dark text-white">إسم العميل</th>
+                        <th class="text-center bg-dark text-white">التاريخ</th>
+                        <th class="text-center bg-dark text-white">موعد السداد</th>
+                        <th class="text-center bg-dark text-white">المبلغ</th>
+                        <th class="text-center bg-dark text-white">الضريبة المضافة</th>
+                        <th class="text-center bg-dark text-white">الإجمالي</th>
+                        <th class="text-center bg-dark text-white">الحالة</th>
+                        <th class="text-center bg-dark text-white">المبلغ المسدد</th>
+                        <th class="text-center bg-dark text-white">المبلغ المتبقي</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -156,27 +168,10 @@
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center fw-bold">
-                                    @if ($invoice->type == 'تخزين')
-                                        <a href="{{ route('invoices.details', $invoice) }}" target="_blank"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'خدمات')
-                                        <a href="{{ route('invoices.services.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'تخليص')
-                                        <a href="{{ route('invoices.clearance.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @elseif($invoice->type == 'شحن')
-                                        <a href="{{ route('invoices.shipping.details', $invoice) }}"
-                                            class="text-decoration-none">
-                                            {{ $invoice->code }}
-                                        </a>
-                                    @endif
+                                    <a href="{{ route('invoices.unified.details', $invoice) }}" target="_blank"
+                                        class="text-decoration-none">
+                                        {{ $invoice->code }}
+                                    </a>
                                 </td>
                                 <td class="text-center">{{ $invoice->type }}</td>
                                 <td class="text-center">
@@ -200,7 +195,9 @@
                                     <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
                                 @endif
                                 <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
-                                <td class="text-center">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}</td>
+                                <td class="text-center">
+                                    {{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}
+                                </td>
                             </tr>
                         @endforeach
                     @endif

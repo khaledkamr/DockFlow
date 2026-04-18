@@ -29,7 +29,7 @@ class InvoicesExport implements FromCollection, WithHeadings
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to'],]);
         }
         if(!empty($this->filters['type']) && $this->filters['type'] !== 'all') {
-            $query->where('type', $this->filters['type']);
+            $query->where('type', 'LIKE', "%$this->filters['type']%");
         }
         if(!empty($this->filters['payment_method']) && $this->filters['payment_method'] !== 'all') {
             $query->where('payment_method', $this->filters['payment_method']);
@@ -37,6 +37,9 @@ class InvoicesExport implements FromCollection, WithHeadings
         if(!empty($this->filters['is_posted']) && $this->filters['is_posted'] !== 'all') {
             $is_posted = $this->filters['is_posted'] == 'true' ? true : false;
             $query->where('is_posted', $is_posted);
+        }
+        if(!empty($this->filters['status']) && $this->filters['status'] !== 'all') {
+            $query->where('status', $this->filters['status']);
         }
         if(!empty($this->filters['search'])) {
             $search = $this->filters['search'];

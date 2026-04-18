@@ -38,7 +38,8 @@
                     <option value="تم التسليم" {{ request('status') == 'تم التسليم' ? 'selected' : '' }}>تم التسليم</option>
                     <option value="متأخر" {{ request('status') == 'متأخر' ? 'selected' : '' }}>متأخر</option>
                     <option value="قيد النقل" {{ request('status') == 'قيد النقل' ? 'selected' : '' }}>قيد النقل</option>
-                    <option value="في الميناء" {{ request('status') == 'في الميناء' ? 'selected' : '' }}>في الميناء</option>
+                    <option value="في الميناء" {{ request('status') == 'في الميناء' ? 'selected' : '' }}>في الميناء
+                    </option>
                 </select>
             </div>
             <div class="col-6 col-md-6 col-lg">
@@ -94,8 +95,8 @@
             <div class="flex-grow-1 mx-2">
                 <form method="GET" action="">
                     <div class="input-group">
-                        <input type="text" name="search" class="form-control border-primary" 
-                            placeholder="ابحث عن حاوية برقم الحاوية أو بإسم العميل أو بالموقع..." 
+                        <input type="text" name="search" class="form-control border-primary"
+                            placeholder="ابحث عن حاوية برقم الحاوية أو بإسم العميل أو بالموقع..."
                             value="{{ request('search') }}">
                         <button class="btn btn-primary" type="submit">
                             <i class="fa-solid fa-search"></i>
@@ -108,18 +109,18 @@
             </div>
             <div class="d-flex gap-2">
                 <form method="GET" action="{{ route('export.excel', 'containers') }}">
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
-                        data-bs-placement="top" title="تصدير Excel">
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                        title="تصدير Excel">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                 </form>
 
                 <form action="{{ route('print.containers.report') }}" method="GET" target="_blank">
                     @csrf
-                    @foreach(request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                     <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
@@ -161,7 +162,8 @@
                                     </a>
                                 </td>
                                 <td class="text-center fw-bold text-nowrap">
-                                    <a href="{{ route('users.customer.profile', $container->customer) }}" class="text-decoration-none text-dark">
+                                    <a href="{{ route('users.customer.profile', $container->customer) }}"
+                                        class="text-decoration-none text-dark">
                                         {{ $container->customer->name }}
                                     </a>
                                 </td>
@@ -184,15 +186,19 @@
                                     @elseif($container->status == 'قيد النقل')
                                         <div class="badge status-purple">{{ $container->status }}</div>
                                     @endif
-                                    
+
                                     @php
                                         $storage_policy = $container->policies->where('type', 'تخزين')->first();
                                     @endphp
 
-                                    @if ($container->status == 'في الساحة' && $storage_policy && $storage_policy->storage_duration 
-                                        && $container->days > $storage_policy->storage_duration)
+                                    @if (
+                                        $container->status == 'في الساحة' &&
+                                            $storage_policy &&
+                                            $storage_policy->storage_duration &&
+                                            $container->days > $storage_policy->storage_duration)
                                         <div class="text-danger fw-semibold mt-1" style="font-size: 0.85rem;">
-                                            متأخر منذ {{ (int) ($container->days - $storage_policy->storage_duration) }} أيام
+                                            متأخر منذ {{ (int) ($container->days - $storage_policy->storage_duration) }}
+                                            أيام
                                         </div>
                                     @endif
                                 </td>
@@ -203,21 +209,24 @@
                                     {{ $container->exit_date ? Carbon\Carbon::parse($container->exit_date)->format('Y/m/d') : '-' }}
                                 </td>
                                 <td class="text-center">
-                                    @if($container->invoices->isEmpty())
+                                    @if ($container->invoices->isEmpty())
                                         -
                                     @endif
-                                    @if ($container->invoices->where('type', 'تخزين')->first())
-                                        <a href="{{ route('invoices.details', $container->invoices->where('type', 'تخزين')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
-                                            {{ $container->invoices->where('type', 'تخزين')->first()->code }}
+                                    @if ($container->invoices()->where('type', 'LIKE', '%تخزين%')->first())
+                                        <a href="{{ route('invoices.unified.details', $container->invoices()->where('type', 'LIKE', '%تخزين%')->first()) }}"
+                                            target="_blank" class="text-decoration-none fw-bold">
+                                            {{ $container->invoices()->where('type', 'LIKE', '%تخزين%')->first()->code }}
                                         </a>
                                     @endif
-                                    @if($container->invoices->where('type', 'تخليص')->first())
-                                        <a href="{{ route('invoices.clearance.details', $container->invoices->where('type', 'تخليص')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                    @if ($container->invoices->where('type', 'تخليص')->first())
+                                        <a href="{{ route('invoices.unified.details', $container->invoices->where('type', 'تخليص')->first()) }}"
+                                            target="_blank" class="text-decoration-none fw-bold">
                                             {{ $container->invoices->where('type', 'تخليص')->first()->code }}
                                         </a>
                                     @endif
-                                    @if($container->invoices->where('type', 'خدمات')->first())
-                                        <a href="{{ route('invoices.services.details', $container->invoices->where('type', 'خدمات')->first()) }}" target="_blank" class="text-decoration-none fw-bold">
+                                    @if ($container->invoices->where('type', 'خدمات')->first())
+                                        <a href="{{ route('invoices.unified.details', $container->invoices->where('type', 'خدمات')->first()) }}"
+                                            target="_blank" class="text-decoration-none fw-bold">
                                             {{ $container->invoices->where('type', 'خدمات')->first()->code }}
                                         </a>
                                     @endif
@@ -233,7 +242,7 @@
             <i class="fa-solid fa-arrows-left-right me-1"></i>
             اسحب الجدول لليمين أو اليسار لرؤية المزيد
         </div>
-        
+
         <div class="mt-4">
             {{ $containers->links('components.pagination') }}
         </div>
@@ -247,7 +256,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const tableContainer = document.getElementById('tableContainer');
-            
+
             // Check if table needs scrolling
             function checkScroll() {
                 if (tableContainer.scrollWidth > tableContainer.clientWidth) {
@@ -256,17 +265,19 @@
                     tableContainer.classList.remove('has-scroll');
                 }
             }
-            
+
             // Check on load and resize
             checkScroll();
             window.addEventListener('resize', checkScroll);
-            
+
             // Remove scroll hint after first interaction
             const scrollHint = document.querySelector('.scroll-hint');
             if (scrollHint) {
                 tableContainer.addEventListener('scroll', function() {
                     scrollHint.style.display = 'none';
-                }, { once: true });
+                }, {
+                    once: true
+                });
             }
         });
     </script>

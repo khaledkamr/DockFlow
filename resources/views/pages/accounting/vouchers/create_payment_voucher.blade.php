@@ -272,13 +272,13 @@
 
                                     // Determine the correct route based on invoice type
                                     if (invoice.type === 'تخزين') {
-                                        detailsUrl = `{{ route('invoices.details', '') }}/${invoice.uuid}`;
+                                        detailsUrl = `{{ route('invoices.unified.details', '') }}/${invoice.uuid}`;
                                     } else if (invoice.type === 'خدمات') {
-                                        detailsUrl = `{{ route('invoices.services.details', '') }}/${invoice.uuid}`;
+                                        detailsUrl = `{{ route('invoices.unified.details', '') }}/${invoice.uuid}`;
                                     } else if (invoice.type === 'تخليص') {
-                                        detailsUrl = `{{ route('invoices.clearance.details', '') }}/${invoice.uuid}`;
+                                        detailsUrl = `{{ route('invoices.unified.details', '') }}/${invoice.uuid}`;
                                     } else if (invoice.type === 'شحن') {
-                                        detailsUrl = `{{ route('invoices.shipping.details', '') }}/${invoice.uuid}`;
+                                        detailsUrl = `{{ route('invoices.unified.details', '') }}/${invoice.uuid}`;
                                     }
 
                                     let paymentStatusBadge = '';
