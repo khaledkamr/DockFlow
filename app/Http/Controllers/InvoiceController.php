@@ -1104,7 +1104,7 @@ class InvoiceController extends Controller
 
     // ----------------------- Posting Invoices -----------------------
 
-    public function postInvoice(Invoice $invoice) {
+    public function postInvoice(Invoice $invoice, Request $request) {
         if($invoice->is_posted) {
             return redirect()->back()->with('error', 'هذه الفاتورة تم ترحيلها مسبقاً');
         }
@@ -1116,6 +1116,9 @@ class InvoiceController extends Controller
             $incomeAccount = Account::where('name', 'ايرادات تخليص جمركي')->where('level', 5)->first();
         } elseif($invoice->type == 'شحن') {
             $incomeAccount = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
+        } elseif($invoice->type == 'تخزين و شحن') {
+            $incomeAccount1 = Account::where('name', 'ايرادات التخزين')->where('level', 5)->first();
+            $incomeAccount2 = Account::where('name', 'ايرادات النقليات')->where('level', 5)->first();
         } else {
             $incomeAccount = Account::where('name', 'ايرادات متنوعة')->where('level', 5)->first();
         }
@@ -1131,17 +1134,17 @@ class InvoiceController extends Controller
         if($invoice->type == 'تخزين و شحن') {
             JournalEntryLine::create([
                 'journal_entry_id' => $journal->id,
-                'account_id' => $incomeAccount->id,
+                'account_id' => $incomeAccount1->id,
                 'debit' => 0.00,
-                'credit' => $invoice->amount_after_discount,
+                'credit' => $request->storage_amount ?? 0.00,
                 'description' => 'ايرادات تخزين فاتورة رقم '. $invoice->code
             ]);
 
             JournalEntryLine::create([
                 'journal_entry_id' => $journal->id,
-                'account_id' => $incomeAccount->id,
+                'account_id' => $incomeAccount2->id,
                 'debit' => 0.00,
-                'credit' => $invoice->amount_after_discount,
+                'credit' => $request->shipping_amount ?? 0.00,
                 'description' => 'ايرادات شحن فاتورة رقم ' . $invoice->code
             ]);
         } else {

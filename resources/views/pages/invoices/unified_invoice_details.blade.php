@@ -298,9 +298,14 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-start">
-                        <a href="{{ route('invoices.post', $invoice) }}" class="btn btn-primary fw-bold">
-                            <i class="fas fa-check me-2"></i>تأكيد الترحيل
-                        </a>
+                        <form action="{{ route('invoices.post', $invoice) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="storage_amount" value="{{ $invoice->storage_amount }}">
+                            <input type="hidden" name="shipping_amount" value="{{ $invoice->shipping_amount }}">
+                            <button type="submit" class="btn btn-primary fw-bold">
+                                <i class="fas fa-check me-2"></i>تأكيد الترحيل
+                            </button>
+                        </form>
                         <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                     </div>
                 </div>
