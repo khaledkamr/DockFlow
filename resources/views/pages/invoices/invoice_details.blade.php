@@ -68,6 +68,9 @@
                                     <option value="لم يتم الدفع" {{ $invoice->status == 'لم يتم الدفع' ? 'selected' : '' }}>
                                         غير مسددة
                                     </option>
+                                    <option value="تم الدفع جزئياً" {{ $invoice->status == 'تم الدفع جزئياً' ? 'selected' : '' }}>
+                                        مسددة جزئياً
+                                    </option>
                                     <option value="مسودة" {{ $invoice->status == 'مسودة' ? 'selected' : '' }}>
                                         مسودة
                                     </option>
@@ -75,33 +78,38 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="amount_before_tax" class="form-label">المبلغ قبل الضريبة</label>
-                                <input type="number" step="0.01" name="amount_before_tax"
+                                <input type="number" step="any" name="amount_before_tax"
                                     class="form-control border-primary" value="{{ $invoice->amount_before_tax }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="tax_rate" class="form-label">نسبة الضريبة (%)</label>
-                                <input type="number" step="0.01" name="tax_rate" class="form-control border-primary"
+                                <input type="number" step="any" name="tax_rate" class="form-control border-primary"
                                     value="{{ $invoice->tax_rate }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="tax" class="form-label">قيمة الضريبة</label>
-                                <input type="number" step="0.01" name="tax" class="form-control border-primary"
+                                <input type="number" step="any" name="tax" class="form-control border-primary"
                                     value="{{ $invoice->tax }}" required>
                             </div>
                             <div class="col-md-3">
                                 <label for="discount" class="form-label">الخصم (%)</label>
-                                <input type="number" step="0.01" name="discount" class="form-control border-primary"
+                                <input type="number" step="any" name="discount" class="form-control border-primary"
                                     value="{{ $invoice->discount }}">
                             </div>
                             <div class="col-md-3">
                                 <label for="amount_after_discount" class="form-label">المبلغ بعد الخصم</label>
-                                <input type="number" step="0.01" name="amount_after_discount"
+                                <input type="number" step="any" name="amount_after_discount"
                                     class="form-control border-primary" value="{{ $invoice->amount_after_discount }}">
                             </div>
                             <div class="col-md-3">
                                 <label for="total_amount" class="form-label">المبلغ الإجمالي</label>
-                                <input type="number" step="0.01" name="total_amount"
+                                <input type="number" step="any" name="total_amount"
                                     class="form-control border-primary" value="{{ $invoice->total_amount }}" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="paid_amount" class="form-label">المبلغ المدفوع</label>
+                                <input type="number" step="any" name="paid_amount"
+                                    class="form-control border-primary" value="{{ $invoice->paid_amount }}" required>
                             </div>
                         </div>
                     </div>
