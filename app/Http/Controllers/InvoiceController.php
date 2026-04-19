@@ -858,13 +858,13 @@ class InvoiceController extends Controller
                 foreach($containers as $container) {
                     $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
                     $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price ?? 0.00;
-                    $storage_duration = $container->policies->where('type', 'تخزين')->first()->storage_duration;
+                    $storage_duration = $container->policies->where('type', 'تخزين')->first()->storage_duration ?? 0.00;
                     if($storage_duration && $container->period > $storage_duration) {
                         $days = (int) Carbon::parse($container->date)
                             ->addDays((int) $storage_duration)
                             ->diffInDays(Carbon::parse($container->exit_date));
                         $container->late_days = $days;
-                        $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee;
+                        $container->late_fee = $days * $container->policies->where('type', 'تخزين')->first()->late_fee ?? 0.00;
                     } else {
                         $container->late_days = 'لا يوجد';
                         $container->late_fee = 0;
