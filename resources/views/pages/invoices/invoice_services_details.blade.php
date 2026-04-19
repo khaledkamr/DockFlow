@@ -483,8 +483,8 @@
                                 <th class="text-center bg-dark text-white text-nowrap">#</th>
                                 <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                                 <th class="text-center bg-dark text-white text-nowrap">رقم الحاوية</th>
-                                <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
-                                <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
+                                <th class="text-center bg-dark text-white text-nowrap">نوع الحاوية</th>
+                                <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
                                 <th class="text-center bg-dark text-white text-nowrap">الخدمة</th>
                                 <th class="text-center bg-dark text-white text-nowrap">سعر الخدمة</th>
                             </tr>
@@ -505,11 +505,9 @@
                                             {{ $container->code }}
                                         </a>
                                     </td>
+                                    <td class="text-center">{{ $container->containerType->name }}</td>
                                     <td class="text-center">
                                         <small>{{ \Carbon\Carbon::parse($container->date)->format('d/m/Y') }}</small>
-                                    </td>
-                                    <td class="text-center">
-                                        <small>{{ $container->exit_date ? \Carbon\Carbon::parse($container->exit_date)->format('d/m/Y') : '---' }}</small>
                                     </td>
                                     <td class="text-center fw-bold text-nowrap">
                                         {{ $container->services->first()->description }}</td>

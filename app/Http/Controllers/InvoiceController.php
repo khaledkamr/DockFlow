@@ -762,7 +762,7 @@ class InvoiceController extends Controller
         $shippingPolicies = ShippingPolicy::whereIn('id', $policyIds)->get();
 
         $amountBeforeTax = 0;
-        $policyData = [];
+        $shippingPolicyData = [];
 
         foreach($shippingPolicies as $policy) {
             $amountBeforeTax += $policy->total_cost;
@@ -831,6 +831,7 @@ class InvoiceController extends Controller
         // Initialize arrays
         $containers = collect();
         $shippingPolicies = collect();
+        $servicePolicies = collect();
 
         if ($customer_id) {
             // Get containers for storage invoices
@@ -884,13 +885,24 @@ class InvoiceController extends Controller
                     })->isEmpty();
                 });
             }
+
+            // Get service policies details for service invoices
+            if($invoiceType == 'خدمات') {
+                $servicePolicies = Policy::where('customer_id', $customer_id)->where('type', 'خدمات')->with('containers.services')->get();
+                $servicePolicies = $servicePolicies->filter(function($policy) {
+                    return $policy->containers->filter(function($container) {
+                        return $container->services->isNotEmpty() && $container->invoices->filter(function($invoice) {
+                            return $invoice->type == 'خدمات';
+                        })->isEmpty();
+                    })->isNotEmpty();
+                });
+            }
         }
 
-        return view('pages.invoices.create_unified_invoice', compact('customers', 'containers', 'shippingPolicies', 'invoiceType'));
+        return view('pages.invoices.create_unified_invoice', compact('customers', 'containers', 'shippingPolicies', 'invoiceType', 'servicePolicies'));
     }
 
     public function storeUnifiedInvoice(InvoiceRequest $request) {
-        // return $request;
         if(Gate::denies('إنشاء فاتورة')) {
             return redirect()->back()->with('error', 'ليس لديك الصلاحية لإنشاء فواتير');
         }
@@ -898,7 +910,7 @@ class InvoiceController extends Controller
         $invoiceType = $request->input('type');
         $amountBeforeTax = 0;
         $containerData = [];
-        $policyData = [];
+        $shippingPolicyData = [];
 
         // Handle storage invoices
         if ($invoiceType === 'تخزين' || $invoiceType === 'تخزين و شحن') {
@@ -935,7 +947,19 @@ class InvoiceController extends Controller
 
             foreach($shippingPolicies as $policy) {
                 $amountBeforeTax += $policy->total_cost;
-                $policyData[$policy->id] = ['amount' => $policy->total_cost];
+                $shippingPolicyData[$policy->id] = ['amount' => $policy->total_cost];
+            }
+        }
+
+        // Handle service invoices
+        if($invoiceType == 'خدمات') {
+            $containerIds = $request->input('container_ids', []);
+            $containers = Container::with(['services'])->whereIn('id', $containerIds)->get();
+
+            foreach($containers as $container) {
+                $services = $container->services->sum('pivot.price');
+                $amountBeforeTax += $services;
+                $containerData[$container->id] = ['amount' => $services];
             }
         }
 
@@ -949,7 +973,7 @@ class InvoiceController extends Controller
         $tax = $amountAfterDiscount * ($tax_rate_percent / 100);
         $totalAmount = $amountAfterDiscount + $tax;
 
-        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData, $policyData, $invoiceType) {
+        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData, $shippingPolicyData, $invoiceType) {
             $validated = $request->validated();
             if($request->invoice_type == 'مسودة') {
                 $validated['status'] = 'مسودة';
@@ -972,8 +996,8 @@ class InvoiceController extends Controller
             }
 
             // Attach shipping policies if applicable
-            if (!empty($policyData)) {
-                $invoice->shippingPolicies()->attach($policyData);
+            if (!empty($shippingPolicyData)) {
+                $invoice->shippingPolicies()->attach($shippingPolicyData);
             }
 
             $typeLabel = $invoiceType === 'تخزين و شحن' ? 'فاتورة مدمجة (تخزين و شحن)' : ($invoiceType === 'تخزين' ? 'فاتورة تخزين' : 'فاتورة شحن');

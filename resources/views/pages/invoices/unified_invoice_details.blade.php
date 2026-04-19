@@ -736,6 +736,7 @@
                     </div>
                 </div>
             @endif
+
             @if($invoice->type == 'شحن' || $invoice->type == 'تخزين و شحن')
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -826,8 +827,8 @@
                                     <th class="text-center bg-dark text-white text-nowrap">#</th>
                                     <th class="text-center bg-dark text-white text-nowrap">رقم البوليصة</th>
                                     <th class="text-center bg-dark text-white text-nowrap">رقم الحاوية</th>
-                                    <th class="text-center bg-dark text-white text-nowrap">تاريخ الدخول</th>
-                                    <th class="text-center bg-dark text-white text-nowrap">تاريخ الخروج</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">نوع الحاوية</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
                                     <th class="text-center bg-dark text-white text-nowrap">الخدمة</th>
                                     <th class="text-center bg-dark text-white text-nowrap">سعر الخدمة</th>
                                 </tr>
@@ -849,10 +850,10 @@
                                             </a>
                                         </td>
                                         <td class="text-center">
-                                            <small>{{ \Carbon\Carbon::parse($container->date)->format('d/m/Y') }}</small>
+                                            {{ $container->containerType->name }}
                                         </td>
                                         <td class="text-center">
-                                            <small>{{ $container->exit_date ? \Carbon\Carbon::parse($container->exit_date)->format('d/m/Y') : '---' }}</small>
+                                            {{ \Carbon\Carbon::parse($container->date)->format('d/m/Y') }}
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
                                             {{ $container->services->first()->description }}</td>

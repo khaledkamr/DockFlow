@@ -136,7 +136,7 @@
                             </a>
                         </div>
                     @endif
-                    {{-- @if(auth()->user()->company->hasModule('تخزين'))
+                    @if(auth()->user()->company->hasModule('تخزين'))
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'خدمات']) }}"
                                 class="btn btn-outline-warning btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
@@ -147,7 +147,7 @@
                             </a>
                         </div>
                     @endif
-                    @if(auth()->user()->company->hasModule('تخليص'))
+                    {{-- @if(auth()->user()->company->hasModule('تخليص'))
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'تخليص']) }}"
                                 class="btn btn-outline-danger btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
@@ -805,6 +805,174 @@
                 لا توجد حاويات أو بوالص شحن غير مفوترة لهذا العميل.
             </div>
         @endif
+
+        @if($invoiceType == 'خدمات' && isset($servicePolicies) && $servicePolicies->count() > 0)
+            <form method="POST" action="{{ route('invoices.store.unified') }}" class="mb-5">
+                @csrf
+                <input type="hidden" name="type" value="خدمات">
+                <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
+                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
+                <!-- Search results info -->
+                <div class="alert alert-secondary mb-3" id="search-info-services" style="display: none;">
+                    <i class="fas fa-search me-1"></i>
+                    <span id="search-results-text-services"></span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="clear-search-btn-services">
+                        إلغاء البحث
+                    </button>
+                </div>
+
+                <!-- Selected policies counter -->
+                <div class="alert alert-primary mb-3" id="selection-counter-services" style="display: none;">
+                    <i class="fas fa-info-circle"></i>
+                    تم تحديد <strong id="selected-count-services">0</strong> بوليصة
+                    بمبلغ إجمالي <strong id="selected-amount-services">0.00</strong> <i data-lucide="saudi-riyal"></i>
+                </div>
+
+                <div class="table-container" id="tableContainerServices">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center" width="50">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="select-all-services">
+                                    </div>
+                                </th>
+                                <th class="text-center">رقم البوليصة</th>
+                                <th class="text-center">رقم الحاوية</th>
+                                <th class="text-center">نوع الحاوية</th>
+                                <th class="text-center">التاريخ</th>
+                                <th class="text-center">الخدمة</th>
+                                <th class="text-center">التكلفة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="services-tbody">
+                            @foreach ($servicePolicies as $policy)
+                                <tr class="policy-row text-center" data-policy-id="{{ $policy->id }}" 
+                                    data-amount="{{ $policy->containers->first()->services->sum('pivot.price') }}">
+                                    <td class="checkbox-cell">
+                                        <div class="form-check">
+                                            <input class="form-check-input service-checkbox" type="checkbox"
+                                                name="container_ids[]" value="{{ $policy->containers->first()->id }}"
+                                                data-amount="{{ $policy->containers->first()->services->sum('pivot.price') }}">
+                                        </div>
+                                    </td>
+                                    <td class="fw-bold">
+                                        <a href="{{ route('policies.services.details', $policy) }}" class="text-decoration-none policy-code text-dark">
+                                            {{ $policy->code }}
+                                        </a>
+                                    </td>
+                                    <td class="fw-bold">
+                                        <a href="{{ route('container.details', $policy->containers->first()) }}" class="text-decoration-none policy-code text-dark">
+                                            {{ $policy->containers->first()->code }}
+                                        </a>
+                                    </td>
+                                    <td>{{ $policy->containers->first()->containerType->name }}</td>
+                                    <td>{{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') }}</td>
+                                    <td>{{ $policy->containers->first()->services->first()->description }}</td>
+                                    <td class="fw-bold">{{ $policy->containers->first()->services->first()->pivot->price }} <i data-lucide="saudi-riyal"></i></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- No results message -->
+                <div class="alert alert-danger text-center" id="no-results-services" style="display: none;">
+                    <i class="fas fa-exclamation-triangle me-2"></i> لا توجد بوليصات متطابقة.
+                </div>
+
+                <!-- Payment Details Section -->
+                <div class="card border-dark mb-3 mt-4" id="payment-details-services">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">تفاصيل الدفع</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6 col-md">
+                                <label for="discount-services" class="form-label fw-bold">نسبة الخصم (%)</label>
+                                <input type="number" class="form-control border-primary" id="discount-services" name="discount"
+                                    min="0" max="100" value="0" step="any">
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="discount-amount-services" class="form-label fw-bold">مبلغ الخصم</label>
+                                <input type="number" class="form-control border-primary" id="discount-amount-services" name="discount_amount"
+                                    min="0" value="0" step="any">
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="tax-rate-services" class="form-label fw-bold">نسبة الضريبة (%)</label>
+                                <input type="number" class="form-control border-primary" id="tax-rate-services" name="tax_rate"
+                                    min="0" max="100" value="15" step="any">
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="payment-method-services" class="form-label fw-bold">طريقة الدفع</label>
+                                <select class="form-select border-primary" id="payment-method-services" name="payment_method" required>
+                                    <option value="آجل">آجل</option>
+                                    <option value="كاش">كاش</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="invoice-type-services" class="form-label fw-bold">نوع الفاتورة</label>
+                                <select class="form-select border-primary" id="invoice-type-services" name="invoice_type" required>
+                                    <option value="ضريبية">فاتورة ضريبية</option>
+                                    <option value="مسودة">فاتورة مسودة</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="invoice-date-services" class="form-label fw-bold">تاريخ الفاتورة</label>
+                                <input type="date" class="form-control border-primary" id="invoice-date-services" name="date" 
+                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-primary text-center">
+                                    <small class="text-muted">الإجمالي قبل الخصم</small>
+                                    <h6 class="mb-0" id="amount-before-tax-services">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-danger text-center">
+                                    <small class="text-muted">الخصم</small>
+                                    <h6 class="mb-0" id="discount-value-services">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                             <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-primary text-center">
+                                    <small class="text-muted">الإجمالي بعد الخصم</small>
+                                    <h6 class="mb-0" id="amount-after-discount-services">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-primary text-center">
+                                    <small class="text-muted">الضريبة المضافة</small>
+                                    <h6 class="mb-0" id="tax-amount-services">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-primary text-white rounded fw-bold text-center">
+                                    <small>إجمالي المبلغ</small>
+                                    <h6 class="fw-bold mb-0" id="total-amount-services">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <button type="submit" id="create-invoice-btn-services" class="btn btn-primary btn-lg" disabled>
+                        <i class="fas fa-check me-2"></i> إنشاء الفاتورة
+                    </button>
+                </div>
+            </form>
+        @elseif($invoiceType == 'خدمات' && request('customer_id'))
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                لا توجد خدمات غير مفوترة لهذا العميل.
+            </div>
+        @endif
     @endif
 
     <script>
@@ -830,6 +998,10 @@
             const shippingCombinedCheckboxes = document.querySelectorAll('.policy-checkbox-combined');
             const shippingCombinedSelectAll = document.getElementById('select-all-shipping-combined');
 
+            // Service Invoice Functions
+            const serviceCheckboxes = document.querySelectorAll('.service-checkbox');
+            const serviceSelectAll = document.getElementById('select-all-services');
+
             // Search functionality
             const searchInput = document.getElementById('search-input');
             const clearSearch = document.getElementById('clear-search');
@@ -853,6 +1025,8 @@
                     updateShippingUI();
                 } else if (invoiceType === 'تخزين و شحن') {
                     updateCombinedUI();
+                } else if (invoiceType === 'خدمات') {
+                    updateServicesUI();
                 }
             }
 
@@ -863,14 +1037,20 @@
                 const taxRate = parseFloat(document.getElementById('tax-rate-storage')?.value || 0);
 
                 discountInput.addEventListener('input', function() {
-                    const discountValue = (this.value / 100) * amountBeforeTax;
-                    discountAmountInput.value = discountValue.toFixed(2);
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (!isNaN(inputValue) && inputValue >= 0) {
+                        const discountValue = (inputValue / 100) * amountBeforeTax;
+                        discountAmountInput.value = discountValue.toFixed(2);
+                    }
                     updateUI();
                 });
 
                 discountAmountInput.addEventListener('input', function() {
-                    const discountPercent = (this.value / amountBeforeTax) * 100;
-                    discountInput.value = discountPercent.toFixed(2);
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (amountBeforeTax > 0 && !isNaN(inputValue) && inputValue >= 0) {
+                        const discountPercent = (inputValue / amountBeforeTax) * 100;
+                        discountInput.value = Math.min(discountPercent, 100).toFixed(2);
+                    }
                     updateUI();
                 });
                 
@@ -906,14 +1086,20 @@
                 const taxRate = parseFloat(document.getElementById('tax-rate-shipping')?.value || 0);
 
                 discountInput.addEventListener('input', function() {
-                    const discountValue = (this.value / 100) * amountBeforeTax;
-                    discountAmountInput.value = discountValue.toFixed(2);
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (!isNaN(inputValue) && inputValue >= 0) {
+                        const discountValue = (inputValue / 100) * amountBeforeTax;
+                        discountAmountInput.value = discountValue.toFixed(2);
+                    }
                     updateUI();
                 });
 
                 discountAmountInput.addEventListener('input', function() {
-                    const discountPercent = (this.value / amountBeforeTax) * 100;
-                    discountInput.value = discountPercent.toFixed(2);
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (amountBeforeTax > 0 && !isNaN(inputValue) && inputValue >= 0) {
+                        const discountPercent = (inputValue / amountBeforeTax) * 100;
+                        discountInput.value = Math.min(discountPercent, 100).toFixed(2);
+                    }
                     updateUI();
                 });
 
@@ -951,14 +1137,20 @@
                 const taxRate = parseFloat(document.getElementById('tax-rate-combined')?.value || 0);
 
                 discountInput.addEventListener('input', function() {
-                    const discountValue = (this.value / 100) * amountBeforeTax;
-                    discountAmountInput.value = discountValue.toFixed(2);
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (!isNaN(inputValue) && inputValue >= 0) {
+                        const discountValue = (inputValue / 100) * amountBeforeTax;
+                        discountAmountInput.value = discountValue.toFixed(2);
+                    }
                     updateUI();
                 });
 
                 discountAmountInput.addEventListener('input', function() {
-                    const discountPercent = (this.value / amountBeforeTax) * 100;
-                    discountInput.value = discountPercent.toFixed(2);
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (amountBeforeTax > 0 && !isNaN(inputValue) && inputValue >= 0) {
+                        const discountPercent = (inputValue / amountBeforeTax) * 100;
+                        discountInput.value = Math.min(discountPercent, 100).toFixed(2);
+                    }
                     updateUI();
                 });
 
@@ -996,6 +1188,55 @@
                     document.getElementById('create-invoice-btn-combined').disabled = false;
                 } else {
                     document.getElementById('create-invoice-btn-combined').disabled = true;
+                }
+            }
+
+            function updateServicesUI() {
+                const discountInput = document.getElementById('discount-services');
+                const discountAmountInput = document.getElementById('discount-amount-services');
+                const amountBeforeTax = calculateTotals(serviceCheckboxes, 'services');
+                const taxRate = parseFloat(document.getElementById('tax-rate-services')?.value || 0);
+
+                discountInput.addEventListener('input', function() {
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (!isNaN(inputValue) && inputValue >= 0) {
+                        const discountValue = (inputValue / 100) * amountBeforeTax;
+                        discountAmountInput.value = discountValue.toFixed(2);
+                    }
+                    updateUI();
+                });
+
+                discountAmountInput.addEventListener('input', function() {
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (amountBeforeTax > 0 && !isNaN(inputValue) && inputValue >= 0) {
+                        const discountPercent = (inputValue / amountBeforeTax) * 100;
+                        discountInput.value = Math.min(discountPercent, 100).toFixed(2);
+                    }
+                    updateUI();
+                });
+
+                const discountValue = parseFloat(discountAmountInput.value || 0);
+                const amountAfterDiscount = amountBeforeTax - discountValue;
+                const tax = (taxRate / 100) * amountAfterDiscount;
+                const total = amountAfterDiscount + tax;
+
+                document.getElementById('amount-before-tax-services').textContent = amountBeforeTax.toFixed(2) + ' ر.س';
+                document.getElementById('discount-value-services').textContent = discountValue.toFixed(2) + ' ر.س';
+                document.getElementById('amount-after-discount-services').textContent = amountAfterDiscount.toFixed(2) + ' ر.س';
+                document.getElementById('tax-amount-services').textContent = tax.toFixed(2) + ' ر.س';
+                document.getElementById('total-amount-services').textContent = total.toFixed(2) + ' ر.س';
+
+                const counter = document.getElementById('selection-counter-services');
+                const selectedCount = Array.from(serviceCheckboxes).filter(cb => cb.checked).length;
+
+                if (selectedCount > 0) {
+                    document.getElementById('selected-count-services').textContent = selectedCount;
+                    document.getElementById('selected-amount-services').textContent = amountBeforeTax.toFixed(2);
+                    counter.style.display = 'block';
+                    document.getElementById('create-invoice-btn-services').disabled = false;
+                } else {
+                    counter.style.display = 'none';
+                    document.getElementById('create-invoice-btn-services').disabled = true;
                 }
             }
 
@@ -1043,9 +1284,30 @@
                 });
             }
 
+            // Event listeners for Services
+            serviceCheckboxes.forEach(cb => {
+                cb.addEventListener('change', updateUI);
+            });
+            if (serviceSelectAll) {
+                serviceSelectAll.addEventListener('change', function() {
+                    serviceCheckboxes.forEach(cb => cb.checked = this.checked);
+                    updateUI();
+                });
+            }
+
             // Discount and Tax rate changes
-            ['discount-storage', 'discount-amount-storage', 'tax-rate-storage', 'discount-shipping', 'discount-amount-shipping', 'tax-rate-shipping', 'discount-combined',
-                'tax-rate-combined'
+            ['discount-storage', 
+                'discount-amount-storage', 
+                'tax-rate-storage', 
+                'discount-shipping', 
+                'discount-amount-shipping', 
+                'tax-rate-shipping', 
+                'discount-combined',
+                'discount-amount-combined',
+                'tax-rate-combined',
+                'discount-services',
+                'discount-amount-services',
+                'tax-rate-services'
             ].forEach(id => {
                 const elem = document.getElementById(id);
                 if (elem) {
