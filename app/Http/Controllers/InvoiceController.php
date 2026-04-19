@@ -832,6 +832,7 @@ class InvoiceController extends Controller
         $containers = collect();
         $shippingPolicies = collect();
         $servicePolicies = collect();
+        $transactions = collect();
 
         if ($customer_id) {
             // Get containers for storage invoices
@@ -856,7 +857,7 @@ class InvoiceController extends Controller
                 // Prepare container details
                 foreach($containers as $container) {
                     $container->period = (int) Carbon::parse($container->date)->diffInDays(Carbon::parse($container->exit_date));
-                    $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price;
+                    $container->storage_price = $container->policies->where('type', 'تخزين')->first()->storage_price ?? 0.00;
                     $storage_duration = $container->policies->where('type', 'تخزين')->first()->storage_duration;
                     if($storage_duration && $container->period > $storage_duration) {
                         $days = (int) Carbon::parse($container->date)
@@ -887,7 +888,7 @@ class InvoiceController extends Controller
             }
 
             // Get service policies details for service invoices
-            if($invoiceType == 'خدمات') {
+            if ($invoiceType == 'خدمات') {
                 $servicePolicies = Policy::where('customer_id', $customer_id)->where('type', 'خدمات')->with('containers.services')->get();
                 $servicePolicies = $servicePolicies->filter(function($policy) {
                     return $policy->containers->filter(function($container) {
@@ -897,9 +898,28 @@ class InvoiceController extends Controller
                     })->isNotEmpty();
                 });
             }
+
+            // Get clearance transactions data for clearance invoices
+            if ($invoiceType == 'تخليص') {
+                $transactions = Transaction::where('customer_id', $customer_id)->where('status', 'مغلقة')->with(['containers', 'items'])->get();
+                $transactions = $transactions->filter(function($transaction) {
+                    return $transaction->containers->filter(function($container) {
+                        return $container->invoices->filter(function($invoice) {
+                            return $invoice->type == 'تخليص';
+                        })->isEmpty();
+                    })->isNotEmpty();
+                });
+            }
         }
 
-        return view('pages.invoices.create_unified_invoice', compact('customers', 'containers', 'shippingPolicies', 'invoiceType', 'servicePolicies'));
+        return view('pages.invoices.create_unified_invoice', compact(
+            'customers', 
+            'containers', 
+            'shippingPolicies', 
+            'invoiceType', 
+            'servicePolicies',
+            'transactions'
+        ));
     }
 
     public function storeUnifiedInvoice(InvoiceRequest $request) {
