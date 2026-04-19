@@ -839,7 +839,7 @@ class InvoiceController extends Controller
             if ($invoiceType === 'تخزين' || $invoiceType === 'تخزين و شحن') {
                 $containers = Container::where('status', 'تم التسليم')->where('customer_id', $customer_id)->get();
                 $containers = $containers->filter(function($container) {
-                    return $container->invoices->filter(function($invoice) {
+                    return $container->policies->where('type', 'تخزين')->first() && $container->invoices->filter(function($invoice) {
                         return $invoice->type == 'تخزين' || $invoice->type == 'تخليص' || $invoice->type == 'تخزين و شحن';
                     })->isEmpty();
                 });
