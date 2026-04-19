@@ -52,7 +52,7 @@ class DashboardController extends Controller
         $containers = Container::all();
 
         $date = $request->input('date', Carbon::now()->format('Y-m-d'));
-        $availableContainers = $containers->where('date', '<=', $date)->where('status', 'في الساحة')->count();
+        $availableContainers = $containers->where('status', 'في الساحة')->count();
         
         $receivedContainers = $containers->where('date', $date)->count();
         $deliveredContainers = $containers->where('exit_date', $date)->count();
