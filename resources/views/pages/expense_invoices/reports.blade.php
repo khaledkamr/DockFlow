@@ -136,7 +136,7 @@
                             <tr>
                                 <td class="text-center">{{ $index++ }}</td>
                                 <td class="text-center fw-bold">
-                                    <a href="{{ route('expense.invoices.unified.details', $invoice) }}"
+                                    <a href="{{ route('expense.invoices.details', $invoice) }}"
                                         class="text-decoration-none">
                                         {{ $invoice->code }}
                                     </a>

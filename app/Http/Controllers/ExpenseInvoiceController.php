@@ -83,7 +83,7 @@ class ExpenseInvoiceController extends Controller
         $new = $invoice->load('items')->toArray();
         logActivity('إنشاء فاتورة مصاريف', 'تم إنشاء فاتورة مصاريف جديدة برقم ' . $invoice->code, null, $new);
 
-        return redirect()->back()->with('success', 'تم إنشاء فاتورة المصاريف بنجاح. <a href="' . route('expense.invoices.unified.details', $invoice) . '" class="text-white fw-bold">عرض الفاتورة</a>');
+        return redirect()->back()->with('success', 'تم إنشاء فاتورة المصاريف بنجاح. <a href="' . route('expense.invoices.details', $invoice) . '" class="text-white fw-bold">عرض الفاتورة</a>');
     }
 
     public function invoiceDetails(ExpenseInvoice $invoice) {
@@ -110,7 +110,7 @@ class ExpenseInvoiceController extends Controller
         $new = $invoice->toArray();
         logActivity('تحديث حالة فاتورة مصاريف', 'تم تحديث حالة فاتورة المصاريف برقم ' . $invoice->code, $old, $new);
 
-        return redirect()->route('expense.invoices.unified.details', $invoice)->with('success', 'تم تحديث حالة فاتورة المصاريف بنجاح');
+        return redirect()->route('expense.invoices.details', $invoice)->with('success', 'تم تحديث حالة فاتورة المصاريف بنجاح');
     }
 
     public function updateInvoiceNotes(Request $request, ExpenseInvoice $invoice) {
@@ -125,7 +125,7 @@ class ExpenseInvoiceController extends Controller
         $new = $invoice->toArray();
         logActivity('تحديث ملاحظات فاتورة مصاريف', 'تم تحديث ملاحظات فاتورة المصاريف برقم ' . $invoice->code, $old, $new);
 
-        return redirect()->route('expense.invoices.unified.details', $invoice)->with('success', 'تم تحديث ملاحظات فاتورة المصاريف بنجاح');
+        return redirect()->route('expense.invoices.details', $invoice)->with('success', 'تم تحديث ملاحظات فاتورة المصاريف بنجاح');
     }
 
     public function postInvoice(ExpenseInvoice $invoice) {
@@ -208,7 +208,7 @@ class ExpenseInvoiceController extends Controller
 
         logActivity('ترحيل فاتورة مصاريف', 'تم ترحيل فاتورة المصاريف برقم ' . $invoice->code . ' إلى قيد اليومية رقم ' . $journal->code);
 
-        return redirect()->route('expense.invoices.unified.details', $invoice)->with('success', "تم ترحيل فاتورة المصاريف بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
+        return redirect()->route('expense.invoices.details', $invoice)->with('success', "تم ترحيل فاتورة المصاريف بنجاح <a class='text-white fw-bold' href='".route('journal.details', $journal)."'>عرض القيد</a>");
     }
 
     public function deleteInvoice(ExpenseInvoice $invoice) {
