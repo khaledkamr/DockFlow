@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\BelongsToCompany;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\Concerns\Has;
 use Mockery\Matcher\Contains;
 
@@ -79,7 +80,7 @@ class Customer extends Model
         return $this->invoices()
             ->whereIn('status', ['لم يتم الدفع', 'تم الدفع جزئياً'])
             ->whereBetween('date', [$from, $to])
-            ->sum('total_amount');
+            ->sum(DB::raw('total_amount - paid_amount'));
     }
 
     public function totalAgingBalanceCount($from, $to) {
