@@ -248,7 +248,7 @@
                     @foreach ($suppliers as $supplier)
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
-                            <td class="text-center text-primary fw-bold">{{ $supplier->account->code }}</td>
+                            <td class="text-center text-primary fw-bold">{{ $supplier->account->code ?? 'N/A' }}</td>
                             <td class="text-center">
                                 <a href="{{ route('relation.supplier.profile', $supplier) }}"
                                     class="text-dark fw-bold text-decoration-none">
