@@ -89,7 +89,7 @@ class ShippingPoliciesExport implements FromCollection, WithHeadings
                 $policy->driver_wage,
                 $policy->clearance_fee,
                 $policy->late_fee,
-                $policy->customer_cost,
+                $policy->client_cost,
                 $policy->total_cost,
                 $policy->total_cost - $policy->supplier_cost - $policy->commission,
                 $invoices ?: 'N/A'
