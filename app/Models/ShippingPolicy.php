@@ -71,6 +71,10 @@ class ShippingPolicy extends Model
         return $this->belongsToMany(Invoice::class, 'invoice_shipping')->withPivot('amount')->withTimestamps();
     }
 
+    public function attachments() {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     protected static function booted()
     {
         static::creating(function ($policy) {

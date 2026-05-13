@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ContractRequest;
 use App\Http\Requests\PolicyRequest;
 use App\Models\Account;
+use App\Models\Attachment;
 use App\Models\BulkBatch;
 use App\Models\BulkInventory;
 use App\Models\BulkItem;
@@ -21,6 +22,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class PolicyController extends Controller
 {
@@ -110,6 +112,19 @@ class PolicyController extends Controller
         $validated = $request->validated();
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
+
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/storage_policies/' . $policy->id, $fileName, 'public');
+
+            $policy->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+        }
 
         $new = $policy->load('containers')->toArray();
         logActivity('إنشاء بوليصة تخزين', "تم إنشاء بوليصة تخزين جديدة برقم " . $policy->code, null, $new);
@@ -512,6 +527,46 @@ class PolicyController extends Controller
         ));
     }
 
+    // ----------------- Attachments methods -----------------
+
+    public function attachFile(Request $request, Policy $policy) {
+        $request->validate([
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/storage_policies/' . $policy->id, $fileName, 'public');
+
+            $policy->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+
+            logActivity('إرفاق مستند إلى البوليصة', "تم إرفاق مستند " . $fileName . " إلى البوليصة رقم: " . $policy->code);
+            return redirect()->back()->with('success', 'تم إرفاق الملف بنجاح');
+        }
+
+        logActivity('فشل إرفاق مستند إلى البوليصة', "محاولة فاشلة لإرفاق مستند إلى البوليصة رقم: " . $policy->code);
+
+        return redirect()->back()->with('error', 'لم يتم إرفاق أي ملف');
+    }
+
+    public function deleteAttachment(Attachment $attachment) {
+        if (Storage::disk('public')->exists($attachment->file_path)) {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
+
+        $old = $attachment;
+        $attachment->delete();
+
+        logActivity('حذف مستند من البوليصة', "تم حذف المرفق " . $old->file_name . " من البوليصة رقم: " . $old->attachable->code);
+        return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
+    }
+
     // ------------------- Common Methods -------------------
 
     public function deletePolicy(Policy $policy) {
@@ -544,6 +599,7 @@ class PolicyController extends Controller
 
         $old = $policy->toArray();
         $policy->containers()->detach();
+        $policy->attachments()->delete();
         $policy->delete();
 
         logActivity('حذف بوليصة', "تم حذف بوليصة برقم " . $policy->code, $old, null);

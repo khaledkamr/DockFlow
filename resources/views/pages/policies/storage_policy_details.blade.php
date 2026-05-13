@@ -14,7 +14,8 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="{{ route('contracts.details', $policy->customer->contract) }}" target="_blank" class="text-decoration-none">
+                            <a href="{{ route('contracts.details', $policy->customer->contract) }}" target="_blank"
+                                class="text-decoration-none">
                                 <i class="fa-solid fa-link"></i> عقد {{ $policy->customer->name }}
                             </a>
                         </li>
@@ -30,15 +31,14 @@
                 @endforeach
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-print me-1"></i>
-                    <span class="d-none d-sm-inline">طباعة اذن دخول</span><span
-                        class="d-inline d-sm-none">طباعة</span>
+                    <span class="d-none d-sm-inline">طباعة اذن دخول</span><span class="d-inline d-sm-none">طباعة</span>
                 </button>
             </form>
             <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#editPolicyModal">
                 <i class="fas fa-edit me-1"></i>
                 تعديل البوليصة
             </button>
-            @if(auth()->user()->roles->contains('name', 'Admin'))
+            @if (auth()->user()->roles->contains('name', 'Admin'))
                 <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                     <i class="fas fa-trash me-1"></i>
                     <span class="d-inline">حذف البوليصة</span>
@@ -53,7 +53,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title text-white fw-bold" id="editPolicyModalLabel">تعديل بيانات بوليصة الشحن</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('policies.storage.update', $policy) }}" method="POST">
                     @csrf
@@ -62,14 +63,16 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
                                 <label class="form-label">رقم البوليصة</label>
-                                <input type="text" class="form-control border-primary" name="code" value="{{ old('code', $policy->code) }}">
+                                <input type="text" class="form-control border-primary" name="code"
+                                    value="{{ old('code', $policy->code) }}">
                                 @error('code')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">تاريخ البوليصة</label>
-                                <input type="date" class="form-control border-primary" name="date" value="{{ old('date', \Carbon\Carbon::parse($policy->date)->format('Y-m-d')) }}">
+                                <input type="date" class="form-control border-primary" name="date"
+                                    value="{{ old('date', \Carbon\Carbon::parse($policy->date)->format('Y-m-d')) }}">
                                 @error('date')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -88,70 +91,80 @@
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">الرقم المرجعي</label>
-                                <input type="text" class="form-control border-primary" name="reference_number" value="{{ old('reference_number', $policy->reference_number) }}">
+                                <input type="text" class="form-control border-primary" name="reference_number"
+                                    value="{{ old('reference_number', $policy->reference_number) }}">
                                 @error('reference_number')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">البيان الضريبي</label>
-                                <input type="text" class="form-control border-primary" name="tax_statement" value="{{ old('tax_statement', $policy->tax_statement) }}">
+                                <input type="text" class="form-control border-primary" name="tax_statement"
+                                    value="{{ old('tax_statement', $policy->tax_statement) }}">
                                 @error('tax_statement')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">إســم السائق</label>
-                                <input type="text" class="form-control border-primary" name="driver_name" value="{{ old('driver_name', $policy->driver_name) }}">
+                                <input type="text" class="form-control border-primary" name="driver_name"
+                                    value="{{ old('driver_name', $policy->driver_name) }}">
                                 @error('driver_name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">هوية السائق</label>
-                                <input type="text" class="form-control border-primary" name="driver_NID" value="{{ old('driver_NID', $policy->driver_NID) }}">
+                                <input type="text" class="form-control border-primary" name="driver_NID"
+                                    value="{{ old('driver_NID', $policy->driver_NID) }}">
                                 @error('driver_NID')
                                     <div class="text-danger">{{ $message }}</div>
-                                @enderror   
+                                @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">رقم السائق</label>
-                                <input type="text" class="form-control border-primary" name="driver_number" value="{{ old('driver_number', $policy->driver_number) }}">
+                                <input type="text" class="form-control border-primary" name="driver_number"
+                                    value="{{ old('driver_number', $policy->driver_number) }}">
                                 @error('driver_number')
                                     <div class="text-danger">{{ $message }}</div>
-                                @enderror   
+                                @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">نوع السيارة</label>
-                                <input type="text" class="form-control border-primary" name="driver_car" value="{{ old('driver_car', $policy->driver_car) }}">
+                                <input type="text" class="form-control border-primary" name="driver_car"
+                                    value="{{ old('driver_car', $policy->driver_car) }}">
                                 @error('driver_car')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">لوحة السيارة</label>
-                                <input type="text" class="form-control border-primary" name="car_code" value="{{ old('plate_number', $policy->car_code) }}">
+                                <input type="text" class="form-control border-primary" name="car_code"
+                                    value="{{ old('plate_number', $policy->car_code) }}">
                                 @error('car_code')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">سعر التخزين</label>
-                                <input type="number" class="form-control border-primary" name="storage_price" value="{{ old('storage_price', $policy->storage_price) }}">
+                                <input type="number" class="form-control border-primary" name="storage_price"
+                                    value="{{ old('storage_price', $policy->storage_price) }}">
                                 @error('storage_price')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">مدة التخزين</label>
-                                <input type="text" class="form-control border-primary" name="storage_duration" value="{{ old('storage_duration', $policy->storage_duration) }}">
+                                <input type="text" class="form-control border-primary" name="storage_duration"
+                                    value="{{ old('storage_duration', $policy->storage_duration) }}">
                                 @error('storage_duration')
                                     <div class="text-danger">{{ $message }}</div>
-                                @enderror   
+                                @enderror
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label">غرامة التأخير</label>
-                                <input type="number" class="form-control border-primary" name="late_fee" value="{{ old('late_fee', $policy->late_fee) }}">
+                                <input type="number" class="form-control border-primary" name="late_fee"
+                                    value="{{ old('late_fee', $policy->late_fee) }}">
                                 @error('late_fee')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -177,7 +190,8 @@
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         تأكيد حذف البوليصة
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
                     <div class="mb-3">
@@ -315,7 +329,8 @@
                         </div>
                         <div class="col-4 col-sm-4 col-lg-4">
                             <label class="form-label text-muted small">مدة التخزين</label>
-                            <div class="fw-bold">{{ $policy->storage_duration }} {{ $policy->storage_duration ? 'يوم' : 'مدة مفتوحة' }}</div>
+                            <div class="fw-bold">{{ $policy->storage_duration }}
+                                {{ $policy->storage_duration ? 'يوم' : 'مدة مفتوحة' }}</div>
                         </div>
                         <div class="col-4 col-sm-4 col-lg-4">
                             <label class="form-label text-muted small">غرامة التأخير (لليوم)</label>
@@ -327,15 +342,16 @@
         </div>
     </div>
 
-    @if($policy->goods_type == 'bulk')
-        <div class="card border-0 shadow-sm mb-5">
+    @if ($policy->goods_type == 'bulk')
+        <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <div class="d-flex flex-row justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-boxes me-2"></i>
                         البضاعة المشمولة في البوليصة
                     </h5>
-                    <span class="badge bg-light text-dark d-none d-sm-block">{{ $policy->bulkBatch->quantity_in ?? 0 }} {{ $policy->bulkBatch->bulkInventory->item->unit }} </span>
+                    <span class="badge bg-light text-dark d-none d-sm-block">{{ $policy->bulkBatch->quantity_in ?? 0 }}
+                        {{ $policy->bulkBatch->bulkInventory->item->unit }} </span>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -355,7 +371,9 @@
                             <tbody>
                                 <tr class="text-center">
                                     <td class="text-center">1</td>
-                                    <td><div class="fw-bold">{{ $policy->bulkBatch->bulkInventory->item->name }}</div></td>
+                                    <td>
+                                        <div class="fw-bold">{{ $policy->bulkBatch->bulkInventory->item->name }}</div>
+                                    </td>
                                     <td class="text-center">
                                         <a href="{{ route('users.customer.profile', $policy->bulkBatch->bulkInventory->customer) }}"
                                             class="text-dark text-decoration-none fw-bold">
@@ -364,13 +382,13 @@
                                     </td>
                                     <td>
                                         <div class="fw-bold">
-                                            {{ $policy->bulkBatch->quantity_in ?? 0 }} 
+                                            {{ $policy->bulkBatch->quantity_in ?? 0 }}
                                             {{ $policy->bulkBatch->bulkInventory->item->unit }}
                                         </div>
                                     </td>
                                     <td>
                                         <div class="fw-bold">
-                                            {{ $policy->bulkBatch->quantity_remaining ?? 0 }} 
+                                            {{ $policy->bulkBatch->quantity_remaining ?? 0 }}
                                             {{ $policy->bulkBatch->bulkInventory->item->unit }}
                                         </div>
                                     </td>
@@ -388,7 +406,7 @@
             </div>
         </div>
     @else
-        <div class="card border-0 shadow-sm mb-5">
+        <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-dark text-white">
                 <div class="d-flex flex-row justify-content-between align-items-center text-white">
                     <h5 class="card-title mb-0">
@@ -463,8 +481,7 @@
                                         </td>
                                     </tr>
 
-                                    <div class="modal fade" id="addServiceModal-{{ $container->id }}"
-                                        tabindex="-1">
+                                    <div class="modal fade" id="addServiceModal-{{ $container->id }}" tabindex="-1">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <form action="{{ route('containers.add.service', $container->id) }}"
                                                 method="POST">
@@ -479,8 +496,8 @@
                                                     <div class="modal-body">
                                                         <div class="mb-3">
                                                             <label class="form-label">الخدمة</label>
-                                                            <select name="service_id"
-                                                                class="form-select border-primary" required>
+                                                            <select name="service_id" class="form-select border-primary"
+                                                                required>
                                                                 <option value="" disabled selected>اختر خدمة
                                                                 </option>
                                                                 @foreach ($services as $service)
@@ -521,6 +538,152 @@
         </div>
     @endif
 
+    <!-- Attachments Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-paperclip me-2"></i>
+                الملفات المرفقة
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form action="{{ route('policies.add.attachment', $policy) }}" method="POST"
+                        enctype="multipart/form-data"
+                        class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
+                        @csrf
+                        <div class="flex-grow-1">
+                            <input type="file" name="attachment" class="form-control"
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-1"></i>
+                            إرفاق ملف
+                        </button>
+                    </form>
+                    <small class="text-muted mt-1 d-block">
+                        يمكنك إرفاق الملفات التالية: PDF, صور
+                    </small>
+                </div>
+            </div>
+
+            <!-- Attached Files List -->
+            @if ($policy->attachments && $policy->attachments->count() > 0)
+                <div class="row g-3">
+                    @foreach ($policy->attachments as $attachment)
+                        <div class="col-12 col-lg-6">
+                            <div class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        @php
+                                            $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
+                                            $iconClass = 'fas fa-file';
+                                            $iconColor = 'text-secondary';
+
+                                            switch (strtolower($extension)) {
+                                                case 'pdf':
+                                                    $iconClass = 'fas fa-file-pdf';
+                                                    $iconColor = 'text-danger';
+                                                    break;
+                                                case 'doc':
+                                                case 'docx':
+                                                    $iconClass = 'fas fa-file-word';
+                                                    $iconColor = 'text-primary';
+                                                    break;
+                                                case 'xls':
+                                                case 'xlsx':
+                                                    $iconClass = 'fas fa-file-excel';
+                                                    $iconColor = 'text-success';
+                                                    break;
+                                                case 'jpg':
+                                                case 'jpeg':
+                                                case 'png':
+                                                case 'gif':
+                                                    $iconClass = 'fas fa-file-image';
+                                                    $iconColor = 'text-info';
+                                                    break;
+                                                case 'txt':
+                                                    $iconClass = 'fas fa-file-alt';
+                                                    $iconColor = 'text-dark';
+                                                    break;
+                                            }
+                                        @endphp
+                                        <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 alert-heading">{{ $attachment->file_name }}</h6>
+                                        <small class="text-muted" style="font-size: 0.75rem;">
+                                            أرفق بواسطة {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }} في 
+                                            {{ $attachment->created_at->format('Y/m/d') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}"
+                                        download="{{ $attachment->file_name }}"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger"
+                                        type="button" data-bs-toggle="modal" data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
+                                        title="حذف المرفق">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delete Attachment Modal -->
+                        <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
+                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger">
+                                        <h5 class="modal-title text-white fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                            تأكيد حذف المرفق
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-dark">
+                                        <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong>{{ $attachment->file_name }}</strong>
+                                            <br>
+                                            <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                        <form action="{{ route('policies.delete.attachment', $attachment) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
+                                                حذف المرفق
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
+                                            إلغاء
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2 mb-0">لا توجد مرفقات لهذا العقد</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
     <div class="text-center mt-4 mb-5">
         <small class="text-muted">
             تم إنشاء هذه البوليصة بواسطة: <strong>{{ $policy->made_by->name }}</strong>
@@ -543,14 +706,17 @@
             border: 1px solid #0d6efd;
             padding: 5px;
         }
+
         .select2-container .select2-selection__rendered {
             line-height: 30px;
         }
+
         @media (max-width: 768px) {
             .d-flex.justify-content-between {
                 flex-direction: column;
                 gap: 1rem;
             }
+
             .btn-group {
                 justify-content: center;
             }

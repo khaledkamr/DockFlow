@@ -30,6 +30,7 @@ class PolicyRequest extends FormRequest
             'storage_price' => 'nullable|numeric',
             'storage_duration' => 'nullable|numeric',
             'late_fee' => 'nullable|numeric',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 }

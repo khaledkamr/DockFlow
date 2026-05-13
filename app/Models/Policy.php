@@ -60,6 +60,10 @@ class Policy extends Model
         return $this->hasMany(BulkTransaction::class);
     }
 
+    public function attachments() {
+        return $this->morphMany(Attachment::class, 'attachable');
+    }
+
     protected static function booted()
     {
         static::creating(function ($policy) {

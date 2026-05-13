@@ -35,6 +35,7 @@ class ShippingRequest extends FormRequest
             'late_fee' => 'nullable|numeric|min:0',
             'commission' => 'nullable|numeric|min:0',
             'user_id' => 'required|exists:users,id',
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ];
     }
 }

@@ -30,7 +30,7 @@
         <!-- Container Content -->
         <div class="tab-pane fade show active" id="container-content" role="tabpanel" aria-labelledby="container-tab">
             <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
-                <form action="{{ route('policies.storage.store') }}" method="POST">
+                <form action="{{ route('policies.storage.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
                     <input type="hidden" name="type" value="تخزين">
@@ -216,8 +216,18 @@
                         </div>
                     </div>
 
-                    <div
-                        class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mt-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <h5 class="form-label">المرفقات</h5>
+                            <input type="file" class="form-control border-primary" name="attachment">
+                            {{-- <small class="text-muted">يمكن إرفاق ملف واحد فقط.</small> --}}
+                            @error('attachment')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mt-4">
                         <button type="submit" class="btn btn-primary fw-bold">
                             <span class="d-inline">حفظ البوليصة</span>
                         </button>
@@ -230,7 +240,7 @@
         <!-- Bulk Content -->
         <div class="tab-pane fade" id="bulk-content" role="tabpanel" aria-labelledby="bulk-tab">
             <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
-                <form action="{{ route('policies.storage.store.bulk') }}" method="POST">
+                <form action="{{ route('policies.storage.store.bulk') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
                     <input type="hidden" name="type" value="تخزين">
@@ -306,6 +316,14 @@
                             <label class="form-label">البيان الضريبي</label>
                             <input type="text" name="tax_statement" class="form-control border-primary"
                                 value="{{ old('tax_statement') }}">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <label class="form-label">المرفقات</label>
+                            <input type="file" class="form-control border-primary" name="attachment">
+                            <small class="text-muted">يمكن إرفاق ملف واحد فقط.</small>
                         </div>
                     </div>
 
@@ -600,7 +618,7 @@
             // Remove container row
             containersSection.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-container') || e.target.closest(
-                    '.remove-container')) {
+                        '.remove-container')) {
                     const row = e.target.closest('.container-row');
                     row.remove();
                     updateContainerNumbers();

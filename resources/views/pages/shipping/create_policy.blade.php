@@ -10,7 +10,7 @@
     <h2 class="mb-4">إضافة بوليصة شحن</h2>
 
     <div class="card border-0 bg-white p-4 rounded-3 shadow-sm">
-        <form action="{{ route('shipping.policies.store') }}" method="POST">
+        <form action="{{ route('shipping.policies.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
             <div class="row g-3 mb-3">
@@ -191,7 +191,7 @@
             </div>
 
             <!-- Goods Section -->
-            <div class="row mb-4" id="goods-section">
+            <div class="row mb-2" id="goods-section">
                 <div class="col-12">
                     <h5 class="mb-3">البضائع</h5>
                     <div class="table-container" id="tableContainer">
@@ -244,6 +244,17 @@
                             <i class="fas fa-plus"></i> <span>إضافة صف</span>
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <h5 class="form-label">المرفقات</h5>
+                    <input type="file" class="form-control border-primary" name="attachment">
+                    {{-- <small class="text-muted">يمكن إرفاق ملف واحد فقط.</small> --}}
+                    @error('attachment')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 

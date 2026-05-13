@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ShippingRequest;
 use App\Models\Account;
+use App\Models\Attachment;
 use App\Models\Customer;
 use App\Models\Driver;
 use App\Models\JournalEntry;
@@ -15,6 +16,7 @@ use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ShippingController extends Controller
 {
@@ -106,6 +108,19 @@ class ShippingController extends Controller
             ]);
             Places::firstOrCreate([
                 'name' => $policy->to,
+            ]);
+        }
+
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/shipping_policies/' . $policy->id, $fileName, 'public');
+
+            $policy->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
             ]);
         }
 
@@ -221,6 +236,7 @@ class ShippingController extends Controller
 
         $old = $policy->load('goods')->toArray();
         $policy->goods()->delete();
+        $policy->attachments()->delete();
         $policy->delete();
         
         logActivity('حذف بوليصة شحن', "تم حذف بوليصة الشحن برقم " . $policy->code, $old, null);
@@ -312,5 +328,45 @@ class ShippingController extends Controller
             'deliveryLocations',
             'perPage'
         ));
+    }
+
+    // ----------------- Attachments methods -----------------
+
+    public function attachFile(Request $request, ShippingPolicy $policy) {
+        $request->validate([
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/shipping_policies/' . $policy->id, $fileName, 'public');
+
+            $policy->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+
+            logActivity('إرفاق مستند إلى البوليصة', "تم إرفاق مستند " . $fileName . " إلى البوليصة رقم: " . $policy->code);
+            return redirect()->back()->with('success', 'تم إرفاق الملف بنجاح');
+        }
+
+        logActivity('فشل إرفاق مستند إلى البوليصة', "محاولة فاشلة لإرفاق مستند إلى البوليصة رقم: " . $policy->code);
+
+        return redirect()->back()->with('error', 'لم يتم إرفاق أي ملف');
+    }
+
+    public function deleteAttachment(Attachment $attachment) {
+        if (Storage::disk('public')->exists($attachment->file_path)) {
+            Storage::disk('public')->delete($attachment->file_path);
+        }
+
+        $old = $attachment;
+        $attachment->delete();
+
+        logActivity('حذف مستند من البوليصة', "تم حذف المرفق " . $old->file_name . " من البوليصة رقم: " . $old->attachable->code);
+        return redirect()->back()->with('success', 'تم حذف المرفق بنجاح');
     }
 }
