@@ -1234,9 +1234,13 @@
                                 <tr>
                                     <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td class="text-center fw-bold">
-                                        <a href="{{ route('voucher.details', $payment->voucher) }}" class="text-decoration-none">
-                                            {{ $payment->voucher->code ?? '---' }}
-                                        </a>
+                                        @if($payment->voucher)
+                                            <a href="{{ route('voucher.details', $payment->voucher) }}" class="text-decoration-none">
+                                                {{ $payment->voucher->code ?? '---' }}
+                                            </a>
+                                        @else
+                                            ---
+                                        @endif
                                     </td>
                                     <td class="text-center">
                                         <small>{{ $payment->created_at->format('d/m/Y') }}</small>
