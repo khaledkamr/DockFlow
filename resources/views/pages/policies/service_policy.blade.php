@@ -123,7 +123,7 @@
                         </div>
                         <div class="col-12 col-sm-6 col-lg-2">
                             <label class="form-label">السعر</label>
-                            <input type="text" class="form-control border-primary" name="containers[0][price]">
+                            <input type="text" class="form-control border-primary" name="containers[0][price]" required>
                             <div class="invalid-feedback"></div>
                         </div>
                     </div>
