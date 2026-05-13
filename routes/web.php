@@ -154,6 +154,9 @@ Route::controller(PolicyController::class)->middleware('auth')->group(function (
     Route::delete('/policies/delete/{policy:uuid}', 'deletePolicy')->name('policy.delete');
     Route::delete('/policies/container/remove/{policy:uuid}/{containerId}', 'removeContainerFromPolicy')->name('policies.container.remove');
     Route::get('/policies/reports', 'reports')->name('policies.reports');
+
+    Route::post('/policies/{policy:uuid}/add/attachment', 'attachFile')->name('policies.add.attachment');
+    Route::delete('/policies/attachment/delete/{attachment:id}', 'deleteAttachment')->name('policies.delete.attachment');
 });
 
 Route::controller(TransactionController::class)->middleware('auth')->group(function () {
@@ -219,6 +222,8 @@ Route::controller(ShippingController::class)->middleware('auth')->group(function
     Route::patch('/shipping/policies/{policy:uuid}/toggle-receive-status', 'toggleReceiveStatus')->name('shipping.policies.toggle');
     Route::delete('/shipping/policies/delete/{policy:uuid}', 'deletePolicy')->name('shipping.policies.delete');
     Route::get('/shipping/reports', 'reports')->name('shipping.policies.reports');
+    Route::post('/shipping/policies/{policy:uuid}/add/attachment', 'attachFile')->name('shipping.policies.add.attachment');
+    Route::delete('/shipping/policies/attachment/delete/{attachment:id}', 'deleteAttachment')->name('shipping.policies.delete.attachment');
 });
 
 Route::controller(CompanyController::class)->middleware('auth')->group(function () {

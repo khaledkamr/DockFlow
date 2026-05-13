@@ -46,13 +46,13 @@ class DashboardController extends Controller
 
     public function shams_dashboard(Request $request) {
         $customers = Customer::all()->count();
-        $users = User::all()->count();
+        $users = User::where('company_id', Auth::user()->company_id)->count();
         $contracts = Contract::all()->count();
         $invoices = Invoice::all()->count();
         $containers = Container::all();
 
         $date = $request->input('date', Carbon::now()->format('Y-m-d'));
-        $availableContainers = $containers->where('status', 'في الساحة')->count();
+        $availableContainers = $containers->where('date', '<=', $date)->where('status', 'في الساحة')->count();
         
         $receivedContainers = $containers->where('date', $date)->count();
         $deliveredContainers = $containers->where('exit_date', $date)->count();
@@ -130,7 +130,7 @@ class DashboardController extends Controller
 
     public function tag_dashboard(Request $request) {
         $customers = Customer::all()->count();
-        $users = User::all()->count();
+        $users = User::where('company_id', Auth::user()->company_id)->count();
         $contracts = Contract::all()->count();
         $invoices = Invoice::all()->count();
         $containers = Container::all();
@@ -216,7 +216,7 @@ class DashboardController extends Controller
 
     public function masar_dashboard() {
         $customers = Customer::all()->count();
-        $users = User::all()->count();
+        $users = User::where('company_id', Auth::user()->company_id)->count();
         $contracts = Contract::all()->count();
         $invoices = Invoice::all()->count();
 
@@ -235,7 +235,7 @@ class DashboardController extends Controller
 
     public function defaultDashboard() {
         $customers = Customer::all()->count();
-        $users = User::all()->count();
+        $users = User::where('company_id', Auth::user()->company_id)->count();
         $contracts = Contract::all()->count();
         $invoices = Invoice::all()->count();
         

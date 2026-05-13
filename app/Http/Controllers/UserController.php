@@ -33,12 +33,13 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
     // ----------------------- Users -----------------------
+
     public function users(Request $request) {
         if(Gate::denies('إدارة المستخدمين')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية الوصول إلى إدارة المستخدمين');
         }
 
-        $users = User::all();
+        $users = User::where('company_id', Auth::user()->company_id)->get();
         $roles = Role::all();
 
         $filter = $request->input('role', 'all');
@@ -90,6 +91,7 @@ class UserController extends Controller
             'NID' => $request->NID,
             'company_id' => Auth::user()->company_id,
         ]);
+
         $user->roles()->attach($request->role);
         return redirect()->back()->with('success', 'تم إضافة مستخدم جديد بنجاح');
     }
@@ -208,7 +210,7 @@ class UserController extends Controller
             ->paginate(100)->onEachSide(1)->withQueryString();
 
         $actions = UserLog::select('action')->distinct()->pluck('action');
-        $users = User::all();
+        $users = User::where('company_id', Auth::user()->company_id)->get();
 
         return view('pages.users.logs', compact('logs', 'actions', 'users'));
     }
@@ -243,7 +245,7 @@ class UserController extends Controller
             ->where('company_id', Auth::user()->company_id)
             ->paginate(100)->onEachSide(1)->withQueryString();
 
-        $users = User::all();
+        $users = User::where('company_id', Auth::user()->company_id)->get();
         $actions = UserLog::select('action')->distinct()->pluck('action');
         $perPage = 100;
 

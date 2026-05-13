@@ -336,8 +336,7 @@
                                     </td>
                                     <td class="fw-bold">{{ $container->containerType->name }}</td>
                                     <td class="text-nowrap">{{ $container->services->first()->description ?? '-' }}</td>
-                                    <td class="fw-bold">{{ $container->services->first()->pivot->price ?? '-' }}
-                                        ريال</td>
+                                    <td class="fw-bold">{{ $container->services->first()->pivot->price ?? '0.00' }} ريال</td>
                                     <td>{{ \Carbon\Carbon::parse($container->date)->format('Y/m/d') }}</td>
                                     <td class="d-flex justify-content-center gap-2">
                                         <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#editContainerModal{{ $container->id }}">
@@ -378,7 +377,7 @@
                                                         </div>
                                                         <div class="col-12">
                                                             <label class="form-label">السعر</label>
-                                                            <input type="number" class="form-control border-primary" name="price" step="0.01" min="0" value="{{ $container->services->first()->pivot->price ?? 0 }}" required>
+                                                            <input type="number" class="form-control border-primary" name="price" step="0.01" min="0" value="{{ $container->services->first()->pivot->price ?? '0.00' }}" required>
                                                         </div>
                                                     </div>
                                                 </div>
