@@ -10,8 +10,7 @@
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-body p-4">
             <!-- Header with Status and Actions -->
-            <div
-                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
                 <div>
                     <span class="badge bg-{{ $voucher->is_posted ? 'success' : 'warning' }} fs-6 px-3 py-2">
                         @if ($voucher->is_posted)
@@ -26,7 +25,7 @@
                         <i class="fas fa-print me-2"></i>طباعة السند
                     </a>
                     @if (!$voucher->is_posted)
-                        <form action="" method="POST" class="d-inline">
+                        <form action="{{ route('post.voucher', $voucher) }}" method="POST" class="d-inline">
                             @csrf
                             @method('PATCH')
                             <button type="submit" class="btn btn-outline-primary"
@@ -52,7 +51,7 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
-                        <form action="" method="POST">
+                        <form action="{{ route('voucher.delete', $voucher->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <div class="modal-body text-dark text-center">

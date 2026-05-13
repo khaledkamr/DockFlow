@@ -716,7 +716,7 @@ class AccountingController extends Controller
         $old = $voucher->toArray();
         $voucher->delete();
         logActivity('حذف سند', "تم حذف السند رقم " . $voucher->code, $old, null);
-        return redirect()->back()->with('success', 'تم حذف السند بنجاح');
+        return redirect()->route('money.entries')->with('success', 'تم حذف السند بنجاح');
     }
 
     public function postVoucherToJournal(Voucher $voucher) {
