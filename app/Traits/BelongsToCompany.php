@@ -30,12 +30,14 @@ trait BelongsToCompany
         static::addGlobalScope('company', function (Builder $builder) {
             $user = auth()->user();
 
-            if(!$user || !$user->company_id) {
+            if($user->type == 'admin') {
+                return; // Admin can see all records.
+            } elseif(!$user || !$user->company_id) {
                 $builder->whereRaw('1 = 0'); // No company, no records.
                 session()->flash('error', 'عذراً حدث خطأ في تحميل البيانات.');
                 
                 return;
-            }
+            } 
 
             $builder->where('company_id', $user->company_id);
         });
@@ -43,7 +45,9 @@ trait BelongsToCompany
         static::creating(function ($model) {
             $user = auth()->user();
 
-            if (!$user || !$user->company_id) {
+            if($user->type == 'admin') {
+                return; // Admin can create records for any company (though this is unlikely).
+            } elseif (!$user || !$user->company_id) {
                 throw new \Exception("Cannot create " . get_class($model) . " without a company_id. User has no company.");
             }
 

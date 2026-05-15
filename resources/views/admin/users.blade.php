@@ -170,7 +170,7 @@
                     </tr>
                 @else
                     @foreach ($users as $user)
-                        <tr>
+                        <tr class="{{ $user == auth()->user() ? 'table-primary' : '' }}">
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="text-center fw-bold">{{ $user->name }}</td>
                             <td class="text-center text-nowrap">{{ $user->email }}</td>

@@ -61,14 +61,14 @@ class AdminController extends Controller
     public function companyDetails(Company $company) {
         $company->load(['modules', 'bankAccounts', 'address']);
         $modules = Module::all();
-        $users = User::where('company_id', $company->id)->with('roles')->get();
-        $roles = Role::where('company_id', $company->id)->with('permissions')->get();
+        $users = $company->users()->with('roles')->get();
+        $roles = $company->roles()->with('permissions')->get();
         $permissions = Permission::all();
         
         $setupStatus = [
-            'accounts' => Account::where('company_id', $company->id)->where('level', 1)->exists(),
-            'container_types' => Container_type::where('company_id', $company->id)->exists(),
-            'roles' => Role::where('company_id', $company->id)->exists(),
+            'accounts' => $company->accounts()->where('level', 1)->exists(),
+            'container_types' => $company->containerTypes()->exists(),
+            'roles' => $company->roles()->exists(),
         ];
         
         $setupCompleted = !in_array(false, $setupStatus);
