@@ -71,9 +71,9 @@
                     <th class="text-center bg-dark text-white text-nowrap">العميـل</th>
                     <th class="text-center bg-dark text-white text-nowrap">نوع الفاتورة</th>
                     <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
-                    <th class="text-center bg-dark text-white text-nowrap">طريقـة الدفـع</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريـخ الفـاتورة</th>
-                    <th class="text-center bg-dark text-white text-nowrap">الحالة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">حالة الدفع</th>
+                    <th class="text-center bg-dark text-white text-nowrap">حالة الإرسال</th>
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجرائات</th>
                 </tr>
@@ -104,7 +104,6 @@
                             <td class="text-center fw-bold text-nowrap">
                                 {{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i>
                             </td>
-                            <td class="text-center">{{ $invoice->payment_method }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
                             @if ($invoice->status == 'تم الدفع')
                                 <td class="text-center"><span class="badge status-delivered">مسددة</span></td>
@@ -115,6 +114,11 @@
                             @elseif ($invoice->status == 'مسودة')
                                 <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
                             @endif
+                            @if ($invoice->zatca_status == 'sent without errors')
+                                <td class="text-center"><span class="badge status-delivered">تم الإرسال</span></td>
+                            @elseif ($invoice->zatca_status == 'not sent')
+                                <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td>
+                            @endif
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $invoice->made_by) }}"
                                     class="text-dark text-decoration-none">
@@ -122,6 +126,11 @@
                                 </a>
                             </td>
                             <td class="d-flex justify-content-center align-items-center gap-2 text-center">
+                                <a href="" class="btn btn-sm btn-outline-primary">
+                                    <span class="d-none d-sm-inline">إرسال</span>
+                                    <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
+                                </a>
+
                                 <a href="{{ route('invoices.unified.details', $invoice) }}" class="btn btn-sm btn-primary">
                                     <span class="d-none d-sm-inline">عرض</span>
                                     <i class="fa-solid fa-eye d-inline d-sm-none"></i>

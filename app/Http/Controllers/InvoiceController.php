@@ -1173,6 +1173,7 @@ class InvoiceController extends Controller
             'totalDebit' => $invoice->total_amount,
             'totalCredit' => $invoice->total_amount,
             'user_id' => Auth::user()->id,
+            'invoice_id' => $invoice->id,
         ]);
 
         if($invoice->type == 'تخزين و شحن') {
@@ -1250,6 +1251,7 @@ class InvoiceController extends Controller
             'totalDebit' => $invoice->total_amount,
             'totalCredit' => $invoice->total_amount,
             'user_id' => Auth::user()->id,
+            'invoice_id' => $invoice->id,
         ]);
 
         $clearance_revenue = 0;

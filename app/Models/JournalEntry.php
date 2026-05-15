@@ -21,6 +21,7 @@ class JournalEntry extends Model
         'modifier_id',
         'voucher_id',
         'company_id',
+        'invoice_id',
     ];
 
     public function lines() {
@@ -41,6 +42,10 @@ class JournalEntry extends Model
 
     public function attachments() {
         return $this->morphMany(Attachment::class, 'attachable');
+    }
+
+    public function invoice() {
+        return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
     protected static function booted()

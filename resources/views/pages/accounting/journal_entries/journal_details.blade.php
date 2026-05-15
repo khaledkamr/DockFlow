@@ -11,8 +11,14 @@
             {{ $journal->type ?? 'قيد يومية' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
         </h5>
         <div class="export-buttons d-flex gap-2 align-items-center">
+            @if($journal->invoice)
+                <a href="{{ route('invoices.unified.details', $journal->invoice) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض الفاتورة">
+                    <i class="fa-solid fa-receipt"></i>
+                </a>
+            @endif
+
             @if($journal->type == 'قيد يومية')
-                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#duplicateJournalModal">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateJournalModal">
                     <i class="fa-solid fa-copy" data-bs-toggle="tooltip" data-bs-placement="top" title="تكرار القيد"></i>
                 </button>
 
@@ -23,7 +29,7 @@
                                 <h5 class="modal-title text-white fw-bold" id="duplicateJournalModalLabel">تأكيد تكرار القيد</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body text-center text-dark">
+                            <div class="modal-body text-center fw-bold text-dark">
                                 هل أنت متأكد من تكرار هذا القيد؟
                             </div>
                             <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center">
@@ -43,7 +49,7 @@
                 </button>
             </form>
             
-            <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
+            <a href="{{ route('journal.edit', $journal) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="تعديل">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>
             

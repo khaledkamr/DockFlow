@@ -566,6 +566,11 @@
                                 <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
                             </button>
                         @endcan
+                    @else
+                        <a href="{{ route('journal.details', $invoice->journalEntry) }}" target="_blank"
+                            class="btn btn-outline-primary">
+                            <i class="fas fa-receipt me-2"></i>عرض القيد
+                        </a>
                     @endif
                     @if ($invoice->status == 'لم يتم الدفع')
                         <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
