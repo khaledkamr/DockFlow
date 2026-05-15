@@ -12,14 +12,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->string('type')->nullable()->default('الرئيسي');
-            $table->string('country')->nullable();
-            $table->string('city');
-            $table->string('street')->nullable();
-            $table->string('district')->nullable();
-            $table->string('building_number')->nullable();
-            $table->string('secondary_number')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('short_address')->nullable();
+            $table->string('country')->nullable();              // الدولة
+            $table->string('city');                             // المدينة
+            $table->string('street')->nullable();               // الشارع   
+            $table->string('district')->nullable();             // الحي
+            $table->string('building_number')->nullable();      // رقم المبنى
+            $table->string('secondary_number')->nullable();     // الرقم الفرعي
+            $table->string('postal_code')->nullable();          // الرمز البريدي
+            $table->string('short_address')->nullable();        // العنوان المختصر
             $table->timestamps();
         });
     }

@@ -23,7 +23,7 @@ class AuthController extends Controller
             session(['company_id' => $user->company_id]);
             logActivity('تسجيل دخول', "$user->name قام بتسجيل الدخول إلى النظام");
 
-            if($user->roles->contains('name', 'Super Admin')) {
+            if($user->type === 'admin') {
                 return redirect()->intended(route('admin.dashboard'))->with('success', "$user->name, مربحاً بك من جديد");
             }
             return redirect()->intended('/')->with('success', "$user->name, مربحاً بك من جديد");

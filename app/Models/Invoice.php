@@ -30,6 +30,7 @@ class Invoice extends Model
         'date',
         'is_posted',
         'status',
+        'zatca_status',
         'user_id',
         'company_id',
         'notes',
@@ -99,6 +100,14 @@ class Invoice extends Model
 
     public function payments() {
         return $this->hasMany(InvoicePayment::class);
+    }
+
+    public function journalEntry() {
+        return $this->hasOne(JournalEntry::class);
+    }
+
+    public function zatcaInvoice() {
+        return $this->hasOne(ZatcaInvoice::class);
     }
 
     protected static function booted()
