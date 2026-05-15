@@ -3,331 +3,551 @@
 @section('title', 'العملاء')
 
 @section('content')
-<style>
-    .table-container::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 30px;
-        background: linear-gradient(to left, rgba(0,0,0,0.1), transparent);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-    
-    .table-container.has-scroll::after {
-        opacity: 1;
-    }
-</style>
+    <style>
+        .table-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
 
-<h1 class="mb-3 mb-md-4 fs-3 fs-md-1">العمـــلاء</h1>
+        .table-container.has-scroll::after {
+            opacity: 1;
+        }
+    </style>
 
-<!-- Search and Filter Section -->
-<div class="row g-3 mb-4">
-    <!-- Search Form -->
-    <div class="col-12 col-lg-6">
-        <form method="GET" action="" class="d-flex flex-column">
-            <label for="search" class="form-label text-dark fw-bold mb-2">بحث عن عميل:</label>
-            <div class="d-flex gap-2">
-                <input type="text" name="search" class="form-control border-primary flex-grow-1" 
-                    placeholder="ابحث عن عميل بالإيميل او بالإسم..."
-                    value="{{ request()->query('search') }}">
-                <button type="submit" class="btn btn-primary fw-bold d-flex align-items-center px-3 px-md-4">
-                    <span class="d-none d-sm-inline">بحث</span>
-                    <i class="fa-solid fa-magnifying-glass ms-0 ms-sm-2"></i>
-                </button>
-            </div>
-        </form>
-    </div>
-    
-    <!-- Status Filter -->
-    <div class="col-12 col-sm-6 col-lg-4 d-none d-sm-block">
-        <form method="GET" action="" class="d-flex flex-column">
-            <label for="statusFilter" class="form-label text-dark fw-bold mb-2">تصفية حسب الحالة:</label>
-            <select id="statusFilter" name="type" class="form-select border-primary" onchange="this.form.submit()">
-                <option value="all" {{ request()->query('type') === 'all' || !request()->query('type') ? 'selected' : '' }}>
-                    جميع العملاء
-                </option>
-                <option value="with_contracts" {{ request()->query('type') === 'with_contracts' ? 'selected' : '' }}>
-                    عملاء بعقود
-                </option>
-                <option value="without_contracts" {{ request()->query('type') === 'without_contracts' ? 'selected' : '' }}>
-                    عملاء بدون عقود
-                </option>
-            </select>
-            @if (request()->query('search'))
-                <input type="hidden" name="search" value="{{ request()->query('search') }}">
-            @endif
-        </form>
-    </div>
-    
-    <!-- Add Customer Button -->
-    <div class="col-12 col-sm-6 col-lg-2">
-        <label class="form-label d-none d-lg-block opacity-0 user-select-none">.</label>
-        <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" 
-            type="button" data-bs-toggle="modal" data-bs-target="#createUserModal">
-            <i class="fa-solid fa-user-plus ms-2"></i>
-            <span>أضف عميل</span>
-        </button>
-    </div>
-</div>
+    <h1 class="mb-3 mb-md-4 fs-3 fs-md-1">العمـــلاء</h1>
 
-<!-- Create Customer Modal -->
-<div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white fw-bold" id="createUserModalLabel">إنشاء عميل جديد</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('users.customer.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                <div class="modal-body text-dark">
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
-                            <label for="name" class="form-label">إسم العميل</label>
-                            <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}">
-                            @error('name')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="CR" class="form-label">السجل التجاري</label>
-                            <input type="text" class="form-control border-primary" id="CR" name="CR" value="{{ old('CR') }}">
-                            @error('CR')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">الرقم الضريبي</label>
-                            <input type="text" class="form-control border-primary" name="vatNumber" value="{{ old('vatNumber') }}">
-                            @error('vatNumber')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="national_address" class="form-label">العنوان الوطني</label>
-                            <input type="text" class="form-control border-primary" id="national_address" name="national_address" value="{{ old('national_address') }}">
-                            @error('national_address')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
-                            <label for="phone" class="form-label">رقم الهاتف</label>
-                            <input type="text" class="form-control border-primary" id="phone" name="phone" value="{{ old('phone') }}">
-                            @error('phone')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label for="email" class="form-label">البريد الإلكتروني</label>
-                            <input type="text" class="form-control border-primary" id="email" name="email" value="{{ old('email') }}">
-                            @error('email')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
-                    <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">إنشاء</button>
-                    <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2" data-bs-dismiss="modal">إلغاء</button>
+    <!-- Search and Filter Section -->
+    <div class="row g-3 mb-4">
+        <!-- Search Form -->
+        <div class="col-12 col-lg-6">
+            <form method="GET" action="" class="d-flex flex-column">
+                <label for="search" class="form-label text-dark fw-bold mb-2">بحث عن عميل:</label>
+                <div class="d-flex gap-2">
+                    <input type="text" name="search" class="form-control border-primary flex-grow-1"
+                        placeholder="ابحث عن عميل بالإيميل او بالإسم..." value="{{ request()->query('search') }}">
+                    <button type="submit" class="btn btn-primary fw-bold d-flex align-items-center px-3 px-md-4">
+                        <span class="d-none d-sm-inline">بحث</span>
+                        <i class="fa-solid fa-magnifying-glass ms-0 ms-sm-2"></i>
+                    </button>
                 </div>
             </form>
         </div>
+
+        <!-- Status Filter -->
+        <div class="col-12 col-sm-6 col-lg-4 d-none d-sm-block">
+            <form method="GET" action="" class="d-flex flex-column">
+                <label for="statusFilter" class="form-label text-dark fw-bold mb-2">تصفية حسب الحالة:</label>
+                <select id="statusFilter" name="type" class="form-select border-primary" onchange="this.form.submit()">
+                    <option value="all"
+                        {{ request()->query('type') === 'all' || !request()->query('type') ? 'selected' : '' }}>
+                        جميع العملاء
+                    </option>
+                    <option value="with_contracts" {{ request()->query('type') === 'with_contracts' ? 'selected' : '' }}>
+                        عملاء بعقود
+                    </option>
+                    <option value="without_contracts"
+                        {{ request()->query('type') === 'without_contracts' ? 'selected' : '' }}>
+                        عملاء بدون عقود
+                    </option>
+                </select>
+                @if (request()->query('search'))
+                    <input type="hidden" name="search" value="{{ request()->query('search') }}">
+                @endif
+            </form>
+        </div>
+
+        <!-- Add Customer Button -->
+        <div class="col-12 col-sm-6 col-lg-2">
+            <label class="form-label d-none d-lg-block opacity-0 user-select-none">.</label>
+            <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" type="button"
+                data-bs-toggle="modal" data-bs-target="#createUserModal">
+                <i class="fa-solid fa-user-plus me-2"></i>
+                <span>أضف عميل</span>
+            </button>
+        </div>
     </div>
-</div>
 
-<!-- Customers Table -->
-<div class="table-container" id="tableContainer">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th class="text-center bg-dark text-white text-nowrap">#</th>
-                <th class="text-center bg-dark text-white text-nowrap">رقم حساب العميل</th>
-                <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
-                <th class="text-center bg-dark text-white text-nowrap">السجل التجاري</th>
-                <th class="text-center bg-dark text-white text-nowrap">الرقم الضريبي</th>
-                <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
-                <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
-                <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if ($customers->isEmpty())
-                <tr>
-                    <td colspan="9" class="text-center py-4">
-                        <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
-                    </td>
-                </tr>
-            @else
-                @foreach ($customers as $customer)
-                    <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center text-primary fw-bold text-nowrap">{{ $customer->account->code }}</td>
-                        <td class="text-center">
-                            <a href="{{ route('users.customer.profile', $customer) }}"
-                                class="text-dark fw-bold text-decoration-none">
-                                {{ $customer->name }}
-                            </a>
-                        </td>
-                        <td class="text-center text-nowrap">{{ $customer->CR }}</td>
-                        <td class="text-center text-nowrap">{{ $customer->vatNumber }}</td>
-                        <td class="text-center">{{ $customer->national_address }}</td>
-                        <td class="text-center text-nowrap">
-                            <a href="{{ route('admin.user.profile', $customer->made_by) }}" class="text-dark text-decoration-none">
-                                {{ $customer->made_by->name ?? '-' }}
-                            </a>
-                        </td>
-                        <td class="text-center text-nowrap">
-                            <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>
-                            </button>
-                            <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ $customer->id }}">
-                                <i class="fa-solid fa-user-xmark text-danger" title="حذف العميل"></i>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <!-- Edit Customer Modal -->
-                    <div class="modal fade" id="editUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $customer->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header bg-primary">
-                                    <h5 class="modal-title text-white fw-bold" id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form action="{{ route('users.customer.update', $customer) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-                                    <div class="modal-body text-dark">
-                                        <div class="row g-3 mb-3">
-                                            <div class="col-12 col-md-6">
-                                                <label for="name{{ $customer->id }}" class="form-label">إسم العميل</label>
-                                                <input type="text" class="form-control border-primary" id="name{{ $customer->id }}" name="name" value="{{ $customer->name }}">
-                                                @error('name')
-                                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="CR{{ $customer->id }}" class="form-label">السجل التجاري</label>
-                                                <input type="text" class="form-control border-primary" id="CR{{ $customer->id }}" name="CR" value="{{ $customer->CR }}">
-                                                @error('CR')
-                                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="row g-3 mb-3">
-                                            <div class="col-12 col-md-6">
-                                                <label for="vatNumber{{ $customer->id }}" class="form-label">الرقم الضريبي</label>
-                                                <input type="text" class="form-control border-primary" id="vatNumber{{ $customer->id }}" name="vatNumber" value="{{ $customer->vatNumber }}">
-                                                @error('vatNumber')
-                                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="national_address{{ $customer->id }}" class="form-label">العنوان الوطني</label>
-                                                <input type="text" class="form-control border-primary" id="national_address{{ $customer->id }}" name="national_address" value="{{ $customer->national_address }}">
-                                                @error('national_address')
-                                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="row g-3 mb-3">
-                                            <div class="col-12 col-md-6">
-                                                <label for="phone{{ $customer->id }}" class="form-label">رقم الهاتف</label>
-                                                <input type="text" class="form-control border-primary" id="phone{{ $customer->id }}" name="phone" value="{{ $customer->phone }}">
-                                                @error('phone')
-                                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="email{{ $customer->id }}" class="form-label">البريد الإلكتروني</label>
-                                                <input type="text" class="form-control border-primary" id="email{{ $customer->id }}" name="email" value="{{ $customer->email }}">
-                                                @error('email')
-                                                    <div class="text-danger small mt-1">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
-                                        <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">حفظ التغييرات</button>
-                                        <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2" data-bs-dismiss="modal">إلغاء</button>
-                                    </div>
-                                </form>
+    <!-- Create Customer Modal -->
+    <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="createUserModalLabel">إنشاء عميل جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form action="{{ route('users.customer.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                    <div class="modal-body text-dark">
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-3">
+                                <label for="type" class="form-label">نوع العميل</label>
+                                <select class="form-control border-primary" id="type" name="type">
+                                    <option value="شركة" {{ old('type') === 'شركة' ? 'selected' : '' }}>
+                                        عميل شركة
+                                    </option>
+                                    <option value="فرد" {{ old('type') === 'فرد' ? 'selected' : '' }}>
+                                        عميل فرد
+                                    </option>
+                                </select>
+                                @error('type')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
+                            <div class="col-12 col-md-3">
+                                <label for="name" class="form-label">إسم العميل</label>
+                                <input type="text" class="form-control border-primary" id="name" name="name"
+                                    value="{{ old('name') }}">
+                                @error('name')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="CR" class="form-label">السجل التجاري</label>
+                                <input type="text" class="form-control border-primary" id="CR" name="CR"
+                                    value="{{ old('CR') }}">
+                                @error('CR')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label">الرقم الضريبي</label>
+                                <input type="text" class="form-control border-primary" name="vatNumber"
+                                    value="{{ old('vatNumber') }}">
+                                @error('vatNumber')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="national_address" class="form-label">العنوان الوطني</label>
+                                <input type="text" class="form-control border-primary" id="national_address"
+                                    name="national_address" value="{{ old('national_address') }}">
+                                @error('national_address')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="phone" class="form-label">رقم الهاتف</label>
+                                <input type="text" class="form-control border-primary" id="phone" name="phone"
+                                    value="{{ old('phone') }}">
+                                @error('phone')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="email" class="form-label">البريد الإلكتروني</label>
+                                <input type="text" class="form-control border-primary" id="email" name="email"
+                                    value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="country" class="form-label">الدولة</label>
+                                <input type="text" class="form-control border-primary" id="country" name="country"
+                                    value="{{ old('country') }}">
+                                @error('country')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="city" class="form-label">المدينة</label>
+                                <input type="text" class="form-control border-primary" id="city" name="city"
+                                    value="{{ old('city') }}">
+                                @error('city')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="street" class="form-label">الشارع</label>
+                                <input type="text" class="form-control border-primary" id="street" name="street"
+                                    value="{{ old('street') }}">
+                                @error('street')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="district" class="form-label">الحي</label>
+                                <input type="text" class="form-control border-primary" id="district" name="district"
+                                    value="{{ old('district') }}">
+                                @error('district')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="building_number" class="form-label">رقم المبنى</label>
+                                <input type="text" class="form-control border-primary" id="building_number"
+                                    name="building_number" value="{{ old('building_number') }}">
+                                @error('building_number')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="secondary_number" class="form-label">الرقم الفرعي</label>
+                                <input type="text" class="form-control border-primary" id="secondary_number"
+                                    name="secondary_number" value="{{ old('secondary_number') }}">
+                                @error('secondary_number')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="postal_code" class="form-label">الرمز البريدي</label>
+                                <input type="text" class="form-control border-primary" id="postal_code"
+                                    name="postal_code" value="{{ old('postal_code') }}">
+                                @error('postal_code')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label for="short_address" class="form-label">العنوان المختصر</label>
+                                <input type="text" class="form-control border-primary" id="short_address"
+                                    name="short_address" value="{{ old('short_address') }}">
+                                @error('short_address')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                         </div>
                     </div>
+                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                        <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">إنشاء</button>
+                        <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2"
+                            data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                    <!-- Delete Customer Modal -->
-                    <div class="modal fade" id="deleteUserModal{{ $customer->id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ $customer->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header bg-danger">
-                                    <h5 class="modal-title text-white fw-bold fs-6" id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body text-center text-dark px-4 py-4">
-                                    هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟
-                                </div>
-                                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
-                                    <button type="button" class="btn btn-secondary fw-bold order-1" data-bs-dismiss="modal">إلغاء</button>
-                                    <form action="{{ route('users.customer.delete', $customer) }}" method="POST" class="order-2">
+    <!-- Customers Table -->
+    <div class="table-container" id="tableContainer">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center bg-dark text-white text-nowrap">#</th>
+                    <th class="text-center bg-dark text-white text-nowrap">رقم الحساب</th>
+                    <th class="text-center bg-dark text-white text-nowrap">إسم العميل</th>
+                    <th class="text-center bg-dark text-white text-nowrap">نوع العميل</th>
+                    <th class="text-center bg-dark text-white text-nowrap">السجل التجاري</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الرقم الضريبي</th>
+                    <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
+                    <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if ($customers->isEmpty())
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            <div class="status-danger fs-6">لم يتم العثور على اي عملاء!</div>
+                        </td>
+                    </tr>
+                @else
+                    @foreach ($customers as $customer)
+                        <tr>
+                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center text-primary fw-bold text-nowrap">{{ $customer->account->code }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('users.customer.profile', $customer) }}"
+                                    class="text-dark fw-bold text-decoration-none">
+                                    {{ $customer->name }}
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                @if ($customer->type == 'فرد')
+                                    <span class="badge status-delivered">فرد</span>
+                                @elseif ($customer->type == 'شركة')
+                                    <span class="badge status-available">شركة</span>
+                                @else
+                                    <span class="badge status-secondary">غير محدد</span>
+                                @endif
+                            </td>
+                            <td class="text-center text-nowrap">{{ $customer->CR }}</td>
+                            <td class="text-center text-nowrap">{{ $customer->vatNumber }}</td>
+                            <td class="text-center">{{ $customer->national_address }}</td>
+                            <td class="text-center text-nowrap">
+                                <a href="{{ route('admin.user.profile', $customer->made_by) }}"
+                                    class="text-dark text-decoration-none">
+                                    {{ $customer->made_by->name ?? '-' }}
+                                </a>
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#editUserModal{{ $customer->id }}">
+                                    <i class="fa-solid fa-pen-to-square text-primary" title="تعديل العميل"></i>
+                                </button>
+                                <button class="btn btn-link p-0 pb-1 m-0" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#deleteUserModal{{ $customer->id }}">
+                                    <i class="fa-solid fa-user-xmark text-danger" title="حذف العميل"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Edit Customer Modal -->
+                        <div class="modal fade" id="editUserModal{{ $customer->id }}" tabindex="-1"
+                            aria-labelledby="editUserModalLabel{{ $customer->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary">
+                                        <h5 class="modal-title text-white fw-bold"
+                                            id="editUserModalLabel{{ $customer->id }}">تعديل بيانات العميل</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('users.customer.update', $customer) }}" method="POST">
                                         @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                                        @method('PUT')
+                                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                        <div class="modal-body text-dark">
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-12 col-md-3">
+                                                    <label for="type{{ $customer->id }}" class="form-label">نوع
+                                                        العميل</label>
+                                                    <select class="form-control border-primary"
+                                                        id="type{{ $customer->id }}" name="type">
+                                                        <option value="شركة"
+                                                            {{ $customer->type === 'شركة' ? 'selected' : '' }}>
+                                                            عميل شركة
+                                                        </option>
+                                                        <option value="فرد"
+                                                            {{ $customer->type === 'فرد' ? 'selected' : '' }}>
+                                                            عميل فرد
+                                                        </option>
+                                                    </select>
+                                                    @error('type')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="name{{ $customer->id }}" class="form-label">إسم
+                                                        العميل</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="name{{ $customer->id }}" name="name"
+                                                        value="{{ $customer->name }}">
+                                                    @error('name')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="CR{{ $customer->id }}" class="form-label">السجل
+                                                        التجاري</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="CR{{ $customer->id }}" name="CR"
+                                                        value="{{ $customer->CR }}">
+                                                    @error('CR')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label class="form-label">الرقم الضريبي</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        name="vatNumber" value="{{ $customer->vatNumber }}">
+                                                    @error('vatNumber')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="national_address{{ $customer->id }}"
+                                                        class="form-label">العنوان الوطني</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="national_address{{ $customer->id }}" name="national_address"
+                                                        value="{{ $customer->national_address }}">
+                                                    @error('national_address')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="phone{{ $customer->id }}" class="form-label">رقم
+                                                        الهاتف</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="phone{{ $customer->id }}" name="phone"
+                                                        value="{{ $customer->phone }}">
+                                                    @error('phone')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="email{{ $customer->id }}" class="form-label">البريد
+                                                        الإلكتروني</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="email{{ $customer->id }}" name="email"
+                                                        value="{{ $customer->email }}">
+                                                    @error('email')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="country{{ $customer->id }}"
+                                                        class="form-label">الدولة</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="country{{ $customer->id }}" name="country"
+                                                        value="{{ $customer->country }}">
+                                                    @error('country')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="city{{ $customer->id }}"
+                                                        class="form-label">المدينة</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="city{{ $customer->id }}" name="city"
+                                                        value="{{ $customer->city }}">
+                                                    @error('city')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="street{{ $customer->id }}"
+                                                        class="form-label">الشارع</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="street{{ $customer->id }}" name="street"
+                                                        value="{{ $customer->street }}">
+                                                    @error('street')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="district{{ $customer->id }}"
+                                                        class="form-label">الحي</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="district{{ $customer->id }}" name="district"
+                                                        value="{{ $customer->district }}">
+                                                    @error('district')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="building_number{{ $customer->id }}"
+                                                        class="form-label">رقم المبنى</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="building_number{{ $customer->id }}" name="building_number"
+                                                        value="{{ $customer->building_number }}">
+                                                    @error('building_number')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="secondary_number{{ $customer->id }}"
+                                                        class="form-label">الرقم الفرعي</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="secondary_number{{ $customer->id }}" name="secondary_number"
+                                                        value="{{ $customer->secondary_number }}">
+                                                    @error('secondary_number')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="postal_code{{ $customer->id }}" class="form-label">الرمز
+                                                        البريدي</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="postal_code{{ $customer->id }}" name="postal_code"
+                                                        value="{{ $customer->postal_code }}">
+                                                    @error('postal_code')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-3">
+                                                    <label for="short_address{{ $customer->id }}"
+                                                        class="form-label">العنوان المختصر</label>
+                                                    <input type="text" class="form-control border-primary"
+                                                        id="short_address{{ $customer->id }}" name="short_address"
+                                                        value="{{ $customer->short_address }}">
+                                                    @error('short_address')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                            <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">حفظ
+                                                التغييرات</button>
+                                            <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2"
+                                                data-bs-dismiss="modal">إلغاء</button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            @endif
-        </tbody>
-    </table>
-</div>
 
-<div class="text-center text-secondary small mt-2 d-md-none">
-    <i class="fa-solid fa-arrows-left-right me-1"></i>
-    اسحب الجدول لليمين أو اليسار لرؤية المزيد
-</div>
+                        <!-- Delete Customer Modal -->
+                        <div class="modal fade" id="deleteUserModal{{ $customer->id }}" tabindex="-1"
+                            aria-labelledby="deleteUserModalLabel{{ $customer->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger">
+                                        <h5 class="modal-title text-white fw-bold fs-6"
+                                            id="deleteUserModalLabel{{ $customer->id }}">تأكيد الحذف</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-center text-dark px-4 py-4">
+                                        هل انت متأكد من حذف العميل <strong>{{ $customer->name }}</strong>؟
+                                    </div>
+                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
+                                        <button type="button" class="btn btn-secondary fw-bold order-1"
+                                            data-bs-dismiss="modal">إلغاء</button>
+                                        <form action="{{ route('users.customer.delete', $customer) }}" method="POST"
+                                            class="order-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            </tbody>
+        </table>
+    </div>
 
-<!-- Pagination -->
-<div class="mt-3 mt-md-4 d-flex justify-content-center">
-    {{ $customers->links('components.pagination') }}
-</div>
+    <div class="text-center text-secondary small mt-2 d-md-none">
+        <i class="fa-solid fa-arrows-left-right me-1"></i>
+        اسحب الجدول لليمين أو اليسار لرؤية المزيد
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const tableContainer = document.getElementById('tableContainer');
-        
-        // Check if table needs scrolling
-        function checkScroll() {
-            if (tableContainer && tableContainer.scrollWidth > tableContainer.clientWidth) {
-                tableContainer.classList.add('has-scroll');
-            } else if (tableContainer) {
-                tableContainer.classList.remove('has-scroll');
+    <!-- Pagination -->
+    <div class="mt-3 mt-md-4 d-flex justify-content-center">
+        {{ $customers->links('components.pagination') }}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableContainer = document.getElementById('tableContainer');
+
+            // Check if table needs scrolling
+            function checkScroll() {
+                if (tableContainer && tableContainer.scrollWidth > tableContainer.clientWidth) {
+                    tableContainer.classList.add('has-scroll');
+                } else if (tableContainer) {
+                    tableContainer.classList.remove('has-scroll');
+                }
             }
-        }
-        
-        // Check on load and resize
-        checkScroll();
-        window.addEventListener('resize', checkScroll);
-        
-        // Remove scroll hint after first interaction
-        const scrollHint = document.querySelector('.scroll-hint');
-        if (scrollHint && tableContainer) {
-            tableContainer.addEventListener('scroll', function() {
-                scrollHint.style.display = 'none';
-            }, { once: true });
-        }
-    });
-</script>
+
+            // Check on load and resize
+            checkScroll();
+            window.addEventListener('resize', checkScroll);
+
+            // Remove scroll hint after first interaction
+            const scrollHint = document.querySelector('.scroll-hint');
+            if (scrollHint && tableContainer) {
+                tableContainer.addEventListener('scroll', function() {
+                    scrollHint.style.display = 'none';
+                }, {
+                    once: true
+                });
+            }
+        });
+    </script>
 @endsection

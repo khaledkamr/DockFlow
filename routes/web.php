@@ -353,7 +353,7 @@ Route::controller(CostCenterController::class)->middleware('auth')->group(functi
     Route::delete('accounting/cost-centers/delete/{costCenter:id}', 'deleteCostCenter')->name('cost.centers.delete');
 });
 
-Route::controller(ExportController::class)->group(function () {
+Route::controller(ExportController::class)->middleware('auth')->group(function () {
     Route::post('/print/{reportType}', 'print')->name('print');
     Route::get('/print/account/statement', 'printAccountStatement')->name('print.account.statement');
     Route::get('/print/contract/{id}', 'printContract')->name('print.contract');

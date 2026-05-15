@@ -452,12 +452,7 @@
                         style="{{ request()->routeIs('relation.drivers.vehicles') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                         href="{{ route('relation.drivers.vehicles') }}">
                         <i class="fa-solid fa-truck me-2"></i> النقــــل
-                    </a>
-                    <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
-                        style="{{ request()->routeIs('users.activity.report') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
-                        href="{{ route('users.activity.report') }}">
-                        <i class="fa-solid fa-clipboard-list ms-1 me-2"></i> تقرير نشاط المستخدمين
-                    </a>
+                    </a>                   
                 </div>
             </li>
 
@@ -485,6 +480,11 @@
                             style="{{ request()->routeIs('admin.logs') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                             href="{{ route('admin.logs') }}">
                             <i class="fa-solid fa-file-lines ms-2 me-2"></i> السجـــلات
+                        </a>
+                        <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                            style="{{ request()->routeIs('users.activity.report') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                            href="{{ route('users.activity.report') }}">
+                            <i class="fa-solid fa-clipboard-list ms-1 me-2"></i> تقرير نشاط المستخدمين
                         </a>
                     </div>
                 </li>

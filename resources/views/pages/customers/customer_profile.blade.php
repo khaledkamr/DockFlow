@@ -134,8 +134,7 @@
 
     <!-- Customer Header -->
     <div class="card border-0 rounded-3 shadow-sm mb-3 mb-md-4">
-        <div
-            class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+        <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
             <div>
                 <h4 class="mb-0 fs-5 fs-md-4">
                     <i class="fas fa-user-circle me-2"></i>
@@ -148,49 +147,177 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="row g-2 g-md-3">
-                <div class="col-6 col-sm-6 col-lg-4 col-xl">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-receipt text-muted me-2"></i>
-                        <div class="flex-grow-1">
-                            <small class="text-muted d-block">الرقم الضريبي</small>
-                            <div class="fw-bold text-truncate">{{ $customer['vatNumber'] }}</div>
+            <!-- Contact Information -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-receipt text-primary fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">الرقم الضريبي</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['vatNumber'] }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-6 col-lg-4 col-xl">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-id-card text-muted me-2"></i>
-                        <div class="flex-grow-1">
-                            <small class="text-muted d-block">السجل التجاري</small>
-                            <div class="fw-bold text-truncate">{{ $customer['CR'] }}</div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-id-card text-primary fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">السجل التجاري</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['CR'] }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-6 col-lg-4 col-xl">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-phone text-muted me-2"></i>
-                        <div class="flex-grow-1">
-                            <small class="text-muted d-block">رقم الهاتف</small>
-                            <div class="fw-bold text-truncate">{{ $customer['phone'] ?? 'غير متوفر' }}</div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-phone text-primary fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">رقم الهاتف</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['phone'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-6 col-lg-4 col-xl">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-envelope text-muted me-2"></i>
-                        <div class="flex-grow-1">
-                            <small class="text-muted d-block">البريد الإلكتروني</small>
-                            <div class="fw-bold text-truncate">{{ $customer['email'] ?? 'غير متوفر' }}</div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-envelope text-primary fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">البريد الإلكتروني</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['email'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-sm-6 col-lg-4 col-xl">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-map-marker-alt text-muted me-2"></i>
-                        <div class="flex-grow-1">
-                            <small class="text-muted d-block">العنوان الوطني</small>
-                            <div class="fw-bold text-truncate">{{ $customer['national_address'] }}</div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-map-marker-alt text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">العنوان الوطني</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['national_address'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-globe text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">الدولة</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['country'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-city text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">المدينة</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['city'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-road text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">الشارع</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['street'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-map text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">الحي</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['district'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-building text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">رقم المبنى</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['building_number'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-th text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">الرقم الثانوي</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['secondary_number'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-mail-bulk text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">الرمز البريدي</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['postal_code'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-6 col-lg-3">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="fas fa-info-circle text-info fs-5 flex-shrink-0 mt-1"></i>
+                                <div class="flex-grow-1 min-w-0">
+                                    <small class="text-muted d-block">العنوان المختصر</small>
+                                    <div class="fw-bold text-truncate">{{ $customer['short_address'] ?? 'غير متوفر' }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -225,7 +352,8 @@
                         <div class="text-center p-3 border rounded">
                             <i class="fas fa-calendar-times text-danger fs-4 mb-2"></i>
                             <div class="small text-muted">تاريخ الانتهاء</div>
-                            <div class="fw-bold">{{ Carbon\Carbon::parse($customer->contract->end_date)->format('Y/m/d') }}
+                            <div class="fw-bold">
+                                {{ Carbon\Carbon::parse($customer->contract->end_date)->format('Y/m/d') }}
                             </div>
                         </div>
                     </div>
@@ -253,7 +381,8 @@
                                     <div class="d-flex flex-row justify-content-between gap-2">
                                         <div class="d-flex gap-2">
                                             <span>السعر:</span>
-                                            <strong>{{ $service->pivot->price }} <i data-lucide="saudi-riyal"></i></strong>
+                                            <strong>{{ $service->pivot->price }} <i
+                                                    data-lucide="saudi-riyal"></i></strong>
                                         </div>
                                         <div class="d-flex gap-2">
                                             <span>المدة/الكمية:</span>
