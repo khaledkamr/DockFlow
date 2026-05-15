@@ -42,4 +42,44 @@ class Company extends Model
     public function address() {
         return $this->hasOne(CompanyAddress::class);
     }
+
+    public function users() {
+        return $this->hasMany(User::class);
+    }
+
+    public function roles() {
+        return $this->hasMany(Role::class);
+    }
+
+    public function customers() {
+        return $this->hasMany(Customer::class);
+    }
+
+    public function suppliers() {
+        return $this->hasMany(Supplier::class);
+    }
+
+    public function accounts() {
+        return $this->hasMany(Account::class);
+    }
+
+    public function invoices() {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function policies() {
+        return $this->hasMany(Policy::class);
+    }
+
+    public function contracts() {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function containerTypes() {
+        return $this->hasMany(Container_type::class);
+    }
+
+    public function zatcaCompany() {
+        return $this->hasOne(ZatcaCompany::class);
+    }
 }
