@@ -110,6 +110,10 @@ class Invoice extends Model
         return $this->hasOne(ZatcaInvoice::class);
     }
 
+    public function invoiceNotes() {
+        return $this->hasMany(InvoiceNote::class);
+    }
+
     protected static function booted()
     {
         static::creating(function ($invoice) {

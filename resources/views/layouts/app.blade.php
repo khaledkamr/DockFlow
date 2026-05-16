@@ -735,6 +735,16 @@
                             href="{{ route('invoices.statements.create') }}">
                             <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشـاء مطالبـة
                         </a>
+                        <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                            style="{{ request()->routeIs('invoices.notes') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                            href="{{ route('invoices.notes') }}">
+                            <i class="fa-solid fa-layer-group ms-2 me-2"></i> الإشعارات المالية
+                        </a>
+                        <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                            style="{{ request()->routeIs('invoices.notes.create') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                            href="{{ route('invoices.notes.create') }}">
+                            <i class="fa-solid fa-circle-plus ms-2 me-2"></i> إنشـاء إشعار
+                        </a>
                     </div>
                 </li>
             @endcan

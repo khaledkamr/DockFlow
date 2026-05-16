@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'فواتير المبيعات')
+@section('title', 'إشعارات الفاتورة')
 
 @section('content')
-    <h1 class="mb-4">فواتيــر المبيعــات</h1>
+    <h1 class="mb-4">إشعـــارات الفاتـــورة</h1>
 
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-6">
             <form method="GET" action="" class="d-flex flex-column">
-                <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
+                <label for="search" class="form-label text-dark fw-bold">بحــث عن إشعــار:</label>
                 <div class="d-flex">
                     <input type="text" name="search" class="form-control border-primary"
-                        placeholder=" ابحث عن فاتورة بالرقم او بإسم العميل او بتاريخ الفاتورة... "
+                        placeholder=" ابحث عن إشعار برقمه أو برقم الفاتورة... "
                         value="{{ request()->query('search') }}">
                     <button type="submit" class="btn btn-primary fw-bold ms-2 d-flex align-items-center">
                         <span>بحث</span>
@@ -23,17 +23,18 @@
         <div class="col-6 col-md-2">
             <form method="GET" action="" class="d-flex flex-column">
                 <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب النوع:</label>
-                <label class="form-label text-dark fw-bold d-inline d-md-none">الدفــع:</label>
+                <label class="form-label text-dark fw-bold d-inline d-md-none">النوع:</label>
                 <div class="d-flex">
-                    <select name="invoice_type" class="form-select border-primary" onchange="this.form.submit()">
-                        <option value="ضريبية" {{ request()->query('invoice_type') === 'ضريبية' || !request()->query('invoice_type') ? 'selected' : '' }}>
-                            فواتير ضريبية
+                    <select name="type" class="form-select border-primary" onchange="this.form.submit()">
+                        <option value="">جميع الإشعارات</option>
+                        <option value="credit" {{ request()->query('type') === 'credit' ? 'selected' : '' }}>
+                            إشعارات دائنة
                         </option>
-                        <option value="مسودة" {{ request()->query('invoice_type') === 'مسودة' ? 'selected' : '' }}>
-                            فواتير مسودة
+                        <option value="debit" {{ request()->query('type') === 'debit' ? 'selected' : '' }}>
+                            إشعارات مدينة
                         </option>
                     </select>
-                    @foreach (request()->except('invoice_type') as $key => $value)
+                    @foreach (request()->except('type') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </div>
@@ -42,18 +43,16 @@
         <div class="col-6 col-md-2">
             <form method="GET" action="" class="d-flex flex-column">
                 <label class="form-label text-dark fw-bold d-none d-md-inline">تصفية حسب الحالة:</label>
-                <label class="form-label text-dark fw-bold d-inline d-md-none">الدفــع:</label>
+                <label class="form-label text-dark fw-bold d-inline d-md-none">الحالة:</label>
                 <div class="d-flex">
                     <select name="status" class="form-select border-primary" onchange="this.form.submit()">
-                        <option value="all"
-                            {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
-                            جميع الفواتير</option>
-                        <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>
-                            مسددة</option>
-                        <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>
-                            غير مسدد</option>
-                        <option value="تم الدفع جزئياً" {{ request()->query('status') === 'تم الدفع جزئياً' ? 'selected' : '' }}>
-                            مسددة جزئياً</option>
+                        <option value="">جميع الحالات</option>
+                        <option value="posted" {{ request()->query('status') === 'posted' ? 'selected' : '' }}>
+                            منشورة
+                        </option>
+                        <option value="draft" {{ request()->query('status') === 'draft' ? 'selected' : '' }}>
+                            مسودة
+                        </option>
                     </select>
                     @foreach (request()->except('status') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
@@ -62,8 +61,8 @@
             </form>
         </div>
         <div class="col-12 col-md-2 d-flex align-items-end">
-            <a href="{{ route('invoices.create.unified') }}" class="btn btn-primary fw-bold w-100">
-                <span class="d-none d-sm-inline"><i class="fa-solid fa-plus d-sm-inline d-none "></i> إنشاء فاتورة</span>
+            <a href="{{ route('invoices.notes.create') }}" class="btn btn-primary fw-bold w-100">
+                <span class="d-none d-sm-inline"><i class="fa-solid fa-plus d-sm-inline d-none "></i> إشعار جديد</span>
                 <i class="fa-solid fa-plus d-inline d-sm-none"></i>
             </a>
         </div>
@@ -73,106 +72,113 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th class="text-center bg-dark text-white text-nowrap">رقم الفاتـورة</th>
-                    <th class="text-center bg-dark text-white text-nowrap">العميـل</th>
-                    <th class="text-center bg-dark text-white text-nowrap">نوع الفاتورة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">رقم الإشعار</th>
+                    <th class="text-center bg-dark text-white text-nowrap">النوع</th>
+                    <th class="text-center bg-dark text-white text-nowrap">رقم الفاتورة</th>
                     <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
-                    <th class="text-center bg-dark text-white text-nowrap">تاريـخ الفـاتورة</th>
-                    <th class="text-center bg-dark text-white text-nowrap">حالة الدفع</th>
-                    <th class="text-center bg-dark text-white text-nowrap">حالة الإرسال</th>
-                    <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
-                    <th class="text-center bg-dark text-white text-nowrap">الإجرائات</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الضريبة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
+                    <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
+                    <th class="text-center bg-dark text-white text-nowrap">أنشئ بواسطة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">حالة الارسال</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
             </thead>
             <tbody>
-                @if ($invoices->isEmpty())
+                @if ($notes->isEmpty())
                     <tr>
-                        <td colspan="9" class="text-center">
-                            <div class="status-danger fs-6">لا يوجد اي فواتيـــر!</div>
+                        <td colspan="10" class="text-center">
+                            <div class="status-danger fs-6">لا توجد أي إشعـــارات!</div>
                         </td>
                     </tr>
                 @else
-                    @foreach ($invoices as $invoice)
+                    @foreach ($notes as $note)
+                        @php
+                            $isCredit = $note->type === 'credit';
+                            $typeLabel = $isCredit ? 'إشعار دائن' : 'إشعار مدين';
+                            $badgeClass = $isCredit ? 'status-danger' : 'status-delivered';
+                        @endphp
                         <tr>
                             <td class="text-center text-primary fw-bold">
-                                <a href="{{ route('invoices.unified.details', $invoice) }}"
+                                <a href="{{ route('invoices.notes.details', $note) }}"
                                     class="text-decoration-none">
-                                    {{ $invoice->code }}
+                                    {{ $note->code }}
                                 </a>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('users.customer.profile', $invoice->customer) }}"
-                                    class="text-dark text-decoration-none">
-                                    {{ $invoice->customer->name }}
+                                <span class="badge {{ $badgeClass }}">{{ $typeLabel }}</span>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('invoices.unified.details', $note->invoice) }}"
+                                    class="text-decoration-none text-primary fw-bold">
+                                    {{ $note->invoice->code }}
                                 </a>
                             </td>
-                            <td class="text-center">{{ $invoice->type ?? '-' }}</td>
                             <td class="text-center fw-bold text-nowrap">
-                                {{ $invoice->total_amount }} <i data-lucide="saudi-riyal"></i>
+                                {{ number_format($note->amount, 2) }} <i data-lucide="saudi-riyal"></i>
                             </td>
-                            <td class="text-center">{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
-                            @if ($invoice->status == 'تم الدفع')
-                                <td class="text-center"><span class="badge status-delivered">مسددة</span></td>
-                            @elseif ($invoice->status == 'تم الدفع جزئياً')
-                                <td class="text-center"><span class="badge status-waiting">مسددة جزئياً</span></td>
-                            @elseif ($invoice->status == 'لم يتم الدفع')
-                                <td class="text-center"><span class="badge status-danger">غير مسددة</span></td>
-                            @elseif ($invoice->status == 'مسودة')
-                                <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
-                            @endif
-                            @if ($invoice->zatca_status == 'sent without errors')
-                                <td class="text-center"><span class="badge status-delivered">تم الإرسال</span></td>
-                            @elseif ($invoice->zatca_status == 'not sent')
-                                <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td>
-                            @endif
+                            <td class="text-center fw-bold text-nowrap">
+                                {{ number_format($note->tax, 2) }} <i data-lucide="saudi-riyal"></i>
+                            </td>
+                            <td class="text-center fw-bold text-nowrap">
+                                {{ number_format($note->total, 2) }} <i data-lucide="saudi-riyal"></i>
+                            </td>
+                            <td class="text-center">{{ \Carbon\Carbon::parse($note->date)->format('Y/m/d') }}</td>
                             <td class="text-center">
-                                <a href="{{ route('admin.user.profile', $invoice->made_by) }}"
+                                <a href="{{ route('admin.user.profile', $note->made_by) }}"
                                     class="text-dark text-decoration-none">
-                                    {{ $invoice->made_by->name ?? '-' }}
+                                    {{ $note->made_by->name ?? '-' }}
                                 </a>
+                            </td>
+                            <td class="text-center">
+                                @if ($note->zatca_status === 'sent with out errors')
+                                    <span class="badge status-delivered">تم الارسال</span>
+                                @else
+                                    <span class="badge status-danger">لم يتم الارسال</span>
+                                @endif
                             </td>
                             <td class="d-flex justify-content-center align-items-center gap-2 text-center">
                                 <a href="" class="btn btn-sm btn-outline-primary">
-                                    <span class="d-none d-sm-inline">إرسال</span>
+                                    <span class="d-none d-sm-inline">ارسال</span>
                                     <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
                                 </a>
 
-                                <a href="{{ route('invoices.unified.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('invoices.notes.details', $note) }}" class="btn btn-sm btn-primary">
                                     <span class="d-none d-sm-inline">عرض</span>
-                                    <i class="fa-solid fa-eye d-inline d-sm-none"></i>
+                                    <i class="fa-solid fa-edit d-inline d-sm-none"></i>
                                 </a>
 
                                 @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
                                     <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal{{ $invoice->id }}">
+                                        data-bs-target="#deleteModal{{ $note->id }}">
                                         <span class="d-none d-sm-inline">حذف</span><i
                                             class="fa-solid fa-trash d-inline d-sm-none"></i>
                                     </button>
 
-                                    <div class="modal fade" id="deleteModal{{ $invoice->id }}" tabindex="-1"
-                                        aria-labelledby="deleteModalLabel{{ $invoice->id }}" aria-hidden="true">
+                                    <div class="modal fade" id="deleteModal{{ $note->id }}" tabindex="-1"
+                                        aria-labelledby="deleteModalLabel{{ $note->id }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-danger text-white">
                                                     <h5 class="modal-title fw-bold"
-                                                        id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
+                                                        id="deleteModalLabel{{ $note->id }}">تأكيد الحذف</h5>
                                                     <button type="button" class="btn-close btn-close-white"
                                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body fs-6">
-                                                    هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟
-                                                    @if ($invoice->is_posted)
+                                                    هل أنت متأكد من حذف الإشعار <strong>{{ $note->code }}</strong>؟
+                                                    @if ($note->is_posted)
                                                         <div class="alert alert-danger mt-3">
                                                             <i class="fas fa-exclamation-circle me-2"></i>
-                                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف
-                                                            القيد المرتبط أولاً قبل حذف الفاتورة.
+                                                            <strong>تنبيه:</strong> هذا الإشعار تم نشره بالفعل. يجب الحذر
+                                                            عند حذفه.
                                                         </div>
                                                     @endif
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button"
                                                         class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
-                                                    <form action="{{ route('invoices.delete', $invoice) }}"
+                                                    <form action="{{ route('invoices.notes.delete', $note) }}"
                                                         method="POST" style="display: inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -197,7 +203,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $invoices->links('components.pagination') }}
+        {{ $notes->links('components.pagination') }}
     </div>
 
     <script>

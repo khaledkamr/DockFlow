@@ -1268,6 +1268,79 @@
                 </div>
             </div>
 
+            <!-- Invoice Notes (Credit Notes, Debit Notes) -->
+            @if($invoice->invoiceNotes && $invoice->invoiceNotes->count() > 0)
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-dark">
+                            <i class="fas fa-clipboard me-2"></i>الإشعارات المرتبطة بالفاتورة
+                        </h5>
+                    </div>
+
+                    <div class="table-container" id="tableContainer">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th class="text-center bg-dark text-white text-nowrap">#</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">رقم الإشعار</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">نوع الإشعار</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">الضريبة</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">التاريخ</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">أنشئ بواسطة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($invoice->invoiceNotes as $note)
+                                    <tr>
+                                        @php
+                                            $isCredit = $note->type === 'credit';
+                                            $typeLabel = $isCredit ? 'إشعار دائن' : 'إشعار مدين';
+                                            $badgeClass = $isCredit ? 'status-danger' : 'status-delivered';
+                                        @endphp
+                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                        <td class="text-center text-primary fw-bold">
+                                            <a href="{{ route('invoices.notes.details', $note) }}"
+                                                class="text-decoration-none">
+                                                {{ $note->code }}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge {{ $badgeClass }}">{{ $typeLabel }}</span>
+                                        </td>
+                                        <td class="text-center fw-bold text-nowrap">
+                                            {{ number_format($note->amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                        </td>
+                                        <td class="text-center fw-bold text-nowrap">
+                                            {{ number_format($note->tax, 2) }} <i data-lucide="saudi-riyal"></i>
+                                        </td>
+                                        <td class="text-center fw-bold text-nowrap">
+                                            {{ number_format($note->total, 2) }} <i data-lucide="saudi-riyal"></i>
+                                        </td>
+                                        <td class="text-center">{{ \Carbon\Carbon::parse($note->date)->format('Y/m/d') }}</td>
+                                        <td class="text-center">
+                                            <a href="{{ route('admin.user.profile', $note->made_by) }}"
+                                                class="text-dark text-decoration-none">
+                                                {{ $note->made_by->name ?? '-' }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <span class="status-danger fs-6">
+                                                لا توجد إشعارات مرتبطة لهذه الفاتورة
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+
             <!-- Attachments And Notes Section -->
             <div class="row mt-4">
                 <!-- Attachments Section -->

@@ -29,8 +29,7 @@
             </nav>
         </div>
         <div class="d-flex flex-wrap gap-2">
-            @if (
-                $transaction->containers->first()->invoices &&
+            @if ($transaction->containers->first()->invoices &&
                     $transaction->containers->first()->invoices->where('type', 'تخليص')->first())
                 <a href="{{ route('invoices.unified.details', $transaction->containers->first()->invoices->where('type', 'تخليص')->first()) }}"
                     target="_blank" class="btn btn-outline-primary">
@@ -38,7 +37,7 @@
                     عرض الفاتورة
                 </a>
             @endif
-            @if ($transaction->containers->first()->invoices->isEmpty())
+            @if ($transaction->containers->first()->invoices->where('type', 'تخليص')->isEmpty())
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
                     data-bs-target="#createInvoice">
                     <i class="fas fa-scroll me-1"></i>

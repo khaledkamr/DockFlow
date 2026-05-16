@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ArabicNumberConverter;
 use App\Helpers\QrHelper;
 use App\Http\Requests\ClaimRequest;
+use App\Http\Requests\InvoiceNoteRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Account;
 use App\Models\Attachment;
@@ -12,6 +13,7 @@ use App\Models\Claim;
 use App\Models\Container;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoiceNote;
 use App\Models\InvoicePayment;
 use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
@@ -313,7 +315,7 @@ class InvoiceController extends Controller
         }
 
         // Calculate contract-based items
-        if($transaction->customer->contract) {
+        if($transaction->customer->contract && $transaction->customer->contract->end_date >= Carbon::now()) {
             $containers_count = $transaction->containers->count();
             $contractServices = collect($transaction->customer->contract->services->pluck('description')->toArray());
 
@@ -475,7 +477,7 @@ class InvoiceController extends Controller
         $newItems = [];
         $containers_count = $transaction->containers->count();
 
-        if($transaction->customer->contract) {
+        if($transaction->customer->contract && $transaction->customer->contract->end_date >= Carbon::now()) {
             $contractServices = collect($transaction->customer->contract->services->pluck('description')->toArray());
 
             if($contractServices->contains('اجور تخليص') && !$transaction->items->contains('description', 'اجور تخليص - CLEARANCE FEES')) {
@@ -1583,5 +1585,94 @@ class InvoiceController extends Controller
         logActivity('حذف ملف من الفاتورة', "تم حذف الملف " . $attachment->original_name . " من الفاتورة رقم " . $attachment->attachable->code);
 
         return redirect()->back()->with('success', 'تم حذف الملف بنجاح');
+    }
+
+    // ------------------------ Credit & Debit Notes ------------------------
+
+    public function invoiceNotes(Request $request) {
+        $notes = InvoiceNote::query();
+        $type = $request->input('type');
+        $search = $request->input('search', null);
+
+        if ($type) {
+            $notes->where('type', $type);
+        }
+        if($search) {
+            $notes->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhere('reason', 'like', "%$search%")
+                  ->orWhereHas('invoice', function($q2) use ($search) {
+                      $q2->where('code', 'like', "%$search%");
+                  })->orWhereHas('invoice.customer', function($q3) use ($search) {
+                      $q3->where('name', 'like', "%$search%");
+                  });
+            });
+        }
+
+        $notes = $notes->with('invoice', 'made_by')->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
+
+        return view('pages.invoices.notes', compact('notes'));
+    }
+
+    public function CreateNote(Request $request) {
+        $invoices = Invoice::query();
+        $search = $request->input('search', null);
+
+        if($search) {
+            $invoices = $invoices->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%$search%");
+                  })->orWhere('date', 'like', "%$search%");
+            });
+        }
+
+        $invoices = $invoices->with('customer')->orderBy('code')->get();
+        
+        return view('pages.invoices.create_note', compact('invoices'));
+    }
+
+    public function storeNote(InvoiceNoteRequest $request) {
+        $validated = $request->validated();
+        $invoiceId = $request->input('invoice_id');
+        $invoice  = Invoice::findOrFail($invoiceId);
+        $type = $request->input('type');
+        $typeLabel = $type == 'credit' ? 'إشعار دائن' : 'إشعار مدين';
+
+        if($request->type == 'credit' && $request->total > $invoice->total_amount) {
+            return redirect()->back()->with('error', 'لا يمكن إنشاء إشعار دائن بقيمة أكبر من قيمة الفاتورة الأصلية')->withInput();
+        }
+
+        $note = InvoiceNote::create($validated);
+
+        logActivity('إنشاء ' . $typeLabel, "تم إنشاء " . $typeLabel . " رقم " . $note->code . " للفاتورة رقم " . $invoice->code, null, $note->toArray());
+
+        return redirect()->back()->with('success', 'تم إنشاء ' . $typeLabel . ' بنجاح, <a class="text-white fw-bold" href="'.route('invoices.notes.details', $note).'">عرض ' . $typeLabel . '</a>');
+    }
+
+    public function noteDetails(InvoiceNote $note) {
+        $note->load('invoice.customer', 'made_by');
+        return view('pages.invoices.note_details', compact('note'));
+    }
+
+    public function updateNote(Request $request, InvoiceNote $note) {
+        $old = $note->toArray();
+        $note->update($request->all());
+        $new = $note->toArray();
+
+        $typeLabel = $note->type == 'credit' ? 'إشعار دائن' : 'إشعار مدين';
+        logActivity('تعديل ' . $typeLabel, "تم تعديل بيانات " . $typeLabel . " رقم " . $note->code, $old, $new);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات ' . $typeLabel);
+    }
+
+    public function deleteNote(InvoiceNote $note) {
+        $typeLabel = $note->type == 'credit' ? 'إشعار دائن' : 'إشعار مدين';
+        $invoiceCode = $note->invoice->code;
+        $note->delete();
+
+        logActivity('حذف ' . $typeLabel, "تم حذف " . $typeLabel . " رقم " . $note->code . " المرتبط بالفاتورة رقم " . $invoiceCode, $note->toArray());
+
+        return redirect()->back()->with('success', 'تم حذف ' . $typeLabel . ' بنجاح');
     }
 }

@@ -291,6 +291,13 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
 
     Route::post('/invoices/{invoice:uuid}/add/file', 'attachFile')->name('invoices.add.file');
     Route::delete('/invoices/file/delete/{attachment:id}', 'deleteAttachment')->name('invoices.delete.file');
+
+    Route::get('invoices/notes', 'invoiceNotes')->name('invoices.notes');
+    Route::get('invoices/notes/create', 'CreateNote')->name('invoices.notes.create');
+    Route::post('invoices/notes/store', 'storeNote')->name('invoices.notes.store');
+    Route::get('invoices/notes/{note:uuid}', 'noteDetails')->name('invoices.notes.details');
+    Route::patch('invoices/notes/update/{note:uuid}', 'updateNote')->name('invoices.notes.update');
+    Route::delete('invoices/notes/delete/{note:uuid}', 'deleteNote')->name('invoices.notes.delete');
 });
 
 Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(function () {
