@@ -566,7 +566,7 @@
                                 <i class="fas fa-file-export me-2"></i>ترحيل الفاتورة
                             </button>
                         @endcan
-                    @else
+                    @elseif ($invoice->is_posted && $invoice->journalEntry)
                         <a href="{{ route('journal.details', $invoice->journalEntry) }}" target="_blank"
                             class="btn btn-outline-primary">
                             <i class="fas fa-receipt me-2"></i>عرض القيد
