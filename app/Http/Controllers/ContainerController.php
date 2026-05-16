@@ -90,11 +90,7 @@ class ContainerController extends Controller
 
         $old = $container->toArray();
 
-        $container->code = $request->code;
-        $container->location = $request->location;
-        $container->container_type_id = $request->container_type_id;
-        $container->notes = $request->notes;
-        $container->save();
+        $container->update($request->all());
 
         $new = $container->toArray();
         logActivity('تعديل حاوية', "تم تعديل بيانات الحاوية رقم " . $container->code, $old, $new);
