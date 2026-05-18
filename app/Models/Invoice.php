@@ -11,7 +11,7 @@ class Invoice extends Model
 {
     use BelongsToCompany, HasUuid;
 
-    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن', 'مسودة', 'تخزين و شحن'];
+    public const TYPES = [ 'تخزين', 'خدمات', 'تخليص', 'شحن', 'مسودة', 'تخزين و شحن', 'محاسبية'];
     public const PAYMENT_METHODS = [ 'كاش', 'آجل', 'تحويل بنكي',];
     public const PAYMENT_STATUS = [ 'تم الدفع', 'لم يتم الدفع', 'تم الدفع جزئياً', 'مسودة'];
     
@@ -112,6 +112,12 @@ class Invoice extends Model
 
     public function invoiceNotes() {
         return $this->hasMany(InvoiceNote::class);
+    }
+
+    public function products() {
+        return $this->belongsToMany(Product::class, 'invoice_products')
+            ->withPivot('quantity', 'price', 'tax', 'price_after_tax', 'total')
+            ->withTimestamps();
     }
 
     protected static function booted()

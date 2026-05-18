@@ -103,7 +103,7 @@
             <div class="card-body p-5">
                 <h3 class="mb-4 text-center">اختر نوع الفاتورة</h3>
                 <div class="row g-3">
-                    @if(auth()->user()->company->hasModule('تخزين'))
+                    @if (auth()->user()->company->hasModule('تخزين'))
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'تخزين']) }}"
                                 class="btn btn-outline-primary btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
@@ -114,7 +114,7 @@
                             </a>
                         </div>
                     @endif
-                    @if(auth()->user()->company->hasModule('نقل'))
+                    @if (auth()->user()->company->hasModule('نقل'))
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'شحن']) }}"
                                 class="btn btn-outline-success btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
@@ -125,7 +125,7 @@
                             </a>
                         </div>
                     @endif
-                    @if(auth()->user()->company->hasModule('تخزين') && auth()->user()->company->hasModule('نقل'))
+                    @if (auth()->user()->company->hasModule('تخزين') && auth()->user()->company->hasModule('نقل'))
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'تخزين و شحن']) }}"
                                 class="btn btn-outline-info btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
@@ -136,7 +136,7 @@
                             </a>
                         </div>
                     @endif
-                    @if(auth()->user()->company->hasModule('تخزين'))
+                    @if (auth()->user()->company->hasModule('تخزين'))
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'خدمات']) }}"
                                 class="btn btn-outline-warning btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
@@ -147,17 +147,28 @@
                             </a>
                         </div>
                     @endif
-                    {{-- @if(auth()->user()->company->hasModule('تخليص'))
+                    @if (auth()->user()->company->hasModule('تخليص') && auth()->user()->name == 'خالد قمر')
                         <div class="col-md-4">
                             <a href="{{ route('invoices.create.unified', ['type' => 'تخليص']) }}"
                                 class="btn btn-outline-danger btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
                                 style="min-height: 200px;">
                                 <i class="fas fa-ship fa-3x mb-3"></i>
                                 <span class="fw-bold">فاتورة تخليص</span>
-                                <small class="mt-2">فاتورة خاصة بتكاليف التخليص</small>
+                                <small class="mt-2">فاتورة خاصة بتكاليف التخليص الجمركي</small>
                             </a>
                         </div>
-                    @endif --}}
+                    @endif
+                    @if (auth()->user()->company->hasModule('مستودع'))
+                        <div class="col-md-4">
+                            <a href="{{ route('invoices.create.unified', ['type' => 'محاسبية']) }}"
+                                class="btn btn-outline-primary btn-lg w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4"
+                                style="min-height: 200px;">
+                                <i class="fas fa-file-invoice-dollar fa-3x mb-3"></i>
+                                <span class="fw-bold">فاتورة محاسبية</span>
+                                <small class="mt-2">إنشاء فاتورة محاسبية بشكل يدوي</small>
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -169,39 +180,39 @@
             </a>
         </div>
 
-        <form method="GET" action="" class="mb-4">
-            <input type="text" name="type" value="{{ $invoiceType }}" hidden>
-            <div class="row g-3">
-                <div class="col-12 col-md-6">
-                    <select name="customer_id" id="customer_id" class="form-select border-primary" required>
-                        <option value="">-- اختر العميل --</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}"
-                                {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                {{ $customer->code ?? '' }} - {{ $customer->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12 col-sm-6 col-md-2">
-                    <button type="submit" class="btn btn-primary fw-bold w-100">
-                        بحث <i class="fa-solid fa-search ms-1"></i>
-                    </button>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4">
-                    <div class="input-group">
-                        <input id="search-input" class="form-control border-primary" type="search" placeholder="إبحث..."
-                            aria-label="Search">
-                        <button class="btn btn-outline-primary" type="button" id="clear-search">
-                            <i class="fas fa-magnifying-glass"></i>
+        <!-- Storage Invoice Section -->
+        @if ($invoiceType == 'تخزين' && isset($containers))
+            <form method="GET" action="" class="mb-4">
+                <input type="text" name="type" value="{{ $invoiceType }}" hidden>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <select name="customer_id" id="customer_id" class="form-select border-primary" required>
+                            <option value="">-- اختر العميل --</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->code ?? '' }} - {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <button type="submit" class="btn btn-primary fw-bold w-100">
+                            عرض الحاويات <i class="fa-solid fa-search ms-1"></i>
                         </button>
                     </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="input-group">
+                            <input id="search-input" class="form-control border-primary" type="search" placeholder="إبحث..."
+                                aria-label="Search">
+                            <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
 
-        <!-- Storage Invoice Section -->
-        @if ($invoiceType == 'تخزين' && isset($containers) && $containers->count() > 0)
             <form method="POST" action="{{ route('invoices.store.unified') }}" class="mb-5">
                 @csrf
                 <input type="hidden" name="type" value="تخزين">
@@ -246,7 +257,7 @@
                             </tr>
                         </thead>
                         <tbody id="storage-tbody">
-                            @foreach ($containers as $container)
+                            @forelse ($containers as $container)
                                 <tr class="container-row text-center" data-container-id="{{ $container->id }}"
                                     data-amount="{{ $container->total }}">
                                     <td class="checkbox-cell">
@@ -272,7 +283,27 @@
                                     <td>{{ number_format($container->services->sum('pivot.price'), 2) }} ر.س</td>
                                     <td><strong>{{ number_format($container->total, 2) }} ر.س</strong></td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                @if(request('customer_id'))
+                                    <tr>
+                                        <td colspan="12" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                لا توجد حاويات مُسلمة غير مفوترة لهذا العميل.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="12" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                يرجى اختيار عميل لعرض الحاويات المتاحة للفوترة.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -291,22 +322,23 @@
                         <div class="row g-3">
                             <div class="col-6 col-md">
                                 <label for="discount-storage" class="form-label fw-bold">نسبة الخصم (%)</label>
-                                <input type="number" class="form-control border-primary" id="discount-storage" name="discount"
-                                    min="0" max="100" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-storage"
+                                    name="discount" min="0" max="100" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="discount-amount-storage" class="form-label fw-bold">مبلغ الخصم</label>
-                                <input type="number" class="form-control border-primary" id="discount-amount-storage" name="discount_amount"
-                                    min="0" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-amount-storage"
+                                    name="discount_amount" min="0" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="tax-rate-storage" class="form-label fw-bold">نسبة الضريبة (%)</label>
-                                <input type="number" class="form-control border-primary" id="tax-rate-storage" name="tax_rate"
-                                    min="0" max="100" value="15" step="any">
+                                <input type="number" class="form-control border-primary" id="tax-rate-storage"
+                                    name="tax_rate" min="0" max="100" value="15" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="payment-method-storage" class="form-label fw-bold">طريقة الدفع</label>
-                                <select class="form-select border-primary" id="payment-method-storage" name="payment_method" required>
+                                <select class="form-select border-primary" id="payment-method-storage"
+                                    name="payment_method" required>
                                     <option value="آجل">آجل</option>
                                     <option value="كاش">كاش</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -314,15 +346,16 @@
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-type-storage" class="form-label fw-bold">نوع الفاتورة</label>
-                                <select class="form-select border-primary" id="invoice-type-storage" name="invoice_type" required>
+                                <select class="form-select border-primary" id="invoice-type-storage" name="invoice_type"
+                                    required>
                                     <option value="ضريبية">فاتورة ضريبية</option>
                                     <option value="مسودة">فاتورة مسودة</option>
                                 </select>
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-date-storage" class="form-label fw-bold">تاريخ الفاتورة</label>
-                                <input type="date" class="form-control border-primary" id="invoice-date-storage" name="date" 
-                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                                <input type="date" class="form-control border-primary" id="invoice-date-storage"
+                                    name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
                             </div>
                         </div>
 
@@ -367,15 +400,41 @@
                     </button>
                 </div>
             </form>
-        @elseif ($invoiceType == 'تخزين' && request('customer_id'))
-            <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle me-2"></i>
-                لا توجد حاويات مُسلمة غير مفوترة لهذا العميل.
-            </div>
         @endif
 
         <!-- Shipping Invoice Section -->
-        @if ($invoiceType == 'شحن' && isset($shippingPolicies) && $shippingPolicies->count() > 0)
+        @if ($invoiceType == 'شحن' && isset($shippingPolicies))
+            <form method="GET" action="" class="mb-4">
+                <input type="text" name="type" value="{{ $invoiceType }}" hidden>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <select name="customer_id" id="customer_id" class="form-select border-primary" required>
+                            <option value="">-- اختر العميل --</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->code ?? '' }} - {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <button type="submit" class="btn btn-primary fw-bold w-100">
+                            عرض البوالص <i class="fa-solid fa-search ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="input-group">
+                            <input id="search-input" class="form-control border-primary" type="search" placeholder="إبحث..."
+                                aria-label="Search">
+                            <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
             <form method="POST" action="{{ route('invoices.store.unified') }}" class="mb-5">
                 @csrf
                 <input type="hidden" name="type" value="شحن">
@@ -418,7 +477,7 @@
                             </tr>
                         </thead>
                         <tbody id="shipping-tbody">
-                            @foreach ($shippingPolicies as $policy)
+                            @forelse ($shippingPolicies as $policy)
                                 <tr class="policy-row text-center" data-policy-id="{{ $policy->id }}"
                                     data-amount="{{ $policy->total_cost }}">
                                     <td class="checkbox-cell">
@@ -429,11 +488,14 @@
                                         </div>
                                     </td>
                                     <td class="fw-bold">
-                                        <a href="{{ route('shipping.policies.details', $policy) }}" class="text-decoration-none policy-code">
+                                        <a href="{{ route('shipping.policies.details', $policy) }}"
+                                            class="text-decoration-none policy-code">
                                             {{ $policy->code }}
                                         </a>
                                     </td>
-                                    <td><span class="badge status-delivered">{{ $policy->is_received ? 'تم التسليم' : 'قيد النقل' }}</span></td>
+                                    <td><span
+                                            class="badge status-delivered">{{ $policy->is_received ? 'تم التسليم' : 'قيد النقل' }}</span>
+                                    </td>
                                     <td>{{ $policy->from }}</td>
                                     <td>{{ $policy->to }}</td>
                                     <td>{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
@@ -441,7 +503,27 @@
                                     <td>{{ number_format($policy->late_fee, 2) }} ر.س</td>
                                     <td><strong>{{ number_format($policy->total_cost, 2) }} ر.س</strong></td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                @if(request('customer_id'))
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                لا توجد بوالص شحن مُستلمة غير مفوترة لهذا العميل.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="9" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                يرجى اختيار عميل لعرض البوالص المتاحة للفوترة.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -460,22 +542,23 @@
                         <div class="row g-3">
                             <div class="col-6 col-md">
                                 <label for="discount-shipping" class="form-label fw-bold">نسبة الخصم (%)</label>
-                                <input type="number" class="form-control border-primary" id="discount-shipping" name="discount"
-                                    min="0" max="100" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-shipping"
+                                    name="discount" min="0" max="100" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="discount-amount-shipping" class="form-label fw-bold">مبلغ الخصم</label>
-                                <input type="number" class="form-control border-primary" id="discount-amount-shipping" name="discount_amount"
-                                    min="0" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-amount-shipping"
+                                    name="discount_amount" min="0" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="tax-rate-shipping" class="form-label fw-bold">نسبة الضريبة (%)</label>
-                                <input type="number" class="form-control border-primary" id="tax-rate-shipping" name="tax_rate"
-                                    min="0" max="100" value="15" step="any">
+                                <input type="number" class="form-control border-primary" id="tax-rate-shipping"
+                                    name="tax_rate" min="0" max="100" value="15" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="payment-method-shipping" class="form-label fw-bold">طريقة الدفع</label>
-                                <select class="form-select border-primary" id="payment-method-shipping" name="payment_method" required>
+                                <select class="form-select border-primary" id="payment-method-shipping"
+                                    name="payment_method" required>
                                     <option value="آجل">آجل</option>
                                     <option value="كاش">كاش</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -483,15 +566,16 @@
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-type-shipping" class="form-label fw-bold">نوع الفاتورة</label>
-                                <select class="form-select border-primary" id="invoice-type-shipping" name="invoice_type" required>
+                                <select class="form-select border-primary" id="invoice-type-shipping" name="invoice_type"
+                                    required>
                                     <option value="ضريبية">فاتورة ضريبية</option>
                                     <option value="مسودة">فاتورة مسودة</option>
                                 </select>
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-date-shipping" class="form-label fw-bold">تاريخ الفاتورة</label>
-                                <input type="date" class="form-control border-primary" id="invoice-date-shipping" name="date" 
-                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                                <input type="date" class="form-control border-primary" id="invoice-date-shipping"
+                                    name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
                             </div>
                         </div>
 
@@ -508,7 +592,7 @@
                                     <h6 class="mb-0" id="discount-value-shipping">0.00 ر.س</h6>
                                 </div>
                             </div>
-                             <div class="col-6 col-md">
+                            <div class="col-6 col-md">
                                 <div class="p-3 bg-light rounded border border-primary text-center">
                                     <small class="text-muted">الإجمالي بعد الخصم</small>
                                     <h6 class="mb-0" id="amount-after-discount-shipping">0.00 ر.س</h6>
@@ -536,16 +620,41 @@
                     </button>
                 </div>
             </form>
-        @elseif ($invoiceType == 'شحن' && request('customer_id'))
-            <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle me-2"></i>
-                لا توجد بوالص شحن مُستلمة غير مفوترة لهذا العميل.
-            </div>
         @endif
 
         <!-- Combined Invoice Section -->
-        @if ($invoiceType == 'تخزين و شحن' && ((isset($containers) && $containers->count() > 0) ||
-                (isset($shippingPolicies) && $shippingPolicies->count() > 0)))
+        @if ($invoiceType == 'تخزين و شحن')
+            <form method="GET" action="" class="mb-4">
+                <input type="text" name="type" value="{{ $invoiceType }}" hidden>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <select name="customer_id" id="customer_id" class="form-select border-primary" required>
+                            <option value="">-- اختر العميل --</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->code ?? '' }} - {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <button type="submit" class="btn btn-primary fw-bold w-100">
+                            عرض <i class="fa-solid fa-search ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="input-group">
+                            <input id="search-input" class="form-control border-primary" type="search" placeholder="إبحث..."
+                                aria-label="Search">
+                            <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
             <form method="POST" action="{{ route('invoices.store.unified') }}" class="mb-5">
                 @csrf
                 <input type="hidden" name="type" value="تخزين و شحن">
@@ -553,8 +662,8 @@
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
 
                 <!-- Storage Section -->
-                @if (isset($containers) && $containers->count() > 0)
-                    <h6 class="fw-bold mb-2">الحاويات المسلمة:</h6>
+                @if (isset($containers))
+                    <h6 class="fw-bold mb-2">الحاويات التخزين:</h6>
                     <div class="mb-3">
                         <!-- Search results info -->
                         <div class="alert alert-secondary mb-3" id="search-info-storage" style="display: none;">
@@ -570,7 +679,8 @@
                         <div class="alert alert-primary mb-3" id="selection-counter-storage" style="display: none;">
                             <i class="fas fa-info-circle"></i>
                             تم تحديد <strong id="selected-count-storage">0</strong> حاوية
-                            بمبلغ إجمالي <strong id="selected-amount-storage">0.00</strong> <i data-lucide="saudi-riyal"></i>
+                            بمبلغ إجمالي <strong id="selected-amount-storage">0.00</strong> <i
+                                data-lucide="saudi-riyal"></i>
                         </div>
 
                         <div class="table-container" id="tableContainerStorageCombined">
@@ -579,7 +689,8 @@
                                     <tr>
                                         <th class="text-center" width="50">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="select-all-storage-combined">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="select-all-storage-combined">
                                             </div>
                                         </th>
                                         <th class="text-center">رقم الحاوية</th>
@@ -595,7 +706,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="storage-tbody-combined">
-                                    @foreach ($containers as $container)
+                                    @forelse ($containers as $container)
                                         <tr class="container-row text-center" data-container-id="{{ $container->id }}"
                                             data-amount="{{ $container->total }}">
                                             <td class="checkbox-cell">
@@ -622,7 +733,27 @@
                                             <td>{{ number_format($container->services->sum('pivot.price'), 2) }} ر.س</td>
                                             <td><strong>{{ number_format($container->total, 2) }} ر.س</strong></td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        @if(request('customer_id'))
+                                            <tr>
+                                                <td colspan="12" class="text-center">
+                                                    <div class="alert alert-info text-center">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        لا توجد حاويات مُسلمة غير مفوترة لهذا العميل.
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td colspan="12" class="text-center">
+                                                    <div class="alert alert-info text-center">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        يرجى اختيار عميل لعرض الحاويات المتاحة للفوترة.
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -635,7 +766,7 @@
                 @endif
 
                 <!-- Shipping Section -->
-                @if (isset($shippingPolicies) && $shippingPolicies->count() > 0)
+                @if (isset($shippingPolicies))
                     <h6 class="fw-bold mb-2">بوالص الشحن:</h6>
                     <div class="mb-3">
                         <!-- Search results info -->
@@ -654,7 +785,8 @@
                             style="display: none;">
                             <i class="fas fa-info-circle"></i>
                             تم تحديد <strong id="selected-count-shipping-combined">0</strong> بوليصة
-                            بمبلغ إجمالي <strong id="selected-amount-shipping-combined">0.00</strong> <i data-lucide="saudi-riyal"></i>
+                            بمبلغ إجمالي <strong id="selected-amount-shipping-combined">0.00</strong> <i
+                                data-lucide="saudi-riyal"></i>
                         </div>
 
                         <div class="table-container" id="tableContainerShippingCombined">
@@ -663,10 +795,12 @@
                                     <tr>
                                         <th class="text-center" width="50">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="select-all-shipping-combined">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="select-all-shipping-combined">
                                             </div>
                                         </th>
                                         <th class="text-center">رقم البوليصة</th>
+                                        <th class="text-center">البيان</th>
                                         <th class="text-center">الحالة</th>
                                         <th class="text-center">مكان التحميل</th>
                                         <th class="text-center">مكان التفريغ</th>
@@ -677,7 +811,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="shipping-tbody-combined">
-                                    @foreach ($shippingPolicies as $policy)
+                                    @forelse ($shippingPolicies as $policy)
                                         <tr class="policy-row text-center" data-policy-id="{{ $policy->id }}"
                                             data-amount="{{ $policy->total_cost }}">
                                             <td class="checkbox-cell">
@@ -689,11 +823,15 @@
                                                 </div>
                                             </td>
                                             <td class="fw-bold">
-                                                <a href="{{ route('shipping.policies.details', $policy) }}" class="text-decoration-none policy-code">
+                                                <a href="{{ route('shipping.policies.details', $policy) }}"
+                                                    class="text-decoration-none policy-code">
                                                     {{ $policy->code }}
                                                 </a>
                                             </td>
-                                            <td><span class="badge status-delivered">{{ $policy->is_received ? 'تم التسليم' : 'قيد النقل' }}</span></td>
+                                            <td class="fw-bold">{{ $policy->goods->first()->description }}</td>
+                                            <td><span
+                                                    class="badge status-delivered">{{ $policy->is_received ? 'تم التسليم' : 'قيد النقل' }}</span>
+                                            </td>
                                             <td>{{ $policy->from }}</td>
                                             <td>{{ $policy->to }}</td>
                                             <td>{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
@@ -701,7 +839,27 @@
                                             <td>{{ number_format($policy->late_fee, 2) }} ر.س</td>
                                             <td><strong>{{ number_format($policy->total_cost, 2) }} ر.س</strong></td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        @if(request('customer_id'))
+                                            <tr>
+                                                <td colspan="11" class="text-center">
+                                                    <div class="alert alert-info text-center">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        لا توجد بوالص شحن مُستلمة غير مفوترة لهذا العميل.
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td colspan="11" class="text-center">
+                                                    <div class="alert alert-info text-center">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        يرجى اختيار عميل لعرض البوالص المتاحة للفوترة.
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -723,22 +881,23 @@
                         <div class="row g-3">
                             <div class="col-6 col-md">
                                 <label for="discount-combined" class="form-label fw-bold">نسبة الخصم (%)</label>
-                                <input type="number" class="form-control border-primary" id="discount-combined" name="discount"
-                                    min="0" max="100" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-combined"
+                                    name="discount" min="0" max="100" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="discount-amount-combined" class="form-label fw-bold">مبلغ الخصم</label>
-                                <input type="number" class="form-control border-primary" id="discount-amount-combined" name="discount_amount"
-                                    min="0" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-amount-combined"
+                                    name="discount_amount" min="0" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="tax-rate-combined" class="form-label fw-bold">نسبة الضريبة (%)</label>
-                                <input type="number" class="form-control border-primary" id="tax-rate-combined" name="tax_rate"
-                                    min="0" max="100" value="15" step="0.01">
+                                <input type="number" class="form-control border-primary" id="tax-rate-combined"
+                                    name="tax_rate" min="0" max="100" value="15" step="0.01">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="payment-method-combined" class="form-label fw-bold">طريقة الدفع</label>
-                                <select class="form-select border-primary" id="payment-method-combined" name="payment_method" required>
+                                <select class="form-select border-primary" id="payment-method-combined"
+                                    name="payment_method" required>
                                     <option value="آجل">آجل</option>
                                     <option value="كاش">كاش</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -746,15 +905,16 @@
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-type-combined" class="form-label fw-bold">نوع الفاتورة</label>
-                                <select class="form-select border-primary" id="invoice-type-combined" name="invoice_type" required>
+                                <select class="form-select border-primary" id="invoice-type-combined" name="invoice_type"
+                                    required>
                                     <option value="ضريبية">فاتورة ضريبية</option>
                                     <option value="مسودة">فاتورة مسودة</option>
                                 </select>
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-date-combined" class="form-label fw-bold">تاريخ الفاتورة</label>
-                                <input type="date" class="form-control border-primary" id="invoice-date-combined" name="date" 
-                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                                <input type="date" class="form-control border-primary" id="invoice-date-combined"
+                                    name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
                             </div>
                         </div>
 
@@ -798,15 +958,42 @@
                         <i class="fas fa-check me-2"></i> إنشاء الفاتورة
                     </button>
                 </div>
-            </form>
-        @elseif ($invoiceType == 'تخزين و شحن' && request('customer_id'))
-            <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle me-2"></i>
-                لا توجد حاويات أو بوالص شحن غير مفوترة لهذا العميل.
-            </div>
+            </form>            
         @endif
 
-        @if($invoiceType == 'خدمات' && isset($servicePolicies) && $servicePolicies->count() > 0)
+        <!-- Service Invoice Section -->
+        @if ($invoiceType == 'خدمات' && isset($servicePolicies))
+            <form method="GET" action="" class="mb-4">
+                <input type="text" name="type" value="{{ $invoiceType }}" hidden>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <select name="customer_id" id="customer_id" class="form-select border-primary" required>
+                            <option value="">-- اختر العميل --</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->code ?? '' }} - {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <button type="submit" class="btn btn-primary fw-bold w-100">
+                            عرض البوالص <i class="fa-solid fa-search ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="input-group">
+                            <input id="search-input" class="form-control border-primary" type="search" placeholder="إبحث..."
+                                aria-label="Search">
+                            <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
             <form method="POST" action="{{ route('invoices.store.unified') }}" class="mb-5">
                 @csrf
                 <input type="hidden" name="type" value="خدمات">
@@ -847,8 +1034,8 @@
                             </tr>
                         </thead>
                         <tbody id="services-tbody">
-                            @foreach ($servicePolicies as $policy)
-                                <tr class="policy-row text-center" data-policy-id="{{ $policy->id }}" 
+                            @forelse ($servicePolicies as $policy)
+                                <tr class="policy-row text-center" data-policy-id="{{ $policy->id }}"
                                     data-amount="{{ $policy->containers->first()->services->sum('pivot.price') }}">
                                     <td class="checkbox-cell">
                                         <div class="form-check">
@@ -858,21 +1045,46 @@
                                         </div>
                                     </td>
                                     <td class="fw-bold">
-                                        <a href="{{ route('policies.services.details', $policy) }}" class="text-decoration-none policy-code text-dark">
+                                        <a href="{{ route('policies.services.details', $policy) }}"
+                                            class="text-decoration-none policy-code text-dark">
                                             {{ $policy->code }}
                                         </a>
                                     </td>
                                     <td class="fw-bold">
-                                        <a href="{{ route('container.details', $policy->containers->first()) }}" class="text-decoration-none policy-code text-dark">
+                                        <a href="{{ route('container.details', $policy->containers->first()) }}"
+                                            class="text-decoration-none policy-code text-dark">
                                             {{ $policy->containers->first()->code }}
                                         </a>
                                     </td>
                                     <td>{{ $policy->containers->first()->containerType->name }}</td>
-                                    <td>{{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') }}</td>
+                                    <td>{{ Carbon\Carbon::parse($policy->containers->first()->date)->format('Y/m/d') }}
+                                    </td>
                                     <td>{{ $policy->containers->first()->services->first()->description }}</td>
-                                    <td class="fw-bold">{{ $policy->containers->first()->services->first()->pivot->price }} <i data-lucide="saudi-riyal"></i></td>
+                                    <td class="fw-bold">
+                                        {{ $policy->containers->first()->services->first()->pivot->price }} <i
+                                            data-lucide="saudi-riyal"></i></td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                @if(request('customer_id'))
+                                    <tr>
+                                        <td colspan="11" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                لا توجد بوالص خدمات غير مفوترة لهذا العميل.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="11" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                يرجى اختيار عميل لعرض بوالص الخدمات المتاحة للفوترة.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -891,22 +1103,23 @@
                         <div class="row g-3">
                             <div class="col-6 col-md">
                                 <label for="discount-services" class="form-label fw-bold">نسبة الخصم (%)</label>
-                                <input type="number" class="form-control border-primary" id="discount-services" name="discount"
-                                    min="0" max="100" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-services"
+                                    name="discount" min="0" max="100" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="discount-amount-services" class="form-label fw-bold">مبلغ الخصم</label>
-                                <input type="number" class="form-control border-primary" id="discount-amount-services" name="discount_amount"
-                                    min="0" value="0" step="any">
+                                <input type="number" class="form-control border-primary" id="discount-amount-services"
+                                    name="discount_amount" min="0" value="0" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="tax-rate-services" class="form-label fw-bold">نسبة الضريبة (%)</label>
-                                <input type="number" class="form-control border-primary" id="tax-rate-services" name="tax_rate"
-                                    min="0" max="100" value="15" step="any">
+                                <input type="number" class="form-control border-primary" id="tax-rate-services"
+                                    name="tax_rate" min="0" max="100" value="15" step="any">
                             </div>
                             <div class="col-6 col-md">
                                 <label for="payment-method-services" class="form-label fw-bold">طريقة الدفع</label>
-                                <select class="form-select border-primary" id="payment-method-services" name="payment_method" required>
+                                <select class="form-select border-primary" id="payment-method-services"
+                                    name="payment_method" required>
                                     <option value="آجل">آجل</option>
                                     <option value="كاش">كاش</option>
                                     <option value="تحويل بنكي">تحويل بنكي</option>
@@ -914,15 +1127,16 @@
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-type-services" class="form-label fw-bold">نوع الفاتورة</label>
-                                <select class="form-select border-primary" id="invoice-type-services" name="invoice_type" required>
+                                <select class="form-select border-primary" id="invoice-type-services" name="invoice_type"
+                                    required>
                                     <option value="ضريبية">فاتورة ضريبية</option>
                                     <option value="مسودة">فاتورة مسودة</option>
                                 </select>
                             </div>
                             <div class="col-6 col-md">
                                 <label for="invoice-date-services" class="form-label fw-bold">تاريخ الفاتورة</label>
-                                <input type="date" class="form-control border-primary" id="invoice-date-services" name="date" 
-                                    value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                                <input type="date" class="form-control border-primary" id="invoice-date-services"
+                                    name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
                             </div>
                         </div>
 
@@ -939,7 +1153,7 @@
                                     <h6 class="mb-0" id="discount-value-services">0.00 ر.س</h6>
                                 </div>
                             </div>
-                             <div class="col-6 col-md">
+                            <div class="col-6 col-md">
                                 <div class="p-3 bg-light rounded border border-primary text-center">
                                     <small class="text-muted">الإجمالي بعد الخصم</small>
                                     <h6 class="mb-0" id="amount-after-discount-services">0.00 ر.س</h6>
@@ -966,16 +1180,436 @@
                         <i class="fas fa-check me-2"></i> إنشاء الفاتورة
                     </button>
                 </div>
+            </form>            
+        @endif
+
+        <!-- Clearance Invoice Section -->
+        @if ($invoiceType == 'تخليص' && isset($transactions))
+            <form method="GET" action="" class="mb-4">
+                <input type="text" name="type" value="{{ $invoiceType }}" hidden>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <select name="customer_id" id="customer_id" class="form-select border-primary" required>
+                            <option value="">-- اختر العميل --</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->code ?? '' }} - {{ $customer->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <button type="submit" class="btn btn-primary fw-bold w-100">
+                            عرض المعاملات <i class="fa-solid fa-search ms-1"></i>
+                        </button>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="input-group">
+                            <input id="search-input" class="form-control border-primary" type="search" placeholder="إبحث..."
+                                aria-label="Search">
+                            <button class="btn btn-outline-primary" type="button" id="clear-search">
+                                <i class="fas fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
-        @elseif($invoiceType == 'خدمات' && request('customer_id'))
-            <div class="alert alert-info text-center">
-                <i class="fas fa-info-circle me-2"></i>
-                لا توجد خدمات غير مفوترة لهذا العميل.
-            </div>
+            
+            <form method="POST" action="{{ route('invoices.store.unified') }}" class="mb-5">
+                @csrf
+                <input type="hidden" name="type" value="تخليص">
+                <input type="hidden" name="customer_id" value="{{ request('customer_id') }}">
+                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
+                <!-- Search results info -->
+                <div class="alert alert-secondary mb-3" id="search-info-clearance" style="display: none;">
+                    <i class="fas fa-search me-1"></i>
+                    <span id="search-results-text-clearance"></span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="clear-search-btn-clearance">
+                        إلغاء البحث
+                    </button>
+                </div>
+
+                <div class="table-container" id="tableContainerClearance">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th></th>
+                                <th class="text-center">رقم المعاملة</th>
+                                <th class="text-center">رقم البوليصة</th>
+                                <th class="text-center">عدد الحاويات</th>
+                                <th class="text-center">الحالة</th>
+                                <th class="text-center">تاريخ المعاملة</th>
+                                <th class="text-center">المبلغ</th>
+                                <th class="text-center">إجمالي الضريبة</th>
+                                <th class="text-center">إجمالي المبلغ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clearance-tbody">
+                            @forelse ($transactions as $transaction)
+                                <tr class="policy-row text-center" data-policy-id="{{ $transaction->id }}"
+                                    data-amount="{{ $transaction->items->sum('total') }}">
+                                    <td class="checkbox-cell">
+                                        <div class="form-check">
+                                            <input class="form-check-input clearance-checkbox" type="checkbox"
+                                                name="transactions_ids[]" value="{{ $transaction->id }}"
+                                                data-amount="{{ $transaction->items->sum('total') }}"
+                                                data-items-amount="{{ $transaction->items->sum('amount') }}"
+                                                data-items-tax="{{ $transaction->items->sum('tax') }}">
+                                        </div>
+                                    </td>
+                                    <td class="fw-bold">
+                                        <a href="{{ route('transactions.details', $transaction) }}"
+                                            class="text-decoration-none policy-code text-dark">
+                                            {{ $transaction->code }}
+                                        </a>
+                                    </td>
+                                    <td>{{ $transaction->policy_number }}</td>
+                                    <td>{{ $transaction->containers->count() }} حاوية</td>
+                                    <td>
+                                        <span>
+                                            @if ($transaction->status == 'مغلقة')
+                                                <span class="badge status-delivered">مغلقة</span>
+                                            @elseif ($transaction->status == 'معلقة')
+                                                <span class="badge status-waiting">معلقة</span>
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <td>{{ Carbon\Carbon::parse($transaction->date)->format('Y/m/d') }}</td>
+                                    <td class="fw-bold">{{ $transaction->items->sum('amount') }} <i
+                                            data-lucide="saudi-riyal"></i></td>
+                                    <td class="fw-bold">{{ $transaction->items->sum('tax') }} <i
+                                            data-lucide="saudi-riyal"></i></td>
+                                    <td class="fw-bold">{{ $transaction->items->sum('total') }} <i
+                                            data-lucide="saudi-riyal"></i></td>
+                                </tr>
+                            @empty
+                                @if(request('customer_id'))
+                                    <tr>
+                                        <td colspan="10" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                لا توجد معاملات تخليص غير مفوترة لهذا العميل.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @else
+                                    <tr>
+                                        <td colspan="10" class="text-center">
+                                            <div class="alert alert-info text-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                يرجى اختيار عميل لعرض معاملات التخليص المتاحة للفوترة.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- No results message -->
+                <div class="alert alert-danger text-center" id="no-results-clearance" style="display: none;">
+                    <i class="fas fa-exclamation-triangle me-2"></i> لا توجد معاملات متطابقة.
+                </div>
+
+                <!-- Payment Details Section -->
+                <div class="card border-dark mb-3 mt-4" id="payment-details-clearance">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">تفاصيل الدفع</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6 col-md">
+                                <label for="discount-clearance" class="form-label fw-bold">نسبة الخصم (%)</label>
+                                <input type="number" class="form-control border-primary" id="discount-clearance"
+                                    name="discount" min="0" max="100" value="0" step="any">
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="discount-amount-clearance" class="form-label fw-bold">مبلغ الخصم</label>
+                                <input type="number" class="form-control border-primary" id="discount-amount-clearance"
+                                    name="discount_amount" min="0" value="0" step="any">
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="tax-rate-clearance" class="form-label fw-bold">نسبة الضريبة (%)</label>
+                                <input type="number" class="form-control border-primary" id="tax-rate-clearance"
+                                    name="tax_rate" min="0" max="100" value="15" step="any">
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="payment-method-clearance" class="form-label fw-bold">طريقة الدفع</label>
+                                <select class="form-select border-primary" id="payment-method-clearance"
+                                    name="payment_method" required>
+                                    <option value="آجل">آجل</option>
+                                    <option value="كاش">كاش</option>
+                                    <option value="تحويل بنكي">تحويل بنكي</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="invoice-type-clearance" class="form-label fw-bold">نوع الفاتورة</label>
+                                <select class="form-select border-primary" id="invoice-type-clearance"
+                                    name="invoice_type" required>
+                                    <option value="ضريبية">فاتورة ضريبية</option>
+                                    <option value="مسودة">فاتورة مسودة</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md">
+                                <label for="invoice-date-clearance" class="form-label fw-bold">تاريخ الفاتورة</label>
+                                <input type="date" class="form-control border-primary" id="invoice-date-clearance"
+                                    name="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-primary text-center">
+                                    <small class="text-muted">الإجمالي قبل الخصم</small>
+                                    <h6 class="mb-0" id="amount-before-tax-clearance">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-danger text-center">
+                                    <small class="text-muted">الخصم</small>
+                                    <h6 class="mb-0" id="discount-value-clearance">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-primary text-center">
+                                    <small class="text-muted">الإجمالي بعد الخصم</small>
+                                    <h6 class="mb-0" id="amount-after-discount-clearance">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-light rounded border border-primary text-center">
+                                    <small class="text-muted">الضريبة المضافة</small>
+                                    <h6 class="mb-0" id="tax-amount-clearance">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md">
+                                <div class="p-3 bg-primary text-white rounded fw-bold text-center">
+                                    <small>إجمالي المبلغ</small>
+                                    <h6 class="fw-bold mb-0" id="total-amount-clearance">0.00 ر.س</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <button type="button" id="create-invoice-btn-clearance" class="btn btn-primary btn-lg"
+                        onclick="showClearancePreview()" disabled>
+                        <i class="fas fa-check me-2"></i> إنشاء الفاتورة
+                    </button>
+                </div>
+            </form>
+        @endif
+
+        <!-- Accounting Invoice Section -->
+        @if($invoiceType == 'محاسبية')
+            @include('pages.invoices.create_accounting_invoice')
         @endif
     @endif
 
+    <!-- Invoice Preview Modal -->
+    <div class="modal fade" id="invoicePreviewModal" tabindex="-1" aria-labelledby="invoicePreviewLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="invoicePreviewLabel">عرض الفاتورة قبل الحفظ</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Loading State -->
+                    <div id="invoicePreviewLoading" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">جاري التحميل...</span>
+                        </div>
+                        <p class="mt-2 text-muted">جاري تحميل الفاتورة...</p>
+                    </div>
+
+                    <!-- Preview Content -->
+                    <div id="invoicePreviewContent" class="d-none">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>
+                            تحقق من تفاصيل الفاتورة أدناه قبل إرسالها
+                        </div>
+
+                        <!-- Items Table -->
+                        <div class="table-responsive" id="invoicePreviewItemsContainer">
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>البند</th>
+                                        <th class="text-end">المبلغ</th>
+                                        <th class="text-end">الضريبة</th>
+                                        <th class="text-end">الإجمالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoicePreviewItems">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="invoicePreviewEmpty" class="alert alert-warning d-none">
+                            لا توجد بنود في الفاتورة
+                        </div>
+
+                        <!-- Totals Section -->
+                        <div class="card mt-3 border-0 bg-light">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">المبلغ الإجمالي (قبل الخصم)</small>
+                                        <h6 class="mb-0" id="previewTotalAmount">0.00 ر.س</h6>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">إجمالي الضريبة</small>
+                                        <h6 class="mb-0" id="previewTotalTax">0.00 ร.س</h6>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">المبلغ مع الضريبة</small>
+                                        <h6 class="mb-0" id="previewTotalWithTax">0.00 ร.س</h6>
+                                    </div>
+                                    <div class="col-6 d-none" id="previewDiscountRow">
+                                        <small class="text-muted">الخصم المطبق</small>
+                                        <h6 class="mb-0 text-danger" id="previewDiscountAmount">-0.00 ร.س</h6>
+                                    </div>
+                                    <div class="col-12 d-none border-top pt-3" id="previewFinalRow">
+                                        <small class="text-muted">المبلغ النهائي</small>
+                                        <h5 class="mb-0 text-primary" id="previewFinalAmount">0.00 ร.س</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="submitClearanceInvoice()">
+                        <i class="fas fa-check me-2"></i>
+                        تأكيد وإنشاء الفاتورة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Invoice Preview Variables
+        let invoicePreviewData = null;
+
+        function showClearancePreview() {
+            loadClearanceInvoicePreview();
+            const modal = new bootstrap.Modal(document.getElementById('invoicePreviewModal'));
+            modal.show();
+        }
+
+        function loadClearanceInvoicePreview() {
+            const transactionId = document.querySelector('.clearance-checkbox:checked')?.value;
+            if (!transactionId) return;
+
+            const previewUrl = `{{ route('invoices.clearance.preview', ':id') }}`.replace(':id', transactionId);
+
+            // Show loading
+            document.getElementById('invoicePreviewLoading').classList.remove('d-none');
+            document.getElementById('invoicePreviewContent').classList.add('d-none');
+
+            fetch(previewUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    invoicePreviewData = data;
+                    renderClearanceInvoicePreview(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('invoicePreviewLoading').classList.add('d-none');
+                    document.getElementById('invoicePreviewContent').classList.remove('d-none');
+                    document.getElementById('invoicePreviewItems').closest('.table-responsive').classList.add('d-none');
+                    document.getElementById('invoicePreviewEmpty').classList.remove('d-none');
+                });
+        }
+
+        function renderClearanceInvoicePreview(data) {
+            document.getElementById('invoicePreviewLoading').classList.add('d-none');
+            document.getElementById('invoicePreviewContent').classList.remove('d-none');
+
+            const items = data.items || [];
+            const totals = data.totals || {};
+
+            if (items.length === 0) {
+                document.getElementById('invoicePreviewItems').closest('.table-responsive').classList.add('d-none');
+                document.getElementById('invoicePreviewEmpty').classList.remove('d-none');
+                return;
+            }
+
+            document.getElementById('invoicePreviewItems').closest('.table-responsive').classList.remove('d-none');
+            document.getElementById('invoicePreviewEmpty').classList.add('d-none');
+
+            let html = '';
+            items.forEach((item, index) => {
+                html += `<tr>
+                    <td>${item.description || 'بند ' + (index + 1)}</td>
+                    <td class="text-end">${formatNumber(item.amount)}</td>
+                    <td class="text-end">${formatNumber(item.tax)}</td>
+                    <td class="text-end">${formatNumber(item.total)}</td>
+                </tr>`;
+            });
+
+            document.getElementById('invoicePreviewItems').innerHTML = html;
+            document.getElementById('previewTotalAmount').textContent = formatNumber(totals.amount);
+            document.getElementById('previewTotalTax').textContent = formatNumber(totals.tax);
+            document.getElementById('previewTotalWithTax').textContent = formatNumber(totals.total);
+
+            // Calculate discount if any
+            calculateClearancePreviewDiscount();
+        }
+
+        function calculateClearancePreviewDiscount() {
+            if (!invoicePreviewData) return;
+
+            const totalAmount = invoicePreviewData.totals.amount;
+            const totalTax = invoicePreviewData.totals.tax;
+            const totalWithTax = invoicePreviewData.totals.total;
+
+            let discountPercent = parseFloat(document.getElementById('discount-clearance')?.value) || 0;
+            let discountAmount = parseFloat(document.getElementById('discount-amount-clearance')?.value) || 0;
+
+            if (discountPercent > 0 || discountAmount > 0) {
+                const finalAmount = totalWithTax - discountAmount;
+
+                document.getElementById('previewDiscountRow').classList.remove('d-none');
+                document.getElementById('previewFinalRow').classList.remove('d-none');
+                document.getElementById('previewDiscountAmount').textContent = '-' + formatNumber(discountAmount);
+                document.getElementById('previewFinalAmount').textContent = formatNumber(finalAmount);
+            } else {
+                document.getElementById('previewDiscountRow').classList.add('d-none');
+                document.getElementById('previewFinalRow').classList.add('d-none');
+            }
+        }
+
+        function submitClearanceInvoice() {
+            const form = document.querySelector('form[action*="invoices.store.unified"]');
+            if (form) {
+                form.submit();
+            }
+        }
+
+        function formatNumber(num) {
+            return parseFloat(num || 0).toLocaleString('ar-SA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + ' ร.س';
+        }
+
         $("#customer_id").select2({
             language: {
                 noResults: function() {
@@ -1002,6 +1636,9 @@
             const serviceCheckboxes = document.querySelectorAll('.service-checkbox');
             const serviceSelectAll = document.getElementById('select-all-services');
 
+            // Clearance Invoice Functions
+            const clearanceCheckboxes = document.querySelectorAll('.clearance-checkbox');
+
             // Search functionality
             const searchInput = document.getElementById('search-input');
             const clearSearch = document.getElementById('clear-search');
@@ -1027,6 +1664,8 @@
                     updateCombinedUI();
                 } else if (invoiceType === 'خدمات') {
                     updateServicesUI();
+                } else if (invoiceType === 'تخليص') {
+                    updateClearanceUI();
                 }
             }
 
@@ -1053,15 +1692,17 @@
                     }
                     updateUI();
                 });
-                
+
                 const discountValue = parseFloat(discountAmountInput.value || 0);
                 const amountAfterDiscount = amountBeforeTax - discountValue;
                 const tax = (taxRate / 100) * amountAfterDiscount;
                 const total = amountAfterDiscount + tax;
 
-                document.getElementById('amount-before-tax-storage').textContent = amountBeforeTax.toFixed(2) + ' ر.س';
+                document.getElementById('amount-before-tax-storage').textContent = amountBeforeTax.toFixed(2) +
+                    ' ر.س';
                 document.getElementById('discount-value-storage').textContent = discountValue.toFixed(2) + ' ر.س';
-                document.getElementById('amount-after-discount-storage').textContent = amountAfterDiscount.toFixed(2) + ' ر.س';
+                document.getElementById('amount-after-discount-storage').textContent = amountAfterDiscount.toFixed(
+                    2) + ' ر.س';
                 document.getElementById('tax-amount-storage').textContent = tax.toFixed(2) + ' ر.س';
                 document.getElementById('total-amount-storage').textContent = total.toFixed(2) + ' ر.س';
 
@@ -1108,9 +1749,11 @@
                 const tax = (taxRate / 100) * amountAfterDiscount;
                 const total = amountAfterDiscount + tax;
 
-                document.getElementById('amount-before-tax-shipping').textContent = amountBeforeTax.toFixed(2) +' ر.س';
+                document.getElementById('amount-before-tax-shipping').textContent = amountBeforeTax.toFixed(2) +
+                    ' ر.س';
                 document.getElementById('discount-value-shipping').textContent = discountValue.toFixed(2) + ' ر.س';
-                document.getElementById('amount-after-discount-shipping').textContent = amountAfterDiscount.toFixed(2) + ' ر.س';
+                document.getElementById('amount-after-discount-shipping').textContent = amountAfterDiscount.toFixed(
+                    2) + ' ر.س';
                 document.getElementById('tax-amount-shipping').textContent = tax.toFixed(2) + ' ر.س';
                 document.getElementById('total-amount-shipping').textContent = total.toFixed(2) + ' ر.س';
 
@@ -1159,9 +1802,11 @@
                 const tax = (taxRate / 100) * amountAfterDiscount;
                 const total = amountAfterDiscount + tax;
 
-                document.getElementById('amount-before-tax-combined').textContent = amountBeforeTax.toFixed(2) + ' ر.س';
+                document.getElementById('amount-before-tax-combined').textContent = amountBeforeTax.toFixed(2) +
+                    ' ر.س';
                 document.getElementById('discount-value-combined').textContent = discountValue.toFixed(2) + ' ر.س';
-                document.getElementById('amount-after-discount-combined').textContent = amountAfterDiscount.toFixed(2) + ' ر.س';
+                document.getElementById('amount-after-discount-combined').textContent = amountAfterDiscount.toFixed(
+                    2) + ' ر.س';
                 document.getElementById('tax-amount-combined').textContent = tax.toFixed(2) + ' ر.س';
                 document.getElementById('total-amount-combined').textContent = total.toFixed(2) + ' ر.س';
 
@@ -1178,7 +1823,8 @@
 
                 if (shippingCb > 0) {
                     document.getElementById('selected-count-shipping-combined').textContent = shippingCb;
-                    document.getElementById('selected-amount-shipping-combined').textContent = shippingTotal.toFixed(2);
+                    document.getElementById('selected-amount-shipping-combined').textContent = shippingTotal
+                        .toFixed(2);
                     document.getElementById('selection-counter-shipping-combined').style.display = 'block';
                 } else {
                     document.getElementById('selection-counter-shipping-combined').style.display = 'none';
@@ -1220,9 +1866,11 @@
                 const tax = (taxRate / 100) * amountAfterDiscount;
                 const total = amountAfterDiscount + tax;
 
-                document.getElementById('amount-before-tax-services').textContent = amountBeforeTax.toFixed(2) + ' ر.س';
+                document.getElementById('amount-before-tax-services').textContent = amountBeforeTax.toFixed(2) +
+                    ' ر.س';
                 document.getElementById('discount-value-services').textContent = discountValue.toFixed(2) + ' ر.س';
-                document.getElementById('amount-after-discount-services').textContent = amountAfterDiscount.toFixed(2) + ' ر.س';
+                document.getElementById('amount-after-discount-services').textContent = amountAfterDiscount.toFixed(
+                    2) + ' ر.س';
                 document.getElementById('tax-amount-services').textContent = tax.toFixed(2) + ' ر.س';
                 document.getElementById('total-amount-services').textContent = total.toFixed(2) + ' ر.س';
 
@@ -1237,6 +1885,60 @@
                 } else {
                     counter.style.display = 'none';
                     document.getElementById('create-invoice-btn-services').disabled = true;
+                }
+            }
+
+            function updateClearanceUI() {
+                const discountInput = document.getElementById('discount-clearance');
+                const discountAmountInput = document.getElementById('discount-amount-clearance');
+                const selectedCheckbox = Array.from(clearanceCheckboxes).find(cb => cb.checked);
+
+                // Get transaction items amount and tax from data attributes
+                let amountBeforeTax = 0;
+                let transactionTaxAmount = 0;
+
+                if (selectedCheckbox) {
+                    amountBeforeTax = parseFloat(selectedCheckbox.dataset.itemsAmount) || 0;
+                    transactionTaxAmount = parseFloat(selectedCheckbox.dataset.itemsTax) || 0;
+                }
+
+                discountInput.addEventListener('input', function() {
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (!isNaN(inputValue) && inputValue >= 0) {
+                        const discountValue = (inputValue / 100) * amountBeforeTax;
+                        discountAmountInput.value = discountValue.toFixed(2);
+                    }
+                    updateUI();
+                });
+
+                discountAmountInput.addEventListener('input', function() {
+                    const inputValue = parseFloat(this.value) || 0;
+                    if (amountBeforeTax > 0 && !isNaN(inputValue) && inputValue >= 0) {
+                        const discountPercent = (inputValue / amountBeforeTax) * 100;
+                        discountInput.value = Math.min(discountPercent, 100).toFixed(2);
+                    }
+                    updateUI();
+                });
+
+                const discountValue = parseFloat(discountAmountInput.value || 0);
+                const amountAfterDiscount = amountBeforeTax - discountValue;
+                const tax = transactionTaxAmount;
+                const total = amountAfterDiscount + tax;
+
+                document.getElementById('amount-before-tax-clearance').textContent = amountBeforeTax.toFixed(2) +
+                    ' ر.س';
+                document.getElementById('discount-value-clearance').textContent = discountValue.toFixed(2) + ' ر.س';
+                document.getElementById('amount-after-discount-clearance').textContent = amountAfterDiscount
+                    .toFixed(2) + ' ر.س';
+                document.getElementById('tax-amount-clearance').textContent = tax.toFixed(2) + ' ر.س';
+                document.getElementById('total-amount-clearance').textContent = total.toFixed(2) + ' ر.س';
+
+                // Enable button only if exactly one transaction is selected
+                const selectedCount = Array.from(clearanceCheckboxes).filter(cb => cb.checked).length;
+                if (selectedCount === 1) {
+                    document.getElementById('create-invoice-btn-clearance').disabled = false;
+                } else {
+                    document.getElementById('create-invoice-btn-clearance').disabled = true;
                 }
             }
 
@@ -1295,19 +1997,47 @@
                 });
             }
 
+            // Event listeners for Clearance - Only one transaction can be selected at a time
+            clearanceCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Uncheck all other clearance checkboxes
+                        clearanceCheckboxes.forEach(checkbox => {
+                            if (checkbox !== this) {
+                                checkbox.checked = false;
+                            }
+                        });
+                    }
+                    updateUI();
+                });
+            });
+
+            // Update preview when discount changes for clearance invoice
+            const discountClearance = document.getElementById('discount-clearance');
+            const discountAmountClearance = document.getElementById('discount-amount-clearance');
+            if (discountClearance) {
+                discountClearance.addEventListener('input', calculateClearancePreviewDiscount);
+            }
+            if (discountAmountClearance) {
+                discountAmountClearance.addEventListener('input', calculateClearancePreviewDiscount);
+            }
+
             // Discount and Tax rate changes
-            ['discount-storage', 
-                'discount-amount-storage', 
-                'tax-rate-storage', 
-                'discount-shipping', 
-                'discount-amount-shipping', 
-                'tax-rate-shipping', 
+            ['discount-storage',
+                'discount-amount-storage',
+                'tax-rate-storage',
+                'discount-shipping',
+                'discount-amount-shipping',
+                'tax-rate-shipping',
                 'discount-combined',
                 'discount-amount-combined',
                 'tax-rate-combined',
                 'discount-services',
                 'discount-amount-services',
-                'tax-rate-services'
+                'tax-rate-services',
+                'discount-clearance',
+                'discount-amount-clearance',
+                'tax-rate-clearance',
             ].forEach(id => {
                 const elem = document.getElementById(id);
                 if (elem) {

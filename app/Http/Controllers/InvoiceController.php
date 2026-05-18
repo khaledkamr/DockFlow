@@ -19,6 +19,7 @@ use App\Models\InvoiceStatement;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryLine;
 use App\Models\Policy;
+use App\Models\Product;
 use App\Models\ShippingPolicy;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -827,6 +828,8 @@ class InvoiceController extends Controller
 
     public function createUnifiedInvoice(Request $request) {
         $customers = Customer::all(); 
+        $products = Product::all();
+        $payment_methods = ['آجل', 'كاش', 'شيك', 'تحويل بنكي'];
         $invoiceType = $request->input('type');
         $customer_id = $request->input('customer_id');
 
@@ -916,6 +919,8 @@ class InvoiceController extends Controller
 
         return view('pages.invoices.create_unified_invoice', compact(
             'customers', 
+            'products',
+            'payment_methods',
             'containers', 
             'shippingPolicies', 
             'invoiceType', 
@@ -933,6 +938,7 @@ class InvoiceController extends Controller
         $amountBeforeTax = 0;
         $containerData = [];
         $shippingPolicyData = [];
+        $productData = [];
 
         // Handle storage invoices
         if ($invoiceType === 'تخزين' || $invoiceType === 'تخزين و شحن') {
@@ -985,6 +991,21 @@ class InvoiceController extends Controller
             }
         }
 
+        // Handle accounting invoices 
+        if ($invoiceType == 'محاسبية') {
+            // return $request;
+            foreach($request->input('products', []) as $product) {
+                $amountBeforeTax += $product['price'] * $product['quantity'];
+                $productData[$product['product_id']] = [
+                    'quantity' => $product['quantity'],
+                    'price' => $product['price'],
+                    'tax' => $product['tax'],
+                    'price_after_tax' => $product['price_after_tax'],
+                    'total' => $product['total'],
+                ];
+            }
+        }
+
         if($amountBeforeTax <= 0 && $request->invoice_type != 'مسودة') {
             return redirect()->back()->with('error', 'لا يمكن إنشاء فاتورة بقيمة صفرية، يرجى التأكد من أسعار التخزين والشحن والخدمات.');
         }
@@ -995,7 +1016,7 @@ class InvoiceController extends Controller
         $tax = $amountAfterDiscount * ($tax_rate_percent / 100);
         $totalAmount = $amountAfterDiscount + $tax;
 
-        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData, $shippingPolicyData, $invoiceType) {
+        return DB::transaction(function () use ($request, $amountBeforeTax, $amountAfterDiscount, $tax, $totalAmount, $tax_rate_percent, $containerData, $shippingPolicyData, $productData, $invoiceType) {
             $validated = $request->validated();
             if($request->invoice_type == 'مسودة') {
                 $validated['status'] = 'مسودة';
@@ -1008,8 +1029,11 @@ class InvoiceController extends Controller
                 'amount_before_tax' => $amountBeforeTax,
                 'tax_rate' => $tax_rate_percent,
                 'tax' => $tax,
+                'discount' => $request->discount ?? 0,
+                'discount_amount' => $request->discount_amount ?? 0,
                 'amount_after_discount' => $amountAfterDiscount,
                 'total_amount' => $totalAmount,
+                'notes' => $request->notes ?? '',
             ]));
 
             // Attach containers if applicable
@@ -1022,11 +1046,15 @@ class InvoiceController extends Controller
                 $invoice->shippingPolicies()->attach($shippingPolicyData);
             }
 
-            $typeLabel = $invoiceType === 'تخزين و شحن' ? 'فاتورة مدمجة (تخزين و شحن)' : ($invoiceType === 'تخزين' ? 'فاتورة تخزين' : 'فاتورة شحن');
-            logActivity('إنشاء فاتورة', "تم إنشاء $typeLabel رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+            // Attach products if applicable
+            if (!empty($productData)) {
+                $invoice->products()->attach($productData);
+            }
 
-            // Determine appropriate route based on invoice type
-            $routeName = ($invoiceType === 'تخزين') ? 'invoices.unified.details' : (($invoiceType === 'شحن') ? 'invoices.unified.details' : 'invoices.unified.details');
+            $typeLabel = $invoiceType === 'تخزين و شحن' ? 'مدمجة (تخزين و شحن)' : $invoiceType;
+            logActivity('إنشاء فاتورة', "تم إنشاء فاتورة $typeLabel رقم " . $invoice->code . " للعميل " . $invoice->customer->name, null, $invoice->toArray());
+
+            $routeName = 'invoices.unified.details';
 
             return redirect()->back()->with('success', 'تم إنشاء فاتورة جديدة بنجاح, <a class="text-white fw-bold" href="'.route($routeName, $invoice).'">عرض الفاتورة</a>');
         });  

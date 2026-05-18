@@ -36,4 +36,10 @@ class Product extends Model
     public function made_by() {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function invoices() {
+        return $this->belongsToMany(Invoice::class, 'invoice_product')
+            ->withPivot('quantity', 'price', 'tax', 'total')
+            ->withTimestamps();
+    }
 }

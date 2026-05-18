@@ -23,6 +23,7 @@ class InvoiceRequest extends FormRequest
             'discount_amount' => 'nullable|numeric',
             'payment_method' => ['required', Rule::in(Invoice::PAYMENT_METHODS)],
             'date' => 'required|date',
+            'due_date' => 'nullable|date|after_or_equal:date',
         ];
     }
 }

@@ -686,7 +686,7 @@
                 @endcan
             @endif
 
-            @can('عرض الفواتير')
+            @if (auth()->user()->company->hasModule('مستودع'))
                 <li class="nav-item mb-1">
                     <a class="nav-link parent-link fw-semibold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['inventory*']) ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#inventory-management" role="button"
@@ -708,7 +708,7 @@
                         </a>
                     </div>
                 </li>
-            @endcan
+            @endif
 
             @can('عرض الفواتير')
                 <li class="nav-item mb-1">

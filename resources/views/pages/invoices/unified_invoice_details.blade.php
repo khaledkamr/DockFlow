@@ -1135,6 +1135,63 @@
                         </table>
                     </div>
                 </div>
+            @elseif($invoice->type == 'محاسبية')
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-dark">
+                            <i class="fas fa-boxes me-2"></i>تفاصيل المنتجات
+                        </h5>
+                    </div>
+                    <div class="table-container" id="tableContainer">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center bg-dark text-white text-nowrap">#</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">اسم المنتج</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">الكمية</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">السعر</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">الضريبة</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($invoice->products->sortBy('id') as $product)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $loop->iteration }}</td>
+                                        <td class="text-center fw-bold" style="min-width: 200px">
+                                            {{ $product->name_ar }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ number_format($product->pivot->quantity, 2) }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ number_format($product->pivot->price, 2) }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ number_format($product->pivot->tax, 2) }}
+                                        </td>
+                                        <td class="text-center fw-bold">
+                                            <small>{{ number_format($product->pivot->total, 2) }}</small>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr class="table-secondary">
+                                    <td colspan="2" class="text-center fw-bold">الإجمالي</td>
+                                    <td class="text-center fw-bold">
+                                        {{ number_format($invoice->products->sum('pivot.quantity'), 2) }}</td>
+                                    <td class="text-center fw-bold">
+                                        {{ number_format($invoice->products->sum('pivot.price'), 2) }}</td>
+                                    <td class="text-center fw-bold">
+                                        {{ number_format($invoice->products->sum('pivot.tax'), 2) }}</td>
+                                    <td class="text-center fw-bold">
+                                        {{ number_format($invoice->products->sum('pivot.total'), 2) }} 
+                                        <i data-lucide="saudi-riyal"></i></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             @endif
 
             <!-- Summary Section -->
