@@ -688,6 +688,30 @@
 
             @can('عرض الفواتير')
                 <li class="nav-item mb-1">
+                    <a class="nav-link parent-link fw-semibold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['inventory*']) ? '' : 'collapsed' }}"
+                        data-bs-toggle="collapse" href="#inventory-management" role="button"
+                        aria-expanded="{{ request()->routeIs(['inventory*']) ? 'true' : 'false' }}"
+                        aria-controls="inventory-management">
+                        <i class="fa-solid fa-warehouse ms-2 me-2"></i> المخــــــــــــــــزون
+                    </a>
+                    <div class="collapse bg-body-secondary rounded mx-2 mt-1 {{ request()->routeIs(['inventory*']) ? 'show' : '' }}"
+                        id="inventory-management">
+                        <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                            style="{{ request()->routeIs('inventory.categories') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                            href="{{ route('inventory.categories') }}">
+                            <i class="fa-solid fa-layer-group ms-2 me-2"></i> الفئــــــات
+                        </a>
+                        <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
+                            style="{{ request()->routeIs('inventory.products') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                            href="{{ route('inventory.products') }}">
+                            <i class="fa-solid fa-box ms-2 me-2"></i> المنتجـــات
+                        </a>
+                    </div>
+                </li>
+            @endcan
+
+            @can('عرض الفواتير')
+                <li class="nav-item mb-1">
                     <a class="nav-link parent-link fw-semibold rounded px-3 py-2 text-dark position-relative {{ request()->routeIs(['invoices*']) ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#invoice-management" role="button"
                         aria-expanded="{{ request()->routeIs(['invoices*']) ? 'true' : 'false' }}"

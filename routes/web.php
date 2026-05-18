@@ -13,6 +13,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseInvoiceController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PolicyController;
 use App\Http\Controllers\SearchController;
@@ -358,6 +359,17 @@ Route::controller(CostCenterController::class)->middleware('auth')->group(functi
     Route::post('accounting/cost-centers/store', 'storeCostCenter')->name('cost.centers.store');
     Route::put('accounting/cost-centers/update/{costCenter:id}', 'updateCostCenter')->name('cost.centers.update');
     Route::delete('accounting/cost-centers/delete/{costCenter:id}', 'deleteCostCenter')->name('cost.centers.delete');
+});
+
+Route::controller(InventoryController::class)->middleware('auth')->group(function () {
+    Route::get('/inventory/categories', 'categories')->name('inventory.categories');
+    Route::post('/inventory/categories/store', 'storeCategory')->name('inventory.categories.store');
+    Route::put('/inventory/categories/update/{category:uuid}', 'updateCategory')->name('inventory.categories.update');
+    Route::delete('/inventory/categories/delete/{category:uuid}', 'deleteCategory')->name('inventory.categories.delete');
+    Route::get('/inventory/products', 'products')->name('inventory.products');
+    Route::post('/inventory/products/store', 'storeProduct')->name('inventory.products.store');
+    Route::put('/inventory/products/update/{product:uuid}', 'updateProduct')->name('inventory.products.update');
+    Route::delete('/inventory/products/delete/{product:uuid}', 'deleteProduct')->name('inventory.products.delete');
 });
 
 Route::controller(ExportController::class)->middleware('auth')->group(function () {
