@@ -60,6 +60,11 @@ Route::controller(AdminController::class)->middleware('auth')->group(function ()
     Route::post('admin/companies/{company:uuid}/permissions/store', 'storeCompanyPermission')->name('admin.company.permissions.store');
     
     Route::get('admin/users', 'users')->name('admin.dashboard.users'); 
+
+    Route::get('/admin/modules', 'modules')->name('admin.modules');
+    Route::post('/admin/modules/store', 'storeModule')->name('admin.modules.store');
+    Route::put('/admin/modules/update/{module}', 'updateModule')->name('admin.modules.update');
+    Route::delete('/admin/modules/delete/{module}', 'deleteModule')->name('admin.modules.delete');
 });
 
 Route::controller(UserController::class)->middleware('auth')->group(function() {

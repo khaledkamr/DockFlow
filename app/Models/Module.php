@@ -11,4 +11,10 @@ class Module extends Model
         'slug',
         'description',
     ];
+
+    public function companies() {
+        return $this->belongsToMany(Company::class, 'company_modules')
+                    ->withPivot('is_active')
+                    ->withTimestamps();
+    }
 }

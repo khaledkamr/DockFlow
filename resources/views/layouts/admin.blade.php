@@ -423,14 +423,21 @@
                 <a class="nav-link fw-semibold rounded px-3 py-2"
                     style="{{ request()->routeIs('admin.companies') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                     href="{{ route('admin.companies') }}">
-                    <i class="fa-solid fa-building ms-2 me-2"></i> الشركات
+                    <i class="fa-solid fa-building ms-2 me-2"></i> الشركــــــــــــــــات
                 </a>
             </li>
             <li class="nav-item mb-1">
                 <a class="nav-link fw-semibold rounded px-3 py-2"
                     style="{{ request()->routeIs('admin.dashboard.users') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                     href="{{ route('admin.dashboard.users') }}">
-                    <i class="fa-solid fa-users ms-1 me-2"></i> المستخدمون
+                    <i class="fa-solid fa-users ms-1 me-2"></i> المستخدمــــــون
+                </a>
+            </li>
+            <li class="nav-item mb-1">
+                <a class="nav-link fw-semibold rounded px-3 py-2"
+                    style="{{ request()->routeIs('admin.modules') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                    href="{{ route('admin.modules') }}">
+                    <i class="fa-solid fa-layer-group ms-1 me-2"></i> مديولات النظـــام
                 </a>
             </li>
         </ul>

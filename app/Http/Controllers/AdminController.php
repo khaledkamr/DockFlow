@@ -290,4 +290,49 @@ class AdminController extends Controller
         $company->delete();
         return redirect()->route('admin.companies')->with('success', 'تم حذف الشركة بنجاح');
     }
+
+    public function modules(Request $request) {
+        $modules = Module::query();
+        $search = $request->input('search');
+
+        if($search) {
+            $modules->where('name', 'like', "%{$search}%");
+        }
+
+        $modules = $modules->paginate(100)->onEachSide(1)->withQueryString();
+
+        return view('admin.modules', compact('modules'));
+    }
+
+    public function storeModule(Request $request) {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:modules,name',
+            'slug' => 'required|string|max:255|unique:modules,slug',
+            'description' => 'nullable|string',
+        ]);
+
+        Module::create($validated);
+
+        return redirect()->back()->with('success', 'تم إضافة المديول بنجاح');
+    }
+
+    public function updateModule(Request $request, Module $module) {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:modules,name,' . $module->id,
+            'slug' => 'required|string|max:255|unique:modules,slug,' . $module->id,
+            'description' => 'nullable|string',
+        ]);
+
+        $module->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث المديول بنجاح');
+    }
+
+    public function deleteModule(Module $module) {
+        if($module->companies()->exists()) {
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا المديول لأنه مرتبط بشركات');
+        }
+        $module->delete();
+        return redirect()->back()->with('success', 'تم حذف المديول بنجاح');
+    }
 }
