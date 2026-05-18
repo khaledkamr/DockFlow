@@ -279,6 +279,19 @@ class PolicyController extends Controller
         $policy = Policy::create($validated);
         $policy->containers()->attach($containers);
 
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/receive_policies/' . $policy->id, $fileName, 'public');
+
+            $policy->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+
         $new = $policy->load('containers')->toArray();
         logActivity('إنشاء بوليصة استلام', "تم إنشاء بوليصة استلام جديدة برقم " . $policy->code, null, $new);
 
@@ -460,6 +473,19 @@ class PolicyController extends Controller
         $policy = Policy::create($validated);
         $policy->containers()->attach($policy_containers);
 
+        if($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('attachments/service_policies/' . $policy->id, $fileName, 'public');
+
+            $policy->attachments()->create([
+                'file_path' => $filePath,
+                'file_name' => $fileName,
+                'file_type' => $file->getClientMimeType(),
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+
         $new = $policy->load('containers')->toArray();
         logActivity('إنشاء بوليصة خدمات', "تم إنشاء بوليصة خدمات جديدة برقم " . $policy->code, null, $new);
 
@@ -534,10 +560,12 @@ class PolicyController extends Controller
             'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
+        $type = $policy->type == 'تخزين' ? 'storage' : ($policy->type == 'تسليم' ? 'receive' : 'services');
+
         if($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('attachments/storage_policies/' . $policy->id, $fileName, 'public');
+            $filePath = $file->storeAs("attachments/{$type}_policies/" . $policy->id, $fileName, 'public');
 
             $policy->attachments()->create([
                 'file_path' => $filePath,

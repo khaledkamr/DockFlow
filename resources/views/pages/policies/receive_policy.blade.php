@@ -10,7 +10,7 @@
 <h2 class="mb-4">إضافة بوليصة تسليم</h2>
 
 <div class="card border-0 bg-white p-4 rounded-3 shadow-sm mb-5">
-    <form action="{{ route('policies.receive.store') }}" method="POST">
+    <form action="{{ route('policies.receive.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="date" value="{{ Carbon\Carbon::now() }}">
         <input type="hidden" name="type" value="تسليم">
@@ -96,6 +96,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <h5 class="form-label">المرفقات</h5>
+                <input type="file" class="form-control border-primary" name="attachment">
+                {{-- <small class="text-muted">يمكن إرفاق ملف واحد فقط.</small> --}}
+                @error('attachment')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
         </div>
 
