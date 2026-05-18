@@ -37,7 +37,7 @@
                     عرض الفاتورة
                 </a>
             @endif
-            @if ($transaction->containers->first()->invoices->where('type', 'تخليص')->isEmpty())
+            @if ($transaction->containers()->exists() && $transaction->containers->first()->invoices->where('type', 'تخليص')->isEmpty())
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal"
                     data-bs-target="#createInvoice">
                     <i class="fas fa-scroll me-1"></i>
