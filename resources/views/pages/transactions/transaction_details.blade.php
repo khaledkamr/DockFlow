@@ -224,6 +224,11 @@
                     <div class="modal-body text-dark">
                         <div class="row g-3 mb-4">
                             <div class="col-12 col-md-6">
+                                <label class="form-label">رقم المعاملة</label>
+                                <input type="text" name="code" class="form-control border-primary"
+                                    value="{{ $transaction->code }}" required>
+                            </div>
+                            <div class="col-12 col-md-6">
                                 <label class="form-label">العميل</label>
                                 <select class="form-select border-primary" name="customer_id" required>
                                     <option disabled selected>اختر العميل...</option>

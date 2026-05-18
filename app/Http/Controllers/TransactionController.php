@@ -91,6 +91,7 @@ class TransactionController extends Controller
         $old = $transaction->toArray();
 
         $validated = $request->validate([
+            'code' => 'required|string',
             'customer_id' => 'required|exists:customers,id',
             'policy_number' => 'required|string',
             'customs_declaration' => 'nullable|string',
