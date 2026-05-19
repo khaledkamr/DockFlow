@@ -56,7 +56,7 @@ class Transaction extends Model
         static::creating(function ($transaction) {
             $year = $transaction->date ? date('Y', strtotime($transaction->date)) : date('Y');
             $prefix = 'CT';
-            $lastTransaction = self::whereYear('date', $year)->latest('id')->first();
+            $lastTransaction = self::whereYear('date', $year)->latest('code')->first();
             if ($lastTransaction && $lastTransaction->code) {
                 $lastNumber = (int) substr($lastTransaction->code, -5);
                 $newNumber = $lastNumber + 1;
