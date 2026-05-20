@@ -888,7 +888,6 @@
                                     <th class="text-center bg-dark text-white text-nowrap">رقم المعاملة</th>
                                     <th class="text-center bg-dark text-white text-nowrap">رقم الحاوية</th>
                                     <th class="text-center bg-dark text-white text-nowrap">فئة الحاوية</th>
-                                    <th class="text-center bg-dark text-white text-nowrap">تاريخ التسجيل</th>
                                     <th class="text-center bg-dark text-white text-nowrap">ملاحظات</th>
                                 </tr>
                             </thead>
@@ -910,9 +909,6 @@
                                         </td>
                                         <td class="text-center">
                                             {{ $container->containerType->name }}
-                                        </td>
-                                        <td class="text-center">
-                                            <small>{{ \Carbon\Carbon::parse($container->created_at)->format('d/m/Y') }}</small>
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">{{ $container->notes ?? '---' }}</td>
                                     </tr>
