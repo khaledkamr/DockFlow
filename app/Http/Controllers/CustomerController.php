@@ -85,6 +85,7 @@ class CustomerController extends Controller
         $old = $customer->toArray();
 
         $validated = $request->validated();
+        unset($validated['user_id']);
         $customer->update($validated);
 
         $new = $customer->toArray();

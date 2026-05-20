@@ -431,7 +431,7 @@
                                 <!-- Edit Item Modal -->
                                 <div class="modal fade" id="editItemModal{{ $item->id }}" tabindex="-1"
                                     aria-labelledby="editItemModalLabel{{ $item->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header bg-primary text-white">
                                                 <h5 class="modal-title fw-bold"
@@ -501,6 +501,13 @@
                                                             <input type="number" class="form-control border-primary"
                                                                 name="total" id="editTotal{{ $loop->index }}"
                                                                 value="{{ $item->total }}" step="1" readonly>
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="is_posted" class="form-label">حالة الترحيل</label>
+                                                            <select name="is_posted" id="editRelocationStatus{{ $loop->index }}" class="form-select border-primary">
+                                                                <option value="0" {{ $item->is_posted == 0 ? 'selected' : '' }}>غير مرحل</option>
+                                                                <option value="1" {{ $item->is_posted == 1 ? 'selected' : '' }}>مرحل</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     @if ($item->type == 'مصروف')

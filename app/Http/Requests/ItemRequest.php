@@ -23,6 +23,7 @@ class ItemRequest extends FormRequest
             'amount' => 'required|numeric|min:0',
             'tax' => 'required|numeric|min:0',
             'total' => 'required|numeric|min:0',
+            'is_posted' => 'required|boolean',
         ];
     }
 }
