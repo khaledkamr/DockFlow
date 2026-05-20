@@ -215,12 +215,12 @@ class Invoice extends Model
 
         $taxSeller = new InvoiceSeller(
             $zatcaCompany->name,
-            $zatcaCompany->vatNumber,
+            $zatcaCompany->vat,
             $zatcaCompany->crn,
             $zatcaCompany->street,
             $zatcaCompany->city,
             $zatcaCompany->sub_division,
-            $zatcaCompany->building_number,
+            $zatcaCompany->building_no,
             $zatcaCompany->plot_no,
             $zatcaCompany->postal_code
         );

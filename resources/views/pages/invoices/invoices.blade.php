@@ -128,9 +128,7 @@
                                 @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
                                     <span class="badge status-delivered"> تم الإرسال بنجاح</span>
                                 @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
-                                    <button type="button" class="badge status-danger btn-sm show_errors" data-id="{{$invoice->id}}">
-                                        تم الارسال بخطأ
-                                    </button>
+                                    <span class="badge status-danger">تم الارسال بخطأ</span>
                                 @else
                                     <span class="badge status-danger">لم يتم الارسال</span>
                                 @endif
