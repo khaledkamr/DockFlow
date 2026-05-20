@@ -193,7 +193,7 @@ if (!function_exists('getDataFromXml')) {
         // Extract required tags
         $issue_date = $invoice_xml->getElementsByTagName('IssueDate')[0]->textContent;
         $issue_time = $invoice_xml->getElementsByTagName('IssueTime')[0]->textContent;
-        $formatted_datetime = date('Y-m-d\TH:i:s\Z', strtotime("{$issue_date} {$issue_time}"));
+        $formatted_datetime = Carbon::parse("{$issue_date} {$issue_time}")->format('Y-m-d H:i:s');
 
         $invoice_total = $invoice_xml->getElementsByTagName('TaxInclusiveAmount')[0]->textContent;
         $VAT_total = 0;
