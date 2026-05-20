@@ -120,22 +120,22 @@
                             @elseif ($invoice->status == 'مسودة')
                                 <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
                             @endif
-                            @if ($invoice->zatca_status == 'sent without errors')
+                            {{-- @if ($invoice->zatca_status == 'sent without error')
                                 <td class="text-center"><span class="badge status-delivered">تم الإرسال</span></td>
                             @elseif ($invoice->zatca_status == 'not sent')
-                                {{-- <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
-                                <td class="text-center">
-                                    @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
-                                        <span class="badge status-delivered"> تم الإرسال بنجاح</span>
-                                    @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
-                                        <button type="button" class="badge status-danger btn-sm show_errors" data-id="{{$invoice->id}}">
-                                            تم الارسال بخطأ
-                                        </button>
-                                    @else
-                                        <span class="badge status-danger">لم يتم الارسال</span>
-                                    @endif
-                                </td>
-                            @endif
+                                <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
+                            <td class="text-center">
+                                @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
+                                    <span class="badge status-delivered"> تم الإرسال بنجاح</span>
+                                @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
+                                    <button type="button" class="badge status-danger btn-sm show_errors" data-id="{{$invoice->id}}">
+                                        تم الارسال بخطأ
+                                    </button>
+                                @else
+                                    <span class="badge status-danger">لم يتم الارسال</span>
+                                @endif
+                            </td>
+                            {{-- @endif --}}
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $invoice->made_by) }}"
                                     class="text-dark text-decoration-none">

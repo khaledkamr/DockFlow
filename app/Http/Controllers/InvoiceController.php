@@ -1718,7 +1718,7 @@ class InvoiceController extends Controller
             return redirect()->back()->with('success', 'تم إرسال الفاتورة بنجاح إلى الزكاة والدخل');
         } elseif ($invoice->zatca_status == 'sent with error') {
             logActivity('إرسال فاتورة إلى الزكاة والدخل', "فشل إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل");
-            return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل');
+            return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل بسبب وجود خطأ في البيانات');
         } elseif ($invoice->zatca_status == 'not sent') {
             logActivity('إرسال فاتورة إلى الزكاة والدخل', "لم يتم إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل بسبب خطأ غير متوقع");
              return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل بسبب خطأ غير متوقع');
