@@ -4,8 +4,19 @@ namespace App\Models;
 
 use App\Traits\BelongsToCompany;
 use App\Traits\HasUuid;
+use App\Zacta\InvoiceCustomer;
+use App\Zacta\InvoiceLine;
+use App\Zacta\InvoiceLineNoVat;
+use App\Zacta\InvoiceSeller;
+use App\Zacta\SimpleInvoiceCustomer;
+use App\Zacta\SimpleTaxInvoice;
+use App\Zacta\SimpleTaxInvoiceNoVat;
+use App\Zacta\TaxInvoice;
+use App\Zacta\TaxInvoiceNoVat;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Invoice extends Model
 {
@@ -148,5 +159,281 @@ class Invoice extends Model
         static::deleting(function ($model) {
             $model->attachments()->delete();
         });
+    }
+
+    public function createZatcaInvoice() {
+        $company = $this->company;
+        $zatcaCompany = $company->zatcaCompany;
+        if (!$zatcaCompany) {
+            throw new \Exception('Zatca company information is missing. Please configure it before creating a Zatca invoice.');
+        }
+
+        $env = $zatcaCompany->active_env . '_';
+        $invoiceDate = Carbon::parse($this->date);
+        $invoiceDueDate = Carbon::parse($this->due_date);
+        $counter = 1;
+        $customer = $this->customer;
+        $isInternational = $customer->country !== $zatcaCompany->country;
+        $path = app_path('Zacta/signed_properties_template.php');
+
+        if(empty(trim($customer->name)) || empty(trim($customer->vatNumber)) || empty(trim($customer->street)) || empty(trim($customer->city)) || empty(trim($customer->district)) || empty(trim($customer->building_number)) || empty(trim($customer->postal_code))) {
+            throw new \Exception('Customer information is incomplete. Please ensure name, VAT number, street, city, district, building number, and postal code are provided.');
+        }
+
+        $customerClass = $customer->type == 'شركة' ? InvoiceCustomer::class : SimpleInvoiceCustomer::class;
+        $taxCustomer = new $customerClass(
+            $customer->name,
+            $customer->vatNumber,
+            $customer->street,
+            $customer->city,
+            $customer->district,
+            $customer->building_number,
+            $customer->secondary_number,
+            $customer->postal_code
+        );
+
+        if($customer->type == 'شركة') {
+            $invoiceClass = $isInternational ? TaxInvoiceNoVat::class : TaxInvoice::class;
+        } else {
+            $invoiceClass = $isInternational ? SimpleTaxInvoiceNoVat::class : SimpleTaxInvoice::class;
+        }
+
+        $taxInvoice = new $invoiceClass(
+            $this->code,
+            $invoiceDate->format('Y/m/d'),
+            $invoiceDate->format('H:i:s'),
+            $counter + 1,
+            $invoiceDueDate
+        );
+
+        $taxSeller = new InvoiceSeller(
+            $zatcaCompany->name,
+            $zatcaCompany->vatNumber,
+            $zatcaCompany->crn,
+            $zatcaCompany->street,
+            $zatcaCompany->city,
+            $zatcaCompany->sub_division,
+            $zatcaCompany->building_number,
+            $zatcaCompany->plot_no,
+            $zatcaCompany->postal_code
+        );
+
+        $taxInvoice->setCustomer($taxCustomer);
+        $taxInvoice->setSeller($taxSeller);
+
+        $invoiceLineClass = $isInternational ? InvoiceLineNoVat::class : InvoiceLine::class;
+
+        if ($this->type == 'تخزين') {
+            foreach ($this->containers as $container) {
+                $itemName = 'storage service for container ' . $container->code;
+                $uom = 'PCE';
+
+                $taxInvoice->addInvoiceLine(new $invoiceLineClass(
+                    $itemName,
+                    $container->pivot->amount,
+                    1,
+                    15.00,
+                    $uom
+                ));
+            }
+        } elseif ($this->type == 'شحن') {
+            foreach ($this->shippingPolicies as $policy) {
+                $itemName = 'shipping service from' . $policy->from . ' to ' . $policy->to;
+                $uom = 'PCE';
+
+                $taxInvoice->addInvoiceLine(new $invoiceLineClass(
+                    $itemName,
+                    $policy->pivot->amount,
+                    1,
+                    15.00,
+                    $uom
+                ));
+            }
+        } elseif ($this->type == 'خدمات') {
+            foreach ($this->containers as $container) {
+                $itemName = $container->services->first()->description . ' for container ' . $container->code;
+                $uom = 'PCE';
+
+                $taxInvoice->addInvoiceLine(new $invoiceLineClass(
+                    $itemName,
+                    $container->services->first()->pivot->price,
+                    1,
+                    15.00,
+                    $uom
+                ));
+            }
+        } elseif ($this->type == 'تخليص') {
+            foreach ($this->clearanceInvoiceItems->sortBy('number') as $item) {
+                $itemName = $item->description;
+                $uom = 'PCE';
+
+                $taxInvoice->addInvoiceLine(new $invoiceLineClass(
+                    $itemName,
+                    $item->amount,
+                    1,
+                    15.00,
+                    $uom
+                ));
+            }
+        } elseif ($this->type == 'تخزين و شحن') {
+            // Storage lines
+            foreach ($this->containers as $container) {
+                $storageItemName = 'storage service for container ' . $container->code;
+                $storageUom = 'PCE';
+
+                $taxInvoice->addInvoiceLine(new $invoiceLineClass(
+                    $storageItemName,
+                    $container->pivot->amount,
+                    1,
+                    15.00,
+                    $storageUom
+                ));
+            }
+
+            // Shipping lines
+            foreach ($container->shippingPolicies as $policy) {
+                $shippingItemName = 'shipping service from' . $policy->from . ' to ' . $policy->to;
+                $shippingUom = 'PCE';
+
+                $taxInvoice->addInvoiceLine(new $invoiceLineClass(
+                    $shippingItemName,
+                    $policy->pivot->amount,
+                    1,
+                    15.00,
+                    $shippingUom
+                ));
+            }
+        }
+
+        $taxInvoice->privateKey = $zatcaCompany->{$env . 'private_key'};
+        $taxInvoice->certificate = $zatcaCompany->{$env . 'cert'};
+        $preHash = $zatcaCompany->{$env . 'last_hash'};
+        $taxInvoice->processInvoice($preHash, $path);
+
+        $this->load('zatcaInvoice');
+        $zatkaInvoice = $this->zatcaInvoice;
+
+        DB::transaction(function () use ($zatcaCompany, $counter, $env, $taxInvoice, $preHash, $zatkaInvoice) {
+            $zatcaCompany->update([
+                $env . 'invoice_counter' => $counter + 1,
+                $env . 'last_hash' => $taxInvoice->hash
+            ]);
+            $finalXML = $taxInvoice->getFinalXML();
+            if(is_null($zatkaInvoice)){
+                $this->zatcaInvoice()->create([
+                    'invoice_uuid' => $taxInvoice->uuid,
+                    'invoice_hash' => $taxInvoice->hash,
+                    'pre_hash' => $preHash,
+                    'request_xml' => $finalXML,
+                    'encoded_xml' => $taxInvoice->encodedInvoice,
+                    'qr_data' => $taxInvoice->qr
+                ] + (getDataFromXml($finalXML) ?? []));
+            }else{
+                $zatkaInvoice->update([
+                    'invoice_uuid' => $taxInvoice->uuid,
+                    'invoice_hash' => $taxInvoice->hash,
+                    'pre_hash' => $preHash,
+                    'request_xml' => $finalXML,
+                    'encoded_xml' => $taxInvoice->encodedInvoice,
+                    'qr_data' => $taxInvoice->qr
+                ] + (getDataFromXml($finalXML) ?? []));
+            }
+        });
+
+        $this->load('zatcaInvoice');
+        $taxInvoice->zactaInvoice = $this->zatcaInvoice;
+        // dd($taxInvoice);
+        return $taxInvoice;
+    }
+
+    public function submit_invoice() {
+        $customer = $this->customer;
+        $invoice = $this;
+        $taxInvoice = $invoice->createZatcaInvoice();
+        $company = $invoice->company;
+        $zatcaCompany = $company->zatcaCompany;
+
+        $simUrl = "https://gw-fatoora.zatca.gov.sa/e-invoicing/simulation/invoices/clearance/single";
+        $proUrl = "https://gw-fatoora.zatca.gov.sa/e-invoicing/core/invoices/clearance/single";
+        $simSimpleUrl = "https://gw-fatoora.zatca.gov.sa/e-invoicing/simulation/invoices/reporting/single";
+        $proSimpleUrl = "https://gw-fatoora.zatca.gov.sa/e-invoicing/core/invoices/reporting/single";
+        $url = $proUrl;
+
+        if ($customer->type == 'فرد') {
+            $url = $proSimpleUrl;
+        }
+
+        if (is_null($zatcaCompany)) {
+            throw new \Exception('Zatca company information is missing. Please configure it before submitting a Zatca invoice.');
+        }
+
+        $env = $zatcaCompany->active_env . '_';
+        if ($env == 'sim_') {
+            if ($customer->type == 'فرد') {
+                $url = $simSimpleUrl;
+            } else {
+                $url = $simUrl;
+            }
+        }
+
+        try {
+            $response = TaxInvoice::submitSinvoice($zatcaCompany->{$env . 'user_name'}, $zatcaCompany->{$env . 'user_secret'}, $url, $taxInvoice->hash, $taxInvoice->uuid, $taxInvoice->encodedInvoice);
+            $body = $response->json();
+            $bodyRaw = $response->body();
+            Log::error('zatca submit invoice body',[$bodyRaw]);
+            if (!is_null($body)) {
+                $records_from_xml = getDataFromXml($taxInvoice->zactaInvoice->request_xml) ?? [];
+                $invoice_amount = abs($this->invoice_amount);
+                $diff_invoice_amount = round($invoice_amount - abs($this->invoice_vat_amount) - $records_from_xml['invoice_amount'], 2);
+                $diff_invoice_vat_amount = round(abs($this->invoice_vat_amount) - $records_from_xml['invoice_vat_amount'], 2);
+                $diff_invoice_total = round($invoice_amount - $records_from_xml['invoice_total'], 2);
+                $diff_status = $diff_invoice_amount > 0 || $diff_invoice_vat_amount > 0 || $diff_invoice_total > 0;
+
+                $invoice->update([
+                    'zatca_status' => $body['clearanceStatus'] == 'NOT_CLEARED' ? 'sent with error' : 'sent without error',
+                ]);
+
+                $taxInvoice = $taxInvoice->zactaInvoice->update([
+                        'status' => $body['clearanceStatus'],
+                        'response_log' => $bodyRaw,
+                        'request_date' => Carbon::now()
+                    ] +
+                    [
+                        'diff_invoice_amount' => $diff_invoice_amount,
+                        'diff_invoice_vat_amount' => $diff_invoice_vat_amount,
+                        'diff_invoice_total' => $diff_invoice_total,
+                        'diff_status' => $diff_status,
+                    ]);
+            } else {
+                if ($response->unauthorized()) {
+                    $taxInvoice = $taxInvoice->zactaInvoice->update([
+                        'response_log' => json_encode(["validationResults" => [
+                            "errorMessages" => [["message" => "Unauthorized"]],
+                            "warningMessages" => []
+                        ]]),
+                        'request_date' => Carbon::now()
+                    ]);
+                } else {
+                    $taxInvoice = $taxInvoice->zactaInvoice->update([
+                        'response_log' => json_encode(["validationResults" => [
+                            "errorMessages" => [["message" => $response->status()]],
+                            "warningMessages" => []
+                        ]
+                        ]),
+                        'request_date' => Carbon::now()
+                    ]);
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error('zatca submit invoice', [$e]);
+            $invoice->update(['zatca_status' => 'sent with error']);
+            $taxInvoice = $taxInvoice->zactaInvoice->update([
+                'response_log' => json_encode(["validationResults" => [
+                    "errorMessages" => [["message" => $e->getMessage()]],
+                    "warningMessages" => []
+                ]]),
+                'response_date' => Carbon::now(),
+            ]);
+        }
     }
 }

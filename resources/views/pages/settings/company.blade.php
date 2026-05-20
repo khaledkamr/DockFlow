@@ -162,6 +162,84 @@
         </form>
     </div>
 
+    @if ($company->zatcaCompany)
+        <div class="card border-0 shadow-sm bg-white p-3 p-md-4 mb-4">
+            <h3 class="mb-4">بيانات Zatca</h3>
+            <form action="{{ route('company.update.zatca', $company) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="mb-3 bg-light p-3 rounded">
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">الرقم الضريبي</label>
+                            <input type="text" name="vat" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->vat ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">السجل التجاري</label>
+                            <input type="text" name="crn" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->crn ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">المدينة</label>
+                            <input type="text" name="city" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->city ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">الحي</label>
+                            <input type="text" name="district" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->sub_division ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">الشارع</label>
+                            <input type="text" name="street" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->street ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">رقم المبنى</label>
+                            <input type="text" name="building_number" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->building_no ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">الرقم الفرعي</label>
+                            <input type="text" name="secondary_number" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->plot_no ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">الرمز البريدي</label>
+                            <input type="text" name="postal_code" class="form-control border-primary"
+                                value="{{ $company->zatcaCompany->postal_code ?? '' }}">
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <label class="form-label">البيئة</label>
+                            <select name="active_env" class="form-select border-primary">
+                                <option value="pro" {{ $company->zatcaCompany->active_env == 'pro' ? 'selected' : '' }}>Production</option>
+                                <option value="sim" {{ $company->zatcaCompany->active_env == 'sim' ? 'selected' : '' }}>Simulation</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary fw-bold" id="submit-btn">
+                    حفظ البيانات
+                </button>
+            </form>
+        </div>
+    @else
+        <div class="card border-0 shadow-sm bg-white p-3 p-md-4 mb-4">
+            <h3 class="mb-4">بيانات Zatca</h3>
+            <div class="text-center py-4">
+                <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                <p class="text-muted">لم يتم إضافة بيانات Zatca بعد</p>
+                <form action="{{ route('company.add.zatca', $company) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>إضافة بيانات Zatca
+                    </button>
+                </form>
+            </div>
+        </div>
+    @endif
+
     <div class="card border-0 shadow-sm bg-white p-3 p-md-4 mb-4">
         <div
             class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">

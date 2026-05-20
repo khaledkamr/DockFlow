@@ -190,4 +190,46 @@ class CompanyController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف رقم البنك بنجاح');
     }
+
+    public function addZatcaCompany(Request $request, Company $company) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $company->zatcaCompany()->create([
+            'company_group_id' => 1,
+            'vat' => $company->vatNumber ?? '',
+            'crn' => $company->CR ?? '',
+            'street' => $company->address ? $company->address->street : '',
+            'city' => $company->address ? $company->address->city : '',
+            'sub_division' => $company->address ? $company->address->district : '',
+            'building_no' => $company->address ? $company->address->building_number : '',
+            'plot_no' => $company->address ? $company->address->secondary_number : '',
+            'postal_code' => $company->address ? $company->address->postal_code : '',
+        ]);
+
+        return redirect()->back()->with('success', 'تم إضافة بيانات zatca بنجاح');
+    }
+
+    public function updateZatcaCompany(Request $request, Company $company) {
+        if(Gate::denies('تعديل بيانات الشركة')) {
+            return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بيانات الشركة');
+        }
+
+        $validated = $request->validate([
+            'vat' => 'required|string|max:50',
+            'crn' => 'required|string|max:50',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'sub_division' => 'required|string|max:100',
+            'building_no' => 'required|string|max:50',
+            'plot_no' => 'required|string|max:50',
+            'postal_code' => 'required|string|max:20',
+            'active_env' => 'required|in:pro,sim',
+        ]);
+
+        $company->zatcaCompany()->update($validated);
+
+        return redirect()->back()->with('success', 'تم تحديث بيانات zatca بنجاح');
+    }
 }

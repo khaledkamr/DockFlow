@@ -1703,4 +1703,27 @@ class InvoiceController extends Controller
 
         return redirect()->back()->with('success', 'تم حذف ' . $typeLabel . ' بنجاح');
     }
+
+    // ------------------------ Zatca Methods ------------------------
+
+    public function sendZatcaInvoice(Invoice $invoice) {
+        if($invoice->zatca_status == 'sent without error') {
+            return redirect()->back()->with('error', 'هذه الفاتورة تم إرسالها مسبقاً إلى الزكاة والدخل');
+        }
+
+        $invoice->submit_invoice();
+
+        if ($invoice->zatca_status == 'sent without error') {
+            logActivity('إرسال فاتورة إلى الزكاة والدخل', "تم إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل");
+            return redirect()->back()->with('success', 'تم إرسال الفاتورة بنجاح إلى الزكاة والدخل');
+        } elseif ($invoice->zatca_status == 'sent with error') {
+            logActivity('إرسال فاتورة إلى الزكاة والدخل', "فشل إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل");
+            return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل');
+        } elseif ($invoice->zatca_status == 'not sent') {
+            logActivity('إرسال فاتورة إلى الزكاة والدخل', "لم يتم إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل بسبب خطأ غير متوقع");
+             return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل بسبب خطأ غير متوقع');
+        }
+
+        return redirect()->back()->with('error', 'حدث خطأ غير متوقع أثناء إرسال الفاتورة إلى الزكاة والدخل');
+    }
 }

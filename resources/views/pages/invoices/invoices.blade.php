@@ -123,7 +123,18 @@
                             @if ($invoice->zatca_status == 'sent without errors')
                                 <td class="text-center"><span class="badge status-delivered">تم الإرسال</span></td>
                             @elseif ($invoice->zatca_status == 'not sent')
-                                <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td>
+                                {{-- <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
+                                <td class="text-center">
+                                    @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
+                                        <span class="badge status-delivered"> تم الإرسال بنجاح</span>
+                                    @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
+                                        <button type="button" class="badge status-danger btn-sm show_errors" data-id="{{$invoice->id}}">
+                                            تم الارسال بخطأ
+                                        </button>
+                                    @else
+                                        <span class="badge status-danger">لم يتم الارسال</span>
+                                    @endif
+                                </td>
                             @endif
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $invoice->made_by) }}"
@@ -132,10 +143,12 @@
                                 </a>
                             </td>
                             <td class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                <a href="" class="btn btn-sm btn-outline-primary">
-                                    <span class="d-none d-sm-inline">إرسال</span>
-                                    <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
-                                </a>
+                                @if ($invoice->zatca_status !== 'sent without error')
+                                    <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-sm btn-outline-primary">
+                                        <span class="d-none d-sm-inline">إرسال</span>
+                                        <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
+                                    </a>
+                                @endif
 
                                 <a href="{{ route('invoices.unified.details', $invoice) }}" class="btn btn-sm btn-primary">
                                     <span class="d-none d-sm-inline">عرض</span>

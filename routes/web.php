@@ -243,6 +243,9 @@ Route::controller(CompanyController::class)->middleware('auth')->group(function 
     Route::post('companies/add-account-number/{company:uuid}', 'storeBankNumber')->name('companies.store.bank');
     Route::put('companies/update-account-number/{bankAccountId}', 'updateBankNumber')->name('companies.update.bank');
     Route::delete('companies/delete-account-number/{bankAccountId}', 'deleteBankNumber')->name('companies.delete.bank');
+    
+    Route::post('/company/{company:uuid}/add-zatca', 'addZatcaCompany')->name('company.add.zatca');
+    Route::put('/company/{company:uuid}/update-zatca', 'updateZatcaCompany')->name('company.update.zatca');
 });
 
 Route::controller(ContractController::class)->middleware('auth')->group(function () {
@@ -304,6 +307,8 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
     Route::get('invoices/notes/{note:uuid}', 'noteDetails')->name('invoices.notes.details');
     Route::patch('invoices/notes/update/{note:uuid}', 'updateNote')->name('invoices.notes.update');
     Route::delete('invoices/notes/delete/{note:uuid}', 'deleteNote')->name('invoices.notes.delete');
+
+    Route::get('invoices/{invoice:uuid}/send/zatca', 'sendZatcaInvoice')->name('invoices.send.zatca');
 });
 
 Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(function () {

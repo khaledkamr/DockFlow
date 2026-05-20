@@ -35,6 +35,7 @@ class InvoiceCustomer
                 <cbc:RegistrationName>@NAME@</cbc:RegistrationName>
             </cac:PartyLegalEntity>
         </cac:Party>';
+        
     public function __construct($name,$vat,$street,$city,$subDivision,$building,$plot,$postal)
     {
         $this->name = htmlspecialchars(trim($name), ENT_XML1, 'UTF-8');

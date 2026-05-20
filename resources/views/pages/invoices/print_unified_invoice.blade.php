@@ -15,7 +15,7 @@
 
 <!-- Invoice and Customer Details -->
 <div class="row g-3 mb-4">
-    <div class="col-md-6">
+    <div class="col-sm-6">
         <div class="border border-dark rounded-3 p-3 bg-light h-100">
             <h6 class="fw-bold text-dark mb-3 pb-2 border-bottom border-2">بيانات العميل</h6>
             <div class="row">
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-sm-6">
         <div class="border border-dark rounded-3 p-3 bg-light h-100">
             <div class="d-flex align-items-center gap-3">
                 <div class="flex-grow-1">
