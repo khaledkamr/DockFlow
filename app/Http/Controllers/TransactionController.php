@@ -163,9 +163,9 @@ class TransactionController extends Controller
         if(Gate::denies('تعديل بند في المعاملة')) {
             return redirect()->back()->with('error', 'ليس لديك صلاحية تعديل بند في المعاملة');
         }
-        if($item->transaction->containers()->exists() && $item->transaction->containers->first()->invoices->where('type', 'تخليص')->first()) {
-            return redirect()->back()->with('error', 'لا يمكن تعديل بند من معاملة تم إصدار فاتورة لها');
-        }
+        // if($item->transaction->containers()->exists() && $item->transaction->containers->first()->invoices->where('type', 'تخليص')->first()) {
+        //     return redirect()->back()->with('error', 'لا يمكن تعديل بند من معاملة تم إصدار فاتورة لها');
+        // }
 
         $old = $item->toArray();
         $validated = $request->validated();
