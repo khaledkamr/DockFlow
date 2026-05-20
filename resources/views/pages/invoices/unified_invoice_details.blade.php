@@ -544,7 +544,7 @@
 
                     @if ($invoice->status == 'لم يتم الدفع')
                         <span class="badge bg-primary fs-6 px-3 py-2">
-                            <i class="fas fa-calendar me-1"></i>موعد السداد: {{ \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') }}
+                            <i class="fas fa-calendar me-1"></i>تاريخ الاستحقاق: {{ \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') }}
                         </span>
                         @if ($invoice->lateDays > 0)
                             <span class="badge bg-danger fs-6 px-3 py-2">
@@ -556,6 +556,12 @@
 
                 <!-- Invoice Actions -->
                 <div class="d-flex flex-column flex-sm-row gap-2">
+                    @if ($invoice->zatcaInvoice)
+                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" target="_blank"
+                            class="btn btn-outline-primary">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>فاتورة zatca
+                        </a>
+                    @endif
                     <a href="{{ route('invoices.unified.print', $invoice) }}" target="_blank"
                         class="btn btn-outline-primary">
                         <i class="fas fa-print me-2"></i>طباعة الفاتورة

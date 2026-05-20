@@ -271,11 +271,11 @@ class Invoice extends Model
             }
         } elseif ($this->type == 'تخليص') {
             foreach ($this->clearanceInvoiceItems->sortBy('number') as $item) {
-                $itemName = $item->description;
+                $invoiceLineClass = $item->tax > 0 ? InvoiceLine::class : InvoiceLineNoVat::class;
                 $uom = 'PCE';
 
                 $taxInvoice->addInvoiceLine(new $invoiceLineClass(
-                    $itemName,
+                    $item->description,
                     $item->amount,
                     1,
                     15.00,
