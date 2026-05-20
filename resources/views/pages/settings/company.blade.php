@@ -187,7 +187,7 @@
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">الحي</label>
-                            <input type="text" name="district" class="form-control border-primary"
+                            <input type="text" name="sub_division" class="form-control border-primary"
                                 value="{{ $company->zatcaCompany->sub_division ?? '' }}">
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
@@ -197,12 +197,12 @@
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">رقم المبنى</label>
-                            <input type="text" name="building_number" class="form-control border-primary"
+                            <input type="text" name="building_no" class="form-control border-primary"
                                 value="{{ $company->zatcaCompany->building_no ?? '' }}">
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <label class="form-label">الرقم الفرعي</label>
-                            <input type="text" name="secondary_number" class="form-control border-primary"
+                            <input type="text" name="plot_no" class="form-control border-primary"
                                 value="{{ $company->zatcaCompany->plot_no ?? '' }}">
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
