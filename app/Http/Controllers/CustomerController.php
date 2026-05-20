@@ -23,6 +23,10 @@ class CustomerController extends Controller
             $customers->whereHas('contract');
         } elseif($type === 'without_contracts') {
             $customers->whereDoesntHave('contract');
+        } elseif($type === 'companies') {
+            $customers->where('type', 'شركة');
+        } elseif($type === 'individuals') {
+            $customers->where('type', 'فرد');
         }
 
         if($search) {

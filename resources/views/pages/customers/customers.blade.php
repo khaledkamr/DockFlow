@@ -53,9 +53,14 @@
                     <option value="with_contracts" {{ request()->query('type') === 'with_contracts' ? 'selected' : '' }}>
                         عملاء بعقود
                     </option>
-                    <option value="without_contracts"
-                        {{ request()->query('type') === 'without_contracts' ? 'selected' : '' }}>
+                    <option value="without_contracts" {{ request()->query('type') === 'without_contracts' ? 'selected' : '' }}>
                         عملاء بدون عقود
+                    </option>
+                    <option value="companies" {{ request()->query('type') === 'companies' ? 'selected' : '' }}>
+                        عملاء شركات
+                    </option>
+                    <option value="individuals" {{ request()->query('type') === 'individuals' ? 'selected' : '' }}>
+                        عملاء أفراد
                     </option>
                 </select>
                 @if (request()->query('search'))

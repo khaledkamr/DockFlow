@@ -522,11 +522,11 @@
                                 <td>{{ $invoice->payment_method }}</td>
                                 <td>
                                     @if ($invoice->status === 'تم الدفع')
-                                        <span class="badge status-available">مسددة</span>
+                                        <span class="badge status-delivered">مسددة</span>
                                     @elseif ($invoice->status === 'تم الدفع جزئياً')
                                         <span class="badge status-waiting">مسددة جزئياً</span>
                                     @else
-                                        <span class="badge status-danger">غير مسددة جزئياً</span>
+                                        <span class="badge status-danger">غير مسددة</span>
                                     @endif
                                 </td>
                                 <td>{{ Carbon\Carbon::parse($invoice->date)->format('Y/m/d') }}</td>
