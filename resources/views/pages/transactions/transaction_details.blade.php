@@ -475,7 +475,7 @@
                                                             <label class="form-label">المبلغ</label>
                                                             <input type="number" class="form-control border-primary"
                                                                 name="amount" id="editAmount{{ $loop->index }}"
-                                                                value="{{ $item->amount }}" step="1" required
+                                                                value="{{ $item->amount }}" step="any" required
                                                                 oninput="calculateEditTotal({{ $loop->index }})">
                                                         </div>
                                                         <div class="col">
@@ -500,7 +500,7 @@
                                                             <label for="editTotal" class="form-label">الإجمالي</label>
                                                             <input type="number" class="form-control border-primary"
                                                                 name="total" id="editTotal{{ $loop->index }}"
-                                                                value="{{ $item->total }}" step="1" readonly>
+                                                                value="{{ $item->total }}" step="any" readonly>
                                                         </div>
                                                         <div class="col">
                                                             <label for="is_posted" class="form-label">حالة الترحيل</label>
