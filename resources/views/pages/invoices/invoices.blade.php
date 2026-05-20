@@ -128,7 +128,9 @@
                                 @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
                                     <span class="badge status-delivered"> تم الإرسال بنجاح</span>
                                 @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
-                                    <span class="badge status-danger">تم الارسال بخطأ</span>
+                                    <a href="{{ route('invoices.zatca.report', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
+                                        <span class="badge status-danger">تم الارسال بخطأ</span>
+                                    </a>
                                 @else
                                     <span class="badge status-danger">لم يتم الارسال</span>
                                 @endif

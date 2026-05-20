@@ -207,14 +207,14 @@ class Invoice extends Model
 
         $taxInvoice = new $invoiceClass(
             $this->code,
-            $invoiceDate->format('Y/m/d'),
+            $invoiceDate->format('Y-m-d'),
             $invoiceDate->format('H:i:s'),
             $counter + 1,
-            $invoiceDueDate
+            $invoiceDueDate->format('Y-m-d')
         );
 
         $taxSeller = new InvoiceSeller(
-            $zatcaCompany->name,
+            $company->name,
             $zatcaCompany->vat,
             $zatcaCompany->crn,
             $zatcaCompany->street,

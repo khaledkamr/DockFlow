@@ -1726,4 +1726,9 @@ class InvoiceController extends Controller
 
         return redirect()->back()->with('error', 'حدث خطأ غير متوقع أثناء إرسال الفاتورة إلى الزكاة والدخل');
     }
+
+    public function zatcaReport(Invoice $invoice) {
+        $response = $invoice->zatcaInvoice->response_log;       
+        return view('pages.invoices.zatca_invoice_report', compact('response'));
+    }
 }

@@ -201,6 +201,7 @@ if (!function_exists('getDataFromXml')) {
             $VAT_total = $tax_amount->getElementsByTagName('TaxAmount')[0]->textContent;
         }
         $invoice_amount = $invoice_xml->getElementsByTagName('LineExtensionAmount')[0]->textContent;
+        
         return [
             'invoice_amount' => $invoice_amount ?? 0,
             'invoice_vat_amount' => $VAT_total ?? 0,
