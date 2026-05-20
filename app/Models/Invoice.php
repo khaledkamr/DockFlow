@@ -173,7 +173,8 @@ class Invoice extends Model
         $invoiceDueDate = Carbon::parse($this->due_date);
         $counter = 1;
         $customer = $this->customer;
-        $isInternational = $customer->country !== $zatcaCompany->country;
+        // $isInternational = $customer->country !== $zatcaCompany->country;
+        $isInternational = false; 
         $path = app_path('Zacta/signed_properties_template.php');
 
         if(empty(trim($customer->name)) || empty(trim($customer->vatNumber)) || empty(trim($customer->street)) || empty(trim($customer->city)) || empty(trim($customer->district)) || empty(trim($customer->building_number)) || empty(trim($customer->postal_code))) {
