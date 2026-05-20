@@ -1,5 +1,5 @@
 <?php
-namespace App\Zacta;
+namespace App\Models\Zacta;
 
 
 class SimpleInvoiceCustomer

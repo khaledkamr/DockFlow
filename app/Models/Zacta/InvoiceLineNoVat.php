@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zacta;
+namespace App\Models\Zacta;
 
 class InvoiceLineNoVat
 {
