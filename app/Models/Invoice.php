@@ -39,6 +39,7 @@ class Invoice extends Model
         'paid_amount',
         'payment_method',
         'date',
+        'due_date',
         'is_posted',
         'status',
         'zatca_status',
@@ -68,7 +69,7 @@ class Invoice extends Model
             return 0;
         }
 
-        $paymentDueDate = Carbon::parse($this->payment_due_date);
+        $paymentDueDate = Carbon::parse($this->due_date);
         $currentDate = Carbon::now();
         if($currentDate->greaterThan($paymentDueDate)) {
             return (int) $paymentDueDate->diffInDays($currentDate);
@@ -149,6 +150,11 @@ class Invoice extends Model
                 $newNumber = 1;
             }
             $invoice->code = $year . $prefix . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+
+            if (!$invoice->due_date && $invoice->date) { 
+                $gracePeriod = optional($invoice->customer?->contract)->payment_grace_period ?? 15; 
+                $invoice->due_date = Carbon::parse($invoice->date)->addDays((int) $gracePeriod); 
+            } 
         });
     }
 
@@ -177,9 +183,9 @@ class Invoice extends Model
         $isInternational = false; 
         $path = app_path('Zacta/signed_properties_template.php');
 
-        if(empty(trim($customer->name)) || empty(trim($customer->vatNumber)) || empty(trim($customer->street)) || empty(trim($customer->city)) || empty(trim($customer->district)) || empty(trim($customer->building_number)) || empty(trim($customer->postal_code))) {
-            throw new \Exception('Customer information is incomplete. Please ensure name, VAT number, street, city, district, building number, and postal code are provided.');
-        }
+        // if(empty(trim($customer->name)) || empty(trim($customer->vatNumber)) || empty(trim($customer->street)) || empty(trim($customer->city)) || empty(trim($customer->district)) || empty(trim($customer->building_number)) || empty(trim($customer->postal_code))) {
+        //     throw new \Exception('Customer information is incomplete. Please ensure name, VAT number, street, city, district, building number, and postal code are provided.');
+        // }
 
         $customerClass = $customer->type == 'شركة' ? InvoiceCustomer::class : SimpleInvoiceCustomer::class;
         $taxCustomer = new $customerClass(

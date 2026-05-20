@@ -30,6 +30,14 @@ trait BelongsToCompany
         static::addGlobalScope('company', function (Builder $builder) {
             $user = auth()->user();
 
+            if (!$user) { 
+                if (app()->runningInConsole()) { 
+                    return; 
+                } 
+                $builder->whereRaw('1 = 0'); 
+                return;
+            }
+
             if($user->type == 'admin') {
                 return; // Admin can see all records.
             } elseif(!$user || !$user->company_id) {

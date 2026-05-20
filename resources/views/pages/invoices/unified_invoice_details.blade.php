@@ -541,9 +541,10 @@
                             </div>
                         </div>
                     @endif 
+
                     @if ($invoice->status == 'لم يتم الدفع')
                         <span class="badge bg-primary fs-6 px-3 py-2">
-                            <i class="fas fa-calendar me-1"></i>موعد السداد: {{ $invoice->paymentDueDate }}
+                            <i class="fas fa-calendar me-1"></i>موعد السداد: {{ \Carbon\Carbon::parse($invoice->dueDate)->format('Y/m/d') }}
                         </span>
                         @if ($invoice->lateDays > 0)
                             <span class="badge bg-danger fs-6 px-3 py-2">
