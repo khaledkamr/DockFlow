@@ -1729,6 +1729,6 @@ class InvoiceController extends Controller
 
     public function zatcaReport(Invoice $invoice) {
         $response = $invoice->zatcaInvoice->response_log;       
-        return view('pages.invoices.zatca_invoice_report', compact('response'));
+        return view('pages.invoices.zatca_invoice_report', compact('response', 'invoice'));
     }
 }
