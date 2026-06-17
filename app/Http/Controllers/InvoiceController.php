@@ -1470,6 +1470,7 @@ class InvoiceController extends Controller
     // ----------------------- Extra Methods -----------------------
 
     public function invoicesReports(Request $request) {
+        // return $request;
         $invoices = Invoice::query();
         $customers = Customer::all();
         $types = [];
@@ -1533,14 +1534,30 @@ class InvoiceController extends Controller
             });
         }
         
-
         $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();
+
+        $hasFilters = !empty($request->all());
+
+        $draftInvoicesCount = $hasFilters ? $invoices->where('status', 'مسودة')->count() : 0;
+        $paidInvoicesCount = $hasFilters ? $invoices->where('status', 'تم الدفع')->count() : 0;
+        $partiallyPaidInvoicesCount = $hasFilters ? $invoices->where('status', 'تم الدفع جزئياً')->count() : 0;
+        $unpaidInvoicesCount = $hasFilters ? $invoices->where('status', 'لم يتم الدفع')->count() : 0;
+        $zatcaAcceptedCount = $hasFilters ? $invoices->where('zatca_status', 'sent without error')->count() : 0;
+        $zatcaRejectedCount = $hasFilters ? $invoices->where('zatca_status', 'sent with error')->count() : 0;
+        $zatcaPendingCount = $hasFilters ? $invoices->where('zatca_status', 'not sent')->count() : 0;
 
         return view('pages.invoices.reports', compact(
             'invoices', 
             'customers',
             'types',
-            'perPage'
+            'perPage',
+            'draftInvoicesCount',
+            'paidInvoicesCount',
+            'partiallyPaidInvoicesCount',
+            'unpaidInvoicesCount',
+            'zatcaAcceptedCount',
+            'zatcaRejectedCount',
+            'zatcaPendingCount',
         ));
     }
 

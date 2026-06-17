@@ -117,7 +117,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">مسودات</h6>
                     <h4 class="text-secondary fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('status', 'مسودة')->count() ?? 0 }}
+                        {{ $draftInvoicesCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -131,7 +131,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">مسددة</h6>
                     <h4 class="text-success fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('status', 'تم الدفع')->count() ?? 0 }}
+                        {{ $paidInvoicesCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">مسددة جزئياً</h6>
                     <h4 class="text-warning fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('status', 'تم الدفع جزئياً')->count() ?? 0 }}
+                        {{ $partiallyPaidInvoicesCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -159,7 +159,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">غير مسددة</h6>
                     <h4 class="text-danger fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('status', 'لم يتم الدفع')->count() ?? 0 }}
+                        {{ $unpaidInvoicesCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بنجاح</h6>
                     <h4 class="text-success fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('zatca_status', 'sent without error')->count() ?? 0 }}
+                        {{ $zatcaAcceptedCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -187,7 +187,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بخطأ</h6>
                     <h4 class="text-warning fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('zatca_status', 'sent with error')->count() ?? 0 }}
+                        {{ $zatcaRejectedCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -201,7 +201,7 @@
                 <div class="card-body text-center p-1 position-relative">
                     <h6 class="card-title text-muted fw-bold mb-1">لم يتم الإرسال</h6>
                     <h4 class="text-danger fw-bold" style="font-size: 1.5rem;">
-                        {{ $invoices->where('zatca_status', 'not sent')->count() ?? 0 }}
+                        {{ $zatcaPendingCount ?? 0 }}
                     </h4>
                 </div>
             </div>
@@ -214,8 +214,7 @@
             <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
-                    <select id="per_page" name="per_page" onchange="this.form.submit()"
-                        class="form-select form-select-sm d-inline-block w-auto">
+                    <select id="per_page" name="per_page" class="form-select form-select-sm d-inline-block w-auto">
                         <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
                         <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
                         <option value="500" {{ $perPage == 500 ? 'selected' : '' }}>500</option>
@@ -283,7 +282,7 @@
                 <tbody>
                     @if ($invoices->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type', 'payment_method']))
                         <tr>
-                            <td colspan="13" class="text-center">
+                            <td colspan="14" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي فواتير!</div>
                             </td>
                         </tr>
