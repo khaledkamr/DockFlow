@@ -24,12 +24,13 @@
                     <th>الحالة</th>
                     <th>المبلغ المسدد</th>
                     <th>المبلغ المتبقي</th>
+                    <th>حالة ZATCA</th>
                 </tr>
             </thead>
             <tbody>
                 @if ($invoices->isEmpty())
                     <tr>
-                        <td colspan="12" class="text-center">
+                        <td colspan="13" class="text-center">
                             <div class="status-danger fs-6">لم يتم العثور على اي فواتير!</div>
                         </td>
                     </tr>
@@ -48,6 +49,15 @@
                             <td class="text-center">{{ $invoice->status }}</td>
                             <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
                             <td class="text-center">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}</td>
+                            <td class="text-center">
+                                @if ($invoice->zatca_status == 'sent without error')
+                                    تم الإرسال بنجاح
+                                @elseif ($invoice->zatca_status == 'sent with error')
+                                    تم الإرسال بخطأ
+                                @else
+                                    لم يتم الإرسال
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 @endif

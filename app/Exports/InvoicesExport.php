@@ -41,6 +41,9 @@ class InvoicesExport implements FromCollection, WithHeadings
         if(!empty($this->filters['status']) && $this->filters['status'] !== 'all') {
             $query->where('status', $this->filters['status']);
         }
+        if(!empty($this->filters['zatca_status']) && $this->filters['zatca_status'] !== 'all') {
+            $query->where('zatca_status', $this->filters['zatca_status']);
+        }
         if(!empty($this->filters['search'])) {
             $search = $this->filters['search'];
             $query->where(function($q) use ($search) {

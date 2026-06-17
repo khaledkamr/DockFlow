@@ -627,6 +627,9 @@ class ExportController extends Controller
         $to = $request->input('to', null);
         $type = $request->input('type', 'all');
         $payment_method = $request->input('payment_method', 'all');
+        $is_posted = $request->input('is_posted', 'all');
+        $status = $request->input('status', 'all');
+        $zatca_status = $request->input('zatca_status', 'all');
         $search = $request->input('search', null);
 
         if($customer && $customer != 'all') {
@@ -644,6 +647,15 @@ class ExportController extends Controller
         }
         if($payment_method !== 'all') {
             $invoices->where('payment_method', $payment_method);
+        }
+        if($is_posted !== 'all') {
+            $invoices->where('is_posted', $is_posted == 'true' ? true : false);
+        }
+        if($status !== 'all') {
+            $invoices->where('status', $status);
+        }
+        if($zatca_status !== 'all') {
+            $invoices->where('zatca_status', $zatca_status);
         }
         if($search) {
             $invoices->where(function($q) use ($search) {

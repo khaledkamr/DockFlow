@@ -6,7 +6,7 @@
     <h1 class="mb-4">فواتيــر المبيعــات</h1>
 
     <div class="row g-3 mb-4">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-4">
             <form method="GET" action="" class="d-flex flex-column">
                 <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
                 <div class="d-flex">
@@ -61,9 +61,34 @@
                 </div>
             </form>
         </div>
+        <div class="col-6 col-md-2">
+            <form method="GET" action="" class="d-flex flex-column">
+                <label class="form-label text-dark fw-bold d-none d-md-inline">حالة ارسال الى zatca:</label>
+                <label class="form-label text-dark fw-bold d-inline d-md-none">zatca:</label>
+                <div class="d-flex">
+                    <select name="zatca_status" class="form-select border-primary" onchange="this.form.submit()">
+                        <option value="all" {{ request()->query('zatca_status') === 'all' || !request()->query('zatca_status') ? 'selected' : '' }}>
+                            جميع الفواتير
+                        </option>
+                        <option value="تم الإرسال بنجاح" {{ request()->query('zatca_status') === 'تم الإرسال بنجاح' ? 'selected' : '' }}>
+                            تم الإرسال بنجاح
+                        </option>
+                        <option value="تم الإرسال بخطأ" {{ request()->query('zatca_status') === 'تم الإرسال بخطأ' ? 'selected' : '' }}>
+                            تم الإرسال بخطأ
+                        </option>
+                        <option value="لم يتم الإرسال" {{ request()->query('zatca_status') === 'لم يتم الإرسال' ? 'selected' : '' }}>
+                            لم يتم الإرسال
+                        </option>
+                    </select>
+                    @foreach (request()->except('zatca_status') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </div>
+            </form>
+        </div>
         <div class="col-12 col-md-2 d-flex align-items-end">
             <a href="{{ route('invoices.create.unified') }}" class="btn btn-primary fw-bold w-100">
-                <span class="d-none d-sm-inline"><i class="fa-solid fa-plus d-sm-inline d-none "></i> إنشاء فاتورة</span>
+                <span class="d-none d-sm-inline"><i class="fa-solid fa-plus d-sm-inline d-none"></i> إنشاء فاتورة</span>
                 <i class="fa-solid fa-plus d-inline d-sm-none"></i>
             </a>
         </div>
@@ -126,7 +151,7 @@
                                 <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
                             <td class="text-center">
                                 @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
-                                    <span class="badge status-delivered"> تم الإرسال بنجاح</span>
+                                    <span class="badge status-delivered">تم الإرسال بنجاح</span>
                                 @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
                                     <a href="{{ route('invoices.zatca.report', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
                                         <span class="badge status-danger">تم الارسال بخطأ</span>
@@ -142,60 +167,62 @@
                                     {{ $invoice->made_by->name ?? '-' }}
                                 </a>
                             </td>
-                            <td class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                @if ($invoice->zatca_status !== 'sent without error')
-                                    <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-sm btn-outline-primary">
-                                        <span class="d-none d-sm-inline">إرسال</span>
-                                        <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center align-items-center gap-2 text-center">
+                                    @if ($invoice->zatca_status !== 'sent without error')
+                                        <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-sm btn-outline-primary">
+                                            <span class="d-none d-sm-inline">إرسال</span>
+                                            <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
+                                        </a>
+                                    @endif
+    
+                                    <a href="{{ route('invoices.unified.details', $invoice) }}" class="btn btn-sm btn-primary">
+                                        <span class="d-none d-sm-inline">عرض</span>
+                                        <i class="fa-solid fa-eye d-inline d-sm-none"></i>
                                     </a>
-                                @endif
-
-                                <a href="{{ route('invoices.unified.details', $invoice) }}" class="btn btn-sm btn-primary">
-                                    <span class="d-none d-sm-inline">عرض</span>
-                                    <i class="fa-solid fa-eye d-inline d-sm-none"></i>
-                                </a>
-
-                                @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal{{ $invoice->id }}">
-                                        <span class="d-none d-sm-inline">حذف</span><i
-                                            class="fa-solid fa-trash d-inline d-sm-none"></i>
-                                    </button>
-
-                                    <div class="modal fade" id="deleteModal{{ $invoice->id }}" tabindex="-1"
-                                        aria-labelledby="deleteModalLabel{{ $invoice->id }}" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title fw-bold"
-                                                        id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
-                                                    <button type="button" class="btn-close btn-close-white"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body fs-6">
-                                                    هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟
-                                                    @if ($invoice->is_posted)
-                                                        <div class="alert alert-danger mt-3">
-                                                            <i class="fas fa-exclamation-circle me-2"></i>
-                                                            <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف
-                                                            القيد المرتبط أولاً قبل حذف الفاتورة.
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button"
-                                                        class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
-                                                    <form action="{{ route('invoices.delete', $invoice) }}"
-                                                        method="POST" style="display: inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger fw-bold">حذف</button>
-                                                    </form>
+    
+                                    @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal{{ $invoice->id }}">
+                                            <span class="d-none d-sm-inline">حذف</span><i
+                                                class="fa-solid fa-trash d-inline d-sm-none"></i>
+                                        </button>
+    
+                                        <div class="modal fade" id="deleteModal{{ $invoice->id }}" tabindex="-1"
+                                            aria-labelledby="deleteModalLabel{{ $invoice->id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title fw-bold"
+                                                            id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
+                                                        <button type="button" class="btn-close btn-close-white"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body fs-6">
+                                                        هل أنت متأكد من حذف الفاتورة <strong>{{ $invoice->code }}</strong>؟
+                                                        @if ($invoice->is_posted)
+                                                            <div class="alert alert-danger mt-3">
+                                                                <i class="fas fa-exclamation-circle me-2"></i>
+                                                                <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل. يجب حذف
+                                                                القيد المرتبط أولاً قبل حذف الفاتورة.
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                            class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
+                                                        <form action="{{ route('invoices.delete', $invoice) }}"
+                                                            method="POST" style="display: inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger fw-bold">حذف</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach

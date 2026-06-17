@@ -5,6 +5,7 @@
 @section('content')
     <h1 class="mb-4">تقارير الفواتير</h1>
 
+    <!-- Filters -->
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-4">
         <form method="GET" id="reportForm">
             <div class="row g-3 mb-3">
@@ -53,7 +54,25 @@
                     </select>
                 </div>
                 <div class="col-6 col-sm-6 col-md">
-                    <label class="form-label">الترحيل</label>
+                    <label class="form-label">الحالــة</label>
+                    <select name="status" class="form-select border-primary">
+                        <option value="all"
+                            {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
+                            الكل</option>
+                        <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>مسددة
+                        </option>
+                        <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>
+                            غير مسدد</option>
+                        <option value="تم الدفع جزئياً"
+                            {{ request()->query('status') === 'تم الدفع جزئياً' ? 'selected' : '' }}>مسددة جزئياً</option>
+                        <option value="مسودة" {{ request()->query('status') === 'مسودة' ? 'selected' : '' }}>مسودة
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-sm-6 col-md-2">
+                    <label class="form-label">حالة الترحيل</label>
                     <select name="is_posted" class="form-select border-primary">
                         <option value="all" {{ request('is_posted') == 'all' ? 'selected' : '' }}>الكل</option>
                         <option value="true" {{ request('is_posted') == 'true' ? 'selected' : '' }}>تم الترحيل</option>
@@ -61,16 +80,17 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-6 col-sm-6 col-md">
-                    <label class="form-label">الحالة</label>
-                    <select name="status" class="form-select border-primary">
-                        <option value="all" {{ request()->query('status') === 'all' || !request()->query('status') ? 'selected' : '' }}>
-                            الكل
+                <div class="col-6 col-sm-6 col-md-2">
+                    <label class="form-label">حالة zatca</label>
+                    <select name="zatca_status" class="form-select border-primary">
+                        <option value="all" {{ request('zatca_status') == 'all' ? 'selected' : '' }}>الكل</option>
+                        <option value="sent without error"
+                            {{ request('zatca_status') == 'sent without error' ? 'selected' : '' }}>تم الإرسال بنجاح
                         </option>
-                        <option value="تم الدفع" {{ request()->query('status') === 'تم الدفع' ? 'selected' : '' }}>مسددة</option>
-                        <option value="لم يتم الدفع" {{ request()->query('status') === 'لم يتم الدفع' ? 'selected' : '' }}>غير مسدد</option>
-                        <option value="تم الدفع جزئياً" {{ request()->query('status') === 'تم الدفع جزئياً' ? 'selected' : '' }}>مسددة جزئياً</option>
-                        <option value="مسودة" {{ request()->query('status') === 'مسودة' ? 'selected' : '' }}>مسودة</option>
+                        <option value="sent with error"
+                            {{ request('zatca_status') == 'sent with error' ? 'selected' : '' }}>تم الإرسال بخطأ</option>
+                        <option value="not sent" {{ request('zatca_status') == 'not sent' ? 'selected' : '' }}>لم يتم
+                            الإرسال</option>
                     </select>
                 </div>
             </div>
@@ -87,6 +107,108 @@
         </form>
     </div>
 
+    <!-- Status Cards -->
+    <div class="row g-3 mb-4" id="statusCardsRow">
+        <!-- Draft Invoices -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-regular fa-file position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #6c757d;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">مسودات</h6>
+                    <h4 class="text-secondary fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('status', 'مسودة')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paid Invoices -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-solid fa-circle-check position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #198754;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">مسددة</h6>
+                    <h4 class="text-success fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('status', 'تم الدفع')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partially Paid Invoices -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-solid fa-circle-half-stroke position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #ffc107;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">مسددة جزئياً</h6>
+                    <h4 class="text-warning fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('status', 'تم الدفع جزئياً')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not Paid Invoices -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-solid fa-circle-xmark position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #dc3545;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">غير مسددة</h6>
+                    <h4 class="text-danger fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('status', 'لم يتم الدفع')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sent to ZATCA Successfully -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-solid fa-paper-plane position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #198754;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بنجاح</h6>
+                    <h4 class="text-success fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('zatca_status', 'sent without error')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sent to ZATCA with Error -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-solid fa-triangle-exclamation position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #ffc107;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بخطأ</h6>
+                    <h4 class="text-warning fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('zatca_status', 'sent with error')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not Sent to ZATCA -->
+        <div class="col-12 col-md-6 col-lg flex-grow-1">
+            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                <i class="fa-solid fa-ban position-absolute"
+                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #dc3545;"></i>
+                <div class="card-body text-center p-1 position-relative">
+                    <h6 class="card-title text-muted fw-bold mb-1">لم يتم الإرسال</h6>
+                    <h4 class="text-danger fw-bold" style="font-size: 1.5rem;">
+                        {{ $invoices->where('zatca_status', 'not sent')->count() ?? 0 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoices Table -->
     <div class="card border-0 shadow-sm rounded-3 p-3 mb-5">
         <div class="d-flex flex-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
             <div>
@@ -121,8 +243,8 @@
                     @foreach (request()->except('per_page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
-                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="تصدير Excel">
+                    <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="تصدير Excel">
                         <i class="fa-solid fa-file-excel"></i>
                     </button>
                 </form>
@@ -154,12 +276,14 @@
                         <th class="text-center bg-dark text-white">الحالة</th>
                         <th class="text-center bg-dark text-white">المبلغ المسدد</th>
                         <th class="text-center bg-dark text-white">المبلغ المتبقي</th>
+                        <th class="text-center bg-dark text-white">حالة ZATCA</th>
+                        <th class="text-center bg-dark text-white">الإجرائات</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if ($invoices->isEmpty() || !request()->hasAny(['customer', 'from', 'to', 'type', 'payment_method']))
                         <tr>
-                            <td colspan="12" class="text-center">
+                            <td colspan="13" class="text-center">
                                 <div class="status-danger fs-6">لم يتم العثور على اي فواتير!</div>
                             </td>
                         </tr>
@@ -197,6 +321,77 @@
                                 <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
                                 <td class="text-center">
                                     {{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}
+                                </td>
+                                <td class="text-center">
+                                    @if ($invoice->zatca_status == 'sent without error')
+                                        <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                    @elseif ($invoice->zatca_status == 'sent with error')
+                                        <span class="badge status-waiting">تم الإرسال بخطأ</span>
+                                    @else
+                                        <span class="badge status-danger">لم يتم الإرسال</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center align-items-center gap-2 text-center">
+                                        @if ($invoice->zatca_status !== 'sent without error')
+                                            <a href="{{ route('invoices.send.zatca', $invoice) }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <span class="d-none d-sm-inline">إرسال</span>
+                                                <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
+                                            </a>
+                                        @endif
+
+                                        <a href="{{ route('invoices.unified.details', $invoice) }}"
+                                            class="btn btn-sm btn-primary">
+                                            <span class="d-none d-sm-inline">عرض</span>
+                                            <i class="fa-solid fa-eye d-inline d-sm-none"></i>
+                                        </a>
+
+                                        @if (auth()->user()->roles()->pluck('name')->contains('Admin'))
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal{{ $invoice->id }}">
+                                                <span class="d-none d-sm-inline">حذف</span><i
+                                                    class="fa-solid fa-trash d-inline d-sm-none"></i>
+                                            </button>
+
+                                            <div class="modal fade" id="deleteModal{{ $invoice->id }}" tabindex="-1"
+                                                aria-labelledby="deleteModalLabel{{ $invoice->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-danger text-white">
+                                                            <h5 class="modal-title fw-bold"
+                                                                id="deleteModalLabel{{ $invoice->id }}">تأكيد الحذف</h5>
+                                                            <button type="button" class="btn-close btn-close-white"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body fs-6">
+                                                            هل أنت متأكد من حذف الفاتورة
+                                                            <strong>{{ $invoice->code }}</strong>؟
+                                                            @if ($invoice->is_posted)
+                                                                <div class="alert alert-danger mt-3">
+                                                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                                                    <strong>تنبيه:</strong> هذه الفاتورة تم ترحيلها بالفعل.
+                                                                    يجب حذف
+                                                                    القيد المرتبط أولاً قبل حذف الفاتورة.
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button"
+                                                                class="btn btn-secondary fw-bold"data-bs-dismiss="modal">إلغاء</button>
+                                                            <form action="{{ route('invoices.delete', $invoice) }}"
+                                                                method="POST" style="display: inline;">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                    class="btn btn-danger fw-bold">حذف</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

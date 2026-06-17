@@ -35,6 +35,7 @@ class InvoiceController extends Controller
         $invoices = Invoice::query();
         $invoiceType = request()->query('invoice_type', 'ضريبية');
         $paymentFilter = request()->query('status');
+        $zatcaStatsFilter = request()->query('zatca_status');
         $search = $request->input('search', null);
 
         if($invoiceType && $invoiceType == 'ضريبية') {
@@ -42,9 +43,21 @@ class InvoiceController extends Controller
         } elseif ($invoiceType && $invoiceType == 'مسودة') {
             $invoices->where('status', 'مسودة');
         }
+
         if ($paymentFilter && $paymentFilter !== 'all') {
             $invoices->where('status', $paymentFilter);
         }
+
+        if ($zatcaStatsFilter && $zatcaStatsFilter !== 'all') {
+            if ($zatcaStatsFilter === 'تم الإرسال بنجاح') {
+                $invoices->where('zatca_status', 'sent without error');
+            } elseif ($zatcaStatsFilter === 'تم الإرسال بخطأ') {
+                $invoices->where('zatca_status', 'sent with error');
+            } elseif ($zatcaStatsFilter === 'لم يتم الإرسال') {
+                $invoices->where('zatca_status', 'not sent');
+            }
+        }
+
         if($search) {
             $invoices->where(function($q) use ($search) {
                 $q->where('code', 'like', "%$search%")
@@ -1471,6 +1484,9 @@ class InvoiceController extends Controller
         if(Auth::user()->company->hasModule('نقل')) {
             $types[] = 'شحن';
         }
+        if(Auth::user()->company->hasModule('مستودع')) {
+            $types[] = 'محاسبية';
+        }
 
         $customer = $request->input('customer', 'all');
         $from = $request->input('from', null);
@@ -1479,6 +1495,7 @@ class InvoiceController extends Controller
         $payment_method = $request->input('payment_method', 'all');
         $is_posted = $request->input('is_posted', 'all');
         $status = $request->input('status', 'all');
+        $zatcaStatus = $request->input('zatca_status', 'all');
         $perPage = $request->input('per_page', 100);
         $search = $request->input('search', null);
 
@@ -1504,6 +1521,9 @@ class InvoiceController extends Controller
         if($status !== 'all') {
             $invoices->where('status', $status);
         }
+        if($zatcaStatus !== 'all') {
+            $invoices->where('zatca_status', $zatcaStatus);
+        }
         if($search) {
             $invoices->where(function($q) use ($search) {
                 $q->where('code', 'like', "%$search%")
@@ -1512,6 +1532,7 @@ class InvoiceController extends Controller
                   })->orWhere('date', 'like', "%$search%");
             });
         }
+        
 
         $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();
 
@@ -1708,23 +1729,26 @@ class InvoiceController extends Controller
 
     public function sendZatcaInvoice(Invoice $invoice) {
         if($invoice->zatca_status == 'sent without error') {
-            return redirect()->back()->with('error', 'هذه الفاتورة تم إرسالها مسبقاً إلى الزكاة والدخل');
+            return redirect()->back()->with('error', 'هذه الفاتورة تم إرسالها مسبقاً إلى هيئة الزكاة والدخل');
+        }
+        if($invoice->status == 'مسودة') {
+            return redirect()->back()->with('error', 'لا يمكن إرسال فاتورة مسودة إلى هيئة الزكاة والدخل');
         }
 
         $invoice->submit_invoice();
 
         if ($invoice->zatca_status == 'sent without error') {
             logActivity('إرسال فاتورة إلى الزكاة والدخل', "تم إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل");
-            return redirect()->back()->with('success', 'تم إرسال الفاتورة بنجاح إلى الزكاة والدخل');
+            return redirect()->back()->with('success', 'تم إرسال الفاتورة بنجاح إلى هيئة الزكاة والدخل');
         } elseif ($invoice->zatca_status == 'sent with error') {
-            logActivity('إرسال فاتورة إلى الزكاة والدخل', "فشل إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل");
-            return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل بسبب وجود خطأ في البيانات');
+            logActivity('إرسال فاتورة إلى الزكاة والدخل', "فشل إرسال الفاتورة رقم " . $invoice->code . " إلى هيئة الزكاة والدخل");
+            return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى هيئة الزكاة والدخل بسبب وجود خطأ في البيانات');
         } elseif ($invoice->zatca_status == 'not sent') {
-            logActivity('إرسال فاتورة إلى الزكاة والدخل', "لم يتم إرسال الفاتورة رقم " . $invoice->code . " إلى الزكاة والدخل بسبب خطأ غير متوقع");
-             return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى الزكاة والدخل بسبب خطأ غير متوقع');
+            logActivity('إرسال فاتورة إلى الزكاة والدخل', "لم يتم إرسال الفاتورة رقم " . $invoice->code . " إلى هيئة الزكاة والدخل بسبب خطأ غير متوقع");
+            return redirect()->back()->with('error', 'فشل إرسال الفاتورة إلى هيئة الزكاة والدخل بسبب خطأ غير متوقع');
         }
 
-        return redirect()->back()->with('error', 'حدث خطأ غير متوقع أثناء إرسال الفاتورة إلى الزكاة والدخل');
+        return redirect()->back()->with('error', 'حدث خطأ غير متوقع أثناء إرسال الفاتورة إلى هيئة الزكاة والدخل');
     }
 
     public function zatcaInvoice(Invoice $invoice) {

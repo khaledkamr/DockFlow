@@ -561,6 +561,10 @@
                             class="btn btn-outline-primary">
                             <i class="fas fa-file-invoice-dollar me-2"></i>فاتورة zatca
                         </a>
+                    @else
+                        <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-paper-plane me-2"></i> إرسال الفاتورة
+                        </a>
                     @endif
                     <a href="{{ route('invoices.unified.print', $invoice) }}" target="_blank"
                         class="btn btn-outline-primary">
