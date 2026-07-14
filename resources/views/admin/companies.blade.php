@@ -150,6 +150,7 @@
                     <th class="text-center bg-dark text-white text-nowrap">#</th>
                     <th class="text-center bg-dark text-white text-nowrap">الشعار</th>
                     <th class="text-center bg-dark text-white text-nowrap">اسم الشركة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">عدد المستخدمين</th>
                     <th class="text-center bg-dark text-white text-nowrap">البريد الإلكتروني</th>
                     <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
                     <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
@@ -180,6 +181,9 @@
                                 <a href="{{ route('admin.company.details', $company) }}" class="text-decoration-none text-dark">
                                     {{ $company->name }}
                                 </a>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-primary rounded-circle">{{ $company->users->count() }}</span>
                             </td>
                             <td class="text-center text-nowrap">{{ $company->email }}</td>
                             <td class="text-center text-nowrap">{{ $company->phone }}</td>
