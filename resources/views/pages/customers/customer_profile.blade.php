@@ -139,7 +139,7 @@
                 <h4 class="mb-0 fs-5 fs-md-4">
                     <i class="fas fa-user-circle me-2"></i>
                     {{ $customer['name'] }}
-                    ({{ $customer->account->code }})
+                    ({{ $customer->account->code ?? 'N/A' }})
                 </h4>
             </div>
             <div>
