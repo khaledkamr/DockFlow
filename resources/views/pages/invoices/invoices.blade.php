@@ -127,7 +127,7 @@
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('users.customer.profile', $invoice->customer) }}"
-                                    class="text-dark text-decoration-none">
+                                    class="text-dark fw-bold text-decoration-none">
                                     {{ $invoice->customer->name }}
                                 </a>
                             </td>
