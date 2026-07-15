@@ -130,6 +130,21 @@ class ContractController extends Controller
 
         return view('pages.contracts.contract_details', compact('contract', 'months', 'days', 'services'));
     }
+    
+    public function deleteContract(Contract $contract) {
+        // if(Gate::denies('حذف العقد') == true) {
+        //     return redirect()->back()->with('error', 'ليس لديك صلاحية حذف العقد');
+        // }
+
+        $old = $contract->load('services')->toArray();
+        $customer = $contract->customer;
+        $contract->services()->detach();
+        $contract->delete();
+
+        logActivity('حذف عقد', "تم حذف عقد العميل " . $customer->name ?? 'N/A', $old, null);
+
+        return redirect('contracts')->with('success', 'تم حذف عقد العميل ' . $customer->name ?? 'N/A' . ' بنجاح');
+    }
 
     public function services() {
         $services = Service::all();

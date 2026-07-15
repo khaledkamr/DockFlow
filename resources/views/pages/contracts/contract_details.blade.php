@@ -13,10 +13,41 @@
                 <span class="badge status-delivered ms-2">ساري</span>
             @endif
         </h2>
-        <div class="">
+        <div class="d-flex flex-column flex-sm-row gap-2">
             <a href="{{ route('print.contract', $contract->id) }}" class="btn btn-primary" target="_blank">
                 <i class="fas fa-print me-1"></i> طباعة العقد
             </a>
+            @if(auth()->user()->roles()->pluck('name')->contains('Admin'))
+                <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal"
+                    data-bs-target="#deleteContractModal">
+                    <i class="fas fa-trash me-2"></i>حذف العقد
+                </button>
+            @endif
+        </div>
+    </div>
+
+    <!-- Delete Contract Modal -->
+    <div class="modal fade" id="deleteContractModal" tabindex="-1" aria-labelledby="deleteContractModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title text-white fw-bold" id="deleteContractModalLabel">تأكيد حذف العقد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-dark">
+                    <p class="text-center fw-bold mb-3">هل أنت متأكد من حذف هذا العقد؟</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-start">
+                    <form action="{{ route('contracts.delete', $contract) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger fw-bold">حذف العقد</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                </div>
+            </div>
         </div>
     </div>
 
