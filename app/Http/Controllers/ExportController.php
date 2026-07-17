@@ -686,6 +686,9 @@ class ExportController extends Controller
     }
 
     public function printTrialBalance(Request $request) {
+        if($request->input('type') == null) {
+            return redirect()->back()->with('error', 'يرجى الضغط على زر عرض التقرير قبل الطباعة');
+        }
         $company = Auth::user()->company;
         if($request->has('type') && $request->input('type') != 'all') {
             $trialBalance = Account::where('name', $request->input('type'))
@@ -854,6 +857,9 @@ class ExportController extends Controller
             logActivity('تصدير تقرير القيود اليومية الى اكسيل', "تم تصدير تقرير القيود اليومية الى اكسيل بتصفية: ", $filters);
             return Excel::download(new JournalEntryExport($filters), 'تقرير القيود اليومية.xlsx');
         } elseif($reportType == 'trial_balance') {
+            if($request->input('type') == null) {
+                return redirect()->back()->with('error', 'يرجى الضغط على زر عرض التقرير قبل التصدير');
+            }
             $filters = $request->all();
             logActivity('تصدير تقرير ميزان المراجعة الى اكسيل', "تم تصدير تقرير ميزان المراجعة بتصفية: ", $filters);
             return Excel::download(new TrialBalanceExport($filters), 'تقرير ميزان المراجعة.xlsx');

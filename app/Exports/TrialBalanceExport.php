@@ -111,7 +111,7 @@ class TrialBalanceExport implements FromCollection, WithHeadings
         $sum_final_debit += $balance->final_debit;
         $sum_final_credit += $balance->final_credit;
 
-        if($account->children->count()) {
+        if($account->children->count() && $this->filters['to_level'] > $account->level) {
             foreach($account->children as $child) {
                 $this->flattenChild($child, $rows);
             }
@@ -152,7 +152,7 @@ class TrialBalanceExport implements FromCollection, WithHeadings
             ]);
         }
 
-        if($child->children->count()) {
+        if($child->children->count() && $this->filters['to_level'] > $child->level) {
             foreach($child->children as $grandchild) {
                 $this->flattenChild($grandchild, $rows);
             }

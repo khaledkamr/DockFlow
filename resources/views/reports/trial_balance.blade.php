@@ -75,7 +75,7 @@
                     <td class="text-center fw-bold">{{ $balance->final_debit }}</td>
                     <td class="text-center fw-bold">{{ $balance->final_credit }}</td>
                 </tr>
-                @if($account->children->count())
+                @if($account->children->count() && request()->query('to_level', 5) > $account->level)
                     @include('reports.trial_balance_row', ['children' => $account->children])
                 @endif
             @endforeach

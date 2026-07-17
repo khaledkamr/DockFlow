@@ -52,6 +52,16 @@
                 <option value="1" {{ request('with_balances') == '1' ? 'selected' : '' }}>نعم</option>
             </select>
         </div>
+        <div class="col-2">
+            <label class="form-label">الى المستوى</label>
+            <select name="to_level" class="form-control border-primary">
+                <option value="1" {{ request('to_level') == '1' ? 'selected' : '' }}>الاول</option>
+                <option value="2" {{ request('to_level') == '2' ? 'selected' : '' }}>الثاني</option>
+                <option value="3" {{ request('to_level') == '3' ? 'selected' : '' }}>الثالث</option>
+                <option value="4" {{ request('to_level') == '4' ? 'selected' : '' }}>الرابع</option>
+                <option value="5" {{ request('to_level', '5') == '5' ? 'selected' : '' }}>الخامس</option>
+            </select>
+        </div>
     </div>
     <div class="row mt-3">
         <div class="col-md-2 d-flex align-items-end">
@@ -110,64 +120,74 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $from = request()->query('from', now()->startOfYear()->format('Y-m-d'));
-                    $to = request()->query('to', now()->endOfYear()->format('Y-m-d'));
-
-                    $sum_beginning_debit = 0;
-                    $sum_beginning_credit = 0;
-                    $sum_movement_debit = 0;
-                    $sum_movement_credit = 0;
-                    $sum_final_debit = 0;
-                    $sum_final_credit = 0;
-                @endphp
-                @foreach($trialBalance as $account)
+                @if(request()->query('type') !== null)
                     @php
-                        $balance = $account->calculateBalance($from, $to);
-                        if('0' === request()->query('debit_movements') && $balance->final_debit > 0) {
-                            continue;
-                        }
-                        if('0' === request()->query('credit_movements') && $balance->final_credit > 0) {
-                            continue;
-                        }
-                        if('0' === request()->query('zero_balances') && $balance->final_debit == 0 && $balance->final_credit == 0) {
-                            continue;
-                        }
+                        $from = request()->query('from', now()->startOfYear()->format('Y-m-d'));
+                        $to = request()->query('to', now()->endOfYear()->format('Y-m-d'));
 
-                        $sum_beginning_debit += $balance->beginning_debit;
-                        $sum_beginning_credit += $balance->beginning_credit;
-                        $sum_movement_debit += $balance->movement_debit;
-                        $sum_movement_credit += $balance->movement_credit;
-                        $sum_final_debit += $balance->final_debit;
-                        $sum_final_credit += $balance->final_credit;
+                        $sum_beginning_debit = 0;
+                        $sum_beginning_credit = 0;
+                        $sum_movement_debit = 0;
+                        $sum_movement_credit = 0;
+                        $sum_final_debit = 0;
+                        $sum_final_credit = 0;
                     @endphp
-                    <tr class="table-primary">
-                        <td class="text-center">{{ $account->code }}</td>
-                        <td class="fw-bold">{{ $account->name }} ({{ $account->level }})</td>
-                        @if(request()->query('with_balances', '0') == '0')
-                            <td class="text-center fw-bold">{{ $balance->beginning_debit }}</td>
-                            <td class="text-center fw-bold">{{ $balance->beginning_credit }}</td>
-                            <td class="text-center fw-bold">{{ $balance->movement_debit }}</td>
-                            <td class="text-center fw-bold">{{ $balance->movement_credit }}</td>
+                    @foreach($trialBalance as $account)
+                        @php
+                            $balance = $account->calculateBalance($from, $to);
+                            if('0' === request()->query('debit_movements') && $balance->final_debit > 0) {
+                                continue;
+                            }
+                            if('0' === request()->query('credit_movements') && $balance->final_credit > 0) {
+                                continue;
+                            }
+                            if('0' === request()->query('zero_balances') && $balance->final_debit == 0 && $balance->final_credit == 0) {
+                                continue;
+                            }
+
+                            $sum_beginning_debit += $balance->beginning_debit;
+                            $sum_beginning_credit += $balance->beginning_credit;
+                            $sum_movement_debit += $balance->movement_debit;
+                            $sum_movement_credit += $balance->movement_credit;
+                            $sum_final_debit += $balance->final_debit;
+                            $sum_final_credit += $balance->final_credit;
+                        @endphp
+                        <tr class="table-primary">
+                            <td class="text-center">{{ $account->code }}</td>
+                            <td class="fw-bold">{{ $account->name }} ({{ $account->level }})</td>
+                            @if(request()->query('with_balances', '0') == '0')
+                                <td class="text-center fw-bold">{{ $balance->beginning_debit }}</td>
+                                <td class="text-center fw-bold">{{ $balance->beginning_credit }}</td>
+                                <td class="text-center fw-bold">{{ $balance->movement_debit }}</td>
+                                <td class="text-center fw-bold">{{ $balance->movement_credit }}</td>
+                            @endif
+                            <td class="text-center fw-bold">{{ $balance->final_debit }}</td>
+                            <td class="text-center fw-bold">{{ $balance->final_credit }}</td>
+                        </tr>
+                        @if($account->children->count() && request()->query('to_level', 5) > $account->level)
+                            @include('pages.accounting.reports.trial_balance_row', ['children' => $account->children])
                         @endif
-                        <td class="text-center fw-bold">{{ $balance->final_debit }}</td>
-                        <td class="text-center fw-bold">{{ $balance->final_credit }}</td>
+                    @endforeach
+                    <tr class="table-secondary">
+                        <td colspan="2" class="text-center fw-bold">الإجمالي</td>
+                        @if(request()->query('with_balances', '0') == '0')
+                            <td class="text-center fw-bold">{{ $sum_beginning_debit }}</td>
+                            <td class="text-center fw-bold">{{ $sum_beginning_credit }}</td>
+                            <td class="text-center fw-bold">{{ $sum_movement_debit }}</td>
+                            <td class="text-center fw-bold">{{ $sum_movement_credit }}</td>
+                        @endif
+                        <td class="text-center fw-bold">{{ $sum_final_debit }}</td>
+                        <td class="text-center fw-bold">{{ $sum_final_credit }}</td>
                     </tr>
-                    @if($account->children->count())
-                        @include('pages.accounting.reports.trial_balance_row', ['children' => $account->children])
-                    @endif
-                @endforeach
-                <tr class="table-secondary">
-                    <td colspan="2" class="text-center fw-bold">الإجمالي</td>
-                    @if(request()->query('with_balances', '0') == '0')
-                        <td class="text-center fw-bold">{{ $sum_beginning_debit }}</td>
-                        <td class="text-center fw-bold">{{ $sum_beginning_credit }}</td>
-                        <td class="text-center fw-bold">{{ $sum_movement_debit }}</td>
-                        <td class="text-center fw-bold">{{ $sum_movement_credit }}</td>
-                    @endif
-                    <td class="text-center fw-bold">{{ $sum_final_debit }}</td>
-                    <td class="text-center fw-bold">{{ $sum_final_credit }}</td>
-                </tr>
+                @else
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <span class="status-danger fs-6">
+                                يرجى الضغط على زر عرض التقرير.
+                            </span>
+                        </td>
+                    </tr>
+                @endif
             </tbody>
         </table>
     </div>
