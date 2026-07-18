@@ -4,6 +4,7 @@ namespace App\Models\Zacta;
 class InvoiceCustomer
 {
     public $name;
+    public $crn;
     public $vat;
     public $street;
     public $city;
@@ -13,7 +14,7 @@ class InvoiceCustomer
     public $postal;
     public $xmlString = '<cac:Party>
             <cac:PartyIdentification>
-                <cbc:ID schemeID="NAT">@VAT@</cbc:ID>
+                <cbc:ID schemeID="CRN">@CRN@</cbc:ID>
             </cac:PartyIdentification>
             <cac:PostalAddress>
                 <cbc:StreetName>@STREET@</cbc:StreetName>
@@ -27,6 +28,7 @@ class InvoiceCustomer
                 </cac:Country>
             </cac:PostalAddress>
             <cac:PartyTaxScheme>
+                <cbc:CompanyID>@VAT@</cbc:CompanyID>
                 <cac:TaxScheme>
                     <cbc:ID>VAT</cbc:ID>
                 </cac:TaxScheme>
@@ -36,10 +38,11 @@ class InvoiceCustomer
             </cac:PartyLegalEntity>
         </cac:Party>';
         
-    public function __construct($name,$vat,$street,$city,$subDivision,$building,$plot,$postal)
+    public function __construct($name,$vat,$crn,$street,$city,$subDivision,$building,$plot,$postal)
     {
         $this->name = htmlspecialchars(trim($name), ENT_XML1, 'UTF-8');
         $this->vat = $vat;
+        $this->crn = $crn;
         $this->street = htmlspecialchars(trim($street), ENT_XML1, 'UTF-8');
         $this->city = htmlspecialchars(trim($city) ,ENT_XML1, 'UTF-8');
         $this->subDivision = htmlspecialchars(trim($subDivision),ENT_XML1, 'UTF-8');
@@ -50,6 +53,7 @@ class InvoiceCustomer
 
     public function replaceXMLString(){
         $content = $this->xmlString;
+        $content = str_replace("@CRN@",$this->crn,$content);
         $content = str_replace("@VAT@",$this->vat,$content);
         $content = str_replace("@STREET@",$this->street,$content);
         $content = str_replace("@BUILDING@",$this->building,$content);
