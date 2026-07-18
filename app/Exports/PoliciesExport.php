@@ -19,7 +19,7 @@ class PoliciesExport implements FromCollection, WithHeadings
     
     public function collection()
     {
-        $query = Policy::query()->whereIn('type', ['تخزين', 'خدمات', 'تخليص', 'تخزين و شحن']);
+        $query = Policy::query()->whereIn('type', ['تخزين', 'خدمات']);
         
         if(!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to']]);
@@ -33,11 +33,11 @@ class PoliciesExport implements FromCollection, WithHeadings
         if(!empty($this->filters['invoiced']) && $this->filters['invoiced'] !== 'all') {
             if($this->filters['invoiced'] == 'invoiced') {
                 $query->whereHas('containers.invoices', function($q) {
-                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
+                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص', 'تخزين و شحن']);
                 });
             } elseif($this->filters['invoiced'] == 'not_invoiced') {
                 $query->whereDoesntHave('containers.invoices', function($q) {
-                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص']);
+                    $q->whereIn('type', ['تخزين', 'خدمات', 'تخليص', 'تخزين و شحن']);
                 });
             }
         }
