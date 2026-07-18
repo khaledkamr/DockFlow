@@ -6,7 +6,7 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2 mb-0">
-            <i class="bi bi-file-earmark-check"></i> تفاصيل فاتورة ZATCA
+            <i class="bi bi-file-earmark-check"></i> تفاصيل فاتورة ZATCA للفاتورة رقم: {{ $zatcaInvoice->invoice->code ?? 'N/A' }}
         </h1>
         
     </div>
