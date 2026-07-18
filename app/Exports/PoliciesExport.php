@@ -19,7 +19,7 @@ class PoliciesExport implements FromCollection, WithHeadings
     
     public function collection()
     {
-        $query = Policy::query()->whereIn('type', ['تخزين', 'خدمات']);
+        $query = Policy::query()->whereIn('type', ['تخزين', 'خدمات', 'تخليص', 'تخزين و شحن']);
         
         if(!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to']]);

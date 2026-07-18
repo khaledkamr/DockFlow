@@ -243,11 +243,11 @@ class ExportController extends Controller
         if($invoiced && $invoiced != 'all') {
             if($invoiced == 'invoiced') {
                 $policies->whereHas('containers.invoices', function($query) {
-                    $query->whereIn('type', ['تخزين', 'خدمات']);
+                    $query->whereIn('type', ['تخزين', 'خدمات', 'تخليص', 'تخزين و شحن']);
                 });
             } elseif($invoiced == 'not_invoiced') {
                 $policies->whereDoesntHave('containers.invoices', function($query) {
-                    $query->whereIn('type', ['تخزين', 'خدمات']);
+                    $query->whereIn('type', ['تخزين', 'خدمات', 'تخليص', 'تخزين و شحن']);
                 });
             }
         }
