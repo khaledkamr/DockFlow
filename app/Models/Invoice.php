@@ -191,7 +191,7 @@ class Invoice extends Model
         $taxCustomer = new $customerClass(
             $customer->name,
             $customer->vatNumber,
-            $customer->crn,
+            $customer->CR,
             $customer->street,
             $customer->city,
             $customer->district,
