@@ -151,9 +151,11 @@
                                 <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
                             <td class="text-center">
                                 @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
-                                    <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                    <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
+                                        <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                    </a>
                                 @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
-                                    <a href="{{ route('invoices.zatca.report', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
+                                    <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
                                         <span class="badge status-danger">تم الارسال بخطأ</span>
                                     </a>
                                 @else

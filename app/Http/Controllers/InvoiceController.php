@@ -1780,9 +1780,4 @@ class InvoiceController extends Controller
         }
         return view('pages.invoices.zatca_invoice_details', compact('zatcaInvoice', 'invoice', 'responseLog'));
     }
-
-    public function zatcaReport(Invoice $invoice) {
-        $response = json_decode($invoice->zatcaInvoice->response_log, true);       
-        return view('pages.invoices.zatca_invoice_report', compact('response', 'invoice'));
-    }
 }

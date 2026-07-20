@@ -312,7 +312,6 @@ Route::controller(InvoiceController::class)->middleware('auth')->group(function 
 
     Route::get('invoices/{invoice:uuid}/send/zatca', 'sendZatcaInvoice')->name('invoices.send.zatca');
     Route::get('invoices/{invoice:uuid}/zatca/invoice', 'zatcaInvoice')->name('invoices.zatca.invoice');
-    Route::get('invoices/{invoice:uuid}/zatca/preview/response', 'zatcaReport')->name('invoices.zatca.report');
 });
 
 Route::controller(ExpenseInvoiceController::class)->middleware('auth')->group(function () {

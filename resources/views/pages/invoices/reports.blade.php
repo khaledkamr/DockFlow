@@ -323,9 +323,13 @@
                                 </td>
                                 <td class="text-center">
                                     @if ($invoice->zatca_status == 'sent without error')
-                                        <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
+                                            <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                        </a>
                                     @elseif ($invoice->zatca_status == 'sent with error')
-                                        <span class="badge status-waiting">تم الإرسال بخطأ</span>
+                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
+                                            <span class="badge status-danger">تم الارسال بخطأ</span>
+                                        </a>
                                     @else
                                         <span class="badge status-danger">لم يتم الإرسال</span>
                                     @endif
