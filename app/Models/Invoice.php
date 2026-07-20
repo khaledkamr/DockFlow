@@ -300,7 +300,7 @@ class Invoice extends Model
             }
 
             // Shipping lines
-            foreach ($container->shippingPolicies as $policy) {
+            foreach ($this->shippingPolicies as $policy) {
                 $shippingItemName = 'shipping service from' . $policy->from . ' to ' . $policy->to;
                 $shippingUom = 'PCE';
 
