@@ -162,7 +162,7 @@ class TaxClearanceInvoice
                 <cbc:TaxableAmount currencyID="SAR">@INVOICETAXABLEAMOUNTNOVAT@</cbc:TaxableAmount>
                 <cbc:TaxAmount currencyID="SAR">0.00</cbc:TaxAmount>
                 <cac:TaxCategory>
-                    <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">Z</cbc:ID>
+                    <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">O</cbc:ID>
                     <cbc:Percent>0.00</cbc:Percent>
                     <cac:TaxScheme>
                         <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
@@ -252,7 +252,7 @@ class TaxClearanceInvoice
         $content = str_replace("@INVOICEVATAMOUNT@", number_format($this->vatAmount, 2, '.', ''), $content);
         $content = str_replace("@INVOICETAXABLEAMOUNT@", number_format($this->totalWithoutVat, 2, '.', ''), $content);
         $content = str_replace("@INVOICETOTALAMOUNT@", number_format($this->totalAfterVat, 2, '.', ''), $content);
-        $content = str_replace("@INVOICETAXABLEAMOUNTNOVAT@", number_format($this->groupedInvoiceLines['Z']['taxable'] ?? 0, 2, '.', ''), $content);
+        $content = str_replace("@INVOICETAXABLEAMOUNTNOVAT@", number_format($this->groupedInvoiceLines['O']['taxable'] ?? 0, 2, '.', ''), $content);
         $content = str_replace("@INVOICETAXABLEAMOUNTVAT@", number_format($this->groupedInvoiceLines['S']['taxable'] ?? 0, 2, '.', ''), $content);
         $this->xmlContent =  $content;
     }

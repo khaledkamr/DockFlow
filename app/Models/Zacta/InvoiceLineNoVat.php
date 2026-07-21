@@ -13,7 +13,7 @@ class InvoiceLineNoVat
     public $totalLineWithoutVat = 0;
     public $vatAmount = 0;
     public $totalAfterVat = 0;
-    public $taxCategory = "Z";
+    public $taxCategory = "O";
     public $XMLNode;
     public $invoiceLineXMLString = '<cac:InvoiceLine>
         <cbc:ID>LINEID</cbc:ID>
@@ -26,7 +26,7 @@ class InvoiceLineNoVat
         <cac:Item>
             <cbc:Name>LINENAME</cbc:Name>
             <cac:ClassifiedTaxCategory>
-                <cbc:ID>Z</cbc:ID>
+                <cbc:ID>O</cbc:ID>
                 <cbc:Percent>0.00</cbc:Percent>
                 <cac:TaxScheme>
                     <cbc:ID>VAT</cbc:ID>
