@@ -182,7 +182,7 @@ class Invoice extends Model
         $customer = $this->customer;
         // $isInternational = $customer->country !== $zatcaCompany->country;
         $isInternational = false; 
-        $path = app_path('Zacta/signed_properties_template.php');
+        $path = app_path('Models/Zacta/signed_properties_template.php');
 
         if($customer->type == 'شركة') {
             $taxCustomer = new InvoiceCustomer(
