@@ -164,6 +164,10 @@ class TaxClearanceInvoice
                 <cac:TaxCategory>
                     <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">O</cbc:ID>
                     <cbc:Percent>0.00</cbc:Percent>
+                    <cbc:TaxExemptionReasonCode>VATEX-SA-OOS</cbc:TaxExemptionReasonCode>
+                    <cbc:TaxExemptionReason>
+                        Disbursement paid on behalf of customer.
+                    </cbc:TaxExemptionReason>
                     <cac:TaxScheme>
                         <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
                     </cac:TaxScheme>
