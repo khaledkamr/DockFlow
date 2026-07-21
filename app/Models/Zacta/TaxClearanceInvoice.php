@@ -229,7 +229,7 @@ class TaxClearanceInvoice
     public function generateTaxSubtotals() {
         $xml = '';
 
-        if(isset($this->groupedInvoicedLines['O'])) {
+        if(isset($this->groupedInvoiceLines['O'])) {
             $taxable = number_format($this->groupedInvoiceLines['O']['taxable'], 2, '.', '');
             $xml .= "
             <cac:TaxSubtotal>
