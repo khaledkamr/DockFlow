@@ -8,7 +8,6 @@ use Ramsey\Uuid\Uuid;
 
 class SimpleTaxInvoice
 {
-
     public $invoiceLines = [];
     public $linesXMLString = "";
     public $totalWithoutVat = 0;
@@ -32,240 +31,240 @@ class SimpleTaxInvoice
     public $qr;
     public $step6Document;
     public $signTime;
-    public $xmlContent =
-'<?xml version="1.0" encoding="UTF-8"?>
-<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"><ext:UBLExtensions>
-    <ext:UBLExtension>
-        <ext:ExtensionURI>urn:oasis:names:specification:ubl:dsig:enveloped:xades</ext:ExtensionURI>
-        <ext:ExtensionContent>
-            <!-- Please note that the signature values are sample values only -->
-            <sig:UBLDocumentSignatures xmlns:sig="urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2" xmlns:sac="urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2" xmlns:sbc="urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2">
-                <sac:SignatureInformation>
-                    <cbc:ID>urn:oasis:names:specification:ubl:signature:1</cbc:ID>
-                    <sbc:ReferencedSignatureID>urn:oasis:names:specification:ubl:signature:Invoice</sbc:ReferencedSignatureID>
-                    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="signature">
-                        <ds:SignedInfo>
-                            <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
-                            <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/>
-                            <ds:Reference Id="invoiceSignedData" URI="">
-                                <ds:Transforms>
-                                    <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
-                                        <ds:XPath>not(//ancestor-or-self::ext:UBLExtensions)</ds:XPath>
-                                    </ds:Transform>
-                                    <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
-                                        <ds:XPath>not(//ancestor-or-self::cac:Signature)</ds:XPath>
-                                    </ds:Transform>
-                                    <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
-                                        <ds:XPath>not(//ancestor-or-self::cac:AdditionalDocumentReference[cbc:ID="QR"])</ds:XPath>
-                                    </ds:Transform>
-                                    <ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
-                                </ds:Transforms>
-                                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-                                <ds:DigestValue>v49z5vmG3xRVCo7EaVc6c2Wt1u1l0J9tkUwIyiBs+Pw=</ds:DigestValue>
-                            </ds:Reference>
-                            <ds:Reference Type="http://www.w3.org/2000/09/xmldsig#SignatureProperties" URI="#xadesSignedProperties">
-                                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-                                <ds:DigestValue>ZmM2NDhjZmZhNDJhMGQ3ZTQ0YTc5OWQ3ZWNlNWYzYWE4Yjk3MDRhNGE3YTAxZWM1NDY5YTExMWEyYjA2YzFmYg==</ds:DigestValue>
-                            </ds:Reference>
-                        </ds:SignedInfo>
-                        <ds:SignatureValue>MEQCIBbHExlZAA4vYOfW6S6mVUfBNYEsbk4QASfGU6h4wWGtAiAgwqJCOot+D3omvwOvTwkQpoJSChfd3D+ejMDC/SRSTA==</ds:SignatureValue>
-                        <ds:KeyInfo>
-                            <ds:X509Data>
-                                <ds:X509Certificate>MIIB+jCCAaCgAwIBAgIGAY02HRDCMAoGCCqGSM49BAMCMBUxEzARBgNVBAMMCmVJbnZvaWNpbmcwHhcNMjQwMTIzMTEzODA2WhcNMjkwMTIyMjEwMDAwWjBXMQswCQYDVQQGEwJTQTEQMA4GA1UECwwHTWFxbG9iYTEQMA4GA1UECgwHTWFxbG9iYTEkMCIGA1UEAwwbTWFxbG9iYSBTaW11bGF0aW9uIERldmljZS0yMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEn/7OSAUPYLYmoVe+xAq8b0sI3FzCfmpsZhZ1UvwQOryNrvF40xbVS9fjuHkMefl0mLiTVTi3DL0lR0LVedSU46OBnDCBmTAMBgNVHRMBAf8EAjAAMIGIBgNVHREEgYAwfqR8MHoxJDAiBgNVBAQMGzEtUmV2ZWx8Mi1SZWFjaHdhcmV8My0wMDAwMjEfMB0GCgmSJomT8ixkAQEMDzMxMDgwMzA3MTkwMDAwMzENMAsGA1UEDAwEMTEwMDEPMA0GA1UEGgwGUml5YWRoMREwDwYDVQQPDAhTZXJ2aWNlczAKBggqhkjOPQQDAgNIADBFAiBOXf0/nw75actIvEAF0znU8riYESW3nkj79IwZNqiZaAIhAKg9Og7XvGWpumYpx5ndYJiSIqnMRA9HhCVuWAPyPVlG</ds:X509Certificate>
-                            </ds:X509Data>
-                        </ds:KeyInfo>
-                        <ds:Object>
-                            <xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="signature">
-                                <xades:SignedProperties Id="xadesSignedProperties">
-                                    <xades:SignedSignatureProperties>
-                                        <xades:SigningTime>2024-01-25T22:23:03Z</xades:SigningTime>
-                                        <xades:SigningCertificate>
-                                            <xades:Cert>
-                                                <xades:CertDigest>
-                                                    <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-                                                    <ds:DigestValue>ZjYwOGMyNjhkMWIzZmEzMDYyMTgyYzIxNTU3MDYzN2IwNjg5NjAxMmE3NjFiZmU1ODY0ZmE1MWE4MzEyOTY5ZQ==</ds:DigestValue>
-                                                </xades:CertDigest>
-                                                <xades:IssuerSerial>
-                                                    <ds:X509IssuerName>CN=eInvoicing</ds:X509IssuerName>
-                                                    <ds:X509SerialNumber>1706009891010</ds:X509SerialNumber>
-                                                </xades:IssuerSerial>
-                                            </xades:Cert>
-                                        </xades:SigningCertificate>
-                                    </xades:SignedSignatureProperties>
-                                </xades:SignedProperties>
-                            </xades:QualifyingProperties>
-                        </ds:Object>
-                    </ds:Signature>
-                </sac:SignatureInformation>
-            </sig:UBLDocumentSignatures>
-        </ext:ExtensionContent>
-    </ext:UBLExtension>
-</ext:UBLExtensions>
+    public $xmlContent ='
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
+        <ext:UBLExtensions>
+            <ext:UBLExtension>
+                <ext:ExtensionURI>urn:oasis:names:specification:ubl:dsig:enveloped:xades</ext:ExtensionURI>
+                <ext:ExtensionContent>
+                    <!-- Please note that the signature values are sample values only -->
+                    <sig:UBLDocumentSignatures xmlns:sig="urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2" xmlns:sac="urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2" xmlns:sbc="urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2">
+                        <sac:SignatureInformation>
+                            <cbc:ID>urn:oasis:names:specification:ubl:signature:1</cbc:ID>
+                            <sbc:ReferencedSignatureID>urn:oasis:names:specification:ubl:signature:Invoice</sbc:ReferencedSignatureID>
+                            <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="signature">
+                                <ds:SignedInfo>
+                                    <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+                                    <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/>
+                                    <ds:Reference Id="invoiceSignedData" URI="">
+                                        <ds:Transforms>
+                                            <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+                                                <ds:XPath>not(//ancestor-or-self::ext:UBLExtensions)</ds:XPath>
+                                            </ds:Transform>
+                                            <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+                                                <ds:XPath>not(//ancestor-or-self::cac:Signature)</ds:XPath>
+                                            </ds:Transform>
+                                            <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
+                                                <ds:XPath>not(//ancestor-or-self::cac:AdditionalDocumentReference[cbc:ID="QR"])</ds:XPath>
+                                            </ds:Transform>
+                                            <ds:Transform Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
+                                        </ds:Transforms>
+                                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                                        <ds:DigestValue>v49z5vmG3xRVCo7EaVc6c2Wt1u1l0J9tkUwIyiBs+Pw=</ds:DigestValue>
+                                    </ds:Reference>
+                                    <ds:Reference Type="http://www.w3.org/2000/09/xmldsig#SignatureProperties" URI="#xadesSignedProperties">
+                                        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                                        <ds:DigestValue>ZmM2NDhjZmZhNDJhMGQ3ZTQ0YTc5OWQ3ZWNlNWYzYWE4Yjk3MDRhNGE3YTAxZWM1NDY5YTExMWEyYjA2YzFmYg==</ds:DigestValue>
+                                    </ds:Reference>
+                                </ds:SignedInfo>
+                                <ds:SignatureValue>MEQCIBbHExlZAA4vYOfW6S6mVUfBNYEsbk4QASfGU6h4wWGtAiAgwqJCOot+D3omvwOvTwkQpoJSChfd3D+ejMDC/SRSTA==</ds:SignatureValue>
+                                <ds:KeyInfo>
+                                    <ds:X509Data>
+                                        <ds:X509Certificate>MIIB+jCCAaCgAwIBAgIGAY02HRDCMAoGCCqGSM49BAMCMBUxEzARBgNVBAMMCmVJbnZvaWNpbmcwHhcNMjQwMTIzMTEzODA2WhcNMjkwMTIyMjEwMDAwWjBXMQswCQYDVQQGEwJTQTEQMA4GA1UECwwHTWFxbG9iYTEQMA4GA1UECgwHTWFxbG9iYTEkMCIGA1UEAwwbTWFxbG9iYSBTaW11bGF0aW9uIERldmljZS0yMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEn/7OSAUPYLYmoVe+xAq8b0sI3FzCfmpsZhZ1UvwQOryNrvF40xbVS9fjuHkMefl0mLiTVTi3DL0lR0LVedSU46OBnDCBmTAMBgNVHRMBAf8EAjAAMIGIBgNVHREEgYAwfqR8MHoxJDAiBgNVBAQMGzEtUmV2ZWx8Mi1SZWFjaHdhcmV8My0wMDAwMjEfMB0GCgmSJomT8ixkAQEMDzMxMDgwMzA3MTkwMDAwMzENMAsGA1UEDAwEMTEwMDEPMA0GA1UEGgwGUml5YWRoMREwDwYDVQQPDAhTZXJ2aWNlczAKBggqhkjOPQQDAgNIADBFAiBOXf0/nw75actIvEAF0znU8riYESW3nkj79IwZNqiZaAIhAKg9Og7XvGWpumYpx5ndYJiSIqnMRA9HhCVuWAPyPVlG</ds:X509Certificate>
+                                    </ds:X509Data>
+                                </ds:KeyInfo>
+                                <ds:Object>
+                                    <xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="signature">
+                                        <xades:SignedProperties Id="xadesSignedProperties">
+                                            <xades:SignedSignatureProperties>
+                                                <xades:SigningTime>2024-01-25T22:23:03Z</xades:SigningTime>
+                                                <xades:SigningCertificate>
+                                                    <xades:Cert>
+                                                        <xades:CertDigest>
+                                                            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                                                            <ds:DigestValue>ZjYwOGMyNjhkMWIzZmEzMDYyMTgyYzIxNTU3MDYzN2IwNjg5NjAxMmE3NjFiZmU1ODY0ZmE1MWE4MzEyOTY5ZQ==</ds:DigestValue>
+                                                        </xades:CertDigest>
+                                                        <xades:IssuerSerial>
+                                                            <ds:X509IssuerName>CN=eInvoicing</ds:X509IssuerName>
+                                                            <ds:X509SerialNumber>1706009891010</ds:X509SerialNumber>
+                                                        </xades:IssuerSerial>
+                                                    </xades:Cert>
+                                                </xades:SigningCertificate>
+                                            </xades:SignedSignatureProperties>
+                                        </xades:SignedProperties>
+                                    </xades:QualifyingProperties>
+                                </ds:Object>
+                            </ds:Signature>
+                        </sac:SignatureInformation>
+                    </sig:UBLDocumentSignatures>
+                </ext:ExtensionContent>
+            </ext:UBLExtension>
+        </ext:UBLExtensions>
 
-    <cbc:ProfileID>reporting:1.0</cbc:ProfileID>
-    <cbc:ID>@INVOICENUMBER@</cbc:ID>
-    <cbc:UUID>807a7f88-b33a-4740-b689-98143ebc7c38</cbc:UUID>
-    <cbc:IssueDate>@INVOICEDATE@</cbc:IssueDate>
-    <cbc:IssueTime>@INVOICETIME@</cbc:IssueTime>
-    <cbc:InvoiceTypeCode name="0200000">388</cbc:InvoiceTypeCode>
-    <cbc:Note languageID="ar">ABC</cbc:Note>
-    <cbc:DocumentCurrencyCode>SAR</cbc:DocumentCurrencyCode>
-    <cbc:TaxCurrencyCode>SAR</cbc:TaxCurrencyCode>
-    <cac:AdditionalDocumentReference>
-        <cbc:ID>ICV</cbc:ID>
-        <cbc:UUID>@COUNTER@</cbc:UUID>
-    </cac:AdditionalDocumentReference>
-    <cac:AdditionalDocumentReference>
-        <cbc:ID>PIH</cbc:ID>
-        <cac:Attachment>
-            <cbc:EmbeddedDocumentBinaryObject mimeCode="text/plain">@PIH@</cbc:EmbeddedDocumentBinaryObject>
-        </cac:Attachment>
-    </cac:AdditionalDocumentReference>
-    <cac:AdditionalDocumentReference>
-        <cbc:ID>QR</cbc:ID>
-        <cac:Attachment>
-            <cbc:EmbeddedDocumentBinaryObject mimeCode="text/plain"></cbc:EmbeddedDocumentBinaryObject>
-        </cac:Attachment>
-    </cac:AdditionalDocumentReference>
-    <cac:Signature>
-        <cbc:ID>urn:oasis:names:specification:ubl:signature:Invoice</cbc:ID>
-        <cbc:SignatureMethod>urn:oasis:names:specification:ubl:dsig:enveloped:xades</cbc:SignatureMethod>
-    </cac:Signature>
-    <cac:AccountingSupplierParty>
-        @INVOICESELLER@
-    </cac:AccountingSupplierParty>
-    <cac:AccountingCustomerParty>
-        @INVOICECUSTOMER@
-    </cac:AccountingCustomerParty>
-    <cac:Delivery>
-        <cbc:ActualDeliveryDate>@DELIVERYDATE@</cbc:ActualDeliveryDate>
-    </cac:Delivery>
-    <cac:PaymentMeans>
-        <cbc:PaymentMeansCode>10</cbc:PaymentMeansCode>
-    </cac:PaymentMeans>
-    <cac:AllowanceCharge>
-        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
-        <cbc:AllowanceChargeReason>discount</cbc:AllowanceChargeReason>
-        <cbc:Amount currencyID="SAR">0.00</cbc:Amount>
-        <cac:TaxCategory>
-            <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">S</cbc:ID>
-            <cbc:Percent>15</cbc:Percent>
-            <cac:TaxScheme>
-                <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
-            </cac:TaxScheme>
-        </cac:TaxCategory>
-    </cac:AllowanceCharge>
-    <cac:TaxTotal>
-        <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
-    </cac:TaxTotal>
-    <cac:TaxTotal>
-        <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
-        <cac:TaxSubtotal>
-            <cbc:TaxableAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:TaxableAmount>
-            <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
-                <cac:TaxCategory>
-                    <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">S</cbc:ID>
-                    <cbc:Percent>15.00</cbc:Percent>
+        <cbc:ProfileID>reporting:1.0</cbc:ProfileID>
+        <cbc:ID>@INVOICENUMBER@</cbc:ID>
+        <cbc:UUID>807a7f88-b33a-4740-b689-98143ebc7c38</cbc:UUID>
+        <cbc:IssueDate>@INVOICEDATE@</cbc:IssueDate>
+        <cbc:IssueTime>@INVOICETIME@</cbc:IssueTime>
+        <cbc:InvoiceTypeCode name="0200000">388</cbc:InvoiceTypeCode>
+        <cbc:Note languageID="ar">ABC</cbc:Note>
+        <cbc:DocumentCurrencyCode>SAR</cbc:DocumentCurrencyCode>
+        <cbc:TaxCurrencyCode>SAR</cbc:TaxCurrencyCode>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>ICV</cbc:ID>
+            <cbc:UUID>@COUNTER@</cbc:UUID>
+        </cac:AdditionalDocumentReference>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>PIH</cbc:ID>
+            <cac:Attachment>
+                <cbc:EmbeddedDocumentBinaryObject mimeCode="text/plain">@PIH@</cbc:EmbeddedDocumentBinaryObject>
+            </cac:Attachment>
+        </cac:AdditionalDocumentReference>
+        <cac:AdditionalDocumentReference>
+            <cbc:ID>QR</cbc:ID>
+            <cac:Attachment>
+                <cbc:EmbeddedDocumentBinaryObject mimeCode="text/plain"></cbc:EmbeddedDocumentBinaryObject>
+            </cac:Attachment>
+        </cac:AdditionalDocumentReference>
+        <cac:Signature>
+            <cbc:ID>urn:oasis:names:specification:ubl:signature:Invoice</cbc:ID>
+            <cbc:SignatureMethod>urn:oasis:names:specification:ubl:dsig:enveloped:xades</cbc:SignatureMethod>
+        </cac:Signature>
+        <cac:AccountingSupplierParty>
+            @INVOICESELLER@
+        </cac:AccountingSupplierParty>
+        <cac:AccountingCustomerParty>
+            @INVOICECUSTOMER@
+        </cac:AccountingCustomerParty>
+        <cac:Delivery>
+            <cbc:ActualDeliveryDate>@DELIVERYDATE@</cbc:ActualDeliveryDate>
+        </cac:Delivery>
+        <cac:PaymentMeans>
+            <cbc:PaymentMeansCode>10</cbc:PaymentMeansCode>
+        </cac:PaymentMeans>
+        <cac:AllowanceCharge>
+            <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+            <cbc:AllowanceChargeReason>discount</cbc:AllowanceChargeReason>
+            <cbc:Amount currencyID="SAR">0.00</cbc:Amount>
+            <cac:TaxCategory>
+                <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">S</cbc:ID>
+                <cbc:Percent>15</cbc:Percent>
                 <cac:TaxScheme>
                     <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
                 </cac:TaxScheme>
-                </cac:TaxCategory>
-        </cac:TaxSubtotal>
-    </cac:TaxTotal>
-    <cac:LegalMonetaryTotal>
-        <cbc:LineExtensionAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:LineExtensionAmount>
-        <cbc:TaxExclusiveAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:TaxExclusiveAmount>
-        <cbc:TaxInclusiveAmount currencyID="SAR">@INVOICETOTALAMOUNT@</cbc:TaxInclusiveAmount>
-        <cbc:AllowanceTotalAmount currencyID="SAR">0.00</cbc:AllowanceTotalAmount>
-        <cbc:PrepaidAmount currencyID="SAR">0.00</cbc:PrepaidAmount>
-        <cbc:PayableAmount currencyID="SAR">@INVOICETOTALAMOUNT@</cbc:PayableAmount>
-    </cac:LegalMonetaryTotal>
-    @INVOICELINES@
-</Invoice>';
-    public function __construct($invoiceNumber,$date,$time,$counter,$deliveryDate)
-    {
+            </cac:TaxCategory>
+        </cac:AllowanceCharge>
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
+        </cac:TaxTotal>
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
+                    <cac:TaxCategory>
+                        <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">S</cbc:ID>
+                        <cbc:Percent>15.00</cbc:Percent>
+                    <cac:TaxScheme>
+                        <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
+                    </cac:TaxScheme>
+                    </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        <cac:LegalMonetaryTotal>
+            <cbc:LineExtensionAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:LineExtensionAmount>
+            <cbc:TaxExclusiveAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:TaxExclusiveAmount>
+            <cbc:TaxInclusiveAmount currencyID="SAR">@INVOICETOTALAMOUNT@</cbc:TaxInclusiveAmount>
+            <cbc:AllowanceTotalAmount currencyID="SAR">0.00</cbc:AllowanceTotalAmount>
+            <cbc:PrepaidAmount currencyID="SAR">0.00</cbc:PrepaidAmount>
+            <cbc:PayableAmount currencyID="SAR">@INVOICETOTALAMOUNT@</cbc:PayableAmount>
+        </cac:LegalMonetaryTotal>
+        @INVOICELINES@
+    </Invoice>';
+
+    public function __construct($invoiceNumber, $date, $time, $counter, $deliveryDate) {
         $this->invoiceNo = $invoiceNumber;
-        $this->invoiceDate = str_replace(["/","."],"-",$date);
+        $this->invoiceDate = str_replace(["/", "."], "-", $date);
         $this->invoiceTime = $time;
         $this->invoiceCounter = $counter;
-        $this->deliveryDate = str_replace(["/","."],"-",$deliveryDate);
+        $this->deliveryDate = str_replace(["/", "."], "-", $deliveryDate);
     }
 
-    public function addInvoiceLine($invoiceLine){
+    public function addInvoiceLine($invoiceLine) {
         $this->invoiceLines[] = $invoiceLine;
     }
 
-    public function populateInvoiceLines(){
-        foreach($this->invoiceLines as $count => $invoiceLine){
+    public function populateInvoiceLines() {
+        foreach($this->invoiceLines as $count => $invoiceLine) {
             $invoiceLine->createInvoiceLineElement($count+1);
         }
     }
-    public function getInvoiceLinesXMLString(){
+    public function getInvoiceLinesXMLString() {
         $lines =[];
-        foreach($this->invoiceLines as $invoiceLine){
+        foreach($this->invoiceLines as $invoiceLine) {
             $lines[] = $invoiceLine->invoiceLineXMLString;
         }
         $this->linesXMLString = implode("\n",$lines);
     }
 
-    public function replaceXMLDocumentInvoiceLine(){
-        $this->xmlContent = str_replace("@INVOICELINES@",$this->linesXMLString,$this->xmlContent);
+    public function replaceXMLDocumentInvoiceLine() {
+        $this->xmlContent = str_replace("@INVOICELINES@", $this->linesXMLString, $this->xmlContent);
     }
 
-    public function fillXMLTemplate($templatePath){
+    public function fillXMLTemplate($templatePath) {
         $this->xmlContent = file_get_contents($templatePath);
     }
 
-    public function calculateInvoiceTotals(){
-
-        foreach($this->invoiceLines as $invoiceLine){
+    public function calculateInvoiceTotals() {
+        foreach($this->invoiceLines as $invoiceLine) {
             $this->totalWithoutVat += $invoiceLine->totalLineWithoutVat;
             $this->vatAmount += $invoiceLine->vatAmount;
             $this->totalAfterVat += $invoiceLine->totalAfterVat;
         }
     }
 
-    public function replaceXMLDocumentTotals(){
+    public function replaceXMLDocumentTotals() {
         $content = $this->xmlContent;
-        $content = str_replace("@INVOICEVATAMOUNT@",number_format($this->vatAmount,2,'.',''),$content);
-        $content = str_replace("@INVOICETAXABLEAMOUNT@",number_format($this->totalWithoutVat,2,'.',''),$content);
-        $content = str_replace("@INVOICETOTALAMOUNT@",number_format($this->totalAfterVat,2,'.',''),$content);
+        $content = str_replace("@INVOICEVATAMOUNT@", number_format($this->vatAmount, 2, '.', ''), $content);
+        $content = str_replace("@INVOICETAXABLEAMOUNT@", number_format($this->totalWithoutVat, 2, '.', ''), $content);
+        $content = str_replace("@INVOICETOTALAMOUNT@", number_format($this->totalAfterVat, 2, '.', ''), $content);
         $this->xmlContent =  $content;
     }
-    public function replaceXMLDocumentInfo(){
+    public function replaceXMLDocumentInfo() {
         $content = $this->xmlContent;
-        $content = str_replace("@INVOICENUMBER@",$this->invoiceNo,$content);
-        $content = str_replace("@INVOICEDATE@",$this->invoiceDate,$content);
-        $content = str_replace("@INVOICETIME@",$this->invoiceTime,$content);
-        $content = str_replace("@COUNTER@",$this->invoiceCounter,$content);
-        $content = str_replace("@DELIVERYDATE@",$this->deliveryDate,$content);
+        $content = str_replace("@INVOICENUMBER@", $this->invoiceNo, $content);
+        $content = str_replace("@INVOICEDATE@", $this->invoiceDate, $content);
+        $content = str_replace("@INVOICETIME@", $this->invoiceTime, $content);
+        $content = str_replace("@COUNTER@", $this->invoiceCounter, $content);
+        $content = str_replace("@DELIVERYDATE@", $this->deliveryDate, $content);
         $this->xmlContent =  $content;
     }
-    public function generateInvoiceLines(){
+    public function generateInvoiceLines() {
         $this->populateInvoiceLines();
         $this->getInvoiceLinesXMLString();
         $this->replaceXMLDocumentInvoiceLine();
     }
 
-    public function generateInvoiceTotals(){
+    public function generateInvoiceTotals() {
         $this->calculateInvoiceTotals();
         $this->replaceXMLDocumentTotals();
     }
 
-    public function setCustomer($customer){
+    public function setCustomer($customer) {
         $this->customer = $customer;
         $this->customer->replaceXMLString();
-        $this->xmlContent = str_replace("@INVOICECUSTOMER@",$this->customer->xmlString,$this->xmlContent);
+        $this->xmlContent = str_replace("@INVOICECUSTOMER@", $this->customer->xmlString, $this->xmlContent);
 
     }
-    public function setSeller($seller){
+
+    public function setSeller($seller) {
         $this->seller = $seller;
         $this->seller->replaceXMLString();
-        $this->xmlContent = str_replace("@INVOICESELLER@",$this->seller->xmlString,$this->xmlContent);
-
+        $this->xmlContent = str_replace("@INVOICESELLER@", $this->seller->xmlString, $this->xmlContent);
     }
-    public function getTaxInvoiceDocument()
-    {
+
+    public function getTaxInvoiceDocument() {
         $this->replaceXMLDocumentInfo();
         $this->generateInvoiceLines();
         $this->generateInvoiceTotals();
@@ -274,8 +273,7 @@ class SimpleTaxInvoice
         $this->document->loadXML($this->xmlContent);
     }
 
-    public function getTaxInvoiceDocumentFromFile($path)
-    {
+    public function getTaxInvoiceDocumentFromFile($path) {
         $this->replaceXMLDocumentInfo();
         $this->generateInvoiceLines();
         $this->generateInvoiceTotals();
@@ -284,8 +282,7 @@ class SimpleTaxInvoice
         $this->document->loadXML($xmlDocument);
     }
 
-    public function generateUUID()
-    {
+    public function generateUUID() {
         $uuid = Uuid::uuid4();
         $xpath = $this->createXpath($this->document);
         $selectedNodes = $xpath->query("/default:Invoice/cbc:UUID");
@@ -295,6 +292,7 @@ class SimpleTaxInvoice
         }
         $this->uuid =  $uuid->toString(). "\n";
     }
+
     // public function generateCounter()
     // {
     //     $xpath = $this->createXpath();
@@ -304,8 +302,8 @@ class SimpleTaxInvoice
     //         $counterNode->nodeValue = $this->counter;
     //     }
     // }
-    public function setPreDocument()
-    {
+
+    public function setPreDocument() {
         $xpath = $this->createXpath();
         $selectedNodes = $xpath->query("/default:Invoice/cac:AdditionalDocumentReference[2]/cac:Attachment/cbc:EmbeddedDocumentBinaryObject");
         $node = $selectedNodes->item(0);
@@ -313,7 +311,8 @@ class SimpleTaxInvoice
             $node->nodeValue = $this->preHash;
         }
     }
-    public function canonicalizeInvoice($pure_invoice_string){
+
+    public function canonicalizeInvoice($pure_invoice_string) {
        // $pure_invoice_string = $this->getPureInvoiceString($invoice_xml);
         $pure_invoice_string = str_replace('<?xml version="1.0" encoding="UTF-8"?>' . "\n", '', $pure_invoice_string);
         $pure_invoice_string = str_replace('<?xml version="1.0"?>' . "\n", '', $pure_invoice_string);
@@ -322,26 +321,25 @@ class SimpleTaxInvoice
         $document->loadXML($pure_invoice_string);
         // $canonicalized = $document->C14N(true, false, null, null);
         return $document;
-
     }
-    public function getInvoiceHash($canonicalString)
-    {
+
+    public function getInvoiceHash($canonicalString) {
         //$stringToHash = "a11b6fe587a50f7daffe3a7fb42dcccf32b43ee9b37d9f252d04243e54c11a3f";
 
         // Hash the string using SHA-256 (you can choose a different algorithm if needed)
-       // $hashedString = hash('sha256', $stringToHash);
+        // $hashedString = hash('sha256', $stringToHash);
 
         // Convert the hexadecimal hash to Base64
         //echo  base64_encode(hex2bin($stringToHash)) . "\n";
         // echo "----------\n";
         // echo $canonicalString;
         // echo "------------\n";
-       $hash = hash('sha256', trim($canonicalString));
-    //     $hash = hash('sha256', trim("a11b6fe587a50f7daffe3a7fb42dcccf32b43ee9b37d9f252d04243e54c11a3f"));
+        $hash = hash('sha256', trim($canonicalString));
+        // $hash = hash('sha256', trim("a11b6fe587a50f7daffe3a7fb42dcccf32b43ee9b37d9f252d04243e54c11a3f"));
         $hash =  hex2bin($hash);
         // $hash = pack('H*', $hash);
         return $hash;
-       // return base64_encode($hash);
+        // return base64_encode($hash);
     }
 
     function canonicalizeXml($xmlString) {
@@ -362,14 +360,15 @@ class SimpleTaxInvoice
 
         return $canonicalXml;
     }
+
     function convertToSingleLine($xmlString) {
         // Remove line breaks and indentation
         $singleLineXml = preg_replace('/\s+/', ' ', $xmlString);
 
         return $singleLineXml;
     }
-    public function getPureInvoiceString(DOMDocument $invoice_xml,$withoutIndetation = true,$singleLine = false)
-    {
+
+    public function getPureInvoiceString(DOMDocument $invoice_xml,$withoutIndetation = true,$singleLine = false) {
         $document = new DOMDocument();
         $document->loadXML($invoice_xml->saveXML() );
         $node = $document->getElementsByTagName("UBLExtensions")->item(0);
@@ -408,9 +407,8 @@ class SimpleTaxInvoice
 
         return trim($canonicalXml);
     }
-    public function createInvoiceDigitalSignature( string $private_key)
-    {
 
+    public function createInvoiceDigitalSignature( string $private_key) {
         //echo "\n{$invoice_hash}\n";
         $cleanedup_private_key_string = $this->cleanUpPrivateKeyString($private_key);
         $wrapped_private_key_string = "-----BEGIN EC PRIVATE KEY-----\n{$cleanedup_private_key_string}\n-----END EC PRIVATE KEY-----";
@@ -418,8 +416,7 @@ class SimpleTaxInvoice
         return base64_encode($binary_signature);
     }
 
-    public static function cleanUpPrivateKeyString(string $private_key)
-    {
+    public static function cleanUpPrivateKeyString(string $private_key) {
         $private_key = str_replace('-----BEGIN EC PRIVATE KEY-----', '', $private_key);
         $private_key = str_replace('-----END EC PRIVATE KEY-----', '', $private_key);
 
@@ -434,10 +431,10 @@ class SimpleTaxInvoice
         return trim($certificate_string);
     }
 
-    private function createXpath($document=null){
-        if(is_null($document)){
+    private function createXpath($document=null) {
+        if(is_null($document)) {
             $xpath = new DOMXPath($this->document);
-        }else{
+        } else {
             $xpath = new DOMXPath($document);
         }
         $xpath->registerNamespace('ext', 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');
@@ -452,7 +449,8 @@ class SimpleTaxInvoice
         $xpath->registerNamespace('default', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
         return $xpath;
     }
-    public function fillSignedProperties($digestValue,$issuer,$serial){
+
+    public function fillSignedProperties($digestValue, $issuer, $serial) {
         $digestQuery = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert/xades:CertDigest/ds:DigestValue";
         $signingTimeQuery = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningTime";
         $certIssuerQuery = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert/xades:IssuerSerial/ds:X509IssuerName";
@@ -460,7 +458,7 @@ class SimpleTaxInvoice
         $xpath = $this->createXpath();
         $selectedNodes = $xpath->query($digestQuery);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $digestValue;
         }
         $selectedNodes = $xpath->query($signingTimeQuery);
@@ -469,19 +467,19 @@ class SimpleTaxInvoice
         //$currentDateTime = new \DateTime('now', new \DateTimeZone('UTC'));
         $this->signTime = $currentDateTime->format('Y-m-d\TH:i:s\Z');
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $this->signTime;
         }
 
         $selectedNodes = $xpath->query($certIssuerQuery);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $issuer;
         }
 
         $selectedNodes = $xpath->query($certSerialQuery);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $serial;
         }
         return $this->document;
@@ -550,56 +548,55 @@ class SimpleTaxInvoice
         return $decimalValue;
     }
 
-    public function signedPropertiesIndentationFix($templatePath)
-    {
+    public function signedPropertiesIndentationFix($templatePath) {
         $template = file_get_contents($templatePath);
-        $template = str_replace("@SIGNTIME@",$this->signTime,$template);
-        $template = str_replace("@CERTSERIAL@",$this->certitifcateInfo[2],$template);
-        $template = str_replace("@ISSUER@",$this->certitifcateInfo[1],$template);
-        $template = str_replace("@CERTHASH@",$this->certitifcateInfo[0],$template);
+        $template = str_replace("@SIGNTIME@", $this->signTime, $template);
+        $template = str_replace("@CERTSERIAL@", $this->certitifcateInfo[2], $template);
+        $template = str_replace("@ISSUER@", $this->certitifcateInfo[1], $template);
+        $template = str_replace("@CERTHASH@", $this->certitifcateInfo[0], $template);
         $hash = openssl_digest($template, 'sha256');
         return base64_encode($hash);
     }
 
-    public function populateUBLExtensions($document,string $invoice_hash, string $cleanUpCertificateString,string $signed_properties_hash, string $digital_signature)
-    {
+    public function populateUBLExtensions($document, string $invoice_hash, string $cleanUpCertificateString, string $signed_properties_hash, string $digital_signature) {
         // var_dump($document);
         $xpath = $this->createXpath($document);
         $step2Path = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:SignatureValue";
         $selectedNodes = $xpath->query($step2Path);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $invoice_hash;
         }
 
         $certificatePath = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:KeyInfo/ds:X509Data/ds:X509Certificate";
         $selectedNodes = $xpath->query($certificatePath);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $cleanUpCertificateString;
         }
 
         $step5Path = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#xadesSignedProperties']/ds:DigestValue";
         $selectedNodes = $xpath->query($step5Path);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $signed_properties_hash;
         }
 
         $step1Path = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:SignedInfo/ds:Reference[@Id='invoiceSignedData']/ds:DigestValue";
         $selectedNodes = $xpath->query($step1Path);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $digital_signature;
         }
 
         return $document;
     }
 
-    public function createAuthorizationToken($binaryToken,$secret){
+    public function createAuthorizationToken($binaryToken, $secret) {
         $token = "{$binaryToken}:{$secret}";
         return base64_encode($token);
     }
+
     public function getCertificateSignature(string $cer): string
     {
         $res = openssl_x509_read($cer);
@@ -618,9 +615,7 @@ class SimpleTaxInvoice
         return pack('H*', $signatureHex);
     }
 
-    public function extractSignature($certPemString)
-    {
-
+    public function extractSignature($certPemString) {
         $bin = ($certPemString);
 
         if (empty($certPemString) || empty($bin)) {
@@ -655,11 +650,7 @@ class SimpleTaxInvoice
         return false;
     }
 
-
-
-
-    public function generateQR(DOMDocument $invoice_xml, string $digital_signature, $public_key, string $invoice_hash, $signature=null)
-    {
+    public function generateQR(DOMDocument $invoice_xml, string $digital_signature, $public_key, string $invoice_hash, $signature=null) {
         // Extract required tags
         //1
         $seller_name = $invoice_xml->getElementsByTagName('AccountingSupplierParty')[0]
@@ -680,12 +671,8 @@ class SimpleTaxInvoice
             $VAT_total = $tax_amount->getElementsByTagName('TaxAmount')[0]->textContent;
         }
 
-
-
         // Detect if simplified invoice or not (not used currently assuming all simplified tax invoice)
         //$invoice_type = $invoice_xml->getElementsByTagName('Invoice/cbc:InvoiceTypeCode')[0]['@_name'];
-
-
 
         $qr_tlv = $this->TLV([
             $seller_name,
@@ -720,7 +707,7 @@ class SimpleTaxInvoice
         return implode('', $__TLVS) ?? '';
     }
 
-    public function pobulateQR($document,$qr){
+    public function pobulateQR($document, $qr) {
         $xpath = $this->createXpath($document);
         $path = "//cac:AdditionalDocumentReference//cbc:ID[text()='QR']//following-sibling::cac:Attachment/cbc:EmbeddedDocumentBinaryObject";
         $selectedNodes = $xpath->query($path);
@@ -733,13 +720,14 @@ class SimpleTaxInvoice
     }
 
     //Step 1
-    public function generateHash($canonical){
+    public function generateHash($canonical) {
         $hash = hash('sha256', trim($canonical));
         $hash =  hex2bin($hash);
         $hash = base64_encode($hash);//Step 1
         $this->hash= $hash;
     }
-    public function processInvoice($preHash,$templatePath){
+
+    public function processInvoice($preHash, $templatePath) {
         $this->getTaxInvoiceDocument();
         $this->preHash = $preHash;
         $this->generateUUID();
@@ -762,10 +750,9 @@ class SimpleTaxInvoice
         $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash,$signture);
         $this->pobulateQR($this->step6Document,$this->qr);
         $this->encodedInvoice = base64_encode($this->step6Document->saveXML());
-
     }
 
-    public function processFileInvoice($preHash,$path,$templatePath){
+    public function processFileInvoice($preHash, $path, $templatePath) {
         $this->getTaxInvoiceDocumentFromFile($path);
         $this->preHash = $preHash;
         $this->generateUUID();
@@ -783,17 +770,16 @@ class SimpleTaxInvoice
         // echo $certitifcateInfo[0] ." \n";
         // echo $certificateHash ." \n";
 
-        $step4Document = $this->fillSignedProperties($certificateHash,$issuerName,$certificateSerial);
-        $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath,$step4Document);//step 5
+        $step4Document = $this->fillSignedProperties($certificateHash, $issuerName, $certificateSerial);
+        $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath, $step4Document);//step 5
         // echo "Hashed Signed: \n". $hashedSignedProperties . "\n";
-        $this->step6Document = $this->populateUBLExtensions($step4Document,$signedInvoice,$this->certitifcateInfo[5],$hashedSignedProperties,$this->hash);
-        $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash,$signture);
-        $this->pobulateQR($this->step6Document,$this->qr);
+        $this->step6Document = $this->populateUBLExtensions($step4Document, $signedInvoice, $this->certitifcateInfo[5], $hashedSignedProperties, $this->hash);
+        $this->qr = $this->generateQR($this->step6Document, $signedInvoice, $publicKey, $this->hash,$signture);
+        $this->pobulateQR($this->step6Document, $this->qr);
         $this->encodedInvoice = base64_encode($this->step6Document->saveXML());
-
     }
 
-    public function getFinalXML(){
+    public function getFinalXML() {
        return $this->step6Document->saveXML();
     }
 }

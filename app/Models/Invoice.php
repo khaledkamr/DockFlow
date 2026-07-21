@@ -184,22 +184,23 @@ class Invoice extends Model
         $isInternational = false; 
         $path = app_path('Zacta/signed_properties_template.php');
 
-        // if(empty(trim($customer->name)) || empty(trim($customer->vatNumber)) || empty(trim($customer->street)) || empty(trim($customer->city)) || empty(trim($customer->district)) || empty(trim($customer->building_number)) || empty(trim($customer->postal_code))) {
-        //     throw new \Exception('Customer information is incomplete. Please ensure name, VAT number, street, city, district, building number, and postal code are provided.');
-        // }
-
-        $customerClass = $customer->type == 'شركة' ? InvoiceCustomer::class : SimpleInvoiceCustomer::class;
-        $taxCustomer = new $customerClass(
-            $customer->name,
-            $customer->vatNumber,
-            $customer->CR,
-            $customer->street,
-            $customer->city,
-            $customer->district,
-            $customer->building_number,
-            $customer->secondary_number,
-            $customer->postal_code
-        );
+        if($customer->type == 'شركة') {
+            $taxCustomer = new InvoiceCustomer(
+                $customer->name,
+                $customer->vatNumber,
+                $customer->CR,
+                $customer->street,
+                $customer->city,
+                $customer->district,
+                $customer->building_number,
+                $customer->secondary_number,
+                $customer->postal_code
+            );
+        } else {
+            $taxCustomer = new SimpleInvoiceCustomer(
+                $customer->name,
+            );
+        }
 
         if($customer->type == 'شركة') {
             $invoiceClass = $isInternational ? TaxInvoiceNoVat::class : TaxInvoice::class;
