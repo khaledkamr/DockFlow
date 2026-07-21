@@ -13,6 +13,7 @@ class InvoiceLineNoVat
     public $totalLineWithoutVat = 0;
     public $vatAmount = 0;
     public $totalAfterVat = 0;
+    public $taxCategory = "Z";
     public $XMLNode;
     public $invoiceLineXMLString = '<cac:InvoiceLine>
         <cbc:ID>LINEID</cbc:ID>

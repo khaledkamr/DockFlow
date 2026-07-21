@@ -13,6 +13,7 @@ use App\Models\Zacta\SimpleTaxInvoice;
 use App\Models\Zacta\SimpleTaxInvoiceNoVat;
 use App\Models\Zacta\TaxInvoice;
 use App\Models\Zacta\TaxInvoiceNoVat;
+use App\Models\Zacta\TaxClearanceInvoice;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -202,6 +203,7 @@ class Invoice extends Model
 
         if($customer->type == 'شركة') {
             $invoiceClass = $isInternational ? TaxInvoiceNoVat::class : TaxInvoice::class;
+            $invoiceClass = $this->type == 'تخليص' ? TaxClearanceInvoice::class : $invoiceClass;
         } else {
             $invoiceClass = $isInternational ? SimpleTaxInvoiceNoVat::class : SimpleTaxInvoice::class;
         }
@@ -246,7 +248,7 @@ class Invoice extends Model
             }
         } elseif ($this->type == 'شحن') {
             foreach ($this->shippingPolicies as $policy) {
-                $itemName = 'shipping service from' . $policy->from . ' to ' . $policy->to;
+                $itemName = 'shipping service from ' . $policy->from . ' to ' . $policy->to;
                 $uom = 'PCE';
 
                 $taxInvoice->addInvoiceLine(new $invoiceLineClass(
@@ -301,7 +303,7 @@ class Invoice extends Model
 
             // Shipping lines
             foreach ($this->shippingPolicies as $policy) {
-                $shippingItemName = 'shipping service from' . $policy->from . ' to ' . $policy->to;
+                $shippingItemName = 'shipping service from ' . $policy->from . ' to ' . $policy->to;
                 $shippingUom = 'PCE';
 
                 $taxInvoice->addInvoiceLine(new $invoiceLineClass(

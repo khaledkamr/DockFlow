@@ -161,15 +161,15 @@ class TaxInvoiceNoVat
         <cac:TaxSubtotal>
             <cbc:TaxableAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:TaxableAmount>
             <cbc:TaxAmount currencyID="SAR">0</cbc:TaxAmount>
-                <cac:TaxCategory>
-                    <cbc:ID>Z</cbc:ID>
-                    <cbc:Percent>0.00</cbc:Percent>
-                    <cbc:TaxExemptionReasonCode>VATEX-SA-34-1</cbc:TaxExemptionReasonCode>
-                    <cbc:TaxExemptionReason>international transport of goods</cbc:TaxExemptionReason>
+            <cac:TaxCategory>
+                <cbc:ID>Z</cbc:ID>
+                <cbc:Percent>0.00</cbc:Percent>
+                <cbc:TaxExemptionReasonCode>VATEX-SA-34-1</cbc:TaxExemptionReasonCode>
+                <cbc:TaxExemptionReason>international transport of goods</cbc:TaxExemptionReason>
                 <cac:TaxScheme>
                     <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
                 </cac:TaxScheme>
-                </cac:TaxCategory>
+            </cac:TaxCategory>
         </cac:TaxSubtotal>
     </cac:TaxTotal>
     <cac:LegalMonetaryTotal>
@@ -182,41 +182,41 @@ class TaxInvoiceNoVat
     </cac:LegalMonetaryTotal>
     @INVOICELINES@
 </Invoice>';
-    public function __construct($invoiceNumber,$date,$time,$counter,$deliveryDate)
-    {
+
+    public function __construct($invoiceNumber, $date, $time, $counter, $deliveryDate) {
         $this->invoiceNo = $invoiceNumber;
-        $this->invoiceDate = str_replace(["/","."],"-",$date);
+        $this->invoiceDate = str_replace(["/","."], "-", $date);
         $this->invoiceTime = $time;
         $this->invoiceCounter = $counter;
-        $this->deliveryDate = str_replace(["/","."],"-",$deliveryDate);
+        $this->deliveryDate = str_replace(["/","."], "-", $deliveryDate);
     }
 
-    public function addInvoiceLine($invoiceLine){
+    public function addInvoiceLine($invoiceLine) {
         $this->invoiceLines[] = $invoiceLine;
     }
 
-    public function populateInvoiceLines(){
+    public function populateInvoiceLines() {
         foreach($this->invoiceLines as $count => $invoiceLine){
             $invoiceLine->createInvoiceLineElement($count+1);
         }
     }
-    public function getInvoiceLinesXMLString(){
+    public function getInvoiceLinesXMLString() {
         $lines =[];
-        foreach($this->invoiceLines as $invoiceLine){
+        foreach($this->invoiceLines as $invoiceLine) { 
             $lines[] = $invoiceLine->invoiceLineXMLString;
         }
         $this->linesXMLString = implode("\n",$lines);
     }
 
-    public function replaceXMLDocumentInvoiceLine(){
+    public function replaceXMLDocumentInvoiceLine() {
         $this->xmlContent = str_replace("@INVOICELINES@",$this->linesXMLString,$this->xmlContent);
     }
 
-    public function fillXMLTemplate($templatePath){
+    public function fillXMLTemplate($templatePath) {
         $this->xmlContent = file_get_contents($templatePath);
     }
 
-    public function calculateInvoiceTotals(){
+    public function calculateInvoiceTotals() {
 
         foreach($this->invoiceLines as $invoiceLine){
             $this->totalWithoutVat += $invoiceLine->totalLineWithoutVat;
@@ -225,14 +225,15 @@ class TaxInvoiceNoVat
         }
     }
 
-    public function replaceXMLDocumentTotals(){
+    public function replaceXMLDocumentTotals() {
         $content = $this->xmlContent;
         $content = str_replace("@INVOICEVATAMOUNT@",number_format($this->vatAmount,2,'.',''),$content);
         $content = str_replace("@INVOICETAXABLEAMOUNT@",number_format($this->totalWithoutVat,2,'.',''),$content);
         $content = str_replace("@INVOICETOTALAMOUNT@",number_format($this->totalAfterVat,2,'.',''),$content);
         $this->xmlContent =  $content;
     }
-    public function replaceXMLDocumentInfo(){
+
+    public function replaceXMLDocumentInfo() {
         $content = $this->xmlContent;
         $content = str_replace("@INVOICENUMBER@",$this->invoiceNo,$content);
         $content = str_replace("@INVOICEDATE@",$this->invoiceDate,$content);
@@ -241,31 +242,31 @@ class TaxInvoiceNoVat
         $content = str_replace("@DELIVERYDATE@",$this->deliveryDate,$content);
         $this->xmlContent =  $content;
     }
-    public function generateInvoiceLines(){
+
+    public function generateInvoiceLines() {
         $this->populateInvoiceLines();
         $this->getInvoiceLinesXMLString();
         $this->replaceXMLDocumentInvoiceLine();
     }
 
-    public function generateInvoiceTotals(){
+    public function generateInvoiceTotals() {
         $this->calculateInvoiceTotals();
         $this->replaceXMLDocumentTotals();
     }
 
-    public function setCustomer($customer){
+    public function setCustomer($customer) {
         $this->customer = $customer;
         $this->customer->replaceXMLString();
-        $this->xmlContent = str_replace("@INVOICECUSTOMER@",$this->customer->xmlString,$this->xmlContent);
+        $this->xmlContent = str_replace("@INVOICECUSTOMER@", $this->customer->xmlString, $this->xmlContent);
 
     }
-    public function setSeller($seller){
+    public function setSeller($seller) {
         $this->seller = $seller;
         $this->seller->replaceXMLString();
-        $this->xmlContent = str_replace("@INVOICESELLER@",$this->seller->xmlString,$this->xmlContent);
+        $this->xmlContent = str_replace("@INVOICESELLER@", $this->seller->xmlString, $this->xmlContent);
 
     }
-    public function getTaxInvoiceDocument()
-    {
+    public function getTaxInvoiceDocument() {
         $this->replaceXMLDocumentInfo();
         $this->generateInvoiceLines();
         $this->generateInvoiceTotals();
@@ -274,8 +275,7 @@ class TaxInvoiceNoVat
         $this->document->loadXML($this->xmlContent);
     }
 
-    public function generateUUID()
-    {
+    public function generateUUID() {
         $uuid = Uuid::uuid4();
         $this->uuid = $uuid->toString();
         $xpath = $this->createXpath($this->document);
@@ -285,6 +285,7 @@ class TaxInvoiceNoVat
             $uuidNode->nodeValue = $this->uuid;
         }
     }
+
     // public function generateCounter()
     // {
     //     $xpath = $this->createXpath();
@@ -294,8 +295,8 @@ class TaxInvoiceNoVat
     //         $counterNode->nodeValue = $this->counter;
     //     }
     // }
-    public function setPreDocument()
-    {
+
+    public function setPreDocument() {
         $xpath = $this->createXpath();
         $selectedNodes = $xpath->query("/default:Invoice/cac:AdditionalDocumentReference[2]/cac:Attachment/cbc:EmbeddedDocumentBinaryObject");
         $node = $selectedNodes->item(0);
@@ -303,7 +304,8 @@ class TaxInvoiceNoVat
             $node->nodeValue = $this->preHash;
         }
     }
-    public function canonicalizeInvoice($pure_invoice_string){
+
+    public function canonicalizeInvoice($pure_invoice_string) {
        // $pure_invoice_string = $this->getPureInvoiceString($invoice_xml);
         $pure_invoice_string = str_replace('<?xml version="1.0" encoding="UTF-8"?>' . "\n", '', $pure_invoice_string);
         $pure_invoice_string = str_replace('<?xml version="1.0"?>' . "\n", '', $pure_invoice_string);
@@ -312,10 +314,9 @@ class TaxInvoiceNoVat
         $document->loadXML($pure_invoice_string);
         // $canonicalized = $document->C14N(true, false, null, null);
         return $document;
-
     }
-    public function getInvoiceHash($canonicalString)
-    {
+
+    public function getInvoiceHash($canonicalString) {
         //$stringToHash = "a11b6fe587a50f7daffe3a7fb42dcccf32b43ee9b37d9f252d04243e54c11a3f";
 
         // Hash the string using SHA-256 (you can choose a different algorithm if needed)
@@ -352,14 +353,15 @@ class TaxInvoiceNoVat
 
         return $canonicalXml;
     }
+
     function convertToSingleLine($xmlString) {
         // Remove line breaks and indentation
         $singleLineXml = preg_replace('/\s+/', ' ', $xmlString);
 
         return $singleLineXml;
     }
-    public function getPureInvoiceString(DOMDocument $invoice_xml,$withoutIndetation = true,$singleLine = false)
-    {
+
+    public function getPureInvoiceString(DOMDocument $invoice_xml, $withoutIndetation = true, $singleLine = false) {
         $document = new DOMDocument();
         $document->loadXML($invoice_xml->saveXML() );
         $node = $document->getElementsByTagName("UBLExtensions")->item(0);
@@ -385,22 +387,21 @@ class TaxInvoiceNoVat
         $xmlString = trim($xmlString);
         $out = $this->canonicalizeXml($xmlString);
 
-        if($withoutIndetation){
+        if($withoutIndetation) {
             $canonicalXml = preg_replace('/^\s*/m', '', $out);
-        }else{
+        }else {
             $canonicalXml = $out;
         }
-        if($singleLine){
+        if($singleLine) {
             $canonicalXml = $this->convertToSingleLine($canonicalXml);
         }
         // file_put_contents('can.xml',$xmlString);
-      // file_put_contents('can.xml',$canonicalXml);
+        // file_put_contents('can.xml',$canonicalXml);
 
         return trim($canonicalXml);
     }
-    public function createInvoiceDigitalSignature( string $private_key)
-    {
 
+    public function createInvoiceDigitalSignature( string $private_key) {
         //echo "\n{$invoice_hash}\n";
         $cleanedup_private_key_string = $this->cleanUpPrivateKeyString($private_key);
         $wrapped_private_key_string = "-----BEGIN EC PRIVATE KEY-----\n{$cleanedup_private_key_string}\n-----END EC PRIVATE KEY-----";
@@ -408,8 +409,7 @@ class TaxInvoiceNoVat
         return base64_encode($binary_signature);
     }
 
-    public static function cleanUpPrivateKeyString(string $private_key)
-    {
+    public static function cleanUpPrivateKeyString(string $private_key) {
         $private_key = str_replace('-----BEGIN EC PRIVATE KEY-----', '', $private_key);
         $private_key = str_replace('-----END EC PRIVATE KEY-----', '', $private_key);
 
@@ -424,10 +424,10 @@ class TaxInvoiceNoVat
         return trim($certificate_string);
     }
 
-    private function createXpath($document=null){
-        if(is_null($document)){
+    private function createXpath($document=null) {
+        if(is_null($document)) {
             $xpath = new DOMXPath($this->document);
-        }else{
+        } else {
             $xpath = new DOMXPath($document);
         }
         $xpath->registerNamespace('ext', 'urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2');
@@ -442,7 +442,8 @@ class TaxInvoiceNoVat
         $xpath->registerNamespace('default', 'urn:oasis:names:specification:ubl:schema:xsd:Invoice-2');
         return $xpath;
     }
-    public function fillSignedProperties($digestValue,$issuer,$serial){
+
+    public function fillSignedProperties($digestValue, $issuer, $serial) {
         $digestQuery = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert/xades:CertDigest/ds:DigestValue";
         $signingTimeQuery = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningTime";
         $certIssuerQuery = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert/xades:IssuerSerial/ds:X509IssuerName";
@@ -450,7 +451,7 @@ class TaxInvoiceNoVat
         $xpath = $this->createXpath();
         $selectedNodes = $xpath->query($digestQuery);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $digestValue;
         }
         $selectedNodes = $xpath->query($signingTimeQuery);
@@ -471,7 +472,7 @@ class TaxInvoiceNoVat
 
         $selectedNodes = $xpath->query($certSerialQuery);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $serial;
         }
         return $this->document;
@@ -537,6 +538,7 @@ class TaxInvoiceNoVat
 
         return $decimalValue;
     }
+
     public function signedPropertiesIndentationFix($document)
     {
         $xpath = $this->createXpath($document);
@@ -550,6 +552,7 @@ class TaxInvoiceNoVat
         return $encodedHash;
 
     }
+
     private function linearizeXmlNode($node) {
         $linearized = '';
         foreach ($node->childNodes as $child) {
@@ -559,44 +562,45 @@ class TaxInvoiceNoVat
         return $linearized;
     }
 
-    public function populateUBLExtensions($document,string $invoice_hash, string $cleanUpCertificateString,string $signed_properties_hash, string $digital_signature)
+    public function populateUBLExtensions($document, string $invoice_hash, string $cleanUpCertificateString, string $signed_properties_hash, string $digital_signature)
     {
         $xpath = $this->createXpath($document);
         $step2Path = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:SignatureValue";
         $selectedNodes = $xpath->query($step2Path);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $invoice_hash;
         }
 
         $certificatePath = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:KeyInfo/ds:X509Data/ds:X509Certificate";
         $selectedNodes = $xpath->query($certificatePath);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $cleanUpCertificateString;
         }
 
         $step5Path = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#xadesSignedProperties']/ds:DigestValue";
         $selectedNodes = $xpath->query($step5Path);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $signed_properties_hash;
         }
 
         $step1Path = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:SignedInfo/ds:Reference[@Id='invoiceSignedData']/ds:DigestValue";
         $selectedNodes = $xpath->query($step1Path);
         $digistNode = $selectedNodes->item(0);
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
             $digistNode->nodeValue = $digital_signature;
         }
 
         return $document;
     }
 
-    public function createAuthorizationToken($binaryToken,$secret){
+    public function createAuthorizationToken($binaryToken, $secret) {
         $token = "{$binaryToken}:{$secret}";
         return base64_encode($token);
     }
+
     public function getCertificateSignature(string $cer): string
     {
         $res = openssl_x509_read($cer);
@@ -615,9 +619,7 @@ class TaxInvoiceNoVat
         return pack('H*', $signatureHex);
     }
 
-    public function extractSignature($certPemString)
-    {
-
+    public function extractSignature($certPemString) {
         $bin = ($certPemString);
 
         if (empty($certPemString) || empty($bin)) {
@@ -652,9 +654,6 @@ class TaxInvoiceNoVat
         return false;
     }
 
-
-
-
     public function generateQR(DOMDocument $invoice_xml, string $digital_signature, $public_key, string $invoice_hash, $signature=null)
     {
         // Extract required tags
@@ -677,12 +676,8 @@ class TaxInvoiceNoVat
             $VAT_total = $tax_amount->getElementsByTagName('TaxAmount')[0]->textContent;
         }
 
-
-
         // Detect if simplified invoice or not (not used currently assuming all simplified tax invoice)
         //$invoice_type = $invoice_xml->getElementsByTagName('Invoice/cbc:InvoiceTypeCode')[0]['@_name'];
-
-
 
         $qr_tlv = $this->TLV([
             $seller_name,
@@ -717,13 +712,13 @@ class TaxInvoiceNoVat
         return implode('', $__TLVS) ?? '';
     }
 
-    public function pobulateQR($document,$qr){
+    public function pobulateQR($document, $qr) {
         $xpath = $this->createXpath($document);
         $path = "//cac:AdditionalDocumentReference//cbc:ID[text()='QR']//following-sibling::cac:Attachment/cbc:EmbeddedDocumentBinaryObject";
         $selectedNodes = $xpath->query($path);
         $digistNode = $selectedNodes->item(0);
 
-        if(!is_null($digistNode)){
+        if(!is_null($digistNode)) {
            $digistNode->nodeValue = $qr;
         }
         return $document;
@@ -753,13 +748,7 @@ class TaxInvoiceNoVat
         return $populated_template;
     }
 
-
-
-
-
-
-    private function parseLineItems(array $line_items)
-    {
+    private function parseLineItems(array $line_items) {
         // BT-110
         $total_taxes = 0;
         $total_subtotal = 0;
@@ -1103,6 +1092,7 @@ class TaxInvoiceNoVat
             ]
         ];
     }
+
     //Step 1
     public function generateHash($canonical){
         $hash = hash('sha256', trim($canonical));
@@ -1110,7 +1100,8 @@ class TaxInvoiceNoVat
         $hash = base64_encode($hash);//Step 1
         $this->hash= $hash;
     }
-    public function processInvoice($preHash,$path=null){
+
+    public function processInvoice($preHash, $path=null) {
         $this->getTaxInvoiceDocument();
         $this->preHash = $preHash;
         $this->generateUUID();
@@ -1132,14 +1123,13 @@ class TaxInvoiceNoVat
         $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash);
         $this->pobulateQR($this->step6Document,$this->qr);
         $this->encodedInvoice = base64_encode($this->step6Document->saveXML());
-
     }
 
-    public function getFinalXML(){
+    public function getFinalXML() {
        return $this->step6Document->saveXML();
     }
 
-    public static function submitSinvoice($userKey,$userSecret,$url,$hash,$uuid,$encodedInvoice){
+    public static function submitSinvoice($userKey,$userSecret,$url,$hash,$uuid,$encodedInvoice) {
         // dd($url);
         $response = Http::withBasicAuth($userKey,$userSecret)
         ->withHeaders([
