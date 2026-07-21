@@ -158,32 +158,7 @@ class TaxClearanceInvoice
         </cac:TaxTotal>
         <cac:TaxTotal>
             <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
-            <cac:TaxSubtotal>
-                <cbc:TaxableAmount currencyID="SAR">@INVOICETAXABLEAMOUNTNOVAT@</cbc:TaxableAmount>
-                <cbc:TaxAmount currencyID="SAR">0.00</cbc:TaxAmount>
-                <cac:TaxCategory>
-                    <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">O</cbc:ID>
-                    <cbc:Percent>0.00</cbc:Percent>
-                    <cbc:TaxExemptionReasonCode>VATEX-SA-OOS</cbc:TaxExemptionReasonCode>
-                    <cbc:TaxExemptionReason>
-                        Disbursement paid on behalf of customer.
-                    </cbc:TaxExemptionReason>
-                    <cac:TaxScheme>
-                        <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
-                    </cac:TaxScheme>
-                </cac:TaxCategory>
-            </cac:TaxSubtotal>
-            <cac:TaxSubtotal>
-                <cbc:TaxableAmount currencyID="SAR">@INVOICETAXABLEAMOUNTVAT@</cbc:TaxableAmount>
-                <cbc:TaxAmount currencyID="SAR">@INVOICEVATAMOUNT@</cbc:TaxAmount>
-                <cac:TaxCategory>
-                    <cbc:ID schemeID="UN/ECE 5305" schemeAgencyID="6">S</cbc:ID>
-                    <cbc:Percent>15.00</cbc:Percent>
-                    <cac:TaxScheme>
-                        <cbc:ID schemeID="UN/ECE 5153" schemeAgencyID="6">VAT</cbc:ID>
-                    </cac:TaxScheme>
-                </cac:TaxCategory>
-            </cac:TaxSubtotal>
+            @TAXSUBTOTALS@
         </cac:TaxTotal>
         <cac:LegalMonetaryTotal>
             <cbc:LineExtensionAmount currencyID="SAR">@INVOICETAXABLEAMOUNT@</cbc:LineExtensionAmount>
@@ -251,13 +226,61 @@ class TaxClearanceInvoice
         }
     }
 
+    public function generateTaxSubtotals() {
+        $xml = '';
+
+        if(isset($this->groupedInvoicedLines['O'])) {
+            $taxable = number_format($this->groupedInvoiceLines['O']['taxable'], 2, '.', '');
+            $xml .= "
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID=\"SAR\">{$taxable}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID=\"SAR\">0.00</cbc:TaxAmount>
+    
+                <cac:TaxCategory>
+                    <cbc:ID schemeID=\"UN/ECE 5305\" schemeAgencyID=\"6\">O</cbc:ID>
+                    <cbc:Percent>0.00</cbc:Percent>
+    
+                    <cbc:TaxExemptionReasonCode>VATEX-SA-OOS</cbc:TaxExemptionReasonCode>
+    
+                    <cbc:TaxExemptionReason>
+                        Disbursement paid on behalf of customer.
+                    </cbc:TaxExemptionReason>
+    
+                    <cac:TaxScheme>
+                        <cbc:ID schemeID=\"UN/ECE 5153\" schemeAgencyID=\"6\">VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>";
+        }
+
+        if(isset($this->groupedInvoiceLines['S'])) {
+            $taxable = number_format($this->groupedInvoiceLines['S']['taxable'], 2, '.', '');
+            $tax = number_format($this->groupedInvoiceLines['S']['tax'], 2, '.', '');
+            $xml .= "
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID=\"SAR\">{$taxable}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID=\"SAR\">{$tax}</cbc:TaxAmount>
+    
+                <cac:TaxCategory>
+                    <cbc:ID schemeID=\"UN/ECE 5305\" schemeAgencyID=\"6\">S</cbc:ID>
+                    <cbc:Percent>15.00</cbc:Percent>
+    
+                    <cac:TaxScheme>
+                        <cbc:ID schemeID=\"UN/ECE 5153\" schemeAgencyID=\"6\">VAT</cbc:ID>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>";
+        }
+
+        return $xml;
+    }
+
     public function replaceXMLDocumentTotals() { 
         $content = $this->xmlContent;
         $content = str_replace("@INVOICEVATAMOUNT@", number_format($this->vatAmount, 2, '.', ''), $content);
         $content = str_replace("@INVOICETAXABLEAMOUNT@", number_format($this->totalWithoutVat, 2, '.', ''), $content);
         $content = str_replace("@INVOICETOTALAMOUNT@", number_format($this->totalAfterVat, 2, '.', ''), $content);
-        $content = str_replace("@INVOICETAXABLEAMOUNTNOVAT@", number_format($this->groupedInvoiceLines['O']['taxable'] ?? 0, 2, '.', ''), $content);
-        $content = str_replace("@INVOICETAXABLEAMOUNTVAT@", number_format($this->groupedInvoiceLines['S']['taxable'] ?? 0, 2, '.', ''), $content);
+        $content = str_replace("@TAXSUBTOTALS@", $this->generateTaxSubtotals(), $content);
         $this->xmlContent =  $content;
     }
 
