@@ -242,7 +242,7 @@ class TaxInvoice
     }
 
     public function generateInvoiceLines() {
-        $this->generateInvoiceLines();
+        $this->populateInvoiceLines();
         $this->getInvoiceLinesXMLString();
         $this->replaceXMLDocumentInvoiceLine();
     }

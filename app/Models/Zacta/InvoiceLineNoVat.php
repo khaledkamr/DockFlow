@@ -37,7 +37,7 @@ class InvoiceLineNoVat
             <cbc:PriceAmount currencyID="SAR">LINEPRICE</cbc:PriceAmount>
         </cac:Price>
     </cac:InvoiceLine>';
-    public function __construct($itemName,$price,$qty,$vat=15.00,$uom="PCE")
+    public function __construct($itemName, $price, $qty, $vat=15.00, $uom="PCE")
     {
         $this->itemName =  htmlspecialchars(trim($itemName), ENT_XML1, 'UTF-8');
         $this->price = $price;
@@ -46,27 +46,27 @@ class InvoiceLineNoVat
         $this->vat = $vat;
     }
 
-    public function calculateLine(){
+    public function calculateLine() {
         $this->totalLineWithoutVat = round($this->price * $this->qty,2);
         $this->vatAmount = round($this->totalLineWithoutVat * ($this->vat /100),2);
         $this->totalAfterVat = round($this->totalLineWithoutVat +  $this->vatAmount,2) ;
     }
 
-    public function populateXMLValues(){
+    public function populateXMLValues() {
         $string = $this->invoiceLineXMLString;
-        $string = str_replace("LINEID",$this->lineId,$string);
-        $string = str_replace("LINEUOM",$this->uom,$string);
-        $string = str_replace("LINEQTY",number_format($this->qty,5,'.',''),$string);
-        $string = str_replace("LINEWITHOUTVAT",number_format($this->totalLineWithoutVat,2,'.',''),$string);
-        $string = str_replace("LINEVATAMOUNT",number_format($this->vatAmount,2,'.',''),$string);
-        $string = str_replace("LINETOTAL",number_format($this->totalAfterVat,2,'.',''),$string);
-        $string = str_replace("LINEVAT",number_format($this->vat,2,'.',''),$string);
-        $string = str_replace("LINENAME",$this->itemName,$string);
-        $string = str_replace("LINEPRICE",number_format($this->price,5,'.',''),$string);
+        $string = str_replace("LINEID", $this->lineId, $string);
+        $string = str_replace("LINEUOM", $this->uom, $string);
+        $string = str_replace("LINEQTY", number_format($this->qty, 5, '.', ''), $string);
+        $string = str_replace("LINEWITHOUTVAT", number_format($this->totalLineWithoutVat, 2, '.', ''), $string);
+        $string = str_replace("LINEVATAMOUNT", number_format($this->vatAmount, 2, '.', ''), $string);
+        $string = str_replace("LINETOTAL", number_format($this->totalAfterVat, 2, '.', ''), $string);
+        $string = str_replace("LINEVAT", number_format($this->vat, 2, '.', ''), $string);
+        $string = str_replace("LINENAME", $this->itemName, $string);
+        $string = str_replace("LINEPRICE", number_format($this->price, 5, '.', ''), $string);
         $this->invoiceLineXMLString = $string;
 
     }
-    public function createInvoiceLineElement($lineId){
+    public function createInvoiceLineElement($lineId) {
         $this->lineId = $lineId;
         $this->calculateLine();
         $this->populateXMLValues();
