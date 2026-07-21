@@ -401,12 +401,20 @@ class Invoice extends Model
                 $diff_invoice_total = round($invoice_amount - $records_from_xml['invoice_total'], 2);
                 $diff_status = $diff_invoice_amount > 0 || $diff_invoice_vat_amount > 0 || $diff_invoice_total > 0;
 
-                $invoice->update([
-                    'zatca_status' => $body['clearanceStatus'] == 'NOT_CLEARED' ? 'sent with error' : 'sent without error',
-                ]);
+                if($customer->type == 'فرد') {
+                    $invoice->update([
+                        'zatca_status' => $body['reportingStatus'] == 'NOT_REPORTED' ? 'sent with error' : 'sent without error',
+                    ]);
+                } else {
+                    $invoice->update([
+                        'zatca_status' => $body['clearanceStatus'] == 'NOT_CLEARED' ? 'sent with error' : 'sent without error',
+                    ]);
+                }
+
+                $status = $customer->type == 'فرد' ? ($body['reportingStatus'] ?? null) : ($body['clearanceStatus'] ?? null);
 
                 $taxInvoice = $taxInvoice->zactaInvoice->update([
-                        'status' => $body['clearanceStatus'],
+                        'status' => $status,
                         'response_log' => $bodyRaw,
                         'request_date' => Carbon::now()
                     ] +
