@@ -5,8 +5,7 @@ namespace App\Models\Zacta;
 class SimpleInvoiceCustomer
 {
     public $name;
-    public $xmlString = '
-        <cac:Party>
+    public $xmlString = '<cac:Party>
             <cac:PartyLegalEntity>
                 <cbc:RegistrationName>@NAME@</cbc:RegistrationName>
             </cac:PartyLegalEntity>
