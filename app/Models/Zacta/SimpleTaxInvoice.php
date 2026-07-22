@@ -745,6 +745,7 @@ class SimpleTaxInvoice
         // echo $certificateHash ." \n";
         $step4Document = $this->fillSignedProperties($certificateHash, $issuerName, $certificateSerial);
         $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath);//step 5
+        dd($hashedSignedProperties);
         $this->step6Document = $this->populateUBLExtensions($step4Document, $signedInvoice, $this->certitifcateInfo[5], $hashedSignedProperties, $this->hash);
 
         // $xpath = $this->createXpath($this->step6Document);
@@ -780,7 +781,7 @@ class SimpleTaxInvoice
 
         $step4Document = $this->fillSignedProperties($certificateHash, $issuerName, $certificateSerial);
         $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath, $step4Document);//step 5
-        dd($hashedSignedProperties);
+        // dd($hashedSignedProperties);
         $this->step6Document = $this->populateUBLExtensions($step4Document, $signedInvoice, $this->certitifcateInfo[5], $hashedSignedProperties, $this->hash);
         $this->qr = $this->generateQR($this->step6Document, $signedInvoice, $publicKey, $this->hash,$signture);
         $this->pobulateQR($this->step6Document, $this->qr);
