@@ -553,7 +553,6 @@ class SimpleTaxInvoice
         $template = str_replace("@CERTSERIAL@", $this->certitifcateInfo[2], $template);
         $template = str_replace("@ISSUER@", $this->certitifcateInfo[1], $template);
         $template = str_replace("@CERTHASH@", $this->certitifcateInfo[0], $template);
-        dd($template);
         $hash = openssl_digest($template, 'sha256');
         return base64_encode($hash);
     }
@@ -732,7 +731,7 @@ class SimpleTaxInvoice
         $this->preHash = $preHash;
         $this->generateUUID();
         $this->setPreDocument();
-        $canonical = $this->getPureInvoiceString($this->document,false,false);
+        $canonical = $this->getPureInvoiceString($this->document, false, false);
         $this->generateHash($canonical);
         $signedInvoice = $this->createInvoiceDigitalSignature($this->privateKey);//step 2
         $this->certitifcateInfo = $this->getCertificateInfo();
@@ -744,11 +743,20 @@ class SimpleTaxInvoice
         $signture = $this->certitifcateInfo[4];
         // echo $certitifcateInfo[0] ." \n";
         // echo $certificateHash ." \n";
-        $step4Document = $this->fillSignedProperties($certificateHash,$issuerName,$certificateSerial);
+        $step4Document = $this->fillSignedProperties($certificateHash, $issuerName, $certificateSerial);
         $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath);//step 5
-        $this->step6Document = $this->populateUBLExtensions($step4Document,$signedInvoice,$this->certitifcateInfo[5],$hashedSignedProperties,$this->hash);
-        $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash,$signture);
-        $this->pobulateQR($this->step6Document,$this->qr);
+        $this->step6Document = $this->populateUBLExtensions($step4Document, $signedInvoice, $this->certitifcateInfo[5], $hashedSignedProperties, $this->hash);
+
+        $xpath = $this->createXpath($this->step6Document);
+
+        $query = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties";
+
+        $node = $xpath->query($query)->item(0);
+
+        dd($this->step6Document->saveXML($node));
+
+        $this->qr = $this->generateQR($this->step6Document, $signedInvoice, $publicKey, $this->hash, $signture);
+        $this->pobulateQR($this->step6Document, $this->qr);
         $this->encodedInvoice = base64_encode($this->step6Document->saveXML());
     }
 
@@ -772,7 +780,7 @@ class SimpleTaxInvoice
 
         $step4Document = $this->fillSignedProperties($certificateHash, $issuerName, $certificateSerial);
         $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath, $step4Document);//step 5
-        // echo "Hashed Signed: \n". $hashedSignedProperties . "\n";
+        // dd($hashedSignedProperties);
         $this->step6Document = $this->populateUBLExtensions($step4Document, $signedInvoice, $this->certitifcateInfo[5], $hashedSignedProperties, $this->hash);
         $this->qr = $this->generateQR($this->step6Document, $signedInvoice, $publicKey, $this->hash,$signture);
         $this->pobulateQR($this->step6Document, $this->qr);
