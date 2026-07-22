@@ -80,7 +80,7 @@
                         <option value="500" {{ $perPage == 500 ? 'selected' : '' }}>500</option>
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
-                    @foreach (request()->except('per_page') as $key => $value)
+                    @foreach (request()->except('per_page', 'page') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </form>

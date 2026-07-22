@@ -25,13 +25,16 @@
                     <label class="form-label">نوع العميل</label>
                     <select name="customer_type" class="form-select border-primary">
                         <option value="all" {{ request('customer_type') == 'all' ? 'selected' : '' }}>الكل</option>
-                        <option value="شركة" {{ request('customer_type') == 'شركة' ? 'selected' : '' }}>عملاء شركات</option>
-                        <option value="فرد" {{ request('customer_type') == 'فرد' ? 'selected' : '' }}>عملاء افراد</option>
+                        <option value="شركة" {{ request('customer_type') == 'شركة' ? 'selected' : '' }}>عملاء شركات
+                        </option>
+                        <option value="فرد" {{ request('customer_type') == 'فرد' ? 'selected' : '' }}>عملاء افراد
+                        </option>
                     </select>
                 </div>
                 <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">من تاريخ</label>
-                    <input type="date" name="from" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
+                    <input type="date" name="from"
+                        value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
                 <div class="col-6 col-sm-6 col-md">
@@ -221,12 +224,16 @@
             <div>
                 <form method="GET" action="">
                     <label for="per_page" class="fw-semibold">عدد الصفوف:</label>
-                    <select id="per_page" name="per_page" class="form-select form-select-sm d-inline-block w-auto">
+                    <select id="per_page" name="per_page" onchange="this.form.submit()"
+                        class="form-select form-select-sm d-inline-block w-auto">
                         <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100</option>
                         <option value="300" {{ $perPage == 300 ? 'selected' : '' }}>300</option>
                         <option value="500" {{ $perPage == 500 ? 'selected' : '' }}>500</option>
                         <option value="1000" {{ $perPage == 1000 ? 'selected' : '' }}>1000</option>
                     </select>
+                    @foreach (request()->except(['per_page', 'page']) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
                 </form>
             </div>
             <div class="flex-grow-1 mx-2">
@@ -330,11 +337,15 @@
                                 </td>
                                 <td class="text-center">
                                     @if ($invoice->zatca_status == 'sent without error')
-                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
+                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}"
+                                            class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
                                             <span class="badge status-delivered">تم الإرسال بنجاح</span>
                                         </a>
                                     @elseif ($invoice->zatca_status == 'sent with error')
-                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
+                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}"
+                                            class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
                                             <span class="badge status-danger">تم الارسال بخطأ</span>
                                         </a>
                                     @else
