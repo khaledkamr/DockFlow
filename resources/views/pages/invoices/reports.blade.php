@@ -22,9 +22,16 @@
                     </select>
                 </div>
                 <div class="col-6 col-sm-6 col-md">
+                    <label class="form-label">نوع العميل</label>
+                    <select name="customer_type" class="form-select border-primary">
+                        <option value="all" {{ request('customer_type') == 'all' ? 'selected' : '' }}>الكل</option>
+                        <option value="شركة" {{ request('customer_type') == 'شركة' ? 'selected' : '' }}>عملاء شركات</option>
+                        <option value="فرد" {{ request('customer_type') == 'فرد' ? 'selected' : '' }}>عملاء افراد</option>
+                    </select>
+                </div>
+                <div class="col-6 col-sm-6 col-md">
                     <label class="form-label">من تاريخ</label>
-                    <input type="date" name="from"
-                        value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
+                    <input type="date" name="from" value="{{ request('from', now()->startOfYear()->format('Y-m-d')) }}"
                         class="form-control border-primary">
                 </div>
                 <div class="col-6 col-sm-6 col-md">
@@ -53,7 +60,9 @@
                             بنكي</option>
                     </select>
                 </div>
-                <div class="col-6 col-sm-6 col-md">
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-sm-6 col-md-2">
                     <label class="form-label">الحالــة</label>
                     <select name="status" class="form-select border-primary">
                         <option value="all"
@@ -69,8 +78,6 @@
                         </option>
                     </select>
                 </div>
-            </div>
-            <div class="row g-3 mb-3">
                 <div class="col-6 col-sm-6 col-md-2">
                     <label class="form-label">حالة الترحيل</label>
                     <select name="is_posted" class="form-select border-primary">

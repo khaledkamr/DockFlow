@@ -320,6 +320,67 @@ class ExportController extends Controller
 
         return view('reports.invoice', compact('company', 'invoice', 'services', 'discountValue', 'qrCode', 'hatching_total'));
     }
+
+    public function printInvoiceReports(Request $request) {
+        $invoices = Invoice::query();
+
+        $customer = $request->input('customer', 'all');
+        $customer_type = $request->input('customer_type', 'all');
+        $from = $request->input('from', null);
+        $to = $request->input('to', null);
+        $type = $request->input('type', 'all');
+        $payment_method = $request->input('payment_method', 'all');
+        $is_posted = $request->input('is_posted', 'all');
+        $status = $request->input('status', 'all');
+        $zatca_status = $request->input('zatca_status', 'all');
+        $search = $request->input('search', null);
+
+        if($customer && $customer != 'all') {
+            $invoices->where('customer_id', $customer);
+        }
+        if($customer_type && $customer_type != 'all') {
+            $invoices->whereHas('customer', function($q) use ($customer_type) {
+                $q->where('type', $customer_type);
+            });
+        }
+        if($from) {
+            $invoices->where('date', '>=', $from);
+        }
+        if($to) {
+            $to = Carbon::parse($to)->endOfDay();
+            $invoices->where('date', '<=', $to);
+        }
+        if($type !== 'all') {
+            $invoices->where('type', $type);
+        }
+        if($payment_method !== 'all') {
+            $invoices->where('payment_method', $payment_method);
+        }
+        if($is_posted !== 'all') {
+            $invoices->where('is_posted', $is_posted == 'true' ? true : false);
+        }
+        if($status !== 'all') {
+            $invoices->where('status', $status);
+        }
+        if($zatca_status !== 'all') {
+            $invoices->where('zatca_status', $zatca_status);
+        }
+        if($search) {
+            $invoices->where(function($q) use ($search) {
+                $q->where('code', 'like', "%$search%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%$search%");
+                  })->orWhere('date', 'like', "%$search%");
+            });
+        }
+        
+        $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->get();
+
+        $filters = $request->all();
+        logActivity('طباعة تقرير الفواتير', "تم طباعة تقرير الفواتير بتصفية: ", $filters);
+
+        return view('reports.invoice_report', compact('invoices', 'from', 'to'));
+    }
     
     public function printInvoiceServices($code) {
         if(Gate::denies('طباعة فاتورة')) {
@@ -617,61 +678,6 @@ class ExportController extends Controller
         logActivity('طباعة تقرير اشعارات النقل', "تم طباعة تقرير اشعارات النقل بتصفية: ", $filters);
 
         return view('reports.transport_order_report', compact('transportOrders', 'from', 'to'));
-    }
-
-    public function printInvoiceReports(Request $request) {
-        $invoices = Invoice::query();
-
-        $customer = $request->input('customer', 'all');
-        $from = $request->input('from', null);
-        $to = $request->input('to', null);
-        $type = $request->input('type', 'all');
-        $payment_method = $request->input('payment_method', 'all');
-        $is_posted = $request->input('is_posted', 'all');
-        $status = $request->input('status', 'all');
-        $zatca_status = $request->input('zatca_status', 'all');
-        $search = $request->input('search', null);
-
-        if($customer && $customer != 'all') {
-            $invoices->where('customer_id', $customer);
-        }
-        if($from) {
-            $invoices->where('date', '>=', $from);
-        }
-        if($to) {
-            $to = Carbon::parse($to)->endOfDay();
-            $invoices->where('date', '<=', $to);
-        }
-        if($type !== 'all') {
-            $invoices->where('type', $type);
-        }
-        if($payment_method !== 'all') {
-            $invoices->where('payment_method', $payment_method);
-        }
-        if($is_posted !== 'all') {
-            $invoices->where('is_posted', $is_posted == 'true' ? true : false);
-        }
-        if($status !== 'all') {
-            $invoices->where('status', $status);
-        }
-        if($zatca_status !== 'all') {
-            $invoices->where('zatca_status', $zatca_status);
-        }
-        if($search) {
-            $invoices->where(function($q) use ($search) {
-                $q->where('code', 'like', "%$search%")
-                  ->orWhereHas('customer', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%$search%");
-                  })->orWhere('date', 'like', "%$search%");
-            });
-        }
-        
-        $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->get();
-
-        $filters = $request->all();
-        logActivity('طباعة تقرير الفواتير', "تم طباعة تقرير الفواتير بتصفية: ", $filters);
-
-        return view('reports.invoice_report', compact('invoices', 'from', 'to'));
     }
 
     public function printExpenseInvoice($code) {

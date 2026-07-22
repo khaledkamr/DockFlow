@@ -25,6 +25,11 @@ class InvoicesExport implements FromCollection, WithHeadings
         if(!empty($this->filters['customer']) && $this->filters['customer'] !== 'all') {
             $query->where('customer_id', $this->filters['customer']);
         }
+        if(!empty($this->filters['customer_type']) && $this->filters['customer_type'] !== 'all') {
+            $query->whereHas('customer', function($q) {
+                $q->where('type', $this->filters['customer_type']);
+            });
+        }
         if(!empty($this->filters['from']) && !empty($this->filters['to'])) {
             $query->whereBetween('date', [$this->filters['from'], $this->filters['to'],]);
         }
