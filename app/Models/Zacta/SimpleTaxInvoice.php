@@ -462,8 +462,8 @@ class SimpleTaxInvoice
         }
         $selectedNodes = $xpath->query($signingTimeQuery);
 
-        $currentDateTime = new \DateTime('now', new \DateTimeZone('Asia/Riyadh'));
-        //$currentDateTime = new \DateTime('now', new \DateTimeZone('UTC'));
+        // $currentDateTime = new \DateTime('now', new \DateTimeZone('Asia/Riyadh'));
+        $currentDateTime = new \DateTime('now', new \DateTimeZone('UTC'));
         $this->signTime = $currentDateTime->format('Y-m-d\TH:i:s\Z');
         $digistNode = $selectedNodes->item(0);
         if(!is_null($digistNode)) {
@@ -553,6 +553,7 @@ class SimpleTaxInvoice
         $template = str_replace("@CERTSERIAL@", $this->certitifcateInfo[2], $template);
         $template = str_replace("@ISSUER@", $this->certitifcateInfo[1], $template);
         $template = str_replace("@CERTHASH@", $this->certitifcateInfo[0], $template);
+        dd($template);
         $hash = openssl_digest($template, 'sha256');
         return base64_encode($hash);
     }
