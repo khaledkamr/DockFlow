@@ -553,7 +553,7 @@ class SimpleTaxInvoice
         $template = str_replace("@CERTSERIAL@", $this->certitifcateInfo[2], $template);
         $template = str_replace("@ISSUER@", $this->certitifcateInfo[1], $template);
         $template = str_replace("@CERTHASH@", $this->certitifcateInfo[0], $template);
-        $hash = openssl_digest($template, 'sha256');
+        $hash = openssl_digest($template, 'sha256', true);
         return base64_encode($hash);
     }
 
@@ -745,7 +745,7 @@ class SimpleTaxInvoice
         // echo $certificateHash ." \n";
         $step4Document = $this->fillSignedProperties($certificateHash, $issuerName, $certificateSerial);
         $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath);//step 5
-        dd($hashedSignedProperties);
+        // dd($hashedSignedProperties);
         $this->step6Document = $this->populateUBLExtensions($step4Document, $signedInvoice, $this->certitifcateInfo[5], $hashedSignedProperties, $this->hash);
 
         // $xpath = $this->createXpath($this->step6Document);
