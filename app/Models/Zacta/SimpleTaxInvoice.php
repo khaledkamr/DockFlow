@@ -552,9 +552,9 @@ class SimpleTaxInvoice
         $signedPropertyPath = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties";
         $selectedNodes = $xpath->query($signedPropertyPath);
         $digistNode = $selectedNodes->item(0);
-        $linearizedXml = $this->linearizeXmlNode($digistNode);
+        $canonicalXml = $digistNode->C14N(false, false);
 
-        $hash = openssl_digest($linearizedXml, 'sha256', true);
+        $hash = openssl_digest($canonicalXml, 'sha256', true);
         return base64_encode($hash);
     }
 
