@@ -90,7 +90,7 @@
                 <p class="small">{{ $voucher->made_by->name ?? '---' }}</p>
             </div>
             <div class="col-6 text-center">
-                <p class="mb-4">المعتمد</p>
+                <p class="mb-4">توقيع المستلم</p>
                 <div class="signature-line mb-2"></div>
                 <p class="small">&nbsp;</p>
             </div>
