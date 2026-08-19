@@ -84,12 +84,17 @@
 
         <!-- Signatures -->
         <div class="row mt-5 pt-4">
-            <div class="col-6 text-center">
+            <div class="col text-center">
                 <p class="mb-4">تم الإعداد بواسطة</p>
                 <div class="signature-line mb-2"></div>
                 <p class="small">{{ $voucher->made_by->name ?? '---' }}</p>
             </div>
-            <div class="col-6 text-center">
+            <div class="col text-center">
+                <p class="mb-4">توقيع المعتمد</p>
+                <div class="signature-line mb-2"></div>
+                <p class="small">&nbsp;</p>
+            </div>
+            <div class="col text-center">
                 <p class="mb-4">توقيع المستلم</p>
                 <div class="signature-line mb-2"></div>
                 <p class="small">&nbsp;</p>
