@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Http;
 
 class TaxInvoiceNoVat
 {
-
     public $invoiceLines = [];
     public $linesXMLString = "";
     public $totalWithoutVat = 0;

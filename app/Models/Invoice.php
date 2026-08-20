@@ -199,6 +199,12 @@ class Invoice extends Model
         } else {
             $taxCustomer = new SimpleInvoiceCustomer(
                 $customer->name,
+                $customer->street ?? ' ',
+                $customer->city ?? ' ',
+                $customer->district ?? ' ',
+                $customer->building_number ?? ' ',
+                $customer->secondary_number ?? ' ',
+                $customer->postal_code ?? ' '
             );
         }
 
