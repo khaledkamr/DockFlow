@@ -213,6 +213,7 @@ class Invoice extends Model
             $invoiceClass = $this->type == 'تخليص' ? TaxClearanceInvoice::class : $invoiceClass;
         } else {
             $invoiceClass = $isInternational ? SimpleTaxInvoiceNoVat::class : SimpleTaxInvoice::class;
+            $invoiceClass = $this->type == 'تخليص' ? TaxClearanceInvoice::class : $invoiceClass;
         }
 
         $taxInvoice = new $invoiceClass(
