@@ -90,19 +90,21 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-6 col-sm-6 col-md-2">
-                    <label class="form-label">حالة zatca</label>
-                    <select name="zatca_status" class="form-select border-primary">
-                        <option value="all" {{ request('zatca_status') == 'all' ? 'selected' : '' }}>الكل</option>
-                        <option value="sent without error"
-                            {{ request('zatca_status') == 'sent without error' ? 'selected' : '' }}>تم الإرسال بنجاح
-                        </option>
-                        <option value="sent with error"
-                            {{ request('zatca_status') == 'sent with error' ? 'selected' : '' }}>تم الإرسال بخطأ</option>
-                        <option value="not sent" {{ request('zatca_status') == 'not sent' ? 'selected' : '' }}>لم يتم
-                            الإرسال</option>
-                    </select>
-                </div>
+                @if($isZatcaEnabled)
+                    <div class="col-6 col-sm-6 col-md-2">
+                        <label class="form-label">حالة zatca</label>
+                        <select name="zatca_status" class="form-select border-primary">
+                            <option value="all" {{ request('zatca_status') == 'all' ? 'selected' : '' }}>الكل</option>
+                            <option value="sent without error"
+                                {{ request('zatca_status') == 'sent without error' ? 'selected' : '' }}>تم الإرسال بنجاح
+                            </option>
+                            <option value="sent with error"
+                                {{ request('zatca_status') == 'sent with error' ? 'selected' : '' }}>تم الإرسال بخطأ</option>
+                            <option value="not sent" {{ request('zatca_status') == 'not sent' ? 'selected' : '' }}>لم يتم
+                                الإرسال</option>
+                        </select>
+                    </div>
+                @endif
             </div>
 
             <div class="row">
@@ -175,47 +177,49 @@
             </div>
         </div>
 
-        <!-- Sent to ZATCA Successfully -->
-        <div class="col-12 col-md-6 col-lg flex-grow-1">
-            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
-                <i class="fa-solid fa-paper-plane position-absolute"
-                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #198754;"></i>
-                <div class="card-body text-center p-1 position-relative">
-                    <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بنجاح</h6>
-                    <h4 class="text-success fw-bold" style="font-size: 1.5rem;">
-                        {{ $zatcaAcceptedCount ?? 0 }}
-                    </h4>
+        @if($isZatcaEnabled)
+            <!-- Sent to ZATCA Successfully -->
+            <div class="col-12 col-md-6 col-lg flex-grow-1">
+                <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                    <i class="fa-solid fa-paper-plane position-absolute"
+                        style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #198754;"></i>
+                    <div class="card-body text-center p-1 position-relative">
+                        <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بنجاح</h6>
+                        <h4 class="text-success fw-bold" style="font-size: 1.5rem;">
+                            {{ $zatcaAcceptedCount ?? 0 }}
+                        </h4>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sent to ZATCA with Error -->
-        <div class="col-12 col-md-6 col-lg flex-grow-1">
-            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
-                <i class="fa-solid fa-triangle-exclamation position-absolute"
-                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #ffc107;"></i>
-                <div class="card-body text-center p-1 position-relative">
-                    <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بخطأ</h6>
-                    <h4 class="text-warning fw-bold" style="font-size: 1.5rem;">
-                        {{ $zatcaRejectedCount ?? 0 }}
-                    </h4>
+            <!-- Sent to ZATCA with Error -->
+            <div class="col-12 col-md-6 col-lg flex-grow-1">
+                <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                    <i class="fa-solid fa-triangle-exclamation position-absolute"
+                        style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #ffc107;"></i>
+                    <div class="card-body text-center p-1 position-relative">
+                        <h6 class="card-title text-muted fw-bold mb-1">تم الإرسال بخطأ</h6>
+                        <h4 class="text-warning fw-bold" style="font-size: 1.5rem;">
+                            {{ $zatcaRejectedCount ?? 0 }}
+                        </h4>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Not Sent to ZATCA -->
-        <div class="col-12 col-md-6 col-lg flex-grow-1">
-            <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
-                <i class="fa-solid fa-ban position-absolute"
-                    style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #dc3545;"></i>
-                <div class="card-body text-center p-1 position-relative">
-                    <h6 class="card-title text-muted fw-bold mb-1">لم يتم الإرسال</h6>
-                    <h4 class="text-danger fw-bold" style="font-size: 1.5rem;">
-                        {{ $zatcaPendingCount ?? 0 }}
-                    </h4>
+            <!-- Not Sent to ZATCA -->
+            <div class="col-12 col-md-6 col-lg flex-grow-1">
+                <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden">
+                    <i class="fa-solid fa-ban position-absolute"
+                        style="font-size: 4rem; opacity: 0.1; bottom: -5px; left: -5px; color: #dc3545;"></i>
+                    <div class="card-body text-center p-1 position-relative">
+                        <h6 class="card-title text-muted fw-bold mb-1">لم يتم الإرسال</h6>
+                        <h4 class="text-danger fw-bold" style="font-size: 1.5rem;">
+                            {{ $zatcaPendingCount ?? 0 }}
+                        </h4>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 
     <!-- Invoices Table -->
@@ -289,7 +293,9 @@
                         <th class="text-center bg-dark text-white">الحالة</th>
                         <th class="text-center bg-dark text-white">المبلغ المسدد</th>
                         <th class="text-center bg-dark text-white">المبلغ المتبقي</th>
-                        <th class="text-center bg-dark text-white">حالة ZATCA</th>
+                        @if($isZatcaEnabled)
+                            <th class="text-center bg-dark text-white">حالة ZATCA</th>
+                        @endif
                         <th class="text-center bg-dark text-white">الإجرائات</th>
                     </tr>
                 </thead>
@@ -335,26 +341,28 @@
                                 <td class="text-center">
                                     {{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}
                                 </td>
-                                <td class="text-center">
-                                    @if ($invoice->zatca_status == 'sent without error')
-                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}"
-                                            class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
-                                            <span class="badge status-delivered">تم الإرسال بنجاح</span>
-                                        </a>
-                                    @elseif ($invoice->zatca_status == 'sent with error')
-                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}"
-                                            class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
-                                            <span class="badge status-danger">تم الارسال بخطأ</span>
-                                        </a>
-                                    @else
-                                        <span class="badge status-danger">لم يتم الإرسال</span>
-                                    @endif
-                                </td>
+                                @if($isZatcaEnabled)
+                                    <td class="text-center">
+                                        @if ($invoice->zatca_status == 'sent without error')
+                                            <a href="{{ route('invoices.zatca.invoice', $invoice) }}"
+                                                class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
+                                                <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                            </a>
+                                        @elseif ($invoice->zatca_status == 'sent with error')
+                                            <a href="{{ route('invoices.zatca.invoice', $invoice) }}"
+                                                class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
+                                                <span class="badge status-danger">تم الارسال بخطأ</span>
+                                            </a>
+                                        @else
+                                            <span class="badge status-danger">لم يتم الإرسال</span>
+                                        @endif
+                                    </td>
+                                @endif
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                        @if ($invoice->zatca_status !== 'sent without error')
+                                        @if ($isZatcaEnabled && $invoice->zatca_status !== 'sent without error')
                                             <a href="{{ route('invoices.send.zatca', $invoice) }}"
                                                 class="btn btn-sm btn-outline-primary">
                                                 <span class="d-none d-sm-inline">إرسال</span>

@@ -68,8 +68,9 @@ class InvoiceController extends Controller
         }
 
         $invoices = $invoices->with(['customer'])->orderBy('code', 'desc')->paginate(100)->onEachSide(1)->withQueryString();
+        $isZatcaEnabled = auth()->user()->company->zatcaCompany ? true : false;
 
-        return view('pages.invoices.invoices', compact('invoices'));
+        return view('pages.invoices.invoices', compact('invoices', 'isZatcaEnabled'));
     }
 
     // ----------------------- Storage Invoices -----------------------

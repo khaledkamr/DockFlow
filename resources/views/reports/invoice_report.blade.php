@@ -24,7 +24,9 @@
                     <th>الحالة</th>
                     <th>المبلغ المسدد</th>
                     <th>المبلغ المتبقي</th>
-                    <th>حالة ZATCA</th>
+                    @if($isZatcaEnabled)
+                        <th>حالة ZATCA</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -49,15 +51,17 @@
                             <td class="text-center">{{ $invoice->status }}</td>
                             <td class="text-center">{{ number_format($invoice->paid_amount, 2) }}</td>
                             <td class="text-center">{{ number_format($invoice->total_amount - $invoice->paid_amount, 2) }}</td>
-                            <td class="text-center">
-                                @if ($invoice->zatca_status == 'sent without error')
-                                    تم الإرسال بنجاح
-                                @elseif ($invoice->zatca_status == 'sent with error')
-                                    تم الإرسال بخطأ
-                                @else
-                                    لم يتم الإرسال
-                                @endif
-                            </td>
+                            @if($isZatcaEnabled)
+                                <td class="text-center">
+                                    @if ($invoice->zatca_status == 'sent without error')
+                                        تم الإرسال بنجاح
+                                    @elseif ($invoice->zatca_status == 'sent with error')
+                                        تم الإرسال بخطأ
+                                    @else
+                                        لم يتم الإرسال
+                                    @endif
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endif

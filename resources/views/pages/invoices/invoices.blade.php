@@ -104,7 +104,9 @@
                     <th class="text-center bg-dark text-white text-nowrap">المبلغ</th>
                     <th class="text-center bg-dark text-white text-nowrap">تاريـخ الفـاتورة</th>
                     <th class="text-center bg-dark text-white text-nowrap">حالة الدفع</th>
-                    <th class="text-center bg-dark text-white text-nowrap">حالة الإرسال</th>
+                    @if($isZatcaEnabled)
+                        <th class="text-center bg-dark text-white text-nowrap">حالة ZATCA</th>
+                    @endif
                     <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجرائات</th>
                 </tr>
@@ -113,7 +115,7 @@
                 @if ($invoices->isEmpty())
                     <tr>
                         <td colspan="9" class="text-center">
-                            <div class="status-danger fs-6">لا يوجد اي فواتيـــر!</div>
+                            <div class="status-danger fs-6">لم يتم العثور على اي فواتيـــر!</div>
                         </td>
                     </tr>
                 @else
@@ -145,24 +147,26 @@
                             @elseif ($invoice->status == 'مسودة')
                                 <td class="text-center"><span class="badge status-secondary">مسودة</span></td>
                             @endif
-                            {{-- @if ($invoice->zatca_status == 'sent without error')
-                                <td class="text-center"><span class="badge status-delivered">تم الإرسال</span></td>
-                            @elseif ($invoice->zatca_status == 'not sent')
-                                <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
-                            <td class="text-center">
-                                @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
-                                    <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
-                                        <span class="badge status-delivered">تم الإرسال بنجاح</span>
-                                    </a>
-                                @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
-                                    <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
-                                        <span class="badge status-danger">تم الارسال بخطأ</span>
-                                    </a>
-                                @else
-                                    <span class="badge status-danger">لم يتم الارسال</span>
-                                @endif
-                            </td>
-                            {{-- @endif --}}
+                            @if($isZatcaEnabled)
+                                {{-- @if ($invoice->zatca_status == 'sent without error')
+                                    <td class="text-center"><span class="badge status-delivered">تم الإرسال</span></td>
+                                @elseif ($invoice->zatca_status == 'not sent')
+                                    <td class="text-center"><span class="badge status-danger">لم يتم الإرسال</span></td> --}}
+                                <td class="text-center">
+                                    @if($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['CLEARED', 'REPORTED']))
+                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض تفاصيل الفاتورة المرسلة إلى ZATCA">
+                                            <span class="badge status-delivered">تم الإرسال بنجاح</span>
+                                        </a>
+                                    @elseif($invoice->zatcaInvoice && in_array($invoice->zatcaInvoice->status,['NOT_REPORTED','NOT_CLEARED']))
+                                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" class="text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="top" title="خطأ في البيانات أو تنسيق غير صحيح. يرجى مراجعة تفاصيل الفاتورة وتصحيح الأخطاء قبل إعادة الإرسال.">
+                                            <span class="badge status-danger">تم الارسال بخطأ</span>
+                                        </a>
+                                    @else
+                                        <span class="badge status-danger">لم يتم الارسال</span>
+                                    @endif
+                                </td>
+                                {{-- @endif --}}
+                            @endif
                             <td class="text-center">
                                 <a href="{{ route('admin.user.profile', $invoice->made_by) }}"
                                     class="text-dark text-decoration-none">
@@ -171,7 +175,7 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                    @if ($invoice->zatca_status !== 'sent without error')
+                                    @if ($isZatcaEnabled && $invoice->zatca_status !== 'sent without error')
                                         <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-sm btn-outline-primary">
                                             <span class="d-none d-sm-inline">إرسال</span>
                                             <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>

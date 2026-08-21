@@ -375,11 +375,12 @@ class ExportController extends Controller
         }
         
         $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->get();
+        $isZatcaEnabled = auth()->user()->company->zatcaCompany ? true : false;
 
         $filters = $request->all();
         logActivity('طباعة تقرير الفواتير', "تم طباعة تقرير الفواتير بتصفية: ", $filters);
 
-        return view('reports.invoice_report', compact('invoices', 'from', 'to'));
+        return view('reports.invoice_report', compact('invoices', 'from', 'to', 'isZatcaEnabled'));
     }
     
     public function printInvoiceServices($code) {
