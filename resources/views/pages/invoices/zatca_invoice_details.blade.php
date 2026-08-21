@@ -22,7 +22,9 @@
                             @php
                                 $statusBadgeClass = match ($zatcaInvoice->status) {
                                     'CLEARED' => 'bg-success',
+                                    'REPORTED' => 'bg-success',
                                     'NOT_CLEARED' => 'bg-danger',
+                                    'NOT_REPORTED' => 'bg-danger',
                                     'pending' => 'bg-warning',
                                     default => 'bg-secondary',
                                 };
