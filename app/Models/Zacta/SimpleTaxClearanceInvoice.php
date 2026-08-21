@@ -32,6 +32,7 @@ class SimpleTaxClearanceInvoice
     public $encodedInvoice;
     public $qr;
     public $step6Document;
+    public $signTime;
     public $zactaInvoice;
     public $xmlContent = '<?xml version="1.0" encoding="UTF-8"?>
     <Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
@@ -107,6 +108,7 @@ class SimpleTaxClearanceInvoice
         <cbc:IssueDate>@INVOICEDATE@</cbc:IssueDate>
         <cbc:IssueTime>@INVOICETIME@</cbc:IssueTime>
         <cbc:InvoiceTypeCode name="0200000">388</cbc:InvoiceTypeCode>
+        <cbc:Note languageID="ar">ABC</cbc:Note>
         <cbc:DocumentCurrencyCode>SAR</cbc:DocumentCurrencyCode>
         <cbc:TaxCurrencyCode>SAR</cbc:TaxCurrencyCode>
         <cac:AdditionalDocumentReference>
@@ -327,6 +329,15 @@ class SimpleTaxClearanceInvoice
         $this->document->loadXML($this->xmlContent);
     }
 
+    public function getTaxInvoiceDocumentFromFile($path) {
+        $this->replaceXMLDocumentInfo();
+        $this->generateInvoiceLines();
+        $this->generateInvoiceTotals();
+        $this->document = new DOMDocument();
+        $xmlDocument = file_get_contents($path);
+        $this->document->loadXML($xmlDocument);
+    }
+
     public function generateUUID() {
         $uuid = Uuid::uuid4();
         $this->uuid = $uuid->toString();
@@ -510,10 +521,10 @@ class SimpleTaxClearanceInvoice
 
         $currentDateTime = new \DateTime('now', new \DateTimeZone('Asia/Riyadh'));
         //$currentDateTime = new \DateTime('now', new \DateTimeZone('UTC'));
-        $iso8601Format = $currentDateTime->format('Y-m-d\TH:i:s\Z');
+        $this->signTime = $currentDateTime->format('Y-m-d\TH:i:s\Z');
         $digistNode = $selectedNodes->item(0);
         if(!is_null($digistNode)) {
-            $digistNode->nodeValue = $iso8601Format;
+            $digistNode->nodeValue = $this->signTime;
         }
 
         $selectedNodes = $xpath->query($certIssuerQuery);
@@ -591,26 +602,16 @@ class SimpleTaxClearanceInvoice
         return $decimalValue;
     }
 
-    public function signedPropertiesIndentationFix($document)
+    public function signedPropertiesIndentationFix($templatePath)
     {
-        $xpath = $this->createXpath($document);
-        $signedPropertyPath = "/default:Invoice/ext:UBLExtensions/ext:UBLExtension/ext:ExtensionContent/sig:UBLDocumentSignatures/sac:SignatureInformation/ds:Signature/ds:Object/xades:QualifyingProperties/xades:SignedProperties";
-        $selectedNodes = $xpath->query($signedPropertyPath);
-        $digistNode = $selectedNodes->item(0);
-        $linearizedXml= $this->linearizeXmlNode($digistNode);
-
-        $hash = openssl_digest($linearizedXml, 'sha256');
+        $template = file_get_contents($templatePath);
+        $template = str_replace("@SIGNTIME@", $this->signTime, $template);
+        $template = str_replace("@CERTSERIAL@", $this->certitifcateInfo[2], $template);
+        $template = str_replace("@ISSUER@", $this->certitifcateInfo[1], $template);
+        $template = str_replace("@CERTHASH@", $this->certitifcateInfo[0], $template);
+        $hash = openssl_digest($template, 'sha256');
         $encodedHash = base64_encode($hash);
         return $encodedHash;
-    }
-
-    private function linearizeXmlNode($node) {
-        $linearized = '';
-        foreach ($node->childNodes as $child) {
-            $linearized .= $child->ownerDocument->saveXML($child);
-        }
-        $linearized = preg_replace('/\s+/', '', $linearized);
-        return $linearized;
     }
 
     public function populateUBLExtensions($document,string $invoice_hash, string $cleanUpCertificateString, string $signed_properties_hash, string $digital_signature) {
@@ -1151,7 +1152,7 @@ class SimpleTaxClearanceInvoice
         $this->hash= $hash;
     }
 
-    public function processInvoice($preHash, $path=null) {
+    public function processInvoice($preHash, $templatePath) {
         $this->getTaxInvoiceDocument();
         $this->preHash = $preHash;
         $this->generateUUID();
@@ -1165,12 +1166,36 @@ class SimpleTaxClearanceInvoice
         $publicKey = $this->certitifcateInfo[3];
         $issuerName = $this->certitifcateInfo[1];
         $certificateSerial = $this->certitifcateInfo[2];
+        $signature = $this->certitifcateInfo[4];
         // echo $certitifcateInfo[0] ." \n";
         // echo $certificateHash ." \n";
         $step4Document = $this->fillSignedProperties($certificateHash,$issuerName,$certificateSerial);
-        $hashedSignedProperties = $this->signedPropertiesIndentationFix($step4Document);//step 5
+        $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath);//step 5
         $this->step6Document = $this->populateUBLExtensions($step4Document,$signedInvoice,$this->certitifcateInfo[5],$hashedSignedProperties,$this->hash);
-        $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash);
+        $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash,$signature);
+        $this->pobulateQR($this->step6Document,$this->qr);
+        $this->encodedInvoice = base64_encode($this->step6Document->saveXML());
+    }
+
+    public function processFileInvoice($preHash, $path, $templatePath) {
+        $this->getTaxInvoiceDocumentFromFile($path);
+        $this->preHash = $preHash;
+        $this->generateUUID();
+        $this->setPreDocument();
+        $canonical = $this->getPureInvoiceString($this->document,false,false);
+        $this->generateHash($canonical);
+        $signedInvoice = $this->createInvoiceDigitalSignature($this->privateKey);//step 2
+        $this->certitifcateInfo = $this->getCertificateInfo();
+        $certificateHash = $this->certitifcateInfo[0];//step 3
+        $publicKey = $this->certitifcateInfo[3];
+        $issuerName = $this->certitifcateInfo[1];
+        $certificateSerial = $this->certitifcateInfo[2];
+        $signature = $this->certitifcateInfo[4];
+
+        $step4Document = $this->fillSignedProperties($certificateHash,$issuerName,$certificateSerial);
+        $hashedSignedProperties = $this->signedPropertiesIndentationFix($templatePath);//step 5
+        $this->step6Document = $this->populateUBLExtensions($step4Document,$signedInvoice,$this->certitifcateInfo[5],$hashedSignedProperties,$this->hash);
+        $this->qr = $this->generateQR($this->step6Document,$signedInvoice,$publicKey,$this->hash,$signature);
         $this->pobulateQR($this->step6Document,$this->qr);
         $this->encodedInvoice = base64_encode($this->step6Document->saveXML());
     }
