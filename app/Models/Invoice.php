@@ -14,6 +14,7 @@ use App\Models\Zacta\SimpleTaxInvoiceNoVat;
 use App\Models\Zacta\TaxInvoice;
 use App\Models\Zacta\TaxInvoiceNoVat;
 use App\Models\Zacta\TaxClearanceInvoice;
+use App\Models\Zacta\SimpleTaxClearanceInvoice;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -213,7 +214,7 @@ class Invoice extends Model
             $invoiceClass = $this->type == 'تخليص' ? TaxClearanceInvoice::class : $invoiceClass;
         } else {
             $invoiceClass = $isInternational ? SimpleTaxInvoiceNoVat::class : SimpleTaxInvoice::class;
-            $invoiceClass = $this->type == 'تخليص' ? TaxClearanceInvoice::class : $invoiceClass;
+            $invoiceClass = $this->type == 'تخليص' ? SimpleTaxClearanceInvoice::class : $invoiceClass;
         }
 
         $taxInvoice = new $invoiceClass(
