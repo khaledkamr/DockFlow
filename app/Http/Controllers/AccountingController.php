@@ -39,12 +39,12 @@ class AccountingController extends Controller
         $new = Account::create($validated);
 
         logActivity('إنشاء حساب', "تم إنشاء حساب جديد بإسم: " . $name . " بمستوى " . $validated['level'] . " في دليل الحسابات", null, $new->toArray());
-        return redirect()->back()->with('success', "تم إنشاء الفرع '$name' بنجاح");
+        return redirect()->back()->with('success', "تم إنشاء الحساب '$name' بنجاح");
     }
 
     public function updateRoot(Request $request, $id) {
         if(Gate::denies('تعديل او حذف مستوى حساب')) {
-            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل مستويات حساب');
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل حساب');
         }
 
         $root = Account::findOrFail($id);
@@ -54,20 +54,20 @@ class AccountingController extends Controller
         $new = $root->toArray();
 
         logActivity('تعديل حساب', "تم تعديل الحساب '" . $name . "' في دليل الحسابات", $old, $new);
-        return redirect()->back()->with('success', "تم تعديل المستوى '$name' بنجاح");
+        return redirect()->back()->with('success', "تم تعديل الحساب '$name' بنجاح");
     }
 
     public function deleteRoot($id) {
         if(Gate::denies('تعديل او حذف مستوى حساب')) {
-            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف مستويات حساب');
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لحذف حساب');
         }
 
         $root = Account::findOrFail($id);
         if($root->children()->exists()) {
-            return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود مستويات فرعية مرتبطة به');
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا الحساب لوجود حسابات فرعية مرتبطة به');
         }
         if($root->journalLines()->exists()) {
-            return redirect()->back()->with('error', 'لا يمكن حذف هذا المستوى لوجود قيود مرتبطة به');
+            return redirect()->back()->with('error', 'لا يمكن حذف هذا الحساب لوجود قيود مرتبطة به');
         }
 
         $old = $root->toArray();
@@ -75,7 +75,7 @@ class AccountingController extends Controller
         $root->delete();
 
         logActivity('حذف حساب', "تم حذف الحساب '" . $name . "' من دليل الحسابات", $old, null);
-        return redirect()->back()->with('success', "تم حذف المستوى '$name' بنجاح");
+        return redirect()->back()->with('success', "تم حذف الحساب '$name' بنجاح");
     }
 
     // ----------------------- Journal Entries -----------------------

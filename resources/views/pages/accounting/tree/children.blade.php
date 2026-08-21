@@ -49,21 +49,21 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
-                        <h5 class="modal-title text-white fw-bold" id="addRootLabel{{ $child->id }}">إنشاء فرع جديد من {{ $child->name }}</h5>
+                        <h5 class="modal-title text-white fw-bold" id="addRootLabel{{ $child->id }}">إنشاء حساب جديد من {{ $child->name }}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('create.root') }}" method="POST">
                         @csrf
                         <div class="modal-body text-dark">
                             <div class="mb-3">
-                                <label for="name" class="form-label">إسم الفرع</label>
+                                <label for="name" class="form-label">إسم الحساب</label>
                                 <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}" required>
                                 @error('name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="code" class="form-label">الرقم الفرع</label>
+                                <label for="code" class="form-label">الرقم الحساب</label>
                                 <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $child->children->count() ? $child->children->last()->code + 1 : (int) ($child->code . '00') + 1 }}" required>
                                 @error('code')
                                     <div class="text-danger">{{ $message }}</div>
@@ -108,7 +108,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-primary">
-                        <h5 class="modal-title text-white fw-bold" id="editRootLabel{{ $child->id }}">تعديل مستوى {{ $child->name }}</h5>
+                        <h5 class="modal-title text-white fw-bold" id="editRootLabel{{ $child->id }}">تعديل حساب {{ $child->name }}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form action="{{ route('update.root', $child->id) }}" method="POST" onsubmit="saveTreeState()">
@@ -116,14 +116,14 @@
                         @method('PATCH')
                         <div class="modal-body text-dark">
                             <div class="mb-3">
-                                <label for="name" class="form-label">إسم المستوى</label>
+                                <label for="name" class="form-label">إسم الحساب</label>
                                 <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $child->name }}" required>
                                 @error('name')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="code" class="form-label">رقم المستوى</label>
+                                <label for="code" class="form-label">رقم الحساب</label>
                                 <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $child->code }}" required>
                                 @error('code')
                                     <div class="text-danger">{{ $message }}</div>
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                             <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
                         </div>
                     </form>

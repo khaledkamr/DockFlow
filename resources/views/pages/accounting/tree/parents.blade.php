@@ -191,21 +191,21 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white fw-bold" id="addRootLabel{{ $account->id }}">إنشاء فرع جديد من {{ $account->name }}</h5>
+                                <h5 class="modal-title text-white fw-bold" id="addRootLabel{{ $account->id }}">إنشاء حساب جديد من {{ $account->name }}</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="{{ route('create.root') }}" method="POST" onsubmit="saveTreeState()">
                                 @csrf
                                 <div class="modal-body text-dark">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">إسم الفرع</label>
+                                        <label for="name" class="form-label">إسم الحساب</label>
                                         <input type="text" class="form-control border-primary" id="name" name="name" value="{{ old('name') }}" required>
                                         @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3">
-                                        <label for="code" class="form-label">الرقم الفرع</label>
+                                        <label for="code" class="form-label">الرقم الحساب</label>
                                         <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $account->children->count() ? $account->children->last()->code + 1 : (int) ($account->code . '00') + 1 }}" required>
                                         @error('code')
                                             <div class="text-danger">{{ $message }}</div>
@@ -216,7 +216,7 @@
                                     <input type="hidden" name="level" value={{ $account->level + 1 }}>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     <button type="submit" class="btn btn-primary fw-bold">إنشاء</button>
                                 </div>
                             </form>
@@ -228,7 +228,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header bg-primary">
-                                <h5 class="modal-title text-white fw-bold" id="editRootLabel{{ $account->id }}">تعديل مستوى {{ $account->name }}</h5>
+                                <h5 class="modal-title text-white fw-bold" id="editRootLabel{{ $account->id }}">تعديل حساب {{ $account->name }}</h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="{{ route('update.root', $account->id) }}" method="POST" onsubmit="saveTreeState()">
@@ -236,14 +236,14 @@
                                 @method('PATCH')
                                 <div class="modal-body text-dark">
                                     <div class="mb-3">
-                                        <label for="name" class="form-label">إسم المستوى</label>
+                                        <label for="name" class="form-label">إسم الحساب</label>
                                         <input type="text" class="form-control border-primary" id="name" name="name" value="{{ $account->name }}" required>
                                         @error('name')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3">
-                                        <label for="code" class="form-label">رقم المستوى</label>
+                                        <label for="code" class="form-label">رقم الحساب</label>
                                         <input type="text" class="form-control border-primary" id="code" name="code" value="{{ $account->code }}" required>
                                         @error('code')
                                             <div class="text-danger">{{ $message }}</div>
@@ -251,7 +251,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إالغاء</button>
+                                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                                     <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
                                 </div>
                             </form>
