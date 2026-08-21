@@ -1542,6 +1542,7 @@ class InvoiceController extends Controller
         }
         
         $invoices = $invoices->with(['customer', 'made_by'])->orderBy('code')->paginate($perPage)->onEachSide(1)->withQueryString();
+        $isZatcaEnabled = auth()->user()->company->zatcaCompany ? true : false;
 
         $hasFilters = !empty($request->all());
 
@@ -1565,6 +1566,7 @@ class InvoiceController extends Controller
             'zatcaAcceptedCount',
             'zatcaRejectedCount',
             'zatcaPendingCount',
+            'isZatcaEnabled'
         ));
     }
 
