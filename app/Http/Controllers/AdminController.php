@@ -16,7 +16,27 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
     public function dashboard() {
-        return view('admin.dashboard');
+        $companiesCount = Company::count();
+        $activeCompaniesCount = Company::count();
+        $usersCount = User::count();
+
+        $companiesBasedOnUsers = Company::withCount('users')->orderBy('users_count', 'desc')->take(5)->get();
+        $latestCompanies = Company::withCount('users')->latest()->take(5)->get();
+        $mostActiveCompanies = Company::withCount('users')
+            ->withCount('invoices')
+            ->orderBy('invoices_count', 'desc')
+            ->take(5)
+            ->get();
+        // return $companiesBasedOnUsers->pluck('name')->toArray();
+
+        return view('admin.dashboard', compact(
+            'companiesCount', 
+            'activeCompaniesCount', 
+            'usersCount', 
+            'companiesBasedOnUsers',
+            'latestCompanies',
+            'mostActiveCompanies'
+        ));
     }
 
     public function companies() {

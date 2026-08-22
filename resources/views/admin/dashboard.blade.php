@@ -56,7 +56,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">إجمالي الشركات</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalCompanies ?? 24 }}</h3>
+                            <h3 class="mb-0 fw-bold">{{ $companiesCount ?? 'N/A' }}</h3>
                             <small class="text-theme-4">
                                 <i class="fa-solid fa-arrow-up me-1"></i>
                                 12% من الشهر الماضي
@@ -79,7 +79,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">الشركات النشطة</h6>
-                            <h3 class="mb-0 fw-bold">{{ $activeCompanies ?? 18 }}</h3>
+                            <h3 class="mb-0 fw-bold">{{ $activeCompaniesCount ?? 'N/A' }}</h3>
                             <small class="text-theme-4">
                                 <i class="fa-solid fa-arrow-up me-1"></i>
                                 8% من الشهر الماضي
@@ -102,7 +102,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">إجمالي المستخدمين</h6>
-                            <h3 class="mb-0 fw-bold">{{ $totalUsers ?? 156 }}</h3>
+                            <h3 class="mb-0 fw-bold">{{ $usersCount ?? 'N/A' }}</h3>
                             <small class="text-theme-4">
                                 <i class="fa-solid fa-arrow-up me-1"></i>
                                 23% من الشهر الماضي
@@ -125,7 +125,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">المستخدمين النشطين</h6>
-                            <h3 class="mb-0 fw-bold">{{ $activeUsers ?? 89 }}</h3>
+                            <h3 class="mb-0 fw-bold">{{ $usersCount ?? 'N/A' }}</h3>
                             <small class="text-theme-1">
                                 <i class="fa-solid fa-arrow-down me-1"></i>
                                 3% من الشهر الماضي
@@ -230,42 +230,20 @@
                             <thead class="table-light">
                                 <tr>
                                     <th class="text-center border-0">الشركة</th>
-                                    <th class="text-center border-0">الخطة</th>
+                                    <th class="text-center border-0">المستخدمون</th>
                                     <th class="text-center border-0">تاريخ التسجيل</th>
                                     <th class="text-center border-0">الحالة</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center fw-bold">شركة الأمل للتجارة</td>
-                                    <td class="text-center"><span class="badge badge-theme-1">احترافية</span></td>
-                                    <td class="text-center text-muted">2026/01/02</td>
-                                    <td class="text-center"><span class="badge badge-theme-4">نشط</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">مؤسسة النور</td>
-                                    <td class="text-center"><span class="badge badge-theme-2">أساسية</span></td>
-                                    <td class="text-center text-muted">2026/01/01</td>
-                                    <td class="text-center"><span class="badge badge-theme-4">نشط</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">شركة الخليج</td>
-                                    <td class="text-center"><span class="badge badge-theme-5">تجريبية</span></td>
-                                    <td class="text-center text-muted">2025/12/28</td>
-                                    <td class="text-center"><span class="badge badge-theme-3">تجريبي</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">مجموعة السلام</td>
-                                    <td class="text-center"><span class="badge badge-theme-1">احترافية</span></td>
-                                    <td class="text-center text-muted">2025/12/25</td>
-                                    <td class="text-center"><span class="badge badge-theme-4">نشط</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center fw-bold">شركة الريادة</td>
-                                    <td class="text-center"><span class="badge badge-theme-2">أساسية</span></td>
-                                    <td class="text-center text-muted">2025/12/20</td>
-                                    <td class="text-center"><span class="badge bg-danger">منتهي</span></td>
-                                </tr>
+                                @foreach($latestCompanies as $company)
+                                    <tr>
+                                        <td class="text-center fw-bold">{{ $company->name }}</td>
+                                        <td class="text-center"><span class="badge badge-theme-1">{{ $company->users_count }}</span></td>
+                                        <td class="text-center text-muted">{{ $company->created_at->format('Y/m/d') }}</td>
+                                        <td class="text-center"><span class="badge badge-theme-4">نشط</span></td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -293,50 +271,20 @@
                                     <th class="text-center border-0">#</th>
                                     <th class="text-center border-0">الشركة</th>
                                     <th class="text-center border-0">المستخدمين</th>
-                                    <th class="text-center border-0">المعاملات</th>
+                                    <th class="text-center border-0">الفواتير</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge badge-theme-5 rounded-pill">1</span>
-                                    </td>
-                                    <td class="text-center fw-bold">شركة الأمل للتجارة</td>
-                                    <td class="text-center">24</td>
-                                    <td class="text-center text-theme-1 fw-bold">1,250</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge badge-theme-3 rounded-pill">2</span>
-                                    </td>
-                                    <td class="text-center fw-bold">مجموعة السلام</td>
-                                    <td class="text-center">18</td>
-                                    <td class="text-center text-theme-1 fw-bold">980</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge badge-theme-2 rounded-pill">3</span>
-                                    </td>
-                                    <td class="text-center fw-bold">مؤسسة النور</td>
-                                    <td class="text-center">15</td>
-                                    <td class="text-center text-theme-1 fw-bold">756</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary rounded-pill">4</span>
-                                    </td>
-                                    <td class="text-center fw-bold">شركة الخليج</td>
-                                    <td class="text-center">12</td>
-                                    <td class="text-center text-theme-1 fw-bold">543</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        <span class="badge bg-secondary rounded-pill">5</span>
-                                    </td>
-                                    <td class="text-center fw-bold">شركة الريادة</td>
-                                    <td class="text-center">8</td>
-                                    <td class="text-center text-theme-1 fw-bold">321</td>
-                                </tr>
+                                @foreach($mostActiveCompanies as $company)
+                                    <tr>
+                                        <td class="text-center">
+                                            <span class="badge badge-theme-5 rounded-pill">{{ $loop->iteration }}</span>
+                                        </td>
+                                        <td class="text-center fw-bold">{{ $company->name }}</td>
+                                        <td class="text-center">{{ $company->users_count }}</td>
+                                        <td class="text-center text-theme-1 fw-bold">{{ $company->invoices_count }}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -344,6 +292,8 @@
             </div>
         </div>
     </div>
+
+    <div class="mb-5"></div>
 
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -510,10 +460,10 @@
             new Chart(companyUsersCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['شركة الأمل', 'مجموعة السلام', 'مؤسسة النور', 'شركة الخليج', 'شركة الريادة'],
+                    labels: @json(array_values($companiesBasedOnUsers->pluck('name')->toArray())),
                     datasets: [{
                         label: 'عدد المستخدمين',
-                        data: [24, 18, 15, 12, 8],
+                        data: @json(array_values($companiesBasedOnUsers->pluck('users_count')->toArray())),
                         backgroundColor: [
                             'rgba(11, 86, 169, 0.8)',
                             'rgba(33, 139, 171, 0.8)',

@@ -238,7 +238,7 @@
                                                     <label for="CR{{ $company->id }}" class="form-label">السجل التجاري</label>
                                                     <input type="text" class="form-control border-primary"
                                                         id="CR{{ $company->id }}" name="CR"
-                                                        value="{{ $company->CR }}" required>
+                                                        value="{{ $company->CR }}">
                                                     @error('CR')
                                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                                     @enderror
@@ -247,7 +247,7 @@
                                                     <label for="vatNumber{{ $company->id }}" class="form-label">الرقم الضريبي</label>
                                                     <input type="text" class="form-control border-primary"
                                                         id="vatNumber{{ $company->id }}" name="vatNumber"
-                                                        value="{{ $company->vatNumber }}" required>
+                                                        value="{{ $company->vatNumber }}">
                                                     @error('vatNumber')
                                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                                     @enderror
