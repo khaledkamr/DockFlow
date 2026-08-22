@@ -10,7 +10,9 @@ use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
@@ -38,6 +40,8 @@ class AdminController extends Controller
             'mostActiveCompanies'
         ));
     }
+
+    // ----------------------- companies -----------------------
 
     public function companies() {
         $companies = Company::all();
@@ -95,6 +99,13 @@ class AdminController extends Controller
         
         return view('admin.company_details', compact('company', 'modules', 'users', 'roles', 'permissions', 'setupStatus', 'setupCompleted'));
     }
+
+    public function deleteCompany(Company $company) {
+        $company->delete();
+        return redirect()->route('admin.companies')->with('success', 'تم حذف الشركة بنجاح');
+    }
+
+    // ----------------------- Company seeders -----------------------
 
     private function checkSetupComplete(Company $company): bool {
         $hasAccounts = Account::where('company_id', $company->id)->where('level', 1)->exists();
@@ -184,6 +195,8 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'تم إضافة الأدوار بنجاح');
     }
 
+    // --------------------------- Users ---------------------------
+
     public function users() {
         $users = User::all();
         return view('admin.users', compact('users'));
@@ -249,6 +262,8 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'تم حذف المستخدم بنجاح');
     }
 
+    // ----------------------- Roles & Permissions -----------------------
+
     public function storeCompanyRole(Request $request, Company $company) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -306,10 +321,7 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'تم إضافة الصلاحية بنجاح');
     }
 
-    public function deleteCompany(Company $company) {
-        $company->delete();
-        return redirect()->route('admin.companies')->with('success', 'تم حذف الشركة بنجاح');
-    }
+    // --------------------------- Modules ---------------------------
 
     public function modules(Request $request) {
         $modules = Module::query();
@@ -354,5 +366,25 @@ class AdminController extends Controller
         }
         $module->delete();
         return redirect()->back()->with('success', 'تم حذف المديول بنجاح');
+    }
+
+    // ----------------------- User Logs & Activity -----------------------
+
+    public function logs(Request $request) {
+        $logs = UserLog::query()
+            ->when($request->action, fn($q) => $q->where('action', $request->action))
+            ->when($request->user_id, fn($q) => $q->where('user_id', $request->user_id))
+            ->when($request->from, fn($q) => $q->whereDate('created_at', '>=', $request->from))
+            ->when($request->to, fn($q) => $q->whereDate('created_at', '<=', $request->to))
+            ->when($request->search, fn($q) => $q->where(function($q2) use ($request) {
+                $q2->where('description', 'like', '%' . $request->search . '%');
+            }))
+            ->orderBy('id', 'desc')
+            ->paginate(100)->onEachSide(1)->withQueryString();
+
+        $actions = UserLog::select('action')->distinct()->pluck('action');
+        $users = User::with('company')->get();
+
+        return view('admin.logs', compact('logs', 'actions', 'users'));
     }
 }

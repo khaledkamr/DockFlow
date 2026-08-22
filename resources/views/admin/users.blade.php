@@ -153,11 +153,11 @@
                 <tr>
                     <th class="text-center bg-dark text-white text-nowrap">#</th>
                     <th class="text-center bg-dark text-white text-nowrap">اسم المستخدم</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الشركة</th>
                     <th class="text-center bg-dark text-white text-nowrap">البريد الإلكتروني</th>
                     <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
                     <th class="text-center bg-dark text-white text-nowrap">الجنسية</th>
                     <th class="text-center bg-dark text-white text-nowrap">رقم الهوية</th>
-                    <th class="text-center bg-dark text-white text-nowrap">الشركة</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
             </thead>
@@ -173,11 +173,20 @@
                         <tr class="{{ $user == auth()->user() ? 'table-primary' : '' }}">
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="text-center fw-bold">{{ $user->name }}</td>
+                            <td class="text-center text-nowrap">
+                                <span class="d-inline-flex align-items-center gap-2">
+                                    @if ($user->company && $user->company->logo)
+                                        <img src="{{ asset('storage/' . $user->company->logo) }}"
+                                            alt="شعار {{ $user->company->name }}" class="rounded"
+                                            style="width: 32px; height: 32px; object-fit: contain;">
+                                    @endif
+                                    <span>{{ $user->company->name ?? '-' }}</span>
+                                </span>
+                            </td>
                             <td class="text-center text-nowrap">{{ $user->email }}</td>
                             <td class="text-center text-nowrap">{{ $user->phone ?? '-' }}</td>
                             <td class="text-center text-nowrap">{{ $user->nationality ?? '-' }}</td>
                             <td class="text-center text-nowrap">{{ $user->NID ?? '-' }}</td>
-                            <td class="text-center text-nowrap">{{ $user->company->name ?? '-' }}</td>
                             <td class="text-center text-nowrap">
                                 <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#editUserModal{{ $user->id }}">

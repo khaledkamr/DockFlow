@@ -440,6 +440,13 @@
                     <i class="fa-solid fa-layer-group ms-1 me-2"></i> مديولات النظـــام
                 </a>
             </li>
+            <li class="nav-item mb-1">
+                <a class="nav-link fw-semibold rounded px-3 py-2"
+                    style="{{ request()->routeIs('admin.users.logs') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
+                    href="{{ route('admin.users.logs') }}">
+                    <i class="fa-solid fa-history ms-1 me-2"></i> سجـــلات النظـــام
+                </a>
+            </li>
         </ul>
     </div>
 

@@ -65,6 +65,8 @@ Route::controller(AdminController::class)->middleware('auth')->group(function ()
     Route::post('/admin/modules/store', 'storeModule')->name('admin.modules.store');
     Route::put('/admin/modules/update/{module}', 'updateModule')->name('admin.modules.update');
     Route::delete('/admin/modules/delete/{module}', 'deleteModule')->name('admin.modules.delete');
+
+    Route::get('/admin/logs/users', 'logs')->name('admin.users.logs');
 });
 
 Route::controller(UserController::class)->middleware('auth')->group(function() {
