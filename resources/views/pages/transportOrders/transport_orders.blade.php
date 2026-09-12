@@ -80,10 +80,10 @@
                                 {{ Carbon\Carbon::parse($order->date ?? $order->created_at)->format('Y/m/d') }}
                             </td>
                             <td class="text-center fw-bold">
-                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $order->from }}
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $order->from }}
                             </td>
                             <td class="text-center fw-bold">
-                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $order->to }}
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $order->to }}
                             </td>
                             <td class="text-center text-nowrap">
                                 @if ($order->is_received)

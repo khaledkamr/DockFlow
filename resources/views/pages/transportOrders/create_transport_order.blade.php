@@ -138,7 +138,7 @@
             <div class="row g-3 mb-4">
                 <div class="col-6 col-sm-6 col-md-4 col-lg external-field">
                     <label class="form-label">مصاريف المورد</label>
-                    <input type="number" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
+                    <input type="number" step="any" class="form-control border-primary" name="supplier_cost" id="supplier_cost"
                         value="{{ old('supplier_cost') ?? 0 }}">
                     @error('supplier_cost')
                         <div class="text-danger">{{ $message }}</div>
@@ -146,7 +146,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-4 col-lg internal-field">
                     <label class="form-label">مصاريف الديزل</label>
-                    <input type="number" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
+                    <input type="number" step="any" class="form-control border-primary" name="diesel_cost" id="diesel_cost"
                         value="{{ old('diesel_cost') ?? 0 }}">
                     @error('diesel_cost')
                         <div class="text-danger">{{ $message }}</div>
@@ -154,7 +154,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-4 col-lg internal-field">
                     <label class="form-label">عمولة السائق</label>
-                    <input type="number" class="form-control border-primary" name="driver_wage" id="driver_wage"
+                    <input type="number" step="any" class="form-control border-primary" name="driver_wage" id="driver_wage"
                         value="{{ old('driver_wage') ?? 0 }}">
                     @error('driver_wage')
                         <div class="text-danger">{{ $message }}</div>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg">
                     <label class="form-label">عمولة المندوب</label>
-                    <input type="number" class="form-control border-primary" name="commission" id="commission"
+                    <input type="number" step="any" class="form-control border-primary" name="commission" id="commission"
                         value="{{ old('commission') ?? 0 }}" step="any" min="0">
                     @error('commission')
                         <div class="text-danger">{{ $message }}</div>
@@ -170,7 +170,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg">
                     <label class="form-label">رسوم فسح</label>
-                    <input type="number" class="form-control border-primary" name="clearance_fee" id="clearance_fee"
+                    <input type="number" step="any" class="form-control border-primary" name="clearance_fee" id="clearance_fee"
                         value="{{ old('clearance_fee') ?? 0 }}">
                     @error('clearance_fee')
                         <div class="text-danger">{{ $message }}</div>
@@ -178,7 +178,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-3 col-lg">
                     <label class="form-label">غرامة تأخير</label>
-                    <input type="number" class="form-control border-primary" name="late_fee" id="late_fee"
+                    <input type="number" step="any" class="form-control border-primary" name="late_fee" id="late_fee"
                         value="{{ old('late_fee') ?? 0 }}">
                     @error('late_fee')
                         <div class="text-danger">{{ $message }}</div>
@@ -186,7 +186,7 @@
                 </div>
                 <div class="col-6 col-sm-6 col-md-4 col-lg">
                     <label class="form-label">سعر العميل</label>
-                    <input type="number" class="form-control border-primary" id="client_cost" name="client_cost"
+                    <input type="number" step="any" class="form-control border-primary" id="client_cost" name="client_cost"
                         value="{{ old('client_cost') ?? 0 }}">
                     @error('client_cost')
                         <div class="text-danger">{{ $message }}</div>

@@ -121,10 +121,10 @@
                             </td>
                             <td class="text-center text-nowrap">{{ Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</td>
                             <td class="text-center">
-                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $policy->from }}
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }}
                             </td>
                             <td class="text-center">
-                                <i class="fas fa-map-marker-alt text-danger"></i>{{ $policy->to }}
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->to }}
                             </td>
                             <td class="text-center">
                                 {{ $policy->supplier ? $policy->driver_name : $policy->driver->name ?? '-' }}</td>
