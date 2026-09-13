@@ -246,7 +246,7 @@
         function createToastContainer() {
             const container = document.createElement('div');
             container.id = 'toastContainer';
-            container.className = 'toast-container position-fixed top-0 end-0 p-4';
+            container.className = 'toast-container position-fixed top-0 start-50 translate-middle-x p-4';
             container.style.zIndex = '1055';
             document.body.appendChild(container);
             return container;

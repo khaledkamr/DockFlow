@@ -104,6 +104,7 @@ class UserController extends Controller
             'NID' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'role' => 'required',
+            'is_active' => 'required|boolean',
         ]);
 
         if($request->password) {

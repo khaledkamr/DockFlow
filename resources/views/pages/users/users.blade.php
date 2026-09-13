@@ -51,6 +51,7 @@
         </div>
     </div>
 
+    <-- create user modal -->
     <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -168,7 +169,7 @@
                     </tr>
                 @else
                     @foreach ($users as $user)
-                        <tr>
+                        <tr class="{{ $user->is_active ? '' : 'table-danger opacity-50' }}">
                             <td class="text-center text-primary fw-bold text-nowrap">{{ $loop->iteration }}</td>
                             <td class="text-center text-nowrap">
                                 <a href="{{ route('admin.user.profile', $user) }}"
@@ -198,7 +199,7 @@
                             </td>
                         </tr>
 
-                        {{-- update modal --}}
+                        {{-- update user modal --}}
                         <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1"
                             aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -264,6 +265,20 @@
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
                                                 </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label">حالة المستخدم</label>
+                                                    <select class="form-select border-primary" name="is_active" required>
+                                                        <option value="1" {{ ($user->is_active ?? '') === 1 ? 'selected' : '' }}>
+                                                            مفعل 
+                                                        </option>
+                                                        <option value="0" {{ ($user->is_active ?? '') === 0 ? 'selected' : '' }}>
+                                                            غير مفعل
+                                                        </option>
+                                                    </select>
+                                                    @error('role')
+                                                        <div class="text-danger">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
                                             </div>
                                         </div>
                                         <div
@@ -278,7 +293,7 @@
                             </div>
                         </div>
 
-                        {{-- delete modal --}}
+                        {{-- delete user modal --}}
                         @if ($user->id !== auth()->user()->id)
                             <div class="modal fade" id="deleteUserModal{{ $user->id }}" tabindex="-1"
                                 aria-labelledby="deleteUserModalLabel{{ $user->id }}" aria-hidden="true">

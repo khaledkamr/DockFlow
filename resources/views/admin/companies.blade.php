@@ -151,8 +151,8 @@
                     <th class="text-center bg-dark text-white text-nowrap">الشعار</th>
                     <th class="text-center bg-dark text-white text-nowrap">اسم الشركة</th>
                     <th class="text-center bg-dark text-white text-nowrap">عدد المستخدمين</th>
-                    <th class="text-center bg-dark text-white text-nowrap">البريد الإلكتروني</th>
-                    <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
+                    <th class="text-center bg-dark text-white text-nowrap">تاريخ الانشاء</th>
+                    <th class="text-center bg-dark text-white text-nowrap">حالة ZATCA</th>
                     <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
@@ -166,7 +166,7 @@
                     </tr>
                 @else
                     @foreach ($companies as $company)
-                        <tr>
+                        <tr class="{{ $company->is_active ? '' : 'table-danger opacity-50' }}">
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="text-center">
                                 @if ($company->logo)
@@ -185,8 +185,16 @@
                             <td class="text-center">
                                 <span class="badge bg-primary rounded-circle">{{ $company->users->count() }}</span>
                             </td>
-                            <td class="text-center text-nowrap">{{ $company->email }}</td>
-                            <td class="text-center text-nowrap">{{ $company->phone }}</td>
+                            <td class="text-center text-nowrap">
+                                {{ $company->created_at->format('Y/m/d') }}
+                                <i class="fa-solid fa-calendar-days text-secondary"></i>
+                            </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge {{ $company->zatcaCompany ? 'status-delivered' : 'status-danger' }} rounded-pill">
+                                    <i class="fa-solid {{ $company->zatcaCompany ? 'fa-check' : 'fa-xmark' }} me-1"></i>
+                                    {{ $company->zatcaCompany ? 'نشط' : 'غير نشط' }}
+                                </span>
+                            </td>
                             <td class="text-center">{{ $company->national_address }}</td>
                             <td class="text-center text-nowrap">
                                 <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal"
@@ -290,6 +298,16 @@
                                                         <input type="file" class="form-control border-primary" id="logo{{ $company->id }}" name="logo" accept="image/*">
                                                     </div>
                                                     @error('logo')
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label">حالة الشركة</label>
+                                                    <select name="is_active" id="is_active{{ $company->id }}" class="form-select border-primary">
+                                                        <option value="1" {{ $company->is_active == 1 ? 'selected' : '' }}>مفعل</option>
+                                                        <option value="0" {{ $company->is_active == 0 ? 'selected' : '' }}>غير مفعل</option>
+                                                    </select>
+                                                    @error('is_active')
                                                         <div class="text-danger small mt-1">{{ $message }}</div>
                                                     @enderror
                                                 </div>

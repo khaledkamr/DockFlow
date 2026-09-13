@@ -20,6 +20,16 @@ class AuthController extends Controller
 
         if($valid) {
             $user = Auth::user();
+
+            if($user->type !== 'admin' && !$user->is_active) {
+                Auth::logout();
+                return redirect(route('login.form'))->with('error', 'حسابك غير مفعل، يرجى التواصل مع المسؤول');
+            }
+            if($user->type !== 'admin' && !$user->company->is_active) {
+                Auth::logout();
+                return redirect(route('login.form'))->with('error', 'حساب شركتك غير مفعل، يرجى التواصل مع المسؤول');
+            }
+
             session(['company_id' => $user->company_id]);
             logActivity('تسجيل دخول', "$user->name قام بتسجيل الدخول إلى النظام");
 

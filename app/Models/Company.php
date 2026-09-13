@@ -18,7 +18,9 @@ class Company extends Model
         'vatNumber',    // الرقم الضريبي
         'national_address',
         'phone',
-        'email'
+        'email',
+        'dashboard_method',
+        'is_active',
     ];
 
     public function modules() {
