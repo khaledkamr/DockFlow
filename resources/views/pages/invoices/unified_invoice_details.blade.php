@@ -1308,22 +1308,22 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            {{ $payment->zatcaInvoice->created_at->format('d/m/Y') }}
+                                            {{ $invoice->zatcaInvoice->created_at->format('d/m/Y') }}
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
-                                            {{ number_format($payment->zatcaInvoice->diff_invoice_amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                            {{ number_format($invoice->zatcaInvoice->diff_invoice_amount, 2) }} <i data-lucide="saudi-riyal"></i>
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
-                                            {{ number_format($payment->zatcaInvoice->diff_invoice_vat_amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                            {{ number_format($invoice->zatcaInvoice->diff_invoice_vat_amount, 2) }} <i data-lucide="saudi-riyal"></i>
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
-                                            {{ number_format($payment->zatcaInvoice->diff_invoice_total, 2) }} <i data-lucide="saudi-riyal"></i>
+                                            {{ number_format($invoice->zatcaInvoice->diff_invoice_total, 2) }} <i data-lucide="saudi-riyal"></i>
                                         </td>
                                         <td class="text-center">
-                                            @if($payment->zatcaInvoice->made_by)
-                                                <a href="{{ route('admin.user.profile', $payment->zatcaInvoice->made_by) }}"
+                                            @if($invoice->zatcaInvoice->made_by)
+                                                <a href="{{ route('admin.user.profile', $invoice->zatcaInvoice->made_by) }}"
                                                     class="text-dark text-decoration-none">
-                                                    {{ $payment->zatcaInvoice->made_by->name ?? '-' }}
+                                                    {{ $invoice->zatcaInvoice->made_by->name ?? '-' }}
                                                 </a>
                                             @else
                                                 غير معرف
