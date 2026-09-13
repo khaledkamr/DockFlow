@@ -252,7 +252,7 @@
                                             <div class="col-12 col-md-6">
                                                 <label class="form-label">النوع</label>
                                                 <input type="text" class="form-control border-primary bg-light"
-                                                    name="type" value="{{ $item->type }}" readonly>
+                                                    name="type" value="{{ $item->type }}">
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <label class="form-label">حساب المدين</label>
