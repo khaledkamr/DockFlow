@@ -561,7 +561,7 @@
                             class="btn btn-outline-primary">
                             <i class="fas fa-file-invoice-dollar me-2"></i>فاتورة zatca
                         </a>
-                    @else
+                    @elseif ($invoice->company->zatcaCompany)
                         <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-outline-primary">
                             <i class="fas fa-paper-plane me-2"></i> إرسال الفاتورة
                         </a>
