@@ -1311,13 +1311,13 @@
                                             {{ $invoice->zatcaInvoice->created_at->format('d/m/Y') }}
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
-                                            {{ number_format($invoice->zatcaInvoice->diff_invoice_amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                            {{ number_format($invoice->zatcaInvoice->invoice_amount, 2) }} <i data-lucide="saudi-riyal"></i>
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
-                                            {{ number_format($invoice->zatcaInvoice->diff_invoice_vat_amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                            {{ number_format($invoice->zatcaInvoice->invoice_vat_amount, 2) }} <i data-lucide="saudi-riyal"></i>
                                         </td>
                                         <td class="text-center fw-bold text-nowrap">
-                                            {{ number_format($invoice->zatcaInvoice->diff_invoice_total, 2) }} <i data-lucide="saudi-riyal"></i>
+                                            {{ number_format($invoice->zatcaInvoice->invoice_total, 2) }} <i data-lucide="saudi-riyal"></i>
                                         </td>
                                         <td class="text-center">
                                             @if($invoice->zatcaInvoice->made_by)
