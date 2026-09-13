@@ -34,6 +34,7 @@
         </div>
     </div>
 
+    <!-- Delete Policy Modal -->
     <div class="modal fade" id="deletePolicyModal" tabindex="-1" aria-labelledby="deletePolicyModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -58,6 +59,7 @@
         </div>
     </div>
 
+    <!-- Edit Policy Modal -->
     <div class="modal fade" id="editPolicyModal" tabindex="-1" aria-labelledby="editPolicyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -267,461 +269,437 @@
                             <button type="submit" class="btn btn-primary fw-bold">حفظ</button>
                             <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- المعلومات الأساسية -->
-        <div class="row">
-            <!-- معلومات النقل -->
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0"><i class="fa-solid fa-route"></i> معلومات النقل</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3 mb-3">
-                            <div class="col">
-                                <label class="text-muted small">مكان التحميل والتسليم</label>
-                                <p class="fw-semibold mb-0">
-                                    <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }} -
-                                    <i class="fas fa-map-marker-alt text-success"></i> {{ $policy->to }}
-                                </p>
-                            </div>
-                            <div class="col">
-                                <label class="text-muted small">الى العميل</label>
-                                <p class="fw-bold mb-0">
-                                    <a href="{{ route('users.customer.profile', $policy->customer) }}"
-                                        class="text-decoration-none text-dark">
-                                        {{ $policy->customer->name }}
-                                    </a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col">
-                                <label class="text-muted small">التاريخ</label>
-                                <p class="fw-bold mb-0">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</p>
-                            </div>
-                            <div class="col">
-                                <label class="text-muted small">تم التسليم؟</label>
-                                @if ($policy->is_received)
-                                    <span class="badge status-delivered">
-                                        <i class="fa-solid fa-check-circle"></i> تم التسليم
-                                    </span>
-                                @else
-                                    <span class="badge status-waiting">
-                                        <i class="fa-solid fa-clock"></i> في الانتظار
-                                    </span>
-                                @endif
-                                <form method="POST" action="{{ route('shipping.policies.toggle', $policy) }}"
-                                    class="d-inline mt-2">
-                                    @csrf
-                                    @method('PATCH')
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="isReceivedToggle"
-                                            {{ $policy->is_received ? 'checked' : '' }} onchange="this.form.submit()">
-                                        <label class="form-check-label small" for="isReceivedToggle">
-                                            تغيير الحالة
-                                        </label>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- معلومات الناقل -->
-            <div class="col-md-6 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0"><i class="bi bi-truck-front-fill"></i> معلومات الناقل</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3 mb-3">
-                            <div class="col">
-                                <label class="text-muted small">نوع الناقل</label>
-                                <p class="fw-bold mb-0">{{ $policy->type }}</p>
-                            </div>
-                            <div class="col">
-                                <label class="text-muted small">{{ $policy->driver ? 'اسم السائق' : 'اسم المورد' }}</label>
-                                <p class="fw-bold mb-0">
-                                    {{ $policy->driver->name ?? ($policy->supplier->name ?? '--') }}
-                                    @if ($policy->supplier)
-                                        <span
-                                            class="badge bg-{{ $policy->paid ? 'success' : 'danger' }}">{{ $policy->paid ? 'مدفوع' : 'غير مدفوع' }}</span>
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            @if ($policy->type == 'ناقل داخلي')
-                                <div class="col">
-                                    <label class="text-muted small">هوية السائق</label>
-                                    <p class="fw-semibold mb-0">{{ $policy->driver->NID ?? 'N/A' }}</p>
-                                </div>
-                                <div class="col">
-                                    <label class="text-muted small">الشاحنة</label>
-                                    <p class="fw-semibold mb-0">
-                                        {{ $policy->vehicle->plate_number . ' - ' . $policy->vehicle->type ?? '' }}</p>
-                                </div>
-                            @elseif($policy->type == 'ناقل خارجي')
-                                <div class="col">
-                                    <label class="text-muted small">اسم السائق</label>
-                                    <p class="fw-semibold mb-0">{{ $policy->driver_name ?? 'N/A' }}</p>
-                                </div>
-                                <div class="col">
-                                    <label class="text-muted small">لوحة السيارة</label>
-                                    <p class="fw-semibold mb-0">{{ $policy->vehicle_plate ?? 'N/A' }}</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- التكاليف -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="bi bi-cash-stack"></i> التكاليف</h5>
-            </div>
-            <div class="card-body">
-                <div class="row g-3">
-                    @if ($policy->type == 'ناقل داخلي')
-                        <div class="col-6 col-sm-4 col-md-3 col-lg">
-                            <label class="text-muted small">تكلفة الديزل</label>
-                            <p class="fw-bold mb-0">{{ number_format($policy->diesel_cost, 2) }} <i
-                                    data-lucide="saudi-riyal"></i></p>
-                        </div>
-                        <div class="col-6 col-sm-4 col-md-3 col-lg">
-                            <label class="text-muted small">أجرة السائق</label>
-                            <p class="fw-bold mb-0">{{ number_format($policy->driver_wage, 2) }} <i
-                                    data-lucide="saudi-riyal"></i></p>
-                        </div>
-                    @elseif($policy->type == 'ناقل خارجي')
-                        <div class="col-6 col-sm-4 col-md-3 col-lg">
-                            <label class="text-muted small">تكلفة المورد</label>
-                            <p class="fw-bold mb-0">{{ number_format($policy->supplier_cost, 2) }} <i
-                                    data-lucide="saudi-riyal"></i></p>
-                        </div>
-                    @endif
-                    <div class="col-6 col-sm-4 col-md-3 col-lg">
-                        <label class="text-muted small">عمولة المندوب</label>
-                        <p class="fw-bold mb-0">{{ number_format($policy->commission, 2) }}
-                            <i data-lucide="saudi-riyal"></i>
-                        </p>
-                    </div>
-                    <div class="col-6 col-sm-4 col-md-3 col-lg">
-                        <label class="text-muted small">رسوم فسح</label>
-                        <p class="fw-bold mb-0">{{ number_format($policy->clearance_fee, 2) }}
-                            <i data-lucide="saudi-riyal"></i>
-                        </p>
-                    </div>
-                    <div class="col-6 col-sm-4 col-md-3 col-lg">
-                        <label class="text-muted small">غرامة تأخير</label>
-                        <p class="fw-bold mb-0">{{ number_format($policy->late_fee, 2) }}
-                            <i data-lucide="saudi-riyal"></i>
-                        </p>
-                    </div>
-                    <div class="col-6 col-sm-4 col-md-3 col-lg">
-                        <label class="text-muted small">سعر العميل</label>
-                        <p class="fw-bold text-dark mb-0">{{ number_format($policy->client_cost, 2) }} <i
-                                data-lucide="saudi-riyal"></i></p>
-                    </div>
-                    <div class="col-6 col-sm-4 col-md-3 col-lg">
-                        <label class="text-muted small">اجمالي سعر العميل</label>
-                        <p class="fw-bold text-success mb-0 fs-5">{{ number_format($policy->total_cost, 2) }} <i
-                                data-lucide="saudi-riyal"></i></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- البضائع -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
-                <div>
-                    <h5 class="mb-0"><i class="fa-solid fa-box"></i> البضائع</h5>
-                </div>
-                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
-                    data-bs-target="#editGoodsModal">
-                    <i class="fas fa-edit me-1"></i>
-                    تعديل البضائع
-                </button>
-            </div>
-            <div class="card-body">
-                @if ($policy->goods && count($policy->goods) > 0)
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th class="text-center text-nowrap">البيان</th>
-                                    <th class="text-center text-nowrap">الكمية</th>
-                                    <th class="text-center text-nowrap">الوزن</th>
-                                    <th class="text-center text-nowrap">ملاحظات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($policy->goods as $good)
-                                    <tr>
-                                        <td class="text-center fw-bold">{{ $good->description }}</td>
-                                        <td class="text-center">{{ $good->quantity ?? '---' }}</td>
-                                        <td class="text-center">{{ $good->weight ?? '---' }} {{ $good->weight ? 'طن' : '' }}
-                                        </td>
-                                        <td class="text-center text-muted">{{ $good->notes ?? '---' }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="text-center text-muted py-4">
-                        <i class="fa-solid fa-box-open fa-3x mb-3"></i>
-                        <p>لا توجد بضائع مرتبطة بهذه البوليصة</p>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <!-- الملاحظات -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
-                <h5 class="mb-0"><i class="fa-solid fa-sticky-note"></i> الملاحظات</h5>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{{ route('shipping.policies.notes', $policy) }}">
-                    @csrf
-                    @method('PATCH')
-                    <div class="mb-3">
-                        <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="اكتب الملاحظات هنا...">{{ old('notes', $policy->notes) }}</textarea>
-                    </div>
-                    <div class="text-start">
-                        <button type="submit" class="btn btn-primary col-12 col-md-2">
-                            <span class="d-inline">حفظ الملاحظات</span><span </button>
-                    </div>
                 </form>
             </div>
         </div>
+    </div>
 
-        <!-- Attachments Section -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-dark text-white">
-                <h5 class="card-title mb-0">
-                    <i class="fas fa-paperclip me-2"></i>
-                    الملفات المرفقة
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <form action="{{ route('shipping.policies.add.attachment', $policy) }}" method="POST"
-                            enctype="multipart/form-data"
-                            class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
-                            @csrf
-                            <div class="flex-grow-1">
-                                <input type="file" name="attachment" class="form-control"
-                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-upload me-1"></i>
-                                إرفاق ملف
-                            </button>
-                        </form>
-                        <small class="text-muted mt-1 d-block">
-                            يمكنك إرفاق الملفات التالية: PDF, صور
-                        </small>
+    <!-- المعلومات الأساسية -->
+    <div class="row">
+        <!-- معلومات النقل -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fa-solid fa-route"></i> معلومات النقل</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col">
+                            <label class="text-muted small">مكان التحميل والتسليم</label>
+                            <p class="fw-semibold mb-0">
+                                <i class="fas fa-map-marker-alt text-danger"></i> {{ $policy->from }} -
+                                <i class="fas fa-map-marker-alt text-success"></i> {{ $policy->to }}
+                            </p>
+                        </div>
+                        <div class="col">
+                            <label class="text-muted small">الى العميل</label>
+                            <p class="fw-bold mb-0">
+                                <a href="{{ route('users.customer.profile', $policy->customer) }}"
+                                    class="text-decoration-none text-dark">
+                                    {{ $policy->customer->name }}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col">
+                            <label class="text-muted small">التاريخ</label>
+                            <p class="fw-bold mb-0">{{ \Carbon\Carbon::parse($policy->date)->format('Y/m/d') }}</p>
+                        </div>
+                        <div class="col">
+                            <label class="text-muted small">تم التسليم؟</label>
+                            @if ($policy->is_received)
+                                <span class="badge status-delivered">
+                                    <i class="fa-solid fa-check-circle"></i> تم التسليم
+                                </span>
+                            @else
+                                <span class="badge status-waiting">
+                                    <i class="fa-solid fa-clock"></i> في الانتظار
+                                </span>
+                            @endif
+                            <form method="POST" action="{{ route('shipping.policies.toggle', $policy) }}"
+                                class="d-inline mt-2">
+                                @csrf
+                                @method('PATCH')
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="isReceivedToggle"
+                                        {{ $policy->is_received ? 'checked' : '' }} onchange="this.form.submit()">
+                                    <label class="form-check-label small" for="isReceivedToggle">
+                                        تغيير الحالة
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Attached Files List -->
-                @if ($policy->attachments && $policy->attachments->count() > 0)
+        <!-- معلومات الناقل -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-truck-front-fill"></i> معلومات الناقل</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col">
+                            <label class="text-muted small">نوع الناقل</label>
+                            <p class="fw-bold mb-0">{{ $policy->type }}</p>
+                        </div>
+                        <div class="col">
+                            <label class="text-muted small">{{ $policy->driver ? 'اسم السائق' : 'اسم المورد' }}</label>
+                            <p class="fw-bold mb-0">
+                                {{ $policy->driver->name ?? ($policy->supplier->name ?? '--') }}
+                                @if ($policy->supplier)
+                                    <span
+                                        class="badge bg-{{ $policy->paid ? 'success' : 'danger' }}">{{ $policy->paid ? 'مدفوع' : 'غير مدفوع' }}</span>
+                                @endif
+                            </p>
+                        </div>
+                    </div>
                     <div class="row g-3">
-                        @foreach ($policy->attachments as $attachment)
-                            <div class="col-12 col-lg-6">
-                                <div class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-3">
-                                            @php
-                                                $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
-                                                $iconClass = 'fas fa-file';
-                                                $iconColor = 'text-secondary';
+                        @if ($policy->type == 'ناقل داخلي')
+                            <div class="col">
+                                <label class="text-muted small">هوية السائق</label>
+                                <p class="fw-semibold mb-0">{{ $policy->driver->NID ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col">
+                                <label class="text-muted small">الشاحنة</label>
+                                <p class="fw-semibold mb-0">
+                                    {{ $policy->vehicle->plate_number . ' - ' . $policy->vehicle->type ?? '' }}</p>
+                            </div>
+                        @elseif($policy->type == 'ناقل خارجي')
+                            <div class="col">
+                                <label class="text-muted small">اسم السائق</label>
+                                <p class="fw-semibold mb-0">{{ $policy->driver_name ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col">
+                                <label class="text-muted small">لوحة السيارة</label>
+                                <p class="fw-semibold mb-0">{{ $policy->vehicle_plate ?? 'N/A' }}</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                                switch (strtolower($extension)) {
-                                                    case 'pdf':
-                                                        $iconClass = 'fas fa-file-pdf';
-                                                        $iconColor = 'text-danger';
-                                                        break;
-                                                    case 'doc':
-                                                    case 'docx':
-                                                        $iconClass = 'fas fa-file-word';
-                                                        $iconColor = 'text-primary';
-                                                        break;
-                                                    case 'xls':
-                                                    case 'xlsx':
-                                                        $iconClass = 'fas fa-file-excel';
-                                                        $iconColor = 'text-success';
-                                                        break;
-                                                    case 'jpg':
-                                                    case 'jpeg':
-                                                    case 'png':
-                                                    case 'gif':
-                                                        $iconClass = 'fas fa-file-image';
-                                                        $iconColor = 'text-info';
-                                                        break;
-                                                    case 'txt':
-                                                        $iconClass = 'fas fa-file-alt';
-                                                        $iconColor = 'text-dark';
-                                                        break;
-                                                }
-                                            @endphp
-                                            <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-1 alert-heading">{{ $attachment->file_name }}</h6>
-                                            <small class="text-muted" style="font-size: 0.75rem;">
-                                                أرفق بواسطة {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }} في 
-                                                {{ $attachment->created_at->format('Y/m/d') }}
-                                            </small>
+    <!-- التكاليف -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-cash-stack"></i> التكاليف</h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                @if ($policy->type == 'ناقل داخلي')
+                    <div class="col-6 col-sm-4 col-md-3 col-lg">
+                        <label class="text-muted small">تكلفة الديزل</label>
+                        <p class="fw-bold mb-0">{{ number_format($policy->diesel_cost, 2) }} <i
+                                data-lucide="saudi-riyal"></i></p>
+                    </div>
+                    <div class="col-6 col-sm-4 col-md-3 col-lg">
+                        <label class="text-muted small">أجرة السائق</label>
+                        <p class="fw-bold mb-0">{{ number_format($policy->driver_wage, 2) }} <i
+                                data-lucide="saudi-riyal"></i></p>
+                    </div>
+                @elseif($policy->type == 'ناقل خارجي')
+                    <div class="col-6 col-sm-4 col-md-3 col-lg">
+                        <label class="text-muted small">تكلفة المورد</label>
+                        <p class="fw-bold mb-0">{{ number_format($policy->supplier_cost, 2) }} <i
+                                data-lucide="saudi-riyal"></i></p>
+                    </div>
+                @endif
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
+                    <label class="text-muted small">عمولة المندوب</label>
+                    <p class="fw-bold mb-0">{{ number_format($policy->commission, 2) }}
+                        <i data-lucide="saudi-riyal"></i>
+                    </p>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
+                    <label class="text-muted small">رسوم فسح</label>
+                    <p class="fw-bold mb-0">{{ number_format($policy->clearance_fee, 2) }}
+                        <i data-lucide="saudi-riyal"></i>
+                    </p>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
+                    <label class="text-muted small">غرامة تأخير</label>
+                    <p class="fw-bold mb-0">{{ number_format($policy->late_fee, 2) }}
+                        <i data-lucide="saudi-riyal"></i>
+                    </p>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
+                    <label class="text-muted small">سعر العميل</label>
+                    <p class="fw-bold text-dark mb-0">{{ number_format($policy->client_cost, 2) }} <i
+                            data-lucide="saudi-riyal"></i></p>
+                </div>
+                <div class="col-6 col-sm-4 col-md-3 col-lg">
+                    <label class="text-muted small">اجمالي سعر العميل</label>
+                    <p class="fw-bold text-success mb-0 fs-5">{{ number_format($policy->total_cost, 2) }} <i
+                            data-lucide="saudi-riyal"></i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- البضائع -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+            <div>
+                <h5 class="mb-0"><i class="fa-solid fa-box"></i> البضائع</h5>
+            </div>
+            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="modal"
+                data-bs-target="#editGoodsModal">
+                <i class="fas fa-edit me-1"></i>
+                تعديل البضائع
+            </button>
+        </div>
+        <div class="card-body">
+            @if ($policy->goods && count($policy->goods) > 0)
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="text-center text-nowrap">البيان</th>
+                                <th class="text-center text-nowrap">الكمية</th>
+                                <th class="text-center text-nowrap">الوزن</th>
+                                <th class="text-center text-nowrap">ملاحظات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($policy->goods as $good)
+                                <tr>
+                                    <td class="text-center fw-bold">{{ $good->description }}</td>
+                                    <td class="text-center">{{ $good->quantity ?? '---' }}</td>
+                                    <td class="text-center">{{ $good->weight ?? '---' }} {{ $good->weight ? 'طن' : '' }}
+                                    </td>
+                                    <td class="text-center text-muted">{{ $good->notes ?? '---' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center text-muted py-4">
+                    <i class="fa-solid fa-box-open fa-3x mb-3"></i>
+                    <p>لا توجد بضائع مرتبطة بهذه البوليصة</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Attachments Section -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-paperclip me-2"></i>
+                الملفات المرفقة
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form action="{{ route('shipping.policies.add.attachment', $policy) }}" method="POST"
+                        enctype="multipart/form-data"
+                        class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-3">
+                        @csrf
+                        <div class="flex-grow-1">
+                            <input type="file" name="attachment" class="form-control"
+                                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-1"></i>
+                            إرفاق ملف
+                        </button>
+                    </form>
+                    <small class="text-muted mt-1 d-block">
+                        يمكنك إرفاق الملفات التالية: PDF, صور
+                    </small>
+                </div>
+            </div>
+
+            <!-- Attached Files List -->
+            @if ($policy->attachments && $policy->attachments->count() > 0)
+                <div class="row g-3">
+                    @foreach ($policy->attachments as $attachment)
+                        <div class="col-12 col-lg-6">
+                            <div class="alert alert-primary border-2 d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        @php
+                                            $extension = pathinfo($attachment->file_name, PATHINFO_EXTENSION);
+                                            $iconClass = 'fas fa-file';
+                                            $iconColor = 'text-secondary';
+
+                                            switch (strtolower($extension)) {
+                                                case 'pdf':
+                                                    $iconClass = 'fas fa-file-pdf';
+                                                    $iconColor = 'text-danger';
+                                                    break;
+                                                case 'doc':
+                                                case 'docx':
+                                                    $iconClass = 'fas fa-file-word';
+                                                    $iconColor = 'text-primary';
+                                                    break;
+                                                case 'xls':
+                                                case 'xlsx':
+                                                    $iconClass = 'fas fa-file-excel';
+                                                    $iconColor = 'text-success';
+                                                    break;
+                                                case 'jpg':
+                                                case 'jpeg':
+                                                case 'png':
+                                                case 'gif':
+                                                    $iconClass = 'fas fa-file-image';
+                                                    $iconColor = 'text-info';
+                                                    break;
+                                                case 'txt':
+                                                    $iconClass = 'fas fa-file-alt';
+                                                    $iconColor = 'text-dark';
+                                                    break;
+                                            }
+                                        @endphp
+                                        <i class="{{ $iconClass }} {{ $iconColor }}" style="font-size: 2rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 alert-heading">{{ $attachment->file_name }}</h6>
+                                        <small class="text-muted" style="font-size: 0.75rem;">
+                                            أرفق بواسطة {{ $attachment->made_by ? $attachment->made_by->name : 'غير محدد' }} في 
+                                            {{ $attachment->created_at->format('Y/m/d') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}"
+                                        download="{{ $attachment->file_name }}"
+                                        class="btn btn-sm btn-primary">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger"
+                                        type="button" data-bs-toggle="modal" data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
+                                        title="حذف المرفق">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delete Attachment Modal -->
+                        <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
+                            aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger">
+                                        <h5 class="modal-title text-white fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
+                                            تأكيد حذف المرفق
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-dark">
+                                        <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            <strong>{{ $attachment->file_name }}</strong>
+                                            <br>
+                                            <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
                                         </div>
                                     </div>
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ asset('storage/' . $attachment->file_path) }}"
-                                            download="{{ $attachment->file_name }}"
-                                            class="btn btn-sm btn-primary">
-                                            <i class="fas fa-download"></i>
-                                        </a>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                            type="button" data-bs-toggle="modal" data-bs-target="#deleteAttachmentModal{{ $attachment->id }}"
-                                            title="حذف المرفق">
-                                            <i class="fas fa-trash"></i>
+                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                        <form action="{{ route('shipping.policies.delete.attachment', $attachment) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
+                                                حذف المرفق
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
+                                            إلغاء
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- Delete Attachment Modal -->
-                            <div class="modal fade" id="deleteAttachmentModal{{ $attachment->id }}" tabindex="-1"
-                                aria-labelledby="deleteAttachmentModalLabel{{ $attachment->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger">
-                                            <h5 class="modal-title text-white fw-bold" id="deleteAttachmentModalLabel{{ $attachment->id }}">
-                                                تأكيد حذف المرفق
-                                            </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body text-dark">
-                                            <p class="mb-3">هل أنت متأكد من حذف هذا المرفق؟</p>
-                                            <div class="alert alert-warning">
-                                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                                <strong>{{ $attachment->file_name }}</strong>
-                                                <br>
-                                                <small>لن تتمكن من استرداد هذا الملف بعد حذفه</small>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
-                                            <form action="{{ route('shipping.policies.delete.attachment', $attachment) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger fw-bold order-1 order-sm-1">
-                                                    حذف المرفق
-                                                </button>
-                                            </form>
-                                            <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-2" data-bs-dismiss="modal">
-                                                إلغاء
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="text-center py-4">
-                        <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
-                        <p class="text-muted mt-2 mb-0">لا توجد مرفقات لهذا العقد</p>
-                    </div>
-                @endif
-            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-4">
+                    <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-2 mb-0">لا توجد مرفقات لهذا العقد</p>
+                </div>
+            @endif
         </div>
+    </div>
 
-        <!-- Modal لتعديل البضائع -->
-        <div class="modal fade" id="editGoodsModal" tabindex="-1" aria-labelledby="editGoodsModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h5 class="modal-title text-white fw-bold" id="editGoodsModalLabel">تعديل البضائع</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <form action="{{ route('shipping.policies.goods.update', $policy) }}" method="POST" id="goodsForm">
-                        @csrf
-                        @method('PATCH')
-                        <div class="modal-body text-dark">
-                            <div class="table-container">
-                                <table class="table table-bordered" id="goodsTable">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th class="text-center" style="width: 30%;">البيان</th>
-                                            <th class="text-center" style="width: 20%;">الكمية</th>
-                                            <th class="text-center" style="width: 20%;">الوزن</th>
-                                            <th class="text-center" style="width: 25%;">ملاحظات</th>
-                                            <th class="text-center" style="width: 5%;">إجراءات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if ($policy->goods && count($policy->goods) > 0)
-                                            @foreach ($policy->goods as $index => $good)
-                                                <tr>
-                                                    <td>
-                                                        <input type="text" class="form-control"
-                                                            name="goods[{{ $index }}][description]"
-                                                            value="{{ $good->description }}" required>
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01" class="form-control text-center"
-                                                            name="goods[{{ $index }}][quantity]"
-                                                            value="{{ $good->quantity }}" min="0">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number" step="0.01" class="form-control text-center"
-                                                            name="goods[{{ $index }}][weight]"
-                                                            value="{{ $good->weight }}" min="0">
-                                                    </td>
-                                                    <td>
-                                                        <textarea class="form-control" name="goods[{{ $index }}][notes]" rows="1">{{ $good->notes }}</textarea>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <button type="button" class="btn btn-danger btn-sm delete-row">
-                                                            <i class="fas fa-trash-can"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @else
+    <!-- الملاحظات -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-sticky-note"></i> الملاحظات</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ route('shipping.policies.notes', $policy) }}">
+                @csrf
+                @method('PATCH')
+                <div class="mb-3">
+                    <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="اكتب الملاحظات هنا...">{{ old('notes', $policy->notes) }}</textarea>
+                </div>
+                <div class="text-start">
+                    <button type="submit" class="btn btn-primary col-12 col-md-2">
+                        <span class="d-inline">حفظ الملاحظات</span><span </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal لتعديل البضائع -->
+    <div class="modal fade" id="editGoodsModal" tabindex="-1" aria-labelledby="editGoodsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white fw-bold" id="editGoodsModalLabel">تعديل البضائع</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form action="{{ route('shipping.policies.goods.update', $policy) }}" method="POST" id="goodsForm">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-body text-dark">
+                        <div class="table-container">
+                            <table class="table table-bordered" id="goodsTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="text-center" style="width: 30%;">البيان</th>
+                                        <th class="text-center" style="width: 20%;">الكمية</th>
+                                        <th class="text-center" style="width: 20%;">الوزن</th>
+                                        <th class="text-center" style="width: 25%;">ملاحظات</th>
+                                        <th class="text-center" style="width: 5%;">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($policy->goods && count($policy->goods) > 0)
+                                        @foreach ($policy->goods as $index => $good)
                                             <tr>
                                                 <td>
-                                                    <input type="text" class="form-control" name="goods[0][description]"
-                                                        required>
+                                                    <input type="text" class="form-control"
+                                                        name="goods[{{ $index }}][description]"
+                                                        value="{{ $good->description }}" required>
                                                 </td>
                                                 <td>
                                                     <input type="number" step="0.01" class="form-control text-center"
-                                                        name="goods[0][quantity]" min="0">
+                                                        name="goods[{{ $index }}][quantity]"
+                                                        value="{{ $good->quantity }}" min="0">
                                                 </td>
                                                 <td>
                                                     <input type="number" step="0.01" class="form-control text-center"
-                                                        name="goods[0][weight]" min="0">
+                                                        name="goods[{{ $index }}][weight]"
+                                                        value="{{ $good->weight }}" min="0">
                                                 </td>
                                                 <td>
-                                                    <textarea class="form-control" name="goods[0][notes]" rows="1"></textarea>
+                                                    <textarea class="form-control" name="goods[{{ $index }}][notes]" rows="1">{{ $good->notes }}</textarea>
                                                 </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-danger btn-sm delete-row">
@@ -729,149 +707,173 @@
                                                     </button>
                                                 </td>
                                             </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="text-center mt-3">
-                                <button type="button" class="btn btn-primary rounded-5" id="addGoodRow">
-                                    <i class="fas fa-plus me-2"></i>إضافة صف جديد
-                                </button>
-                            </div>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control" name="goods[0][description]"
+                                                    required>
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" class="form-control text-center"
+                                                    name="goods[0][quantity]" min="0">
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" class="form-control text-center"
+                                                    name="goods[0][weight]" min="0">
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" name="goods[0][notes]" rows="1"></textarea>
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-danger btn-sm delete-row">
+                                                    <i class="fas fa-trash-can"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="modal-footer d-flex justify-content-start">
-                            <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
-                            <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                        <div class="text-center mt-3">
+                            <button type="button" class="btn btn-primary rounded-5" id="addGoodRow">
+                                <i class="fas fa-plus me-2"></i>إضافة صف جديد
+                            </button>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-start">
+                        <button type="submit" class="btn btn-primary fw-bold">حفظ التغييرات</button>
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">إلغاء</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <div class="text-center mt-4">
-            <small class="text-muted">
-                تم إنشاء هذه البوليصة بواسطة <strong>{{ $policy->made_by->name }}</strong>
-            </small>
-        </div>
+    <div class="text-center mt-4">
+        <small class="text-muted">
+            تم إنشاء هذه البوليصة بواسطة <strong>{{ $policy->made_by->name }}</strong>
+        </small>
+    </div>
 
-        <script>
-            $('#customer_id').select2({
-                placeholder: "ابحث عن إسم العميل...",
+    <script>
+        $('#customer_id').select2({
+            placeholder: "ابحث عن إسم العميل...",
+            allowClear: true,
+            dropdownParent: $('#editPolicyModal')
+        });
+
+        $('#editPolicyModal').on('shown.bs.modal', function() {
+            $('#driver_id').select2({
+                placeholder: "ابحث عن إسم السائق...",
                 allowClear: true,
                 dropdownParent: $('#editPolicyModal')
             });
 
-            $('#editPolicyModal').on('shown.bs.modal', function() {
-                $('#driver_id').select2({
-                    placeholder: "ابحث عن إسم السائق...",
-                    allowClear: true,
-                    dropdownParent: $('#editPolicyModal')
-                });
-
-                $('#supplier_id').select2({
-                    placeholder: "ابحث عن إسم المورد...",
-                    allowClear: true,
-                    dropdownParent: $('#editPolicyModal')
-                });
+            $('#supplier_id').select2({
+                placeholder: "ابحث عن إسم المورد...",
+                allowClear: true,
+                dropdownParent: $('#editPolicyModal')
             });
+        });
 
-            $('#driver_id').on('change', function() {
-                let nid = $(this).find(':selected').data('nid');
-                $('#driver_NID').val(nid || '');
-                let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
-                $('#plate_number').val(vehiclePlate || '');
-                let vehicleId = $(this).find(':selected').data('vehicle-id');
-                $('#vehicle_id').val(vehicleId || '');
-            });
+        $('#driver_id').on('change', function() {
+            let nid = $(this).find(':selected').data('nid');
+            $('#driver_NID').val(nid || '');
+            let vehiclePlate = $(this).find(':selected').data('vehicle-plate');
+            $('#plate_number').val(vehiclePlate || '');
+            let vehicleId = $(this).find(':selected').data('vehicle-id');
+            $('#vehicle_id').val(vehicleId || '');
+        });
 
-            $(document).ready(function() {
-                function toggleFields() {
-                    const selected = $('#type').val();
-                    $('.internal-field, .external-field').hide();
+        $(document).ready(function() {
+            function toggleFields() {
+                const selected = $('#type').val();
+                $('.internal-field, .external-field').hide();
 
-                    if (selected === "ناقل داخلي") {
-                        $('.internal-field').show();
-                        $('#supplier_id').val(null).trigger('change');
-                    } else if (selected === "ناقل خارجي") {
-                        $('.external-field').show();
-                        $('#driver_id').val(null).trigger('change');
-                    }
+                if (selected === "ناقل داخلي") {
+                    $('.internal-field').show();
+                    $('#supplier_id').val(null).trigger('change');
+                } else if (selected === "ناقل خارجي") {
+                    $('.external-field').show();
+                    $('#driver_id').val(null).trigger('change');
                 }
-                $('#type').on('change', toggleFields);
-                toggleFields();
+            }
+            $('#type').on('change', toggleFields);
+            toggleFields();
 
-                // Goods Modal Functionality
-                let goodIndex = {{ $policy->goods ? count($policy->goods) : 1 }};
+            // Goods Modal Functionality
+            let goodIndex = {{ $policy->goods ? count($policy->goods) : 1 }};
 
-                // Add new row
-                $('#addGoodRow').on('click', function() {
-                    const newRow = `
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control" name="goods[${goodIndex}][description]" required>
-                        </td>
-                        <td>
-                            <input type="number" step="0.01" class="form-control text-center" name="goods[${goodIndex}][quantity]" min="0">
-                        </td>
-                        <td>
-                            <input type="number" step="0.01" class="form-control text-center" name="goods[${goodIndex}][weight]" min="0">
-                        </td>
-                        <td>
-                            <textarea class="form-control" name="goods[${goodIndex}][notes]" rows="1"></textarea>
-                        </td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-danger btn-sm delete-row">
-                                <i class="fas fa-trash-can"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                    $('#goodsTable tbody').append(newRow);
-                    goodIndex++;
+            // Add new row
+            $('#addGoodRow').on('click', function() {
+                const newRow = `
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="goods[${goodIndex}][description]" required>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" class="form-control text-center" name="goods[${goodIndex}][quantity]" min="0">
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" class="form-control text-center" name="goods[${goodIndex}][weight]" min="0">
+                    </td>
+                    <td>
+                        <textarea class="form-control" name="goods[${goodIndex}][notes]" rows="1"></textarea>
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm delete-row">
+                            <i class="fas fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+                $('#goodsTable tbody').append(newRow);
+                goodIndex++;
+                updateRowIndexes();
+            });
+
+            // Delete row
+            $(document).on('click', '.delete-row', function() {
+                if ($('#goodsTable tbody tr').length > 1) {
+                    $(this).closest('tr').remove();
                     updateRowIndexes();
-                });
-
-                // Delete row
-                $(document).on('click', '.delete-row', function() {
-                    if ($('#goodsTable tbody tr').length > 1) {
-                        $(this).closest('tr').remove();
-                        updateRowIndexes();
-                    } else {
-                        alert('يجب وجود صف واحد على الأقل');
-                    }
-                });
-
-                // Update row indexes after add/delete
-                function updateRowIndexes() {
-                    $('#goodsTable tbody tr').each(function(index) {
-                        $(this).find('input, textarea').each(function() {
-                            const name = $(this).attr('name');
-                            if (name) {
-                                const newName = name.replace(/goods\[\d+\]/, `goods[${index}]`);
-                                $(this).attr('name', newName);
-                            }
-                        });
-                    });
+                } else {
+                    alert('يجب وجود صف واحد على الأقل');
                 }
             });
-        </script>
 
-        <style>
-            .card {
-                border: none;
-                border-radius: 10px;
-                overflow: hidden;
+            // Update row indexes after add/delete
+            function updateRowIndexes() {
+                $('#goodsTable tbody tr').each(function(index) {
+                    $(this).find('input, textarea').each(function() {
+                        const name = $(this).attr('name');
+                        if (name) {
+                            const newName = name.replace(/goods\[\d+\]/, `goods[${index}]`);
+                            $(this).attr('name', newName);
+                        }
+                    });
+                });
             }
+        });
+    </script>
 
-            .select2-container .select2-selection {
-                height: 38px;
-                border-radius: 8px;
-                border: 1px solid #0d6efd;
-                padding: 5px;
-            }
+    <style>
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-            .select2-container .select2-selection__rendered {
-                line-height: 30px;
-            }
-        </style>
+        .select2-container .select2-selection {
+            height: 38px;
+            border-radius: 8px;
+            border: 1px solid #0d6efd;
+            padding: 5px;
+        }
+
+        .select2-container .select2-selection__rendered {
+            line-height: 30px;
+        }
+    </style>
     @endsection

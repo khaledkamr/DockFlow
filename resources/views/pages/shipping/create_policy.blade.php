@@ -248,7 +248,7 @@
             </div>
 
             <div class="row g-3 mb-4">
-                <div class="col-12">
+                <div class="col-12 col-md-6">
                     <h5 class="form-label">المرفقات</h5>
                     <input type="file" class="form-control border-primary" name="attachment">
                     {{-- <small class="text-muted">يمكن إرفاق ملف واحد فقط.</small> --}}
@@ -256,6 +256,14 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="col-12 col-md-6">
+                    <h5 class="form-label">الملاحظات</h5>
+                    <textarea class="form-control border-primary" name="notes" rows="1">{{ old('notes') }}</textarea>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                
             </div>
 
             <button type="submit" class="btn btn-primary fw-bold col-12 col-sm-2">
