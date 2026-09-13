@@ -408,6 +408,7 @@ class Invoice extends Model
                 $diff_invoice_vat_amount = round(abs($this->invoice_vat_amount) - $records_from_xml['invoice_vat_amount'], 2);
                 $diff_invoice_total = round($invoice_amount - $records_from_xml['invoice_total'], 2);
                 $diff_status = $diff_invoice_amount > 0 || $diff_invoice_vat_amount > 0 || $diff_invoice_total > 0;
+                $user_id = auth()->user()->id ?? null;
 
                 if($customer->type == 'فرد') {
                     $invoice->update([
@@ -431,6 +432,7 @@ class Invoice extends Model
                         'diff_invoice_vat_amount' => $diff_invoice_vat_amount,
                         'diff_invoice_total' => $diff_invoice_total,
                         'diff_status' => $diff_status,
+                        'user_id' => $user_id
                     ]);
             } else {
                 if ($response->unauthorized()) {

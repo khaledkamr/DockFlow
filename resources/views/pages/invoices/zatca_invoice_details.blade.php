@@ -369,6 +369,10 @@
         </div>
     </div>
 
+    <div class="text-muted text-center">
+        تم ارسال الفاتورة بواسطة {{ $zatcaInvoice->made_by->name ?? 'غير معرف' }}
+    </div>
+
     <!-- Styles -->
     <style>
         .card {

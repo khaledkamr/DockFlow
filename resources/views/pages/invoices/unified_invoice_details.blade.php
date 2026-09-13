@@ -556,12 +556,7 @@
 
                 <!-- Invoice Actions -->
                 <div class="d-flex flex-column flex-sm-row gap-2">
-                    @if ($invoice->zatcaInvoice)
-                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" target="_blank"
-                            class="btn btn-outline-primary">
-                            <i class="fas fa-file-invoice-dollar me-2"></i>فاتورة zatca
-                        </a>
-                    @elseif ($invoice->company->zatcaCompany)
+                    @if ($invoice->company->zatcaCompany && !$invoice->zatcaInvoice)
                         <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-outline-primary">
                             <i class="fas fa-paper-plane me-2"></i> إرسال الفاتورة
                         </a>
@@ -1278,6 +1273,75 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Zatca Invoice Details -->
+            @if($invoice->company->zatcaCompany)
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-dark">
+                            <i class="fas fa-clipboard me-2"></i>تفاصيل فاتورة ZATCA
+                        </h5>
+                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" target="_blank"
+                            class="btn btn-outline-primary">
+                            <i class="fas fa-file-invoice-dollar me-2"></i>عرض جميع البيانات
+                        </a>
+                    </div>
+
+                    <div class="table-container" id="tableContainer">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th class="text-center bg-dark text-white text-nowrap">حالة الفاتورة</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">تاريخ الإرسال</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">المبلغ قبل الضريبة</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">مبلغ الضريبة</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">اجمالي المبلغ</th>
+                                    <th class="text-center bg-dark text-white text-nowrap">تم بواسطة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @if($invoice->zatcaInvoice)
+                                        <td class="text-center fw-bold">
+                                            <span class="badge {{ $invoice->zatcaInvoice->status == 'CLEARED' || $invoice->zatcaInvoice->status == 'REPORTED' ? 'status-delivered' : 'status-danger' }}">
+                                                {{ $invoice->zatcaInvoice->status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            {{ $payment->zatcaInvoice->created_at->format('d/m/Y') }}
+                                        </td>
+                                        <td class="text-center fw-bold text-nowrap">
+                                            {{ number_format($payment->zatcaInvoice->diff_invoice_amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                        </td>
+                                        <td class="text-center fw-bold text-nowrap">
+                                            {{ number_format($payment->zatcaInvoice->diff_invoice_vat_amount, 2) }} <i data-lucide="saudi-riyal"></i>
+                                        </td>
+                                        <td class="text-center fw-bold text-nowrap">
+                                            {{ number_format($payment->zatcaInvoice->diff_invoice_total, 2) }} <i data-lucide="saudi-riyal"></i>
+                                        </td>
+                                        <td class="text-center">
+                                            @if($payment->zatcaInvoice->made_by)
+                                                <a href="{{ route('admin.user.profile', $payment->zatcaInvoice->made_by) }}"
+                                                    class="text-dark text-decoration-none">
+                                                    {{ $payment->zatcaInvoice->made_by->name ?? '-' }}
+                                                </a>
+                                            @else
+                                                غير معرف
+                                            @endif
+                                        </td>
+                                    @else
+                                        <td colspan="6" class="text-center">
+                                            <span class="status-danger fs-6">
+                                                لم يتم ارسال الفاتورة بعد الى هيئة الزكاة والدخل
+                                            </span>
+                                        </td>
+                                    @endif
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
 
             <!-- Invoice Payments History -->
             <div class="mb-4">

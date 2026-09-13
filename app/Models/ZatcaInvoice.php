@@ -25,9 +25,14 @@ class ZatcaInvoice extends Model
         'diff_invoice_vat_amount',
         'diff_invoice_total',
         'diff_status',
+        'user_id',
     ];
 
     public function invoice() {
         return $this->belongsTo(Invoice::class);
+    }
+
+    public function made_by() {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
