@@ -608,18 +608,15 @@
                                                     @if ($item->debit_account_id)
                                                         <div class="row g-3">
                                                             <div class="col-sm-4">
-                                                                <label class="form-label text-muted small">رقم
-                                                                    الحساب</label>
+                                                                <label class="form-label text-muted small">رقم الحساب</label>
                                                                 <div class="fw-bold">{{ $item->debitAccount->code }}</div>
                                                             </div>
                                                             <div class="col-sm-4">
-                                                                <label class="form-label text-muted small">اسم
-                                                                    الحساب</label>
+                                                                <label class="form-label text-muted small">اسم الحساب</label>
                                                                 <div class="fw-bold">{{ $item->debitAccount->name }}</div>
                                                             </div>
                                                             <div class="col-sm-4">
-                                                                <label class="form-label text-muted small">المبلغ
-                                                                    المدين</label>
+                                                                <label class="form-label text-muted small">المبلغ المدين</label>
                                                                 <div class="fw-bold text-success">
                                                                     {{ number_format($item->total, 2) }} <i
                                                                         data-lucide="saudi-riyal"></i></div>
@@ -641,20 +638,17 @@
                                                     @if ($item->credit_account_id)
                                                         <div class="row g-3">
                                                             <div class="col-sm-4">
-                                                                <label class="form-label text-muted small">رقم
-                                                                    الحساب</label>
-                                                                <div class="fw-bold">{{ $item->creditAccount->code }}
+                                                                <label class="form-label text-muted small">رقم الحساب</label>
+                                                                <div class="fw-bold">{{ $item->creditAccount->code ?? 'N/A' }}
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-4">
-                                                                <label class="form-label text-muted small">اسم
-                                                                    الحساب</label>
-                                                                <div class="fw-bold">{{ $item->creditAccount->name }}
+                                                                <label class="form-label text-muted small">اسم الحساب</label>
+                                                                <div class="fw-bold">{{ $item->creditAccount->name ?? 'N/A' }}
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-4">
-                                                                <label class="form-label text-muted small">المبلغ
-                                                                    الدائن</label>
+                                                                <label class="form-label text-muted small">المبلغ الدائن</label>
                                                                 <div class="fw-bold text-danger">
                                                                     {{ number_format($item->total, 2) }} <i
                                                                         data-lucide="saudi-riyal"></i></div>
