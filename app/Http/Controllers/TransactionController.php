@@ -120,7 +120,7 @@ class TransactionController extends Controller
 
         $procedures = Procedure::all();
 
-        return $transaction->items->load('debitAccount', 'creditAccount');
+        // return $transaction->items->load('debitAccount', 'creditAccount');
         return view('pages.transactions.transaction_details', compact(
             'transaction', 
             'items', 
