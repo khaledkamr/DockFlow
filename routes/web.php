@@ -43,6 +43,7 @@ Route::controller(AdminController::class)->middleware('auth')->group(function ()
     Route::get('admin/companies', 'companies')->name('admin.companies');
     Route::post('admin/companies/store', 'storeCompany')->name('admin.companies.store');
     Route::get('admin/companies/{company:uuid}', 'companyDetails')->name('admin.company.details');
+    Route::get('admin/companies/{company:uuid}/activity', 'companyActivity')->name('admin.company.activity');
     Route::put('admin/companies/update/{company:uuid}', 'updateCompany')->name('admin.companies.update');
     Route::delete('admin/companies/delete/{company:uuid}', 'deleteCompany')->name('admin.companies.delete');
 

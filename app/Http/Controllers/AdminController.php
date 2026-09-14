@@ -11,6 +11,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -92,6 +93,11 @@ class AdminController extends Controller
         $users = $company->users()->with('roles')->get();
         $roles = $company->roles()->with('permissions')->get();
         $permissions = Permission::all();
+        $activityPeriod = [
+            'from' => now()->subDays(29)->toDateString(),
+            'to' => now()->toDateString(),
+        ];
+        $activityData = $this->companyActivityData($company, $activityPeriod['from'], $activityPeriod['to']);
         
         $setupStatus = [
             'accounts' => $company->accounts()->where('level', 1)->exists(),
@@ -101,7 +107,46 @@ class AdminController extends Controller
         
         $setupCompleted = !in_array(false, $setupStatus);
         
-        return view('admin.company_details', compact('company', 'modules', 'users', 'roles', 'permissions', 'setupStatus', 'setupCompleted'));
+        return view('admin.company_details', compact(
+            'company',
+            'modules',
+            'users',
+            'roles',
+            'permissions',
+            'setupStatus',
+            'setupCompleted',
+            'activityPeriod',
+            'activityData'
+        ));
+    }
+
+    public function companyActivity(Company $company, Request $request) {
+        $validated = $request->validate([
+            'from' => ['required', 'date'],
+            'to' => ['required', 'date', 'after_or_equal:from'],
+        ]);
+
+        return response()->json($this->companyActivityData($company, $validated['from'], $validated['to']));
+    }
+
+    private function companyActivityData(Company $company, string $from, string $to): array {
+        $fromDate = Carbon::parse($from)->startOfDay();
+        $toDate = Carbon::parse($to)->endOfDay();
+        $activityByDate = $company->logs()
+            ->whereBetween('created_at', [$fromDate, $toDate])
+            ->selectRaw('DATE(created_at) as activity_date, COUNT(*) as activity_count')
+            ->groupByRaw('DATE(created_at)')
+            ->pluck('activity_count', 'activity_date');
+
+        $labels = [];
+        $counts = [];
+        for ($date = $fromDate->copy(); $date->lte($toDate); $date->addDay()) {
+            $dateKey = $date->toDateString();
+            $labels[] = $date->format('Y/m/d');
+            $counts[] = (int) ($activityByDate[$dateKey] ?? 0);
+        }
+
+        return compact('labels', 'counts');
     }
 
     public function deleteCompany(Company $company) {

@@ -38,7 +38,7 @@
                 </button>
                 <button class="btn btn-light fw-bold" type="button" data-bs-toggle="modal"
                     data-bs-target="#deleteCompanyModal"
-                    onmouseover="this.classList.remove('btn-light'); this.classList.add('btn-danger');" 
+                    onmouseover="this.classList.remove('btn-light'); this.classList.add('btn-danger');"
                     onmouseout="this.classList.remove('btn-danger'); this.classList.add('btn-light');">
                     <i class="fa-solid fa-trash-can me-2"></i>
                     حذف الشركة
@@ -48,13 +48,11 @@
     </div>
 
     <!-- Edit Company Modal -->
-    <div class="modal fade" id="editCompanyModal" tabindex="-1"
-        aria-labelledby="editCompanyModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editCompanyModal" tabindex="-1" aria-labelledby="editCompanyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-white fw-bold"
-                        id="editCompanyModalLabel">تعديل بيانات الشركة</h5>
+                    <h5 class="modal-title text-white fw-bold" id="editCompanyModalLabel">تعديل بيانات الشركة</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -65,8 +63,7 @@
                         <div class="row g-3 mb-3">
                             <div class="col-12 col-md-6">
                                 <label for="name" class="form-label">اسم الشركة</label>
-                                <input type="text" class="form-control border-primary"
-                                    id="name" name="name"
+                                <input type="text" class="form-control border-primary" id="name" name="name"
                                     value="{{ $company->name }}" required>
                                 @error('name')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -74,8 +71,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="branch" class="form-label">اسم الفرع</label>
-                                <input type="text" class="form-control border-primary"
-                                    id="branch" name="branch"
+                                <input type="text" class="form-control border-primary" id="branch" name="branch"
                                     value="{{ $company->branch }}" required>
                                 @error('branch')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -83,8 +79,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="CR" class="form-label">السجل التجاري</label>
-                                <input type="text" class="form-control border-primary"
-                                    id="CR" name="CR"
+                                <input type="text" class="form-control border-primary" id="CR" name="CR"
                                     value="{{ $company->CR }}">
                                 @error('CR')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -92,8 +87,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="vatNumber" class="form-label">الرقم الضريبي</label>
-                                <input type="text" class="form-control border-primary"
-                                    id="vatNumber" name="vatNumber"
+                                <input type="text" class="form-control border-primary" id="vatNumber" name="vatNumber"
                                     value="{{ $company->vatNumber }}">
                                 @error('vatNumber')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -101,8 +95,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="email" class="form-label">البريد الإلكتروني</label>
-                                <input type="email" class="form-control border-primary"
-                                    id="email" name="email"
+                                <input type="email" class="form-control border-primary" id="email" name="email"
                                     value="{{ $company->email }}">
                                 @error('email')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -110,8 +103,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="phone" class="form-label">رقم الهاتف</label>
-                                <input type="text" class="form-control border-primary"
-                                    id="phone" name="phone"
+                                <input type="text" class="form-control border-primary" id="phone" name="phone"
                                     value="{{ $company->phone }}">
                                 @error('phone')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -119,9 +111,8 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="national_address" class="form-label">العنوان الوطني</label>
-                                <input type="text" class="form-control border-primary"
-                                    id="national_address" name="national_address"
-                                    value="{{ $company->national_address }}">
+                                <input type="text" class="form-control border-primary" id="national_address"
+                                    name="national_address" value="{{ $company->national_address }}">
                                 @error('national_address')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
@@ -130,11 +121,11 @@
                                 <label for="logo" class="form-label">شعار الشركة</label>
                                 <div class="d-flex align-items-center mb-2">
                                     @if ($company->logo)
-                                        <img src="{{ asset('storage/' . $company->logo) }}"
-                                            alt="{{ $company->name }}" class="rounded me-2"
-                                            style="width: 40px; height: 40px; object-fit: contain;">
+                                        <img src="{{ asset('storage/' . $company->logo) }}" alt="{{ $company->name }}"
+                                            class="rounded me-2" style="width: 40px; height: 40px; object-fit: contain;">
                                     @endif
-                                    <input type="file" class="form-control border-primary" id="logo" name="logo" accept="image/*">
+                                    <input type="file" class="form-control border-primary" id="logo"
+                                        name="logo" accept="image/*">
                                 </div>
                                 @error('logo')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
@@ -142,8 +133,7 @@
                             </div>
                         </div>
                     </div>
-                    <div
-                        class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
                         <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">حفظ
                             التغييرات</button>
                         <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2"
@@ -155,13 +145,12 @@
     </div>
 
     <!-- Delete Company Modal -->
-    <div class="modal fade" id="deleteCompanyModal" tabindex="-1"
-        aria-labelledby="deleteCompanyModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteCompanyModal" tabindex="-1" aria-labelledby="deleteCompanyModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title text-white fw-bold fs-6"
-                        id="deleteCompanyModalLabel">تأكيد الحذف</h5>
+                    <h5 class="modal-title text-white fw-bold fs-6" id="deleteCompanyModalLabel">تأكيد الحذف</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -308,8 +297,8 @@
                                                 <i class="fa-solid fa-check me-1"></i>مكتمل
                                             </span>
                                         @else
-                                            <form action="{{ route('admin.company.seed.roles', $company) }}" method="POST"
-                                                class="d-inline">
+                                            <form action="{{ route('admin.company.seed.roles', $company) }}"
+                                                method="POST" class="d-inline">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-warning fw-bold">
                                                     <i class="fa-solid fa-plus me-1"></i>إضافة الآن
@@ -525,7 +514,8 @@
                 <div style="width: 4px; height: 30px; background: var(--gradient);" class="rounded"></div>
                 <h4 class="fw-bold">المديولات المفعلة</h4>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-primary mb-2" data-bs-toggle="modal" data-bs-target="#addModuleModal">
+            <button type="button" class="btn btn-sm btn-outline-primary mb-2" data-bs-toggle="modal"
+                data-bs-target="#addModuleModal">
                 <i class="fas fa-plus me-2"></i>إضافة مديول جديد
             </button>
         </div>
@@ -534,19 +524,23 @@
                 <div class="row g-3">
                     @forelse ($company->modules as $module)
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                            <div class="d-flex align-items-center justify-content-between p-2 rounded-3 {{ $module->pivot->is_active ? 'bg-primary bg-opacity-10' : 'bg-secondary bg-opacity-10' }}">
+                            <div
+                                class="d-flex align-items-center justify-content-between p-2 rounded-3 {{ $module->pivot->is_active ? 'bg-primary bg-opacity-10' : 'bg-secondary bg-opacity-10' }}">
                                 <div class="d-flex align-items-center">
-                                    <i class="fa-solid {{ $module->pivot->is_active ? 'fa-check-circle text-primary' : 'fa-times-circle text-secondary' }} me-2"></i>
+                                    <i
+                                        class="fa-solid {{ $module->pivot->is_active ? 'fa-check-circle text-primary' : 'fa-times-circle text-secondary' }} me-2"></i>
                                     <span class="fw-medium">{{ $module->name }}</span>
                                 </div>
-                                <form action="{{ route('companies.toggle.module', ['company' => $company, 'moduleId' => $module->id]) }}"
+                                <form
+                                    action="{{ route('companies.toggle.module', ['company' => $company, 'moduleId' => $module->id]) }}"
                                     method="POST">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit"
                                         class="btn btn-sm {{ $module->pivot->is_active ? 'btn-outline-danger' : 'btn-outline-success' }}"
                                         style="border-radius: 8px;">
-                                        <i class="fas {{ $module->pivot->is_active ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
+                                        <i
+                                            class="fas {{ $module->pivot->is_active ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
                                     </button>
                                 </form>
                             </div>
@@ -571,7 +565,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title fw-bold" id="addModuleModalLabel">إضافة مديول جديد</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form action="{{ route('companies.add.modules', ['company' => $company]) }}" method="POST">
                     @csrf
@@ -1090,7 +1085,8 @@
             <div class="card border-0 shadow-sm rounded-3">
                 <div class="card-body p-4">
                     <!-- Header with Add Buttons -->
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+                    <div
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
                         <span class="text-muted">
                             <i class="fa-solid fa-user-shield me-2"></i>
                             إجمالي الوظائف: <strong>{{ $roles->count() }}</strong>
@@ -1161,7 +1157,8 @@
 
                                         <!-- Edit Role Permissions Modal -->
                                         <div class="modal fade" id="editCompanyRoleModal{{ $role->id }}"
-                                            tabindex="-1" aria-labelledby="editCompanyRoleModalLabel{{ $role->id }}"
+                                            tabindex="-1"
+                                            aria-labelledby="editCompanyRoleModalLabel{{ $role->id }}"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                                 <div class="modal-content">
@@ -1186,8 +1183,10 @@
                                                                     name="name" value="{{ $role->name }}" required>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center mb-2 gap-2">
-                                                                    <label class="form-label fw-bold mb-0">الصلاحيات المتاحة</label>
+                                                                <div
+                                                                    class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center mb-2 gap-2">
+                                                                    <label class="form-label fw-bold mb-0">الصلاحيات
+                                                                        المتاحة</label>
                                                                     <div class="d-flex gap-2">
                                                                         <button type="button"
                                                                             class="btn btn-outline-primary btn-sm"
@@ -1210,7 +1209,8 @@
                                                                         @forelse($permissions as $permission)
                                                                             <div class="col-12 col-md-6">
                                                                                 <div class="form-check">
-                                                                                    <input class="form-check-input permission-checkbox-{{ $role->id }}"
+                                                                                    <input
+                                                                                        class="form-check-input permission-checkbox-{{ $role->id }}"
                                                                                         type="checkbox"
                                                                                         value="{{ $permission->id }}"
                                                                                         id="edit_perm_{{ $role->id }}_{{ $permission->id }}"
@@ -1224,14 +1224,16 @@
                                                                             </div>
                                                                         @empty
                                                                             <div class="col-12">
-                                                                                <p class="text-muted text-center mb-0">لا توجد صلاحيات متاحة</p>
+                                                                                <p class="text-muted text-center mb-0">لا
+                                                                                    توجد صلاحيات متاحة</p>
                                                                             </div>
                                                                         @endforelse
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div> 
-                                                        <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                                        </div>
+                                                        <div
+                                                            class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
                                                             <button type="submit"
                                                                 class="btn btn-primary fw-bold order-1 order-sm-2">
                                                                 تحديث الوظيفة
@@ -1246,7 +1248,8 @@
                                         </div>
 
                                         <!-- Delete Role Modal -->
-                                        <div class="modal fade" id="deleteCompanyRoleModal{{ $role->id }}" tabindex="-1"
+                                        <div class="modal fade" id="deleteCompanyRoleModal{{ $role->id }}"
+                                            tabindex="-1"
                                             aria-labelledby="deleteCompanyRoleModalLabel{{ $role->id }}"
                                             aria-hidden="true">
                                             <div class="modal-dialog modal-dialog-centered">
@@ -1261,14 +1264,19 @@
                                                             data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body text-center">
-                                                        <i class="fa-solid fa-exclamation-triangle text-danger fa-3x mb-3"></i>
+                                                        <i
+                                                            class="fa-solid fa-exclamation-triangle text-danger fa-3x mb-3"></i>
                                                         <p class="fs-5 mb-1">هل أنت متأكد من حذف هذه الوظيفة؟</p>
-                                                        <p class="text-muted">الوظيفة: <strong>{{ $role->name }}</strong></p>
+                                                        <p class="text-muted">الوظيفة:
+                                                            <strong>{{ $role->name }}</strong></p>
                                                     </div>
-                                                    <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
-                                                        <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1"
+                                                    <div
+                                                        class="modal-footer d-flex flex-column flex-sm-row justify-content-center gap-2">
+                                                        <button type="button"
+                                                            class="btn btn-secondary fw-bold order-2 order-sm-1"
                                                             data-bs-dismiss="modal">إلغاء</button>
-                                                        <form action="{{ route('admin.company.roles.delete', [$company, $role]) }}"
+                                                        <form
+                                                            action="{{ route('admin.company.roles.delete', [$company, $role]) }}"
                                                             method="POST" class="order-1 order-sm-2">
                                                             @csrf
                                                             @method('DELETE')
@@ -1390,6 +1398,41 @@
         </div>
     </div>
 
+    <!-- Company Activity Chart -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-header bg-white border-0 py-3">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <h5 class="card-title mb-0 fw-bold">
+                    <i class="fa-solid fa-chart-line text-primary me-2"></i>
+                    نشاط الشركة
+                </h5>
+                <form id="companyActivityFilter" class="row g-2 align-items-end">
+                    <div class="col-12 col-sm-auto">
+                        <label for="activityFrom" class="form-label small mb-1">من</label>
+                        <input type="date" class="form-control form-control-sm" id="activityFrom"
+                            value="{{ $activityPeriod['from'] }}" required>
+                    </div>
+                    <div class="col-12 col-sm-auto">
+                        <label for="activityTo" class="form-label small mb-1">إلى</label>
+                        <input type="date" class="form-control form-control-sm" id="activityTo"
+                            value="{{ $activityPeriod['to'] }}" required>
+                    </div>
+                    <div class="col-12 col-sm-auto">
+                        <button type="submit" class="btn btn-sm btn-primary w-100">
+                            <i class="fa-solid fa-filter me-1"></i>تطبيق
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div id="companyActivityError" class="alert alert-danger py-2 mt-3 mb-0 d-none" role="alert"></div>
+        </div>
+        <div class="card-body">
+            <div style="height: 320px;">
+                <canvas id="companyActivityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <style>
         .copy-btn {
             opacity: 0;
@@ -1406,6 +1449,102 @@
     </style>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const activityForm = document.getElementById('companyActivityFilter');
+            const activityError = document.getElementById('companyActivityError');
+            const activityChart = new Chart(document.getElementById('companyActivityChart'), {
+                type: 'line',
+                data: {
+                    labels: @json($activityData['labels']),
+                    datasets: [{
+                        label: 'عدد الأنشطة',
+                        data: @json($activityData['counts']),
+                        borderColor: '#0b56a9',
+                        backgroundColor: 'rgba(11, 86, 169, 0.12)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 3,
+                        pointHoverRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                autoSkip: true,
+                                maxTicksLimit: 15
+                            }
+                        }
+                    }
+                }
+            });
+
+            activityForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const from = document.getElementById('activityFrom').value;
+                const to = document.getElementById('activityTo').value;
+                activityError.classList.add('d-none');
+
+                if (!from || !to || from > to) {
+                    activityError.textContent = 'يرجى اختيار فترة زمنية صحيحة.';
+                    activityError.classList.remove('d-none');
+                    return;
+                }
+
+                const submitButton = activityForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+
+                try {
+                    const response = await fetch(
+                        '{{ route('admin.company.activity', $company) }}?from=' +
+                        encodeURIComponent(from) + '&to=' + encodeURIComponent(to), {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                    if (!response.ok) {
+                        throw new Error('activity_request_failed');
+                    }
+
+                    const data = await response.json();
+                    activityChart.data.labels = data.labels;
+                    activityChart.data.datasets[0].data = data.counts;
+                    activityChart.update();
+                } catch (error) {
+                    activityError.textContent = 'تعذر تحميل بيانات النشاط. حاول مرة أخرى.';
+                    activityError.classList.remove('d-none');
+                } finally {
+                    submitButton.disabled = false;
+                }
+            });
+        });
+
         function copyToClipboard(text) {
             // Try using the Clipboard API first
             if (navigator.clipboard && navigator.clipboard.writeText) {
