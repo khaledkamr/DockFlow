@@ -30,7 +30,6 @@
         <!-- Search Form -->
         <div class="col-12 col-lg-8">
             <form method="GET" action="{{ route('admin.companies') }}" class="d-flex flex-column">
-                <label for="search" class="form-label text-dark fw-bold mb-2">بحث عن شركة:</label>
                 <div class="d-flex gap-2">
                     <input type="text" name="search" class="form-control border-primary flex-grow-1"
                         placeholder="ابحث عن شركة بالإسم أو البريد الإلكتروني..." value="{{ request()->query('search') }}">
@@ -44,7 +43,6 @@
 
         <!-- Add Company Button -->
         <div class="col-12 col-lg-4">
-            <label class="form-label d-none d-lg-block opacity-0 user-select-none">.</label>
             <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" type="button"
                 data-bs-toggle="modal" data-bs-target="#addCompanyModal">
                 <i class="fa-solid fa-building-circle-arrow-right me-2"></i>
@@ -151,9 +149,9 @@
                     <th class="text-center bg-dark text-white text-nowrap">الشعار</th>
                     <th class="text-center bg-dark text-white text-nowrap">اسم الشركة</th>
                     <th class="text-center bg-dark text-white text-nowrap">عدد المستخدمين</th>
-                    <th class="text-center bg-dark text-white text-nowrap">تاريخ الانشاء</th>
+                    <th class="text-center bg-dark text-white text-nowrap">تاريخ الإنشاء</th>
                     <th class="text-center bg-dark text-white text-nowrap">حالة ZATCA</th>
-                    <th class="text-center bg-dark text-white text-nowrap">العنوان الوطني</th>
+                    <th class="text-center bg-dark text-white text-nowrap">عدد المديولز</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
             </thead>
@@ -183,7 +181,7 @@
                                 </a>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-primary rounded-circle">{{ $company->users->count() }}</span>
+                                <span class="badge bg-primary rounded-circle">{{ $company->users_count }}</span>
                             </td>
                             <td class="text-center text-nowrap">
                                 {{ $company->created_at->format('Y/m/d') }}
@@ -195,7 +193,9 @@
                                     {{ $company->zatcaCompany ? 'نشط' : 'غير نشط' }}
                                 </span>
                             </td>
-                            <td class="text-center">{{ $company->national_address }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-primary rounded-circle">{{ $company->modules_count }}</span>
+                            </td>
                             <td class="text-center text-nowrap">
                                 <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#editCompanyModal{{ $company->id }}">

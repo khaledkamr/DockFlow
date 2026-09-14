@@ -136,10 +136,21 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">إجمالي الشركات</h6>
                             <h3 class="mb-0 fw-bold">{{ $companiesCount ?? 'N/A' }}</h3>
-                            <small class="text-theme-4">
-                                <i class="fa-solid fa-arrow-up me-1"></i>
-                                12% من الشهر الماضي
-                            </small>
+                                @if($newCompaniesCount > 0)
+                                    <small class="text-theme-1">
+                                        <i class="fa-solid fa-arrow-up me-1"></i>
+                                        +{{ $newCompaniesCount ?? 'N/A' }} من الشهر الماضي
+                                    </small>
+                                @elseif($newCompaniesCount < 0)
+                                    <small class="text-danger">
+                                        <i class="fa-solid fa-arrow-down me-1"></i>
+                                        {{ $newCompaniesCount ?? 'N/A' }} من الشهر الماضي
+                                    </small>
+                                @else
+                                    <small class="text-theme-1">
+                                        لا يوجد تغيير من الشهر الماضي
+                                    </small>
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -159,10 +170,21 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">الشركات النشطة</h6>
                             <h3 class="mb-0 fw-bold">{{ $activeCompaniesCount ?? 'N/A' }}</h3>
-                            <small class="text-theme-4">
-                                <i class="fa-solid fa-arrow-up me-1"></i>
-                                8% من الشهر الماضي
-                            </small>
+                            @if($activeCompaniesCount > $companiesCount)
+                                <small class="text-theme-1">
+                                    <i class="fa-solid fa-arrow-up me-1"></i>
+                                    +{{ $activeCompaniesCount - $companiesCount }} من اجمالي الشركات
+                                </small>
+                            @elseif($activeCompaniesCount < $companiesCount)
+                                <small class="text-danger">
+                                    <i class="fa-solid fa-arrow-down me-1"></i>
+                                    {{ $activeCompaniesCount - $companiesCount }} من اجمالي الشركات
+                                </small>
+                            @else
+                                <small class="text-theme-1">
+                                    جميع الشركات نشطة
+                                </small>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -182,10 +204,21 @@
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">إجمالي المستخدمين</h6>
                             <h3 class="mb-0 fw-bold">{{ $usersCount ?? 'N/A' }}</h3>
-                            <small class="text-theme-4">
-                                <i class="fa-solid fa-arrow-up me-1"></i>
-                                23% من الشهر الماضي
-                            </small>
+                            @if($newUsersCount > 0)
+                                <small class="text-theme-1">
+                                    <i class="fa-solid fa-arrow-up me-1"></i>
+                                    +{{ $newUsersCount }} من الشهر الماضي
+                                </small>
+                            @elseif($newUsersCount < 0)
+                                <small class="text-danger">
+                                    <i class="fa-solid fa-arrow-down me-1"></i>
+                                    {{ $newUsersCount }} من الشهر الماضي
+                                </small>
+                            @else
+                                <small class="text-theme-1">
+                                    لا يوجد تغيير من الشهر الماضي
+                                </small>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -204,11 +237,22 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="text-muted mb-1">المستخدمين النشطين</h6>
-                            <h3 class="mb-0 fw-bold">{{ $usersCount ?? 'N/A' }}</h3>
-                            <small class="text-theme-1">
-                                <i class="fa-solid fa-arrow-down me-1"></i>
-                                3% من الشهر الماضي
-                            </small>
+                            <h3 class="mb-0 fw-bold">{{ $activeUsersCount ?? 'N/A' }}</h3>
+                            @if($activeUsersCount > $usersCount)
+                                <small class="text-theme-1">
+                                    <i class="fa-solid fa-arrow-up me-1"></i>
+                                    +{{ $activeUsersCount - $usersCount }} من اجمالي المستخدمين
+                                </small>
+                            @elseif($activeUsersCount < $usersCount)
+                                <small class="text-danger">
+                                    <i class="fa-solid fa-arrow-down me-1"></i> 
+                                    {{ $activeUsersCount - $usersCount }} من اجمالي المستخدمين
+                                </small>
+                            @else
+                                <small class="text-theme-1">
+                                    جميع المستخدمين نشطين
+                                </small>
+                            @endif
                         </div>
                     </div>
                 </div>

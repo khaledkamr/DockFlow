@@ -20,8 +20,12 @@ class AdminController extends Controller
 {
     public function dashboard() {
         $companiesCount = Company::count();
-        $activeCompaniesCount = Company::count();
+        $newCompaniesCount = (Company::where('created_at', '>=', now()->subMonth())->count());
+        $activeCompaniesCount = Company::where('is_active', true)->count();
+
         $usersCount = User::count();
+        $newUsersCount = User::where('created_at', '>=', now()->subMonth())->count();
+        $activeUsersCount = User::where('is_active', true)->count();
 
         $companiesBasedActivity = Company::withCount(['logs' => function ($query) {
             $query->where('created_at', '>=', now()->subDays(30));
@@ -34,11 +38,15 @@ class AdminController extends Controller
             ->take(5)
             ->get();
         // return $companiesBasedOnUsers->pluck('name')->toArray();
+        
 
         return view('admin.dashboard', compact(
             'companiesCount', 
+            'newCompaniesCount',
             'activeCompaniesCount', 
             'usersCount', 
+            'newUsersCount',
+            'activeUsersCount',
             'companiesBasedActivity',
             'companiesBasedOnUsers',
             'latestCompanies',
@@ -49,7 +57,9 @@ class AdminController extends Controller
     // ----------------------- companies -----------------------
 
     public function companies() {
-        $companies = Company::all();
+        $companies = Company::withCount('users')->withCount(['modules' => function ($query) {
+            $query->where('is_active', true);
+        }])->get();
         return view('admin.companies', compact('companies'));
     }
 
@@ -381,7 +391,7 @@ class AdminController extends Controller
             $modules->where('name', 'like', "%{$search}%");
         }
 
-        $modules = $modules->paginate(100)->onEachSide(1)->withQueryString();
+        $modules = $modules->withCount('companies')->paginate(100)->onEachSide(1)->withQueryString();
 
         return view('admin.modules', compact('modules'));
     }

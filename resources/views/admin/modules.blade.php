@@ -120,8 +120,8 @@
                                 @endif
                             </td>
                             <td class="text-center text-nowrap">
-                                <span class="badge status-available">
-                                    {{ $module->companies->count() ?? 0 }}
+                                <span class="badge bg-primary rounded-circle">
+                                    {{ $module->companies_count ?? 0 }}
                                 </span>
                             </td>
                             <td class="action-icons text-center text-nowrap">
