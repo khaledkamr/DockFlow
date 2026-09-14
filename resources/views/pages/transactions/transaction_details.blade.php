@@ -1091,6 +1091,23 @@
     </style>
 
     <script>
+        console.log('Transaction items with credit and debit accounts:', @json($transaction->items->map(function ($item) {
+            return [
+                'item' => $item->description,
+                'credit_account' => $item->creditAccount ? [
+                    'id' => $item->creditAccount->id,
+                    'name' => $item->creditAccount->name,
+                    'code' => $item->creditAccount->code,
+                ] : null,
+                'debit_account' => $item->debitAccount ? [
+                    'id' => $item->debitAccount->id,
+                    'name' => $item->debitAccount->name,
+                    'code' => $item->debitAccount->code,
+                ] : null,
+            ];
+        })->values()));
+
+        
         $('.account-select').select2({
             dropdownParent: $('#addItemModal'),
             width: '100%',
