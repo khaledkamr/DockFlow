@@ -22,7 +22,9 @@ class AdminController extends Controller
         $activeCompaniesCount = Company::count();
         $usersCount = User::count();
 
-        $companiesBasedActivity = Company::withCount('logs')->orderBy('logs_count', 'desc')->get();
+        $companiesBasedActivity = Company::withCount(['logs' => function ($query) {
+            $query->where('created_at', '>=', now()->subMonth());
+        }])->orderBy('logs_count', 'desc')->get();
         $companiesBasedOnUsers = Company::withCount('users')->orderBy('users_count', 'desc')->take(5)->get();
         $latestCompanies = Company::withCount('users')->latest()->take(5)->get();
         $mostActiveCompanies = Company::withCount('users')

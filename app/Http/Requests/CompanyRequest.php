@@ -23,7 +23,7 @@ class CompanyRequest extends FormRequest
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|max:15',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'is_active' => 'required|boolean',
+            'is_active' => 'nullable|boolean',
         ];
     }
 }
