@@ -300,7 +300,7 @@
                 <div class="card-header bg-white border-0 py-3">
                     <h5 class="card-title mb-0 fw-bold">
                         <i class="fa-solid fa-building-user text-theme-1 me-2"></i>
-                        المستخدمين حسب الشركة
+                        الشركات حسب المستخدمين
                     </h5>
                 </div>
                 <div class="card-body">
@@ -518,9 +518,11 @@
                     datasets: [{
                         label: 'عدد الأنشطة',
                         data: @json($companiesBasedActivity->pluck('logs_count')->values()),
-                        backgroundColor: 'rgba(11, 86, 169, 0.8)',
-                        borderRadius: 5,
-                        maxBarThickness: 56
+                        backgroundColor: 'rgba(11, 86, 169, 0.5)',
+                        borderColor: 'rgba(11, 86, 169, 1)',
+                        borderWidth: 2,
+                        borderRadius: 20,
+                        maxBarThickness: 70
                     }]
                 },
                 options: {
