@@ -22,6 +22,7 @@ class AdminController extends Controller
         $activeCompaniesCount = Company::count();
         $usersCount = User::count();
 
+        $companiesBasedActivity = Company::withCount('logs')->orderBy('logs_count', 'desc')->get();
         $companiesBasedOnUsers = Company::withCount('users')->orderBy('users_count', 'desc')->take(5)->get();
         $latestCompanies = Company::withCount('users')->latest()->take(5)->get();
         $mostActiveCompanies = Company::withCount('users')
@@ -35,6 +36,7 @@ class AdminController extends Controller
             'companiesCount', 
             'activeCompaniesCount', 
             'usersCount', 
+            'companiesBasedActivity',
             'companiesBasedOnUsers',
             'latestCompanies',
             'mostActiveCompanies'
@@ -230,18 +232,19 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'تم إضافة المستخدم بنجاح');
     }
 
-    public function updateCompanyUser(Request $request, Company $company, User $user) {
+    public function updateCompanyUser(Request $request, User $user) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20',
-            'role' => 'nullable|exists:roles,id',
+            'is_active' => 'nullable|boolean',
         ]);
 
         $user->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'is_active' => $validated['is_active'] ?? $user->is_active,
         ]);
 
         if (!empty($validated['role'])) {

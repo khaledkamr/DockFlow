@@ -30,7 +30,6 @@
         <!-- Search Form -->
         <div class="col-12 col-lg-8">
             <form method="GET" action="{{ route('admin.users') }}" class="d-flex flex-column">
-                <label for="search" class="form-label text-dark fw-bold mb-2">بحث عن مستخدم:</label>
                 <div class="d-flex gap-2">
                     <input type="text" name="search" class="form-control border-primary flex-grow-1"
                         placeholder="ابحث عن مستخدم بالإسم أو البريد الإلكتروني..."
@@ -45,7 +44,6 @@
 
         <!-- Add User Button -->
         <div class="col-12 col-lg-4">
-            <label class="form-label d-none d-lg-block opacity-0 user-select-none">.</label>
             <button class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center" type="button"
                 data-bs-toggle="modal" data-bs-target="#addUserModal">
                 <i class="fa-solid fa-user-plus me-2"></i>
@@ -154,10 +152,10 @@
                     <th class="text-center bg-dark text-white text-nowrap">#</th>
                     <th class="text-center bg-dark text-white text-nowrap">اسم المستخدم</th>
                     <th class="text-center bg-dark text-white text-nowrap">الشركة</th>
+                    <th class="text-center bg-dark text-white text-nowrap">الوظيفة</th>
                     <th class="text-center bg-dark text-white text-nowrap">البريد الإلكتروني</th>
                     <th class="text-center bg-dark text-white text-nowrap">رقم الهاتف</th>
                     <th class="text-center bg-dark text-white text-nowrap">الجنسية</th>
-                    <th class="text-center bg-dark text-white text-nowrap">رقم الهوية</th>
                     <th class="text-center bg-dark text-white text-nowrap">الإجراءات</th>
                 </tr>
             </thead>
@@ -170,7 +168,7 @@
                     </tr>
                 @else
                     @foreach ($users as $user)
-                        <tr class="{{ $user == auth()->user() ? 'table-primary' : '' }}">
+                        <tr class="{{ $user == auth()->user() ? 'table-primary' : '' }} {{ !$user->is_active ? 'table-danger opacity-50' : '' }}">
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="text-center fw-bold">{{ $user->name }}</td>
                             <td class="text-center text-nowrap">
@@ -183,10 +181,14 @@
                                     <span>{{ $user->company->name ?? '-' }}</span>
                                 </span>
                             </td>
+                            <td class="text-center text-nowrap">
+                                <span class="badge status-available">
+                                    {{ $user->roles->first()->name ?? '-' }}
+                                </span>
+                            </td>
                             <td class="text-center text-nowrap">{{ $user->email }}</td>
                             <td class="text-center text-nowrap">{{ $user->phone ?? '-' }}</td>
                             <td class="text-center text-nowrap">{{ $user->nationality ?? '-' }}</td>
-                            <td class="text-center text-nowrap">{{ $user->NID ?? '-' }}</td>
                             <td class="text-center text-nowrap">
                                 <button class="btn btn-link p-0 pb-1 me-1 me-md-2" type="button" data-bs-toggle="modal"
                                     data-bs-target="#editUserModal{{ $user->id }}">
@@ -210,10 +212,10 @@
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <form action="{{ route('admin.users.update', $user) }}" method="POST"
+                                    <form action="{{ route('admin.company.users.update', $user) }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
-                                        @method('PUT')
+                                        @method('PATCH')
                                         <div class="modal-body text-dark">
                                             <div class="row g-3 mb-3">
                                                 <div class="col-12 col-md-6">
@@ -291,27 +293,16 @@
                                                     @enderror
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="avatar{{ $user->id }}" class="form-label">صورة
-                                                        المستخدم</label>
-                                                    @if ($user->avatar)
-                                                        <div class="mb-2">
-                                                            <img src="{{ asset('storage/' . $user->avatar) }}"
-                                                                alt="{{ $user->name }}" class="rounded-circle border"
-                                                                style="width: 60px; height: 60px; object-fit: cover;">
-                                                        </div>
-                                                    @endif
-                                                    <input type="file" class="form-control border-primary"
-                                                        id="avatar{{ $user->id }}" name="avatar" accept="image/*">
-                                                    <small class="text-muted">اتركه فارغاً للإبقاء على الصورة
-                                                        الحالية</small>
-                                                    @error('avatar')
-                                                        <div class="text-danger small mt-1">{{ $message }}</div>
-                                                    @enderror
+                                                    <label for="avatar{{ $user->id }}" class="form-label">حالة المستخدم</label>
+                                                    <select class="form-select border-primary" id="is_active{{ $user->id }}"
+                                                        name="is_active">
+                                                        <option value="1" {{ $user->is_active ? 'selected' : '' }}>مفعل</option>
+                                                        <option value="0" {{ !$user->is_active ? 'selected' : '' }}>غير مفعل</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div
-                                            class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
+                                        <div class="modal-footer d-flex flex-column flex-sm-row justify-content-start gap-2">
                                             <button type="submit" class="btn btn-primary fw-bold order-2 order-sm-1">حفظ
                                                 التغييرات</button>
                                             <button type="button" class="btn btn-secondary fw-bold order-1 order-sm-2"

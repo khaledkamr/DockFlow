@@ -11,35 +11,114 @@
             --color-quaternary: #42b3af;
             --color-accent: #52d6cb;
         }
-        
-        .bg-theme-1 { background-color: #0b56a9 !important; }
-        .bg-theme-2 { background-color: #218bab !important; }
-        .bg-theme-3 { background-color: #2cacbd !important; }
-        .bg-theme-4 { background-color: #42b3af !important; }
-        .bg-theme-5 { background-color: #52d6cb !important; }
-        
-        .bg-theme-1-light { background-color: rgba(11, 86, 169, 0.1) !important; }
-        .bg-theme-2-light { background-color: rgba(33, 139, 171, 0.1) !important; }
-        .bg-theme-3-light { background-color: rgba(44, 172, 189, 0.1) !important; }
-        .bg-theme-4-light { background-color: rgba(66, 179, 175, 0.1) !important; }
-        .bg-theme-5-light { background-color: rgba(82, 214, 203, 0.1) !important; }
-        
-        .text-theme-1 { color: #0b56a9 !important; }
-        .text-theme-2 { color: #218bab !important; }
-        .text-theme-3 { color: #2cacbd !important; }
-        .text-theme-4 { color: #42b3af !important; }
-        .text-theme-5 { color: #52d6cb !important; }
-        
-        .btn-theme-1 { background-color: #0b56a9; border-color: #0b56a9; color: #fff; }
-        .btn-theme-1:hover { background-color: #094a91; border-color: #094a91; color: #fff; }
-        .btn-outline-theme-1 { border-color: #0b56a9; color: #0b56a9; }
-        .btn-outline-theme-1:hover, .btn-outline-theme-1.active { background-color: #0b56a9; color: #fff; }
-        
-        .badge-theme-1 { background-color: #0b56a9; color: #fff; }
-        .badge-theme-2 { background-color: #218bab; color: #fff; }
-        .badge-theme-3 { background-color: #2cacbd; color: #fff; }
-        .badge-theme-4 { background-color: #42b3af; color: #fff; }
-        .badge-theme-5 { background-color: #52d6cb; color: #fff; }
+
+        .bg-theme-1 {
+            background-color: #0b56a9 !important;
+        }
+
+        .bg-theme-2 {
+            background-color: #218bab !important;
+        }
+
+        .bg-theme-3 {
+            background-color: #2cacbd !important;
+        }
+
+        .bg-theme-4 {
+            background-color: #42b3af !important;
+        }
+
+        .bg-theme-5 {
+            background-color: #52d6cb !important;
+        }
+
+        .bg-theme-1-light {
+            background-color: rgba(11, 86, 169, 0.1) !important;
+        }
+
+        .bg-theme-2-light {
+            background-color: rgba(33, 139, 171, 0.1) !important;
+        }
+
+        .bg-theme-3-light {
+            background-color: rgba(44, 172, 189, 0.1) !important;
+        }
+
+        .bg-theme-4-light {
+            background-color: rgba(66, 179, 175, 0.1) !important;
+        }
+
+        .bg-theme-5-light {
+            background-color: rgba(82, 214, 203, 0.1) !important;
+        }
+
+        .text-theme-1 {
+            color: #0b56a9 !important;
+        }
+
+        .text-theme-2 {
+            color: #218bab !important;
+        }
+
+        .text-theme-3 {
+            color: #2cacbd !important;
+        }
+
+        .text-theme-4 {
+            color: #42b3af !important;
+        }
+
+        .text-theme-5 {
+            color: #52d6cb !important;
+        }
+
+        .btn-theme-1 {
+            background-color: #0b56a9;
+            border-color: #0b56a9;
+            color: #fff;
+        }
+
+        .btn-theme-1:hover {
+            background-color: #094a91;
+            border-color: #094a91;
+            color: #fff;
+        }
+
+        .btn-outline-theme-1 {
+            border-color: #0b56a9;
+            color: #0b56a9;
+        }
+
+        .btn-outline-theme-1:hover,
+        .btn-outline-theme-1.active {
+            background-color: #0b56a9;
+            color: #fff;
+        }
+
+        .badge-theme-1 {
+            background-color: #0b56a9;
+            color: #fff;
+        }
+
+        .badge-theme-2 {
+            background-color: #218bab;
+            color: #fff;
+        }
+
+        .badge-theme-3 {
+            background-color: #2cacbd;
+            color: #fff;
+        }
+
+        .badge-theme-4 {
+            background-color: #42b3af;
+            color: #fff;
+        }
+
+        .badge-theme-5 {
+            background-color: #52d6cb;
+            color: #fff;
+        }
     </style>
 
     <!-- Statistics Cards -->
@@ -130,6 +209,27 @@
                                 <i class="fa-solid fa-arrow-down me-1"></i>
                                 3% من الشهر الماضي
                             </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Companies Activity Chart -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0 fw-bold">
+                        <i class="fa-solid fa-chart-column text-theme-1 me-2"></i>
+                        الشركات حسب النشاط
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="overflow-auto">
+                        <div style="min-width: {{ max(700, $companiesBasedActivity->count() * 110) }}px; height: 360px;">
+                            <canvas id="companiesActivityChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -236,10 +336,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($latestCompanies as $company)
+                                @foreach ($latestCompanies as $company)
                                     <tr>
                                         <td class="text-center fw-bold">{{ $company->name }}</td>
-                                        <td class="text-center"><span class="badge badge-theme-1">{{ $company->users_count }}</span></td>
+                                        <td class="text-center"><span
+                                                class="badge badge-theme-1">{{ $company->users_count }}</span></td>
                                         <td class="text-center text-muted">{{ $company->created_at->format('Y/m/d') }}</td>
                                         <td class="text-center"><span class="badge badge-theme-4">نشط</span></td>
                                     </tr>
@@ -275,7 +376,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($mostActiveCompanies as $company)
+                                @foreach ($mostActiveCompanies as $company)
                                     <tr>
                                         <td class="text-center">
                                             <span class="badge badge-theme-5 rounded-pill">{{ $loop->iteration }}</span>
@@ -405,6 +506,47 @@
                         }
                     },
                     cutout: '60%'
+                }
+            });
+
+            // Companies Activity Chart (Bar Chart)
+            const companiesActivityCtx = document.getElementById('companiesActivityChart').getContext('2d');
+            new Chart(companiesActivityCtx, {
+                type: 'bar',
+                data: {
+                    labels: @json($companiesBasedActivity->pluck('name')->values()),
+                    datasets: [{
+                        label: 'عدد الأنشطة',
+                        data: @json($companiesBasedActivity->pluck('logs_count')->values()),
+                        backgroundColor: 'rgba(11, 86, 169, 0.8)',
+                        borderRadius: 5,
+                        maxBarThickness: 56
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
                 }
             });
 

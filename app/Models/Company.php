@@ -84,4 +84,8 @@ class Company extends Model
     public function zatcaCompany() {
         return $this->hasOne(ZatcaCompany::class);
     }
+
+    public function logs() {
+        return $this->hasMany(UserLog::class);
+    }
 }

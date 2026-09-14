@@ -51,7 +51,7 @@ Route::controller(AdminController::class)->middleware('auth')->group(function ()
     Route::post('admin/companies/{company:uuid}/seed-roles', 'seedRoles')->name('admin.company.seed.roles');
 
     Route::post('admin/companies/{company:uuid}/users/store', 'storeCompanyUser')->name('admin.company.users.store');
-    Route::patch('admin/companies/{company:uuid}/users/{user:uuid}', 'updateCompanyUser')->name('admin.company.users.update');
+    Route::patch('admin/users/{user:uuid}', 'updateCompanyUser')->name('admin.company.users.update');
     Route::delete('admin/companies/{company:uuid}/users/{user:uuid}', 'deleteCompanyUser')->name('admin.company.users.delete');
 
     Route::post('admin/companies/{company:uuid}/roles/store', 'storeCompanyRole')->name('admin.company.roles.store');
