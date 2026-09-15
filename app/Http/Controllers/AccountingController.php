@@ -19,6 +19,7 @@ use App\Models\InvoicePayment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AccountingController extends Controller
@@ -546,34 +547,67 @@ class AccountingController extends Controller
     }
 
     public function updateJournal(Request $request, JournalEntry $journal) {
-        $old = $journal->load('lines')->toArray();
-        
-        $journal->lines()->delete();
-
-        $journal->update([
-            'code' => $request->code,
-            'date' => $request->date,
-            'totalDebit' => $request->debitSum,
-            'totalCredit' => $request->creditSum,
-            'modifier_id' => Auth::user()->id,
-        ]);
-
-        foreach ($request->account_id as $index => $accountId) {
-            JournalEntryLine::create([
-                'journal_entry_id' => $journal->id,
-                'account_id'       => $accountId,
-                'debit'            => $request->debit[$index] ?? 0,
-                'credit'           => $request->credit[$index] ?? 0,
-                'cost_center_id'   => $request->cost_center_id[$index] ?? null,
-                'description'      => $request->description[$index],
-            ]);
+        if(Gate::denies('إنشاء قيود وسندات')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لتعديل القيود');
         }
 
-        $new = $journal->load('lines')->toArray();
-        logActivity('تعديل قيد', "تم تعديل القيد رقم " . $journal->code, $old, $new);
+        $validated = $request->validate([
+            'code' => ['required', 'string', 'max:255'],
+            'date' => ['required', 'date'],
+            'debitSum' => ['required', 'numeric', 'min:0'],
+            'creditSum' => ['required', 'numeric', 'min:0'],
+            'account_id' => ['required', 'array', 'min:1'],
+            'account_id.*' => ['required', 'integer', 'distinct', 'exists:accounts,id'],
+            'debit' => ['required', 'array'],
+            'debit.*' => ['nullable', 'numeric', 'min:0'],
+            'credit' => ['required', 'array'],
+            'credit.*' => ['nullable', 'numeric', 'min:0'],
+            'cost_center_id' => ['nullable', 'array'],
+            'cost_center_id.*' => ['nullable', 'integer', 'exists:cost_centers,id'],
+            'description' => ['nullable', 'array'],
+            'description.*' => ['nullable', 'string', 'max:1000'],
+        ]);
 
-        return redirect()->action([self::class, 'journalDetails'], $journal)
-            ->with('success', 'تم تعديل القيد بنجاح');
+        foreach ($validated['account_id'] as $index => $accountId) {
+            $debit = (float) ($validated['debit'][$index] ?? 0);
+            $credit = (float) ($validated['credit'][$index] ?? 0);
+            if (($debit > 0 && $credit > 0) || ($debit == 0 && $credit == 0)) {
+                return redirect()->back()->withInput()->withErrors([
+                    "debit.$index" => 'يجب إدخال مدين أو دائن فقط لكل حساب.',
+                ]);
+            }
+        }
+
+        DB::transaction(function () use ($validated, $journal) {
+            $old = $journal->load('lines')->toArray();
+
+            $journal->lines()->delete();
+
+            $journal->update([
+                'code'        => $validated['code'],
+                'date'        => $validated['date'],
+                'totalDebit'  => $validated['debitSum'],
+                'totalCredit' => $validated['creditSum'],
+                'modifier_id' => Auth::user()->id,
+            ]);
+
+            foreach ($validated['account_id'] as $index => $accountId) {
+                JournalEntryLine::create([
+                    'journal_entry_id' => $journal->id,
+                    'account_id'       => $accountId,
+                    'debit'            => $validated['debit'][$index] ?? 0,
+                    'credit'           => $validated['credit'][$index] ?? 0,
+                    'cost_center_id'   => $validated['cost_center_id'][$index] ?? null,
+                    'description'      => $validated['description'][$index] ?? null,
+                ]);
+            }
+
+            $new = $journal->load('lines')->toArray();
+
+            logActivity('تعديل قيد', "تم تعديل القيد رقم " . $journal->code, $old, $new);
+        });
+
+        return redirect()->action([self::class, 'journalDetails'], $journal)->with('success', 'تم تعديل بيانات القيد بنجاح');
     }
 
     public function journalDetails(JournalEntry $journal) {
