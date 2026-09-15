@@ -557,7 +557,7 @@ class AccountingController extends Controller
             'debitSum' => ['required', 'numeric', 'min:0'],
             'creditSum' => ['required', 'numeric', 'min:0'],
             'account_id' => ['required', 'array', 'min:1'],
-            'account_id.*' => ['required', 'integer', 'distinct', 'exists:accounts,id'],
+            'account_id.*' => ['required', 'integer', 'exists:accounts,id'],
             'debit' => ['required', 'array'],
             'debit.*' => ['nullable', 'numeric', 'min:0'],
             'credit' => ['required', 'array'],

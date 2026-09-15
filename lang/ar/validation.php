@@ -67,4 +67,7 @@ return [
         'selected_containers' => 'اختيار حاوية',
         'type' => 'النوع',
     ],
+
+    'distinct' => 'تم اختيار :attribute أكثر من مرة.',
+    'array' => ':attribute يجب أن يكون مصفوفة.',
 ];
