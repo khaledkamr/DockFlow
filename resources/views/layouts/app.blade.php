@@ -833,7 +833,7 @@
                         <a class="nav-link fw-semibold rounded m-1 px-4 py-2"
                             style="{{ request()->routeIs('money.reports') ? 'background: var(--gradient); color: white;' : 'color: #000;' }}"
                             href="{{ route('money.reports') }}">
-                            <i class="fa-solid fa-receipt ms-2 me-2"></i> التقاريـــــر الماليـــــة
+                            <i class="fa-solid fa-receipt ms-2 me-2"></i> التقاريـــر الماليــــة
                         </a>
                     </div>
                 </li>

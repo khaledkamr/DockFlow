@@ -6,7 +6,7 @@
     <h1 class="mb-4">فواتيــر المبيعــات</h1>
 
     <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
             <form method="GET" action="" class="d-flex flex-column">
                 <label for="search" class="form-label text-dark fw-bold">بحــث عن فاتـــورة:</label>
                 <div class="d-flex">
@@ -56,31 +56,6 @@
                             مسددة جزئياً</option>
                     </select>
                     @foreach (request()->except('status') as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                </div>
-            </form>
-        </div>
-        <div class="col-6 col-md-2">
-            <form method="GET" action="" class="d-flex flex-column">
-                <label class="form-label text-dark fw-bold d-none d-md-inline">حالة ارسال الى zatca:</label>
-                <label class="form-label text-dark fw-bold d-inline d-md-none">zatca:</label>
-                <div class="d-flex">
-                    <select name="zatca_status" class="form-select border-primary" onchange="this.form.submit()">
-                        <option value="all" {{ request()->query('zatca_status') === 'all' || !request()->query('zatca_status') ? 'selected' : '' }}>
-                            جميع الفواتير
-                        </option>
-                        <option value="تم الإرسال بنجاح" {{ request()->query('zatca_status') === 'تم الإرسال بنجاح' ? 'selected' : '' }}>
-                            تم الإرسال بنجاح
-                        </option>
-                        <option value="تم الإرسال بخطأ" {{ request()->query('zatca_status') === 'تم الإرسال بخطأ' ? 'selected' : '' }}>
-                            تم الإرسال بخطأ
-                        </option>
-                        <option value="لم يتم الإرسال" {{ request()->query('zatca_status') === 'لم يتم الإرسال' ? 'selected' : '' }}>
-                            لم يتم الإرسال
-                        </option>
-                    </select>
-                    @foreach (request()->except('zatca_status') as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                 </div>

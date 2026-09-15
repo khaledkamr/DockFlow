@@ -10,6 +10,8 @@
         <h5 class="fw-bold">
             {{ $journal->type ?? 'قيد يومية' }} - بتاريخ {{ Carbon\Carbon::parse($journal->date)->format('Y/m/d') }}
         </h5>
+
+        <!-- Action Buttons -->
         <div class="export-buttons d-flex gap-2 align-items-center">
             @if($journal->invoice)
                 <a href="{{ route('invoices.unified.details', $journal->invoice) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="عرض الفاتورة">
@@ -63,20 +65,28 @@
         </div>
     </div>
 
+    <!-- Delete Journal Modal -->
     <div class="modal fade" id="deleteJournalModal" tabindex="-1" aria-labelledby="deleteJournalModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title text-white fw-bold"
-                        id="deleteJournalModalLabel">تأكيد الحذف</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <h5 class="modal-title text-white fw-bold" id="deleteJournalModalLabel">تأكيد الحذف</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center text-dark">
-                    هل انت متأكد من حذف هذا القيد؟
+                    @if($journal->invoice)
+                        <div class="alert alert-danger mb-3" role="alert">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div>
+                                    <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                                    <strong>تنبيه :</strong> يوجد فاتورة مرتبطة بهذا القيد، وقد يؤثر حذف القيد على بيانات الفاتورة.
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    <strong>هل أنت متأكد من حذف هذا القيد؟</strong>
                 </div>
-                <div
-                    class="modal-footer d-flex flex-column flex-sm-row justify-content-center">
+                <div class="modal-footer d-flex flex-column flex-sm-row justify-content-center">
                     <button type="button" class="btn btn-secondary fw-bold order-2 order-sm-1"
                         data-bs-dismiss="modal">إلغاء</button>
                     <form action="{{ route('journal.delete', $journal) }}" method="POST"
@@ -90,6 +100,7 @@
         </div>
     </div>
 
+    <!-- Journal Lines Table -->
     <div class="table-container">
         <table class="table table-striped">
             <thead>
@@ -106,7 +117,7 @@
                 @if($journal->lines->isEmpty())
                     <tr>
                         <td colspan="6" class="text-center">
-                            <div class="status-danger fs-6">هذا القيض فارغ!</div>
+                            <div class="status-danger fs-6">هذا القيد فارغ!</div>
                         </td>
                     </tr>
                 @else
@@ -116,8 +127,8 @@
                             <td class="fw-bold">{{ $line->account->name }}</td>
                             <td>{{ $line->debit }}</td>
                             <td>{{ $line->credit }}</td>
-                            <td class="fw-bold">{{ $line->costCenter->name ?? '-' }}</td>
-                            <td>{{ $line->description ?? '-' }}</td>
+                            <td class="fw-bold">{{ $line->costCenter->name ?? 'N/A' }}</td>
+                            <td>{{ $line->description ?? ' ' }}</td>
                         </tr>
                     @endforeach
                     <tr class="table-primary text-center fw-bold">
@@ -132,6 +143,7 @@
         </table>
     </div>
 
+    <!-- Creation and Modification Information -->
     <div class="row g-3 mt-4 pt-2 border-top">
         <div class="col-md-6">
             <div class="card border-primary border-2 p-2 shadow-sm h-100">
@@ -210,6 +222,7 @@
         </div>
     </div>
 
+    <!-- Attachments Section -->
     <div class="row g-3 mt-4 pt-2 border-top">
         <div class="col-12">
             <div class="card border-primary border-2 p-2 shadow-sm">

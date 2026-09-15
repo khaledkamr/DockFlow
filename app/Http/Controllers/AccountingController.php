@@ -572,7 +572,8 @@ class AccountingController extends Controller
         $new = $journal->load('lines')->toArray();
         logActivity('تعديل قيد', "تم تعديل القيد رقم " . $journal->code, $old, $new);
 
-        return redirect()->back()->with('success', 'تم تعديل القيد بنجاح');
+        return redirect()->action([self::class, 'journalDetails'], $journal)
+            ->with('success', 'تم تعديل القيد بنجاح');
     }
 
     public function journalDetails(JournalEntry $journal) {
