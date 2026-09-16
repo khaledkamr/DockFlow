@@ -119,10 +119,10 @@ class DashboardController extends Controller
             $from = Carbon::create($year, $month, 1)->startOfMonth();
             $to = $from->copy()->endOfMonth();
             $revenue = $revenueAccount
-                ? $revenueAccount->calculateBalance($from, $to)->final_credit
+                ? $revenueAccount->calculateBalance($from, $to)->movement_credit - $revenueAccount->calculateBalance($from, $to)->movement_debit
                 : 0;
             $expenses = $expenseAccount
-                ? $expenseAccount->calculateBalance($from, $to)->final_debit
+                ? $expenseAccount->calculateBalance($from, $to)->movement_debit - $expenseAccount->calculateBalance($from, $to)->movement_credit
                 : 0;
 
             $profitMatrix[] = [
@@ -227,10 +227,10 @@ class DashboardController extends Controller
             $from = Carbon::create($year, $month, 1)->startOfMonth();
             $to = $from->copy()->endOfMonth();
             $revenue = $revenueAccount
-                ? $revenueAccount->calculateBalance($from, $to)->final_credit
+                ? $revenueAccount->calculateBalance($from, $to)->movement_credit - $revenueAccount->calculateBalance($from, $to)->movement_debit
                 : 0;
             $expenses = $expenseAccount
-                ? $expenseAccount->calculateBalance($from, $to)->final_debit
+                ? $expenseAccount->calculateBalance($from, $to)->movement_debit - $expenseAccount->calculateBalance($from, $to)->movement_credit
                 : 0;
 
             $profitMatrix[] = [
