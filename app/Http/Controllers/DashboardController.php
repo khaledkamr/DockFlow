@@ -129,7 +129,7 @@ class DashboardController extends Controller
                 'month' => $from->format('F'),
                 'revenues' => $revenue,
                 'expenses' => $expenses,
-                'profit' => number_format($revenue - $expenses, 2),
+                'profit' => round($revenue - $expenses, 2),
             ];
         }
 
@@ -237,7 +237,7 @@ class DashboardController extends Controller
                 'month' => $from->format('F'),
                 'revenues' => $revenue,
                 'expenses' => $expenses,
-                'profit' => number_format($revenue - $expenses, 2),
+                'profit' => round($revenue - $expenses, 2),
             ];
         }
 
