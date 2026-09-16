@@ -7,6 +7,7 @@ use App\Http\Requests\DriverRequest;
 use App\Http\Requests\InvoiceRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\VehicleRequest;
+use App\Models\Account;
 use App\Models\Company;
 use App\Models\Container;
 use App\Models\Container_type;
@@ -109,6 +110,29 @@ class DashboardController extends Controller
             'تخليص جمركي' => Transaction::count()
         ];
 
+        $profitMatrix = [];
+        $expenseAccount = Account::where('code', '3')->first();
+        $revenueAccount = Account::where('code', '4')->first();
+
+        $year = Carbon::now()->year;
+        for($month = 1; $month <= 12; $month++) {
+            $from = Carbon::create($year, $month, 1)->startOfMonth();
+            $to = $from->copy()->endOfMonth();
+            $revenue = $revenueAccount
+                ? $revenueAccount->calculateBalance($from, $to)->final_credit
+                : 0;
+            $expenses = $expenseAccount
+                ? $expenseAccount->calculateBalance($from, $to)->final_debit
+                : 0;
+
+            $profitMatrix[] = [
+                'month' => $from->format('F'),
+                'revenues' => $revenue,
+                'expenses' => $expenses,
+                'profit' => $revenue - $expenses,
+            ];
+        }
+
         return view('pages.dashboards.shams_dashboard', compact(
             'customers', 
             'users',
@@ -124,7 +148,8 @@ class DashboardController extends Controller
             'receipt_vouchers_amount',
             'payment_vouchers_amount',
             'balanceBox',
-            'topServices'
+            'topServices',
+            'profitMatrix'
         ));
     }
 
@@ -193,6 +218,29 @@ class DashboardController extends Controller
             'تخليص جمركي' => Transaction::count()
         ];
 
+        $profitMatrix = [];
+        $expenseAccount = Account::where('code', '3')->first();
+        $revenueAccount = Account::where('code', '4')->first();
+
+        $year = Carbon::now()->year;
+        for($month = 1; $month <= 12; $month++) {
+            $from = Carbon::create($year, $month, 1)->startOfMonth();
+            $to = $from->copy()->endOfMonth();
+            $revenue = $revenueAccount
+                ? $revenueAccount->calculateBalance($from, $to)->final_credit
+                : 0;
+            $expenses = $expenseAccount
+                ? $expenseAccount->calculateBalance($from, $to)->final_debit
+                : 0;
+
+            $profitMatrix[] = [
+                'month' => $from->format('F'),
+                'revenues' => $revenue,
+                'expenses' => $expenses,
+                'profit' => $revenue - $expenses,
+            ];
+        }
+
         return view('pages.dashboards.haya_dashboard', compact(
             'customers', 
             'users',
@@ -208,7 +256,8 @@ class DashboardController extends Controller
             'receipt_vouchers_amount',
             'payment_vouchers_amount',
             'balanceBox',
-            'topServices'
+            'topServices',
+            'profitMatrix'
         ));
     }
 

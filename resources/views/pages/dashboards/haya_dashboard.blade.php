@@ -316,12 +316,12 @@
             <div class="card-body">
                 <h5 class="card-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center fw-bold mb-4">
                     <div class="mb-2 mb-sm-0">
-                        تقارير الإيرادات الشهرية
+                        تقارير الأرباح الشهرية
                         <i class="fa-solid fa-money-bill-trend-up"></i>
                     </div>
-                    <button class="btn btn-sm btn-primary fw-bold">
+                    {{-- <button class="btn btn-sm btn-primary fw-bold">
                         عرض تقارير الإيرادات
-                    </button>
+                    </button> --}}
                 </h5>
                 <div class="chart-container" style="position: relative; height:288px;">
                     <canvas id="profitChart"></canvas>
@@ -477,6 +477,18 @@
 
         // Bar Chart - Profit Chart
         const profitChart = document.getElementById('profitChart').getContext('2d');
+        const profitMatrix = @json($profitMatrix);
+        const profitMonths = Object.keys(profitMatrix);
+        const profitData = (month, key, index) => {
+            const values = profitMatrix[month];
+
+            if (Array.isArray(values)) {
+                return Number(values[index] || 0);
+            }
+
+            return Number(values?.[key] ?? values?.[key.charAt(0).toUpperCase() + key.slice(1)] ?? 0);
+        };
+
         new Chart(profitChart, {
             type: 'bar',
             data: {
@@ -484,26 +496,44 @@
                     'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
                 ],
                 datasets: [{
-                    label: 'students distribution',
-                    data: [0, 0, 0, 0, 0, 0, 0],
-                    backgroundColor: 'rgba(0, 123, 255, 0.7)',
-                    borderColor: '#007bff',
+                        label: 'المصروفات',
+                        data: profitMonths.map(month => profitData(month, 'expenses', 0)),
+                        backgroundColor: 'rgba(82, 214, 203, 0.7)',
+                        borderColor: 'rgba(82, 214, 203)',
+                    },
+                    {
+                        label: 'الإيرادات',
+                        data: profitMonths.map(month => profitData(month, 'revenues', 1)),
+                        backgroundColor: 'rgba(33, 139, 171, 0.7)',
+                        borderColor: 'rgba(33, 139, 171)',
+                    },
+                    {
+                        label: 'الربح',
+                        data: profitMonths.map(month => profitData(month, 'profit', 2)),
+                        backgroundColor: profitMonths.map(month => profitData(month, 'profit', 2) < 0 ?
+                            'rgba(220, 53, 69, 0.7)' : 'rgba(11, 86, 169, 0.8)'),
+                        borderColor: profitMonths.map(month => profitData(month, 'profit', 2) < 0 ?
+                            '#dc3545' : 'rgba(11, 86, 169, 1)')
+                    }
+                ].map(dataset => ({
+                    ...dataset,
                     borderWidth: 1,
-                    borderRadius: window.innerWidth < 768 ? 8 : 15,
-                    barThickness: window.innerWidth < 768 ? 30 : 50,
-                }]
+                    borderRadius: window.innerWidth < 768 ? 8 : 8,
+                    barThickness: window.innerWidth < 768 ? 18 : 28
+                }))
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: false
+                        display: true,
+                        position: 'top'
                     },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return `Total: ${context.raw} students`;
+                                return `${context.dataset.label}: ${context.raw}`;
                             }
                         },
                         titleFont: {
@@ -517,9 +547,7 @@
                 scales: {
                     y: {
                         beginAtZero: true,
-                        max: 16,
                         ticks: {
-                            stepSize: 1,
                             font: {
                                 size: window.innerWidth < 768 ? 10 : 12
                             }
