@@ -127,8 +127,8 @@ class DashboardController extends Controller
 
             $profitMatrix[] = [
                 'month' => $from->format('F'),
-                'revenues' => $revenue,
-                'expenses' => $expenses,
+                'revenues' => round($revenue, 2),
+                'expenses' => round($expenses, 2),
                 'profit' => round($revenue - $expenses, 2),
             ];
         }
@@ -235,8 +235,8 @@ class DashboardController extends Controller
 
             $profitMatrix[] = [
                 'month' => $from->format('F'),
-                'revenues' => $revenue,
-                'expenses' => $expenses,
+                'revenues' => round($revenue, 2),
+                'expenses' => round($expenses, 2),
                 'profit' => round($revenue - $expenses, 2),
             ];
         }
