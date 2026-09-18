@@ -110,28 +110,7 @@ class DashboardController extends Controller
             'تخليص جمركي' => Transaction::count()
         ];
 
-        $profitMatrix = [];
-        $expenseAccount = Account::where('code', '3')->first();
-        $revenueAccount = Account::where('code', '4')->first();
-
-        $year = Carbon::now()->year;
-        for($month = 1; $month <= 12; $month++) {
-            $from = Carbon::create($year, $month, 1)->startOfMonth();
-            $to = $from->copy()->endOfMonth();
-            $revenue = $revenueAccount
-                ? $revenueAccount->calculateBalance($from, $to)->movement_credit - $revenueAccount->calculateBalance($from, $to)->movement_debit
-                : 0;
-            $expenses = $expenseAccount
-                ? $expenseAccount->calculateBalance($from, $to)->movement_debit - $expenseAccount->calculateBalance($from, $to)->movement_credit
-                : 0;
-
-            $profitMatrix[] = [
-                'month' => $from->format('F'),
-                'revenues' => round($revenue, 2),
-                'expenses' => round($expenses, 2),
-                'profit' => round($revenue - $expenses, 2),
-            ];
-        }
+        [$profitYears, $profitMatrix] = $this->buildProfitMatrix();
 
         return view('pages.dashboards.shams_dashboard', compact(
             'customers', 
@@ -149,6 +128,7 @@ class DashboardController extends Controller
             'payment_vouchers_amount',
             'balanceBox',
             'topServices',
+            'profitYears',
             'profitMatrix'
         ));
     }
@@ -218,28 +198,7 @@ class DashboardController extends Controller
             'تخليص جمركي' => Transaction::count()
         ];
 
-        $profitMatrix = [];
-        $expenseAccount = Account::where('code', '3')->first();
-        $revenueAccount = Account::where('code', '4')->first();
-
-        $year = Carbon::now()->year;
-        for($month = 1; $month <= 12; $month++) {
-            $from = Carbon::create($year, $month, 1)->startOfMonth();
-            $to = $from->copy()->endOfMonth();
-            $revenue = $revenueAccount
-                ? $revenueAccount->calculateBalance($from, $to)->movement_credit - $revenueAccount->calculateBalance($from, $to)->movement_debit
-                : 0;
-            $expenses = $expenseAccount
-                ? $expenseAccount->calculateBalance($from, $to)->movement_debit - $expenseAccount->calculateBalance($from, $to)->movement_credit
-                : 0;
-
-            $profitMatrix[] = [
-                'month' => $from->format('F'),
-                'revenues' => round($revenue, 2),
-                'expenses' => round($expenses, 2),
-                'profit' => round($revenue - $expenses, 2),
-            ];
-        }
+        [$profitYears, $profitMatrix] = $this->buildProfitMatrix();
 
         return view('pages.dashboards.haya_dashboard', compact(
             'customers', 
@@ -257,8 +216,55 @@ class DashboardController extends Controller
             'payment_vouchers_amount',
             'balanceBox',
             'topServices',
+            'profitYears',
             'profitMatrix'
         ));
+    }
+
+    private function buildProfitMatrix(): array
+    {
+        $currentYear = Carbon::now()->year;
+        $years = JournalEntry::query()
+            ->whereNotNull('date')
+            ->selectRaw('DISTINCT YEAR(date) as year')
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn ($year) => (int) $year)
+            ->push($currentYear)
+            ->unique()
+            ->sortDesc()
+            ->values()
+            ->all();
+
+        $expenseAccount = Account::where('code', '3')->first();
+        $revenueAccount = Account::where('code', '4')->first();
+        $profitMatrix = [];
+
+        foreach ($years as $year) {
+            $profitMatrix[$year] = [];
+
+            for ($month = 1; $month <= 12; $month++) {
+                $from = Carbon::create($year, $month, 1)->startOfMonth();
+                $to = $from->copy()->endOfMonth();
+                $revenueBalance = $revenueAccount?->calculateBalance($from, $to);
+                $expenseBalance = $expenseAccount?->calculateBalance($from, $to);
+                $revenue = $revenueBalance
+                    ? $revenueBalance->movement_credit - $revenueBalance->movement_debit
+                    : 0;
+                $expenses = $expenseBalance
+                    ? $expenseBalance->movement_debit - $expenseBalance->movement_credit
+                    : 0;
+
+                $profitMatrix[$year][] = [
+                    'month' => $from->format('F'),
+                    'revenues' => round($revenue, 2),
+                    'expenses' => round($expenses, 2),
+                    'profit' => round($revenue - $expenses, 2),
+                ];
+            }
+        }
+
+        return [$years, $profitMatrix];
     }
 
     public function tag_dashboard(Request $request) {

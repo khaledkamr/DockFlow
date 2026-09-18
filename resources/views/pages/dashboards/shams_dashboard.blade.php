@@ -324,9 +324,15 @@
                             تقارير الأرباح الشهرية
                             <i class="fa-solid fa-money-bill-trend-up"></i>
                         </div>
-                        {{-- <button class="btn btn-sm btn-primary fw-bold">
-                            عرض تقارير الإيرادات
-                        </button> --}}
+                        <label class="d-flex align-items-center gap-2 mb-0">
+                            <span class="small">السنة</span>
+                            <select id="profitYear" class="form-select form-select-sm border-primary"
+                                aria-label="اختيار سنة الأرباح">
+                                @foreach ($profitYears as $year)
+                                    <option value="{{ $year }}">{{ $year }}</option>
+                                @endforeach
+                            </select>
+                        </label>
                     </h5>
                     <div class="chart-container" style="position: relative; height:288px;">
                         <canvas id="profitChart"></canvas>
@@ -484,18 +490,12 @@
             // Bar Chart - Profit Chart
             const profitChart = document.getElementById('profitChart').getContext('2d');
             const profitMatrix = @json($profitMatrix);
-            const profitMonths = Object.keys(profitMatrix);
-            const profitData = (month, key, index) => {
-                const values = profitMatrix[month];
-
-                if (Array.isArray(values)) {
-                    return Number(values[index] || 0);
-                }
-
-                return Number(values?.[key] ?? values?.[key.charAt(0).toUpperCase() + key.slice(1)] ?? 0);
+            const profitYearSelector = document.getElementById('profitYear');
+            const profitData = (year, key) => {
+                return profitMatrix[year].map(month => Number(month[key] || 0));
             };
 
-            new Chart(profitChart, {
+            const profitChartInstance = new Chart(profitChart, {
                 type: 'bar',
                 data: {
                     labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس',
@@ -503,23 +503,23 @@
                     ],
                     datasets: [{
                             label: 'المصروفات',
-                            data: profitMonths.map(month => profitData(month, 'expenses', 0)),
+                            data: profitData(profitYearSelector.value, 'expenses'),
                             backgroundColor: 'rgba(82, 214, 203, 0.7)',
                             borderColor: 'rgba(82, 214, 203)',
                         },
                         {
                             label: 'الإيرادات',
-                            data: profitMonths.map(month => profitData(month, 'revenues', 1)),
+                            data: profitData(profitYearSelector.value, 'revenues'),
                             backgroundColor: 'rgba(33, 139, 171, 0.7)',
                             borderColor: 'rgba(33, 139, 171)',
                         },
                         {
                             label: 'الربح',
-                            data: profitMonths.map(month => profitData(month, 'profit', 2)),
-                            backgroundColor: profitMonths.map(month => profitData(month, 'profit', 2) < 0 ?
-                                'rgba(220, 53, 69, 0.7)' : 'rgba(11, 86, 169, 0.8)'),
-                            borderColor: profitMonths.map(month => profitData(month, 'profit', 2) < 0 ?
-                                '#dc3545' : 'rgba(11, 86, 169, 1)')
+                            data: profitData(profitYearSelector.value, 'profit'),
+                            backgroundColor: profitData(profitYearSelector.value, 'profit').map(value =>
+                                value < 0 ? 'rgba(220, 53, 69, 0.7)' : 'rgba(11, 86, 169, 0.8)'),
+                            borderColor: profitData(profitYearSelector.value, 'profit').map(value =>
+                                value < 0 ? '#dc3545' : 'rgba(11, 86, 169, 1)')
                         }
                     ].map(dataset => ({
                         ...dataset,
@@ -571,6 +571,19 @@
                         }
                     }
                 }
+            });
+
+            profitYearSelector.addEventListener('change', function() {
+                const selectedYear = this.value;
+                const profitValues = profitData(selectedYear, 'profit');
+                profitChartInstance.data.datasets[0].data = profitData(selectedYear, 'expenses');
+                profitChartInstance.data.datasets[1].data = profitData(selectedYear, 'revenues');
+                profitChartInstance.data.datasets[2].data = profitValues;
+                profitChartInstance.data.datasets[2].backgroundColor = profitValues.map(value => value < 0 ?
+                    'rgba(220, 53, 69, 0.7)' : 'rgba(11, 86, 169, 0.8)');
+                profitChartInstance.data.datasets[2].borderColor = profitValues.map(value => value < 0 ?
+                    '#dc3545' : 'rgba(11, 86, 169, 1)');
+                profitChartInstance.update();
             });
 
             // Top Services Chart
