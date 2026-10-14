@@ -38,6 +38,11 @@
             transform: scale(1.1);
         }
 
+        @page {
+            size: A4 portrait;
+            margin: 8mm;
+        }
+
         @media print {
             .no-print {
                 display: none !important;
@@ -49,6 +54,25 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+
+            html, body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .print-scale {
+                zoom: 0.7071;
+            }
+
+            /* prevent cutting of boxes and rows between pages */
+            .print-scale .border.rounded-3,
+            .print-scale table tr {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            /* repeat table header on each page */
+            .print-scale thead { display: table-header-group; }
         }
     </style>
 </head>
@@ -57,77 +81,79 @@
 @endphp
 
 <body onload="initPrint()">
-    <div class="border-bottom border-dark border-3 pb-3 mb-4">
-        <div class="d-flex justify-content-between align-items-start gap-4">
-            <!-- Logo and Company Name -->
-            <div class="d-flex align-items-center gap-3">
-                @if ($company->logo)
-                    <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo"
-                        style="width: 120px; height: auto;">
-                @else
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px; height: auto;">
-                @endif
-                <div>
-                    <h3 class="fw-bold mb-1">{{ $company->name }}</h3>
+    <div class="print-scale">
+        <div class="border-bottom border-dark border-3 pb-3 mb-4">
+            <div class="d-flex justify-content-between align-items-start gap-4">
+                <!-- Logo and Company Name -->
+                <div class="d-flex align-items-center gap-3">
+                    @if ($company->logo)
+                        <img src="{{ asset('storage/' . $company->logo) }}" alt="Logo"
+                            style="width: 120px; height: auto;">
+                    @else
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 100px; height: auto;">
+                    @endif
+                    <div>
+                        <h3 class="fw-bold mb-1">{{ $company->name }}</h3>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Company Details -->
-            <div class="text-end">
-                <div class="mb-1">
-                    <span class="text-muted small">الرقم الضريبي:</span>
-                    <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
-                </div>
-                <div class="mb-1">
-                    <span class="text-muted small">السجل التجاري:</span>
-                    <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
-                </div>
-                <div class="mb-1">
-                    <span class="text-muted small">العنوان الوطني:</span>
-                    <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
-                </div>
-                <div class="mb-1">
-                    <span class="text-muted small">رقم التواصل:</span>
-                    <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
-                </div>
-                <div>
-                    <span class="text-muted small">البريد الإلكتروني:</span>
-                    <span class="fw-semibold">{{ $company->email ?? 'غير محدد' }}</span>
+                <!-- Company Details -->
+                <div class="text-end">
+                    <div class="mb-1">
+                        <span class="text-muted small">الرقم الضريبي:</span>
+                        <span class="fw-semibold">{{ $company->vatNumber ?? 'غير محدد' }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="text-muted small">السجل التجاري:</span>
+                        <span class="fw-semibold">{{ $company->CR ?? 'غير محدد' }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="text-muted small">العنوان الوطني:</span>
+                        <span class="fw-semibold">{{ $company->national_address ?? 'غير محدد' }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <span class="text-muted small">رقم التواصل:</span>
+                        <span class="fw-semibold">{{ $company->phone ?? 'غير محدد' }}</span>
+                    </div>
+                    <div>
+                        <span class="text-muted small">البريد الإلكتروني:</span>
+                        <span class="fw-semibold">{{ $company->email ?? 'غير محدد' }}</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="position-fixed bottom-0 start-0 end-0 bg-white border-top p-2 no-print-footer" style="z-index: 9999;">
-        <div class="d-flex justify-content-between small text-muted">
-            <div>
-                <span>أعد بواسطة: </span>
-                <span class="fw-semibold">{{ Auth::user()->name }}</span>
-            </div>
-            <div>
-                <span>تاريخ الطباعة: </span>
-                <span class="fw-bold">{{ Carbon\Carbon::now()->format('Y/m/d') }}</span>
+        <div class="position-fixed bottom-0 start-0 end-0 bg-white border-top p-2 no-print-footer" style="z-index: 9999;">
+            <div class="d-flex justify-content-between small text-muted">
+                <div>
+                    <span>أعد بواسطة: </span>
+                    <span class="fw-semibold">{{ Auth::user()->name }}</span>
+                </div>
+                <div>
+                    <span>تاريخ الطباعة: </span>
+                    <span class="fw-bold">{{ Carbon\Carbon::now()->format('Y/m/d') }}</span>
+                </div>
             </div>
         </div>
+
+        @yield('content')
+
+        <div class="text-center no-print my-3">
+            <button class="btn text-white border-0 shadow-lg fw-bold" onclick="window.print()">
+                طباعة <i class="fa-solid fa-print ps-1"></i>
+            </button>
+        </div>
+
+        <script>
+            function initPrint() {
+                window.print();
+
+                window.onafterprint = () => {
+                    window.close();
+                };
+            }
+        </script>
     </div>
-
-    @yield('content')
-
-    <div class="text-center no-print my-3">
-        <button class="btn text-white border-0 shadow-lg fw-bold" onclick="window.print()">
-            طباعة <i class="fa-solid fa-print ps-1"></i>
-        </button>
-    </div>
-
-    <script>
-        function initPrint() {
-            window.print();
-
-            window.onafterprint = () => {
-                window.close();
-            };
-        }
-    </script>
 </body>
 
 </html>
