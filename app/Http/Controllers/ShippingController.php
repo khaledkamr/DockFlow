@@ -334,7 +334,7 @@ class ShippingController extends Controller
 
     public function attachFile(Request $request, ShippingPolicy $policy) {
         $request->validate([
-            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png',
         ]);
 
         if($request->hasFile('attachment')) {

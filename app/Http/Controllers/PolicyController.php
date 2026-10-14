@@ -557,7 +557,7 @@ class PolicyController extends Controller
 
     public function attachFile(Request $request, Policy $policy) {
         $request->validate([
-            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'attachment' => 'required|file|mimes:pdf,jpg,jpeg,png',
         ]);
 
         $type = $policy->type == 'تخزين' ? 'storage' : ($policy->type == 'تسليم' ? 'receive' : 'services');
