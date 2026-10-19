@@ -7,7 +7,7 @@
         <h5 class="fw-semibold text-secondary">{{ $policy->code }}</h5>
     </div>
 
-    <!-- بيانات الاتفاقية -->
+    <!-- بيانات العميل والناقل -->
     <div class="row g-3 mb-4">
         <div class="col-6">
             <div class="border border-dark rounded-3 p-3 bg-light h-100">
@@ -67,6 +67,7 @@
         </div>
     </div>
 
+    <!-- بيانات البضاعة -->
     <div class="mb-4">
         <div class="table-responsive">
             <table class="table table-bordered border-dark table-hover mb-0">
@@ -92,7 +93,7 @@
         </div>
     </div>
 
-    <!-- معلومات الوصول والتفريغ -->
+    <!-- اقرار العميل باستلام الحمولة -->
     <div class="mb-4">
         <div class="border border-dark rounded p-3 bg-light">
             <h4 class="fw-bold text-center text-dark mb-4">اقرار العميل باستلام الحمولة</h4>
@@ -103,7 +104,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 text-start">
+                <div class="col-6 text-start">
                     <div class="mb-4">
                         <label class="fw-bold text-secondary mb-2">تاريخ  الاستلام:</label>
                         <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
@@ -113,7 +114,7 @@
                         <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
                     </div>
                 </div>
-                <div class="col-md-6 text-start">
+                <div class="col-6 text-start">
                     <div class="mb-4">
                         <label class="fw-bold text-secondary mb-2">فترة التأخير:</label>
                         <div class="border-bottom border-2 border-dark" style="min-height: 30px; width: 300px;"></div>
