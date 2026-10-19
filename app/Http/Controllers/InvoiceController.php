@@ -1407,6 +1407,9 @@ class InvoiceController extends Controller
     // ------------------------ Zatca Methods ------------------------
 
     public function sendZatcaInvoice(Invoice $invoice) {
+        if(Gate::denies('إرسال فاتورة إلى هيئة الزكاة')) {
+            return redirect()->back()->with('error', 'ليس لديك الصلاحية لإرسال الفواتير إلى هيئة الزكاة والدخل');
+        }
         if($invoice->zatca_status == 'sent without error') {
             return redirect()->back()->with('error', 'هذه الفاتورة تم إرسالها مسبقاً إلى هيئة الزكاة والدخل');
         }

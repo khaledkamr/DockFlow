@@ -556,7 +556,7 @@
 
                 <!-- Invoice Actions -->
                 <div class="d-flex flex-column flex-sm-row gap-2">
-                    @if ($invoice->company->zatcaCompany && !$invoice->zatcaInvoice)
+                    @if ($invoice->company->zatcaCompany && !$invoice->zatcaInvoice && auth()->user()->can('إرسال فاتورة إلى هيئة الزكاة'))
                         <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-outline-primary">
                             <i class="fas fa-paper-plane me-2"></i> إرسال الفاتورة
                         </a>
@@ -1281,10 +1281,12 @@
                         <h5 class="mb-0 text-dark">
                             <i class="fas fa-clipboard me-2"></i>تفاصيل فاتورة ZATCA
                         </h5>
-                        <a href="{{ route('invoices.zatca.invoice', $invoice) }}" target="_blank"
-                            class="btn btn-outline-primary">
-                            <i class="fas fa-file-invoice-dollar me-2"></i>عرض جميع البيانات
-                        </a>
+                        @if($invoice->zatcaInvoice)
+                            <a href="{{ route('invoices.zatca.invoice', $invoice) }}" target="_blank"
+                                class="btn btn-outline-primary">
+                                <i class="fas fa-file-invoice-dollar me-2"></i>عرض جميع البيانات
+                            </a>
+                        @endif
                     </div>
 
                     <div class="table-container" id="tableContainer">

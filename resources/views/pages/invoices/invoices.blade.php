@@ -150,7 +150,7 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center align-items-center gap-2 text-center">
-                                    @if ($isZatcaEnabled && $invoice->zatca_status !== 'sent without error')
+                                    @if ($isZatcaEnabled && $invoice->zatca_status !== 'sent without error' && auth()->user()->can('إرسال فاتورة إلى هيئة الزكاة'))
                                         <a href="{{ route('invoices.send.zatca', $invoice) }}" class="btn btn-sm btn-outline-primary">
                                             <span class="d-none d-sm-inline">إرسال</span>
                                             <i class="fa-solid fa-paper-plane d-inline d-sm-none"></i>
