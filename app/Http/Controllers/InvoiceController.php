@@ -1247,6 +1247,10 @@ class InvoiceController extends Controller
 
         $old = $invoice->toArray();
         $invoice->update($request->all());
+        if($request->has('status') && $request->input('status') == 'تم الدفع') {
+            $invoice->paid_amount = $invoice->total_amount;
+            $invoice->save();
+        }
         $new = $invoice->toArray();
 
         logActivity('تعديل فاتورة', "تم تعديل بيانات الفاتورة رقم " . $invoice->code, $old, $new);
